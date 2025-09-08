@@ -1,8 +1,6 @@
 ﻿using Infrastructure.Events.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Users.Configuration;
-using WebHost;
-using UserRepository = Users.Persistence.UserRepository;
 
 namespace Api.Hosting;
 
@@ -13,6 +11,5 @@ public static class Services
         services.ConfigureUsersServices();
         services.ConfigureEventsServices();
         services.ConfigureTicketsServices();
-        services.AddCorsAllowAll();
     }
 }

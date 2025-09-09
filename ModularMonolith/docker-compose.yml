@@ -47,9 +47,9 @@ services:
     container_name: redis
     image: "redis:latest"
     ports:
-      - "6379:6379"
+    - "6379:6379"
     networks:
-      - ticketbuddy-monolith-network
+    - ticketbuddy-monolith-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s

@@ -2,7 +2,6 @@
 
 export const PurchaseContainer = styled.div`
   margin: 2rem auto;
-  padding: 1rem;
 `;
 
 export const PurchaseTitle = styled.h1`

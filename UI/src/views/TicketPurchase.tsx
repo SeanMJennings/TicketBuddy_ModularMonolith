@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { Button } from '../components/Button.styles';
 import { BackIcon } from './EventsManagement.styles';
 import { type Ticket } from '../domain/ticket';
-import { type Event } from '../domain/event';
+import {ConvertVenueToString, type Event} from '../domain/event';
 import { useUsersStore } from '../stores/users.store';
 import { useShallow } from 'zustand/react/shallow';
 import {
@@ -121,7 +121,7 @@ export const TicketPurchase = () => {
             <EventDetails>
               <EventName>{event.EventName}</EventName>
               <EventDate>{formatDate(event.StartDate.toString())} - {formatDate(event.EndDate.toString())}</EventDate>
-              <EventVenue>Venue: {event.Venue}</EventVenue>
+              <EventVenue>Venue: {ConvertVenueToString(event.Venue)}</EventVenue>
             </EventDetails>
 
             <TicketsList>

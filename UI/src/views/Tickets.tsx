@@ -13,7 +13,7 @@ import {
     Legend,
     LegendItem,
     LegendColor,
-    SelectionInfo, CenteredButtonContainer
+    SelectionInfo, CenteredButtonContainer, ActionBar
 } from './Tickets.styles';
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
@@ -145,11 +145,13 @@ export const Tickets = () => {
         <TicketsContainer>
             <PageTitle>Tickets for Event: {event?.EventName}</PageTitle>
 
-            <Link to="/">
-                <Button data-testid="back-button">
-                    <BackIcon/> Back to Events
-                </Button>
-            </Link>
+            <ActionBar>
+                <Link to="/">
+                    <Button data-testid="back-button">
+                        <BackIcon/> Back to Events
+                    </Button>
+                </Link>
+            </ActionBar>
 
             <Legend>
                 <LegendItem>

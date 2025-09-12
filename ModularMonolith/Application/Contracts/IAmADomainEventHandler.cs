@@ -5,7 +5,6 @@ namespace Application.Contracts;
 public interface IAmADomainEventHandler
 {
     public Task Handle(IAmADomainEvent message);
-    public Type GetMessageType();
 }
 
 public abstract class DomainEventHandler<T> : IAmADomainEventHandler where T : IAmADomainEvent
@@ -16,5 +15,4 @@ public abstract class DomainEventHandler<T> : IAmADomainEventHandler where T : I
         await Handle(concreteMessage);
     }
     protected abstract Task Handle(T message);
-    public Type GetMessageType() => typeof(T);
 }

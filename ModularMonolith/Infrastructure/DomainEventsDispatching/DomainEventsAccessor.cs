@@ -6,7 +6,7 @@ namespace Infrastructure.DomainEventsDispatching;
 
 public class DomainEventsAccessor
 {
-    public IReadOnlyCollection<IAmADomainEvent> GetAllDomainEvents(DbContext DbContext)
+    public static IReadOnlyCollection<IAmADomainEvent> GetAllDomainEvents(DbContext DbContext)
     {
         var domainEntities = DbContext.ChangeTracker
             .Entries<Entity>()
@@ -17,7 +17,7 @@ public class DomainEventsAccessor
             .ToList();
     }
 
-    public void ClearAllDomainEvents(DbContext DbContext)
+    public static void ClearAllDomainEvents(DbContext DbContext)
     {
         var domainEntities = DbContext.ChangeTracker
             .Entries<Entity>()

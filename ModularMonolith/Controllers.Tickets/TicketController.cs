@@ -1,6 +1,6 @@
 ﻿using Application.Tickets;
 using Controllers.Tickets.Requests;
-using Domain.Tickets.ReadModels;
+using Domain.Tickets.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Tickets;

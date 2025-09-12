@@ -24,6 +24,7 @@ public class UserService(IAmAUserRepository UserRepository)
         if (await IsEmailAlreadyUsedByOtherUser(user.Id, user.Email)) throw new ValidationException("Email already exists");
 
         await UserRepository.Add(user);
+        await UserRepository.Commit();
         return user.Id;
     }
 
@@ -37,6 +38,7 @@ public class UserService(IAmAUserRepository UserRepository)
         existingUser.UpdateName(fullName);
         existingUser.UpdateEmail(email);
         await UserRepository.Update(existingUser);
+        await UserRepository.Commit();
     }
     
     private async Task<bool> IsEmailAlreadyUsedByOtherUser(Guid userId, string email)

@@ -1,10 +1,13 @@
 ﻿using Domain.Users.Entities;
 using Domain.Users.Primitives;
+using Infrastructure.Commands;
+using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Users.Persistence;
 
-public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
+public class UserDbContext(DbContextOptions<UserDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
+    : UnitOfWorkDbContext<UserDbContext>(options, domainEventsDispatcher)
 {
     public DbSet<User> Users => Set<User>();
     

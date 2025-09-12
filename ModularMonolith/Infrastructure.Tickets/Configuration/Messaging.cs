@@ -1,5 +1,4 @@
 ﻿using Application.Tickets;
-using Domain.Tickets;
 using Integration.Users.Messaging.Messages;
 using MassTransit;
 
@@ -11,9 +10,6 @@ public static class Messaging
     {
         var ticketsIntegrationMessagingAssembly = TicketsIntegrationMessaging.Assembly;
         x.AddConsumers(ticketsIntegrationMessagingAssembly);
-        
-        var ticketsDomainMessagingAssembly = TicketsDomainMessaging.Assembly;
-        x.AddConsumers(ticketsDomainMessagingAssembly);
     }
     
     public static void ConfigureTicketsMessaging(this IRabbitMqBusFactoryConfigurator cfg)

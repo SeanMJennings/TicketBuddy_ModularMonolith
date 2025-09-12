@@ -1,11 +1,14 @@
 ﻿using Domain.Tickets.Entities;
 using Domain.Tickets.Primitives;
+using Infrastructure.Commands;
+using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 using Event = Domain.Tickets.Entities.Event;
 
 namespace Infrastructure.Tickets.Commands;
 
-public class TicketDbContext(DbContextOptions<TicketDbContext> options) : DbContext(options)
+public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
+    : UnitOfWorkDbContext<TicketDbContext>(options, domainEventsDispatcher)
 {
     private const string DefaultSchema = "Ticket";
     public DbSet<Event> Events => Set<Event>();

@@ -2,7 +2,7 @@
 
 namespace Domain.Tickets.Entities;
 
-public class Ticket(Guid Id, Guid eventId, decimal price, uint SeatNumber, Guid? UserId = null, DateTimeOffset? PurchasedAt = null) : Aggregate(Id)
+public class Ticket(Guid Id, Guid eventId, decimal price, uint SeatNumber, Guid? UserId = null, DateTimeOffset? PurchasedAt = null) : Entity(Id)
 {
     public Guid EventId { get; private set; } = eventId;
     public decimal Price { get; private set; } = price;

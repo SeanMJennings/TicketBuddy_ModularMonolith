@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Tickets.ReadModels;
+namespace Domain.Tickets.Queries;
 
 public class Ticket(Guid Id, Guid eventId, decimal price, int SeatNumber, bool Purchased)
 {

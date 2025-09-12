@@ -1,4 +1,4 @@
-﻿using Domain.Tickets.ReadModels;
+﻿using Domain.Tickets.Queries;
 
 namespace Domain.Tickets.Contracts;
 

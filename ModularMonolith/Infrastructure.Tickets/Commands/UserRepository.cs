@@ -18,12 +18,15 @@ public class UserRepository(TicketDbContext ticketDbContext) : IAmAUserRepositor
         {
             ticketDbContext.Add(theUser);
         }
-
-        await ticketDbContext.SaveChangesAsync();
     }
 
     private async Task<User?> Get(Guid id)
     {
         return await ticketDbContext.Users.FindAsync(id);
+    }
+
+    public async Task Commit(CancellationToken cancellationToken = default)
+    {
+        await ticketDbContext.Commit(cancellationToken);
     }
 }

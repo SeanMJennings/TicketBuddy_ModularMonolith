@@ -1,8 +1,9 @@
-﻿using Domain.Users.Entities;
+﻿using Domain.Contracts;
+using Domain.Users.Entities;
 
 namespace Domain.Users.Contracts;
 
-public interface IAmAUserRepository
+public interface IAmAUserRepository : IAmACommandRepository
 {
     public Task Add(User theUser);
     public Task Update(User theUser);

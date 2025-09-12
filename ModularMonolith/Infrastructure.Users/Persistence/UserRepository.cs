@@ -11,8 +11,6 @@ public class UserRepository(UserDbContext userDbContext, IPublishEndpoint publis
     public async Task Add(User theUser)
     {
         userDbContext.Add(theUser);
-        await userDbContext.SaveChangesAsync();
-
         await publishEndpoint.Publish(new UserUpserted
         {
             Id = theUser.Id,
@@ -24,8 +22,6 @@ public class UserRepository(UserDbContext userDbContext, IPublishEndpoint publis
     public async Task Update(User theUser)
     {
         userDbContext.Update(theUser);
-        await userDbContext.SaveChangesAsync();
-
         await publishEndpoint.Publish(new UserUpserted
         {
             Id = theUser.Id,
@@ -42,5 +38,10 @@ public class UserRepository(UserDbContext userDbContext, IPublishEndpoint publis
     public async Task<IList<User>> GetAll()
     {
         return await userDbContext.Users.ToListAsync();
+    }
+
+    public async Task Commit(CancellationToken cancellationToken = default)
+    {
+        await userDbContext.Commit(cancellationToken);
     }
 }

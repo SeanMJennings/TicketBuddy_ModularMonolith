@@ -10,7 +10,6 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
     public async Task Add(Event theEvent)
     {
         eventDbContext.Add(theEvent);
-        await eventDbContext.SaveChangesAsync();
         await publishEndpoint.Publish(new Integration.Events.Messaging.EventUpserted
         {
             Id = theEvent.Id, 
@@ -25,8 +24,6 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
     public async Task Update(Event @event)
     {
         eventDbContext.Update(@event);
-        await eventDbContext.SaveChangesAsync();
-        
         await publishEndpoint.Publish(new Integration.Events.Messaging.EventUpserted
         {
             Id = @event.Id, 
@@ -49,5 +46,10 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
             .Where(e => e.StartDate > DateTimeOffset.UtcNow)
             .OrderBy(e => e.StartDate)
             .ToListAsync();
+    }
+
+    public async Task Commit(CancellationToken cancellationToken = default)
+    {
+        await eventDbContext.Commit(cancellationToken);
     }
 }

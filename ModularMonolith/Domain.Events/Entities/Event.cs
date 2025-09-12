@@ -3,7 +3,7 @@ using Domain.Events.Primitives;
 
 namespace Domain.Events.Entities;
 
-public class Event : Aggregate
+public class Event : Entity
 {
     public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price) : base(id)
     {

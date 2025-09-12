@@ -1,10 +1,11 @@
-﻿using Domain.Tickets.Entities;
+﻿using Domain.Contracts;
+using Domain.Tickets.Entities;
 
 namespace Domain.Tickets.Contracts;
 
-public interface IAmATicketRepositoryForCommands
+public interface IAmATicketRepositoryForCommands : IAmACommandRepository
 {
-    public Task AddTickets(IEnumerable<Ticket> tickets);
-    public Task UpdateTickets(IEnumerable<Ticket> tickets);
+    public void AddTickets(IEnumerable<Ticket> tickets);
+    public void UpdateTickets(IEnumerable<Ticket> tickets);
     public Task<IEnumerable<Ticket>> GetTicketsForEvent(Guid eventId);
 }

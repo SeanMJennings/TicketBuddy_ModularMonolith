@@ -1,8 +1,9 @@
-﻿using Domain.Events.Entities;
+﻿using Domain.Contracts;
+using Domain.Events.Entities;
 
 namespace Domain.Events.Contracts;
 
-public interface IAmAnEventRepository
+public interface IAmAnEventRepository : IAmACommandRepository
 {
     public Task Add(Event theEvent);
     public Task Update(Event theEvent);

@@ -10,7 +10,7 @@ public class TicketService(
     IAmATicketRepositoryForQueries QueryTicketRepository,
     IConnectionMultiplexer connectionMultiplexer)
 {
-    public async Task<IList<Domain.Tickets.ReadModels.Ticket>> GetTickets(Guid eventId)
+    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTickets(Guid eventId)
     {
         var tickets = await QueryTicketRepository.GetTicketsForEvent(eventId);
         await MarkTicketsWithReservationStatus(eventId, tickets);
@@ -33,10 +33,11 @@ public class TicketService(
         {
             ticket.Purchase(userId);
         }
-        await CommandTicketRepository.UpdateTickets(theTickets);
+        CommandTicketRepository.UpdateTickets(theTickets);
+        await CommandTicketRepository.Commit();
     }
 
-    public async Task<IList<Domain.Tickets.ReadModels.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
+    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
     {
         return await QueryTicketRepository.GetTicketsForEventByUser(eventId, userId);
     }
@@ -52,7 +53,7 @@ public class TicketService(
     
     private static string GetReservationKey(Guid eventId, Guid ticketId) => $"event:{eventId}:ticket:{ticketId}:reservation";
     
-    private async Task MarkTicketsWithReservationStatus(Guid id, IList<Domain.Tickets.ReadModels.Ticket> tickets)
+    private async Task MarkTicketsWithReservationStatus(Guid id, IList<Domain.Tickets.Queries.Ticket> tickets)
     {
         var db = connectionMultiplexer.GetDatabase();
         foreach (var ticket in tickets)

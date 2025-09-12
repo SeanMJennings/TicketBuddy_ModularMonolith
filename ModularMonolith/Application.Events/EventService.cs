@@ -22,8 +22,10 @@ public class EventService(IAmAnEventRepository EventRepository)
         var eventId = Guid.NewGuid();
         ValidateDate(startDate);
         var theEvent = new Event(eventId, eventName, startDate, endDate, Venue.FirstDirectArenaLeeds, price);
+        
         await CheckIfVenueAlreadyBooked(theEvent);
         await EventRepository.Add(theEvent);
+        await EventRepository.Commit();
         return eventId;
     }
     
@@ -37,6 +39,7 @@ public class EventService(IAmAnEventRepository EventRepository)
         
         await CheckIfVenueAlreadyBooked(existingEvent);
         await EventRepository.Update(existingEvent);
+        await EventRepository.Commit();
     }
 
     private async Task<Event> CheckEventExists(Guid eventId)

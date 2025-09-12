@@ -1,10 +1,13 @@
 ﻿using Domain.Events.Primitives;
+using Infrastructure.Commands;
+using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 using Event = Domain.Events.Entities.Event;
 
 namespace Infrastructure.Events.Persistence;
 
-public class EventDbContext(DbContextOptions<EventDbContext> options) : DbContext(options)
+public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
+    : UnitOfWorkDbContext<EventDbContext>(options, domainEventsDispatcher)
 {
     public DbSet<Event> Events => Set<Event>();
     

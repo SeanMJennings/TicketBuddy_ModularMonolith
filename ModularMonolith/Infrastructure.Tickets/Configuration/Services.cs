@@ -1,4 +1,5 @@
 ﻿using Application.Tickets;
+using Application.Tickets.DomainEventHandlers;
 using Domain.Tickets.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,5 +14,6 @@ public static class Services
         services.AddScoped<IAmATicketRepositoryForCommands, Commands.CommandTicketRepository>();
         services.AddScoped<IAmATicketRepositoryForQueries, Queries.QueryTicketRepository>();
         services.AddScoped<TicketService>();
+        services.AddScoped<EventUpsertedDomainEventHandler>();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Domain.Tickets.Contracts;
-using Domain.Tickets.ReadModels;
+using Domain.Tickets.Queries;
 using Infrastructure.Queries;
 
 namespace Infrastructure.Tickets.Queries;

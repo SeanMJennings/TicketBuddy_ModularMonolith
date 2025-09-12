@@ -104,7 +104,6 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             Price = price
         });
         testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id).Await();
-        testHarness.Consumed.Any<Domain.Tickets.Messages.EventUpserted>(x => x.Context.Message.Id == event_id).Await();
     }
 
     private void a_user_exists()
@@ -225,7 +224,6 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             Price = new_price
         });
         testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price).Await();
-        testHarness.Consumed.Any<Domain.Tickets.Messages.EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price).Await();
     }
 
     private void the_tickets_are_released()

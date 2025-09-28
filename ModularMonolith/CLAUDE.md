@@ -70,7 +70,6 @@ dotnet test --filter "method_name"
 Modules communicate via:
 - **Domain Events**: Published through MassTransit/RabbitMQ
 - **Integration Messaging**: Async messaging between bounded contexts
-- **Shared Domain**: Common domain concepts in the base `Domain` project
 
 ### Dependency Flow
 ```

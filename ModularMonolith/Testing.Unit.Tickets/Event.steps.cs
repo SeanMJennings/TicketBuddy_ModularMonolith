@@ -18,7 +18,6 @@ public partial class EventSpecs : Specification
     private Guid[] ticketIds = [];
     private decimal updatedPrice;
     
-    // Test constants
     private const string invalid_name = "Jackie Chan 123!";
     private const string valid_name = "Jackie Chan 123";
     private const string updated_name = "Updated Event Name";

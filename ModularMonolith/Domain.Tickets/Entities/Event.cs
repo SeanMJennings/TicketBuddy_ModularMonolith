@@ -5,7 +5,7 @@ namespace Domain.Tickets.Entities;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price) : base(id)
+    private Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;

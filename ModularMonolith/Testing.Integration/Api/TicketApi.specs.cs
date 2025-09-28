@@ -109,4 +109,14 @@ public partial class TicketApiSpecs
         When(the_user_extends_their_reservation);
         Then(the_ticket_is_reserved);
     }
+    
+    [Test]
+    public void event_sold_out_integration_event_fires_when_all_tickets_are_purchased()
+    {
+        Given(an_event_exists);
+        And(a_user_exists);
+        And(requesting_the_tickets);
+        When(purchasing_all_tickets);
+        Then(event_sold_out_integration_event_is_published);
+    }
 }

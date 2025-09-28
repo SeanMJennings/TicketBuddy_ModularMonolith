@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DomainEventsDispatching;
 
-public class DomainEventsAccessor
+public static class DomainEventsAccessor
 {
     public static IReadOnlyCollection<IAmADomainEvent> GetAllDomainEvents(DbContext DbContext)
     {

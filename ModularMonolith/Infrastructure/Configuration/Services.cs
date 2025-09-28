@@ -7,7 +7,6 @@ public static class Services
 {
     public static void ConfigureInfrastructureServices(this IServiceCollection services)
     {
-        services.AddScoped<DomainEventsAccessor>();
         services.AddScoped<DomainEventsDispatcher>();
         services.AddScoped<DomainEventsMapper>();
     }

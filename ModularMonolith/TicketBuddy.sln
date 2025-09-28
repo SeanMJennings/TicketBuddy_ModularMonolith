@@ -103,6 +103,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Claude", "Claude", "{F4977A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Tickets", "Testing.Unit.Tickets\Testing.Unit.Tickets.csproj", "{1933DB28-9DFC-4057-B7AF-FD88B84893A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tickets.Messaging", "Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj", "{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,10 @@ Global
 		{1933DB28-9DFC-4057-B7AF-FD88B84893A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1933DB28-9DFC-4057-B7AF-FD88B84893A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1933DB28-9DFC-4057-B7AF-FD88B84893A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -252,5 +258,6 @@ Global
 		{CB1CE6C3-56D5-4D70-9606-405501B51D80} = {B27BEC3F-9630-4040-83C5-60B309ADC70A}
 		{F4977A8E-C839-4624-B340-4185B181FE27} = {8578EFB1-3D7D-46B6-A63B-A2B147064E21}
 		{1933DB28-9DFC-4057-B7AF-FD88B84893A1} = {CCE57025-2696-4882-A2CA-DEB5F8413740}
+		{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C} = {CCE57025-2696-4882-A2CA-DEB5F8413740}
 	EndGlobalSection
 EndGlobal

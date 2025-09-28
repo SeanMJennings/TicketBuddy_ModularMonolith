@@ -5,6 +5,7 @@ using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Domain.Events.Primitives;
 using Integration.Events.Messaging;
+using Integration.Tickets.Messaging.Messages;
 using Integration.Users.Messaging.Messages;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -331,6 +332,30 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         response_code.ShouldBe(HttpStatusCode.BadRequest);
         var theError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult());
         theError.Errors.ShouldContain("Tickets already reserved");
+    }
+    
+    private void purchasing_all_tickets()
+    {
+        content = new StringContent(
+            JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids)),
+            Encoding.UTF8,
+            application_json);
+        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
+    
+    private void event_sold_out_integration_event_is_published()
+    {
+        response_code.ShouldBe(HttpStatusCode.NoContent);
+        
+        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        tickets.Count.ShouldBe(17);
+        tickets.All(t => t.Purchased).ShouldBeTrue();
+        
+        testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id).Await().ShouldBeTrue();
     }
     
     // [NotMapped] property in read model class affects serialization, so using a private class here for testing

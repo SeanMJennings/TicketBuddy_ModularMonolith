@@ -10,6 +10,7 @@
       <ProjectReference Include="..\Application\Application.csproj" />
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
       <ProjectReference Include="..\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
+      <ProjectReference Include="..\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj" />
       <ProjectReference Include="..\Integration.Users.Messaging\Integration.Users.Messaging.csproj" />
     </ItemGroup>
 

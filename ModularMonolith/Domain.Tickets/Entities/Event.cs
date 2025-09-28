@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Tickets.DomainEvents;
 using EventName = Domain.Tickets.Primitives.EventName;
 
 namespace Domain.Tickets.Entities;
@@ -77,5 +78,13 @@ public class Event : Entity, IAmAnAggregateRoot
         {
             ticket.Purchase(userId);
         }
+        
+        CheckIfSoldOut();
+    }
+    
+    private void CheckIfSoldOut()
+    {
+        var allTicketsSold = Tickets.Count > 0 && Tickets.All(t => t.UserId != null);
+        if (allTicketsSold) AddDomainEvent(new AllTicketsSold(Id));
     }
 }

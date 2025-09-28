@@ -13,5 +13,7 @@ public static class Services
         services.AddScoped<IAmAUserRepository, Commands.UserRepository>();
         services.AddScoped<IQueryTickets, Queries.TicketQuerier>();
         services.AddScoped<TicketService>();
+        services.AddScoped<AllTicketsSoldHandler>();
+        services.AddSingleton(DomainEventsToHandlersMap.Map);
     }
 }

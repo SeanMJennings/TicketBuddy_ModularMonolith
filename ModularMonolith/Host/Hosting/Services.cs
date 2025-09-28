@@ -15,6 +15,5 @@ public static class Services
         services.ConfigureUsersServices();
         services.ConfigureEventsServices();
         services.ConfigureTicketsServices();
-        services.AddSingleton(DomainEventsToHandlersMap.Map);
     }
 }

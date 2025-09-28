@@ -2,9 +2,7 @@
 
 namespace Infrastructure.DomainEventsDispatching;
 
-public class DomainEventsDispatcher(
-    DomainEventsAccessor DomainEventsAccessor,
-    DomainEventsMapper DomainEventsMapper)
+public class DomainEventsDispatcher(DomainEventsMapper DomainEventsMapper)
     {
         public async Task DispatchEvents(DbContext dbContext)
         {

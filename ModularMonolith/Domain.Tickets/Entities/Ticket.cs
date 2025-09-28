@@ -2,9 +2,9 @@
 
 namespace Domain.Tickets.Entities;
 
-public class Ticket : Entity
+internal class Ticket : Entity
 {
-    public Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber, Guid? userId = null, DateTimeOffset? purchasedAt = null) : base(Id)
+    internal Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber, Guid? userId = null, DateTimeOffset? purchasedAt = null) : base(Id)
     {
         EventId = eventId;
         Price = price;

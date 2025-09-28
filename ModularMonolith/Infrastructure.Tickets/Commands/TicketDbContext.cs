@@ -12,7 +12,6 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
 {
     private const string DefaultSchema = "Ticket";
     public DbSet<Event> Events => Set<Event>();
-    public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<Venue> Venues => Set<Venue>();
     public DbSet<User> Users => Set<User>();
     
@@ -22,15 +21,31 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
             .Properties<DateTimeOffset>()
             .HaveConversion<DateTimeOffsetConverter>();
     }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.LogTo(Console.WriteLine);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Event>().HasKey(e => e.Id);
         modelBuilder.Entity<Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
+        modelBuilder.Entity<Event>().HasMany(e => e.Tickets)
+            .WithOne()
+            .HasForeignKey(nameof(Ticket.EventId))
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Event>().HasOne(e => e.TheVenue)
+            .WithOne()
+            .HasForeignKey<Event>(nameof(Event.Venue))
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Event>().ToTable("Events",DefaultSchema, e => e.ExcludeFromMigrations());
         
         modelBuilder.Entity<Ticket>().HasKey(t => t.Id);
+        modelBuilder.Entity<Ticket>().Property(t => t.Price).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Ticket>().Property(t => t.SeatNumber).HasConversion(seat => (int)seat, seat => (uint)seat);
+        modelBuilder.Entity<Ticket>().Property(t => t.PurchasedAt).IsRequired(false);
+        modelBuilder.Entity<Ticket>().Property(t => t.UserId).IsRequired(false);
         modelBuilder.Entity<Ticket>().ToTable("Tickets",DefaultSchema, t => t.ExcludeFromMigrations());
         
         modelBuilder.Entity<Venue>().HasKey(v => v.Id);

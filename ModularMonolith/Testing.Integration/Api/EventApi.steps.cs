@@ -15,7 +15,7 @@ using WebHost;
 
 namespace Integration.Api;
 
-public partial class EventControllerSpecs : TruncateDbSpecification
+public partial class EventApiSpecs : TruncateDbSpecification
 {
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;

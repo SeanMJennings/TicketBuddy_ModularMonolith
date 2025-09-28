@@ -31,14 +31,14 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Compile Update="Api\EventController.steps.cs">
-        <DependentUpon>EventController.specs.cs</DependentUpon>
+      <Compile Update="Api\EventApi.steps.cs">
+        <DependentUpon>EventApi.specs.cs</DependentUpon>
       </Compile>
-      <Compile Update="Api\UserController.steps.cs">
-        <DependentUpon>UserController.specs.cs</DependentUpon>
+      <Compile Update="Api\UserApi.steps.cs">
+        <DependentUpon>UserApi.specs.cs</DependentUpon>
       </Compile>
-      <Compile Update="Api\TicketController.steps.cs">
-        <DependentUpon>TicketController.specs.cs</DependentUpon>
+      <Compile Update="Api\TicketApi.steps.cs">
+        <DependentUpon>TicketApi.specs.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

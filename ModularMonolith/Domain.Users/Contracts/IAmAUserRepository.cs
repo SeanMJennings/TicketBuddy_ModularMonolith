@@ -3,7 +3,7 @@ using Domain.Users.Entities;
 
 namespace Domain.Users.Contracts;
 
-public interface IAmAUserRepository : IAmACommandRepository
+public interface IAmAUserRepository : IAmARepository
 {
     public Task Add(User theUser);
     public Task Update(User theUser);

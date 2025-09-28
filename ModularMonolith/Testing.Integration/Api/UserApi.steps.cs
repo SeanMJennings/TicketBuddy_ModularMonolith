@@ -12,7 +12,7 @@ using WebHost;
 
 namespace Integration.Api;
 
-public partial class UserControllerSpecs : TruncateDbSpecification
+public partial class UserApiSpecs : TruncateDbSpecification
 {
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;

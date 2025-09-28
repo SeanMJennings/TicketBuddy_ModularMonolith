@@ -2,7 +2,7 @@
 
 namespace Integration.Api;
 
-public partial class UserControllerSpecs
+public partial class UserApiSpecs
 {
     [Test]
     public void can_create_user()

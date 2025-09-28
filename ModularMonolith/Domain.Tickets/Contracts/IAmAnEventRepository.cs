@@ -3,8 +3,8 @@ using Domain.Tickets.Entities;
 
 namespace Domain.Tickets.Contracts;
 
-public interface IAmAnEventRepository : IAmACommandRepository
+public interface IAmAnEventRepository : IAmARepository
 {
+    public Task<Event?> GetById(Guid Id);
     public Task Save(Event theEvent);
-    public Task<Venue> GetVenue(Domain.Events.Primitives.Venue venue);
 }

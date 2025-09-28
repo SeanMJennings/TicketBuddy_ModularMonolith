@@ -16,7 +16,7 @@ using WebHost;
 
 namespace Integration.Api;
 
-public partial class TicketControllerSpecs : TruncateDbSpecification
+public partial class TicketApiSpecs : TruncateDbSpecification
 {
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;
@@ -133,7 +133,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
         response_code = response.StatusCode;
         content = response.Content;
-        var tickets = JsonSerialization.Deserialize<IList<Domain.Tickets.Entities.Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Domain.Tickets.Queries.Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
 

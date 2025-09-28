@@ -1,6 +1,6 @@
 ﻿namespace Domain.Contracts;
 
-public interface IAmACommandRepository
+public interface IAmARepository
 {
     public Task Commit(CancellationToken cancellationToken = default);
 }

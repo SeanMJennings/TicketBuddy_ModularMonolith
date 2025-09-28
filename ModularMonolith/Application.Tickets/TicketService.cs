@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
 using StackExchange.Redis;
 
 namespace Application.Tickets;
 
 public class TicketService(
-    IAmATicketRepositoryForCommands CommandTicketRepository,
-    IAmATicketRepositoryForQueries QueryTicketRepository,
+    IAmAnEventRepository eventRepository,
+    IQueryTickets TicketQuerier,
     IConnectionMultiplexer connectionMultiplexer)
 {
     public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTickets(Guid eventId)
     {
-        var tickets = await QueryTicketRepository.GetTicketsForEvent(eventId);
+        var tickets = await TicketQuerier.GetTicketsForEvent(eventId);
         await MarkTicketsWithReservationStatus(eventId, tickets);
         return tickets;
     }
@@ -23,23 +22,17 @@ public class TicketService(
         {
             await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
         }
-
-        var tickets = await CommandTicketRepository.GetTicketsForEvent(eventId);
-        var theTickets = tickets as Ticket[] ?? tickets.ToArray();
-        theTickets = theTickets.Where(t => ticketIds.Contains(t.Id)).ToArray();
-        if (theTickets.Length != ticketIds.Length) throw new ValidationException("One or more tickets do not exist");
+        var theEvent = await eventRepository.GetById(eventId);
+        if (theEvent is null) throw new ValidationException("Event does not exist");
         
-        foreach (var ticket in theTickets)
-        {
-            ticket.Purchase(userId);
-        }
-        CommandTicketRepository.UpdateTickets(theTickets);
-        await CommandTicketRepository.Commit();
+        theEvent.PurchaseTickets(userId, ticketIds);
+        await eventRepository.Save(theEvent);
+        await eventRepository.Commit();
     }
 
     public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
     {
-        return await QueryTicketRepository.GetTicketsForEventByUser(eventId, userId);
+        return await TicketQuerier.GetTicketsForEventByUser(eventId, userId);
     }
 
     public async Task ReserveTickets(Guid eventId, Guid userId, Guid[] ticketIds)

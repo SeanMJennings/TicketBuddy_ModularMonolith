@@ -2,22 +2,31 @@
 
 namespace Domain.Tickets.Entities;
 
-public class Ticket(Guid Id, Guid eventId, decimal price, uint SeatNumber, Guid? UserId = null, DateTimeOffset? PurchasedAt = null) : Entity(Id)
+public class Ticket : Entity
 {
-    public Guid EventId { get; private set; } = eventId;
-    public decimal Price { get; private set; } = price;
-    public uint SeatNumber { get; private set; } = SeatNumber;
-    public Guid? UserId { get; private set; } = UserId;
-    public DateTimeOffset? PurchasedAt { get; private set; } = PurchasedAt;
+    public Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber, Guid? userId = null, DateTimeOffset? purchasedAt = null) : base(Id)
+    {
+        EventId = eventId;
+        Price = price;
+        SeatNumber = seatNumber;
+        UserId = userId;
+        PurchasedAt = purchasedAt;
+    }
+    private Ticket() : base(Guid.Empty) { }
+    internal Guid EventId { get; private set; }
+    internal decimal Price { get; private set; }
+    internal uint SeatNumber { get; private set; }
+    internal Guid? UserId { get; private set; }
+    internal DateTimeOffset? PurchasedAt { get; private set; }
     
-    public void Purchase(Guid userId)
+    internal void Purchase(Guid userId)
     {
         if (UserId is not null) throw new ValidationException("Tickets are not available");
         UserId = userId;
         PurchasedAt = DateTimeOffset.UtcNow;
     }
     
-    public void UpdatePrice(decimal newPrice)
+    internal void UpdatePrice(decimal newPrice)
     {
         if (UserId is not null) return;
         Price = newPrice;

@@ -2,7 +2,7 @@
 
 namespace Integration.Api;
 
-public partial class EventControllerSpecs
+public partial class EventApiSpecs
 {
     [Test]
     public void can_create_event()

@@ -2,7 +2,7 @@
 
 namespace Integration.Api;
 
-public partial class TicketControllerSpecs
+public partial class TicketApiSpecs
 {
     [Test]
     public void can_release_tickets()

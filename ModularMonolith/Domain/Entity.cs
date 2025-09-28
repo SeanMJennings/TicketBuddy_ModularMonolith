@@ -8,6 +8,7 @@ public abstract class Entity(Guid Id)
     
     private readonly List<IAmADomainEvent> _domainEvents = [];
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public IReadOnlyCollection<IAmADomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     public void ClearDomainEvents()

@@ -4,7 +4,7 @@ using EventName = Domain.Tickets.Primitives.EventName;
 
 namespace Domain.Tickets.Entities;
 
-public class Event : Entity
+public class Event : Entity, IAmAnAggregateRoot
 {
     public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.Events.Primitives.Venue venue, decimal price) : base(id)
     {

@@ -7,7 +7,6 @@ namespace Unit;
 
 public partial class EventSpecs : Specification
 {
-    // Test variables
     private Guid id;
     private string name = null!;
     private DateTimeOffset start_date;

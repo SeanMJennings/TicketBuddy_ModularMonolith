@@ -156,8 +156,8 @@ export const UsersDropdown = styled.select`
 
 export const UserDetails = styled.div`
     position: absolute;
-    top: 60px;
-    right: 0;
+    top: 80px;
+    right: 10px;
     background: var(--gradient-card);
     border: 1px solid var(--gray-600);
     border-radius: 12px;
@@ -171,10 +171,10 @@ export const UserDetails = styled.div`
         content: '';
         position: absolute;
         top: -8px;
-        right: 20px;
+        right: 260px;
         width: 16px;
         height: 16px;
-        background: var(--gray-800);
+        background: var(--gray-900);
         border: 1px solid var(--gray-600);
         border-bottom: none;
         border-right: none;

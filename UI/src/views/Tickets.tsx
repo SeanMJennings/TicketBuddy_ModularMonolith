@@ -144,7 +144,6 @@ export const Tickets = () => {
     return (
         <TicketsContainer>
             <PageTitle>Tickets for Event: {event?.EventName}</PageTitle>
-
             <ActionBar>
                 <Link to="/">
                     <Button data-testid="back-button">

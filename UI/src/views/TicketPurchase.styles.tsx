@@ -58,6 +58,7 @@ export const TotalSection = styled.div`
 
 export const ActionBar = styled.div`
   margin-bottom: 2rem;
+  margin-left: 2rem;  
 `;
 
 export const SuccessMessage = styled.div`

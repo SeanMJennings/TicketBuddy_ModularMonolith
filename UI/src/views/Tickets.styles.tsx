@@ -6,7 +6,7 @@ export const TicketsContainer = styled.div`
 
 export const ActionBar = styled.div`
   margin-bottom: 2rem;
-    margin
+  margin-left: 17rem;
 `;
 
 export const SeatMapContainer = styled.div`

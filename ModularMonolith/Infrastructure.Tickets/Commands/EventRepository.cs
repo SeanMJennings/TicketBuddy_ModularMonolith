@@ -8,6 +8,11 @@ namespace Infrastructure.Tickets.Commands;
 
 public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventRepository
 {
+    public Task<Venue> GetByVenueId(Domain.Events.Primitives.Venue venue)
+    {
+        return (ticketDbContext.Venues.FirstOrDefaultAsync(v => v.Id == venue) ?? throw new ValidationException($"Venue {venue} does not exist"))!;
+    }
+
     public async Task Save(Event theEvent)
     {
         var @event = await GetById(theEvent.Id);
@@ -16,7 +21,7 @@ public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventReposi
         {
             @event.UpdateName(theEvent.EventName);
             @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
-            @event.UpdateVenue(theEvent.Venue);
+            @event.UpdateVenue(theEvent.TheVenue);
             @event.UpdatePrice(theEvent.Price);
             @event.UpdateExistingTicketsThatAreNotPurchased();
             ticketDbContext.Update(@event);
@@ -27,8 +32,6 @@ public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventReposi
         }
         else
         {
-            var theVenue = await GetVenueForEvent(theEvent);
-            theEvent = theEvent.ToEvent(theVenue);
             theEvent.ReleaseNewTickets();
             ticketDbContext.Add(theEvent);
         }
@@ -45,19 +48,5 @@ public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventReposi
     public async Task Commit(CancellationToken cancellationToken = default)
     {
         await ticketDbContext.Commit(cancellationToken);
-    }
-    
-    private async Task<Venue> GetVenueForEvent(Event theEvent)
-    {
-        var venue = await ticketDbContext.Venues.FirstOrDefaultAsync(v => v.Id == theEvent.Venue);
-        return venue ?? throw new ValidationException($"Venue {theEvent.Venue} does not exist");
-    }
-}
-
-public static class EventConverter
-{
-    public static Event ToEvent(this Event theEvent, Venue venue)
-    {
-        return new Event(theEvent.Id, theEvent.EventName, theEvent.StartDate, theEvent.EndDate, venue, theEvent.Price);
     }
 }

@@ -15,47 +15,47 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{85
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "LocalHosting\docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Aspire", "Host.Aspire\Host.Aspire.csproj", "{8C866276-D219-4913-9C42-FFF5B2271053}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Aspire", "LocalHosting\Host.Aspire\Host.Aspire.csproj", "{8C866276-D219-4913-9C42-FFF5B2271053}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{5ACC84DA-B2D5-487E-8A5A-9F6D23EA0FE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "CommonLibraries\Domain\Domain.csproj", "{5ACC84DA-B2D5-487E-8A5A-9F6D23EA0FE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "Host\Host.csproj", "{5FC24B78-E23D-4812-88B9-E89E8CD188E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Migrations", "Host.Migrations\Host.Migrations.csproj", "{1B4BB399-9A25-41C2-B901-0603E6FA7D61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Migrations", "Database\Host.Migrations\Host.Migrations.csproj", "{1B4BB399-9A25-41C2-B901-0603E6FA7D61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Migrations.csproj", "{9CDD1397-4E93-40BE-B5BF-B7B321A3433D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Database\Migrations\Migrations.csproj", "{9CDD1397-4E93-40BE-B5BF-B7B321A3433D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Events", "Infrastructure.Events\Infrastructure.Events.csproj", "{DCB8DF11-462C-4604-88FE-C45BC822F7AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Events", "Modules\Events\Infrastructure.Events\Infrastructure.Events.csproj", "{DCB8DF11-462C-4604-88FE-C45BC822F7AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Integration", "Testing.Integration\Testing.Integration.csproj", "{220694EB-C7CD-47C6-8FC9-D8C9A6126BE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Events", "Controllers.Events\Controllers.Events.csproj", "{1D1FC05F-38B9-4DDE-A7F6-A7AE2E3E5A0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Events", "Modules\Events\Controllers.Events\Controllers.Events.csproj", "{1D1FC05F-38B9-4DDE-A7F6-A7AE2E3E5A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events", "Domain.Events\Domain.Events.csproj", "{4181B791-6000-45F1-9CE5-917A0157B60F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events", "Modules\Events\Domain.Events\Domain.Events.csproj", "{4181B791-6000-45F1-9CE5-917A0157B60F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Users", "Domain.Users\Domain.Users.csproj", "{BE0381B7-233A-430F-97E5-CE5655A1DD67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Users", "Modules\Users\Domain.Users\Domain.Users.csproj", "{BE0381B7-233A-430F-97E5-CE5655A1DD67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Users", "Controllers.Users\Controllers.Users.csproj", "{E850D32B-2C11-4424-B7CB-0C95FA43EA44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Users", "Modules\Users\Controllers.Users\Controllers.Users.csproj", "{E850D32B-2C11-4424-B7CB-0C95FA43EA44}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{DC0A904F-65DE-46AF-AA71-CF63E2803A64}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{BFAD1DFA-E07E-4062-98FB-54AC88B5EA9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Dataseeder", "Host.Dataseeder\Host.Dataseeder.csproj", "{C44A38AC-107C-4637-861E-3DB726F9CB21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Dataseeder", "LocalHosting\Host.Dataseeder\Host.Dataseeder.csproj", "{C44A38AC-107C-4637-861E-3DB726F9CB21}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tickets", "Tickets", "{CCE57025-2696-4882-A2CA-DEB5F8413740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Events.Messaging", "Integration.Events.Messaging\Integration.Events.Messaging.csproj", "{192B9F0A-835C-4A68-8E88-961C2CFE89AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Events.Messaging", "Modules\Events\Integration.Events.Messaging\Integration.Events.Messaging.csproj", "{192B9F0A-835C-4A68-8E88-961C2CFE89AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tickets", "Domain.Tickets\Domain.Tickets.csproj", "{C8359FB9-A3B5-4119-8B6B-42185E23A9B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tickets", "Modules\Tickets\Domain.Tickets\Domain.Tickets.csproj", "{C8359FB9-A3B5-4119-8B6B-42185E23A9B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Tickets", "Controllers.Tickets\Controllers.Tickets.csproj", "{46AE2095-7383-4207-8EC8-7DF4EB2FE088}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Tickets", "Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj", "{46AE2095-7383-4207-8EC8-7DF4EB2FE088}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Users.Messaging", "Integration.Users.Messaging\Integration.Users.Messaging.csproj", "{467F1445-ACC0-48D6-B40B-EE7C5DB01B10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Users.Messaging", "Modules\Users\Integration.Users.Messaging\Integration.Users.Messaging.csproj", "{467F1445-ACC0-48D6-B40B-EE7C5DB01B10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tickets", "Application.Tickets\Application.Tickets.csproj", "{F1A42FA6-9F73-4121-B082-1D2C7B7338A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tickets", "Modules\Tickets\Application.Tickets\Application.Tickets.csproj", "{F1A42FA6-9F73-4121-B082-1D2C7B7338A5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{D116428A-F67B-46AE-A347-0C3574DCAC5A}"
 EndProject
@@ -67,21 +67,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{ED76
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TicketBuddy", "TicketBuddy", "{B524DECE-236C-4DEA-8E8B-B8D847FE776B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Events", "Testing.Unit.Events\Testing.Unit.Events.csproj", "{69A2B175-86E2-48C8-A2B8-CCB12EFDB549}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Events", "Modules\Events\Testing.Unit.Events\Testing.Unit.Events.csproj", "{69A2B175-86E2-48C8-A2B8-CCB12EFDB549}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Users", "Testing.Unit.Users\Testing.Unit.Users.csproj", "{D9A0303E-7D66-4C6C-A220-5181A3C7257E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Users", "Modules\Users\Testing.Unit.Users\Testing.Unit.Users.csproj", "{D9A0303E-7D66-4C6C-A220-5181A3C7257E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Tickets", "Infrastructure.Tickets\Infrastructure.Tickets.csproj", "{A03C1592-C3C9-40AE-933B-07ACBC2399D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Tickets", "Modules\Tickets\Infrastructure.Tickets\Infrastructure.Tickets.csproj", "{A03C1592-C3C9-40AE-933B-07ACBC2399D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Events", "Application.Events\Application.Events.csproj", "{D8D92C00-2B1D-4D27-94FD-1B62199C019F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Events", "Modules\Events\Application.Events\Application.Events.csproj", "{D8D92C00-2B1D-4D27-94FD-1B62199C019F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{1A4726D8-B822-4B08-9C71-BB82C14A589F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "CommonLibraries\Infrastructure\Infrastructure.csproj", "{1A4726D8-B822-4B08-9C71-BB82C14A589F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Users", "Infrastructure.Users\Infrastructure.Users.csproj", "{ED1C5A29-29C3-4CC6-8879-12FA16582961}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Users", "Modules\Users\Infrastructure.Users\Infrastructure.Users.csproj", "{ED1C5A29-29C3-4CC6-8879-12FA16582961}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Users", "Application.Users\Application.Users.csproj", "{355C9264-48AF-4853-B925-86CD64C726FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Users", "Modules\Users\Application.Users\Application.Users.csproj", "{355C9264-48AF-4853-B925-86CD64C726FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{CB1CE6C3-56D5-4D70-9606-405501B51D80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "CommonLibraries\Application\Application.csproj", "{CB1CE6C3-56D5-4D70-9606-405501B51D80}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Claude", "Claude", "{F4977A8E-C839-4624-B340-4185B181FE27}"
 	ProjectSection(SolutionItems) = preProject
@@ -98,9 +98,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Claude", "Claude", "{F4977A
 		.claude\CLAUDE.md = .claude\CLAUDE.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Tickets", "Testing.Unit.Tickets\Testing.Unit.Tickets.csproj", "{1933DB28-9DFC-4057-B7AF-FD88B84893A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Tickets", "Modules\Tickets\Testing.Unit.Tickets\Testing.Unit.Tickets.csproj", "{1933DB28-9DFC-4057-B7AF-FD88B84893A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tickets.Messaging", "Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj", "{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tickets.Messaging", "Modules\Tickets\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj", "{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-44FF-8373-16AFC8F59D86}"
 	ProjectSection(SolutionItems) = preProject
@@ -115,7 +115,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{9ED07BC2-571C-4D7B-B514-25B4D12ACACD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Architecture.Tickets", "Testing.Architecture.Tickets\Testing.Architecture.Tickets.csproj", "{5E156C1C-4741-43B9-8A94-8F6B8D2AF822}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Architecture.Tickets", "Modules\Tickets\Testing.Architecture.Tickets\Testing.Architecture.Tickets.csproj", "{5E156C1C-4741-43B9-8A94-8F6B8D2AF822}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,5 +277,6 @@ Global
 		{9ED07BC2-571C-4D7B-B514-25B4D12ACACD} = {CCE57025-2696-4882-A2CA-DEB5F8413740}
 		{1933DB28-9DFC-4057-B7AF-FD88B84893A1} = {9ED07BC2-571C-4D7B-B514-25B4D12ACACD}
 		{5E156C1C-4741-43B9-8A94-8F6B8D2AF822} = {9ED07BC2-571C-4D7B-B514-25B4D12ACACD}
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A} = {6A03D0AD-A745-4B9F-BE59-C34FDE457431}
 	EndGlobalSection
 EndGlobal

@@ -60,7 +60,7 @@ services:
     container_name: monolith-migrations
     build:
       context: .
-      dockerfile: Host.Migrations/Dockerfile
+      dockerfile: ../Database/Host.Migrations/Dockerfile
     depends_on:
       postgresql:
         condition: service_started
@@ -73,7 +73,7 @@ services:
     container_name: monolith-api
     build:
       context: .
-      dockerfile: Host/Dockerfile
+      dockerfile: ../Host/Dockerfile
     depends_on:
       migrations:
         condition: service_completed_successfully

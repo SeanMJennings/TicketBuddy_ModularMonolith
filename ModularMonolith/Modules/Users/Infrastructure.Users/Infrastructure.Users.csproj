@@ -9,8 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Application.Users\Application.Users.csproj" />
         <ProjectReference Include="..\Domain.Users\Domain.Users.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
-        <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+        <ProjectReference Include="..\..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />
         <ProjectReference Include="..\Integration.Users.Messaging\Integration.Users.Messaging.csproj" />
     </ItemGroup>
 

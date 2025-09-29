@@ -25,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Host\Host.csproj" />
+    <ProjectReference Include="..\..\Host\Host.csproj" />
     <ProjectReference Include="..\Host.Dataseeder\Host.Dataseeder.csproj" />
-    <ProjectReference Include="..\Host.Migrations\Host.Migrations.csproj" />
+    <ProjectReference Include="..\..\Database\Host.Migrations\Host.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,8 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Domain.Users\Domain.Users.csproj" />
-        <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +18,12 @@
         <PackageReference Include="FluentAssertions" Version="8.5.0" />
         <PackageReference Include="NUnit" Version="4.3.2" />
         <PackageReference Include="Testing.Bdd" Version="1.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Event.steps.cs">
+            <DependentUpon>Event.specs.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

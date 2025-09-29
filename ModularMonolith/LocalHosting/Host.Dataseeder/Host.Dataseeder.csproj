@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Controllers.Events\Controllers.Events.csproj" />
-      <ProjectReference Include="..\Controllers.Users\Controllers.Users.csproj" />
+      <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
+      <ProjectReference Include="..\..\Modules\Users\Controllers.Users\Controllers.Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
-      <ProjectReference Include="..\Controllers.Tickets\Controllers.Tickets.csproj" />
+      <ProjectReference Include="..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
+      <ProjectReference Include="..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
       <ProjectReference Include="..\Host\Host.csproj" />
-      <ProjectReference Include="..\Domain\Domain.csproj" />
-      <ProjectReference Include="..\Migrations\Migrations.csproj" />
+      <ProjectReference Include="..\CommonLibraries\Domain\Domain.csproj" />
+      <ProjectReference Include="..\Database\Migrations\Migrations.csproj" />
     </ItemGroup>
     
     <ItemGroup>

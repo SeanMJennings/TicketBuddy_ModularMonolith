@@ -43,15 +43,17 @@ public class Event : Entity, IAmAnAggregateRoot
     public void UpdateVenue(Venue venue) => TheVenue = venue;
     public void UpdatePrice(decimal price) => Price = price;
     
-    public void UpdateExistingTicketsThatAreNotPurchased()
+    public List<Guid> UpdateExistingTicketsThatAreNotPurchased()
     {
         if (Tickets.Count == 0) throw new ValidationException("No tickets have been released for this event");
         
         var existingTicketsNotPurchased = Tickets.Where(t => t.UserId == null).ToList();
+        var updatedIds = existingTicketsNotPurchased.Select(t => t.Id).ToList();
         foreach (var ticket in existingTicketsNotPurchased)
         {
             ticket.UpdatePrice(Price);
         }
+        return updatedIds;
     }
 
     public void ReleaseNewTickets()

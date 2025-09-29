@@ -19,22 +19,33 @@ public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventReposi
         
         if (@event is not null)
         {
-            @event.UpdateName(theEvent.EventName);
-            @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
-            @event.UpdateVenue(theEvent.TheVenue);
-            @event.UpdatePrice(theEvent.Price);
-            @event.UpdateExistingTicketsThatAreNotPurchased();
-            ticketDbContext.Update(@event);
-            foreach (var ticket in @event.Tickets)
-            {
-                ticketDbContext.Entry(ticket).State = EntityState.Modified;
-            }
+            UpdateEvent(theEvent, @event);
+            return;
         }
-        else
+
+        AddEvent(theEvent);
+    }
+
+    private void AddEvent(Event theEvent)
+    {
+        theEvent.ReleaseNewTickets();
+        ticketDbContext.Add(theEvent);
+    }
+
+    private void UpdateEvent(Event theEvent, Event @event)
+    {
+        @event.UpdateName(theEvent.EventName);
+        @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
+        @event.UpdateVenue(theEvent.TheVenue);
+        @event.UpdatePrice(theEvent.Price);
+        var updatedTicketIds = @event.UpdateExistingTicketsThatAreNotPurchased();
+
+        foreach (var ticket in @event.Tickets.Where(t => updatedTicketIds.Contains(t.Id)))
         {
-            theEvent.ReleaseNewTickets();
-            ticketDbContext.Add(theEvent);
+            ticketDbContext.Entry(ticket).State = EntityState.Modified;
         }
+            
+        ticketDbContext.Update(@event);
     }
 
     public async Task<Event?> GetById(Guid Id)

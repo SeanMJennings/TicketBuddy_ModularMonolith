@@ -21,11 +21,6 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
             .Properties<DateTimeOffset>()
             .HaveConversion<DateTimeOffsetConverter>();
     }
-    
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.LogTo(Console.WriteLine);
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -5,13 +5,13 @@ using StackExchange.Redis;
 namespace Application.Tickets;
 
 public class TicketService(
-    IAmAnEventRepository eventRepository,
-    IQueryTickets TicketQuerier,
-    IConnectionMultiplexer connectionMultiplexer)
+    IAmAnEventRepository EventRepository,
+    IQueryTickets TicketQuerist,
+    IConnectionMultiplexer ConnectionMultiplexer)
 {
     public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTickets(Guid eventId)
     {
-        var tickets = await TicketQuerier.GetTicketsForEvent(eventId);
+        var tickets = await TicketQuerist.GetTicketsForEvent(eventId);
         await MarkTicketsWithReservationStatus(eventId, tickets);
         return tickets;
     }
@@ -22,17 +22,17 @@ public class TicketService(
         {
             await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
         }
-        var theEvent = await eventRepository.GetById(eventId);
+        var theEvent = await EventRepository.GetById(eventId);
         if (theEvent is null) throw new ValidationException("Event does not exist");
         
         theEvent.PurchaseTickets(userId, ticketIds);
-        await eventRepository.Save(theEvent);
-        await eventRepository.Commit();
+        await EventRepository.Save(theEvent);
+        await EventRepository.Commit();
     }
 
     public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
     {
-        return await TicketQuerier.GetTicketsForEventByUser(eventId, userId);
+        return await TicketQuerist.GetTicketsForEventByUser(eventId, userId);
     }
 
     public async Task ReserveTickets(Guid eventId, Guid userId, Guid[] ticketIds)
@@ -48,7 +48,7 @@ public class TicketService(
     
     private async Task MarkTicketsWithReservationStatus(Guid id, IList<Domain.Tickets.Queries.Ticket> tickets)
     {
-        var db = connectionMultiplexer.GetDatabase();
+        var db = ConnectionMultiplexer.GetDatabase();
         foreach (var ticket in tickets)
         {
             var value = await db.StringGetAsync(GetReservationKey(id, ticket.Id));
@@ -58,14 +58,14 @@ public class TicketService(
     
     private async Task CheckIfTicketReservedForDifferentUser(Guid eventId, Guid ticketId, Guid userId)
     {
-        var db = connectionMultiplexer.GetDatabase();
+        var db = ConnectionMultiplexer.GetDatabase();
         var value = await db.StringGetAsync(GetReservationKey(eventId, ticketId));
         if (value.HasValue && value != userId.ToString()) throw new ValidationException("Tickets already reserved");
     }
     
     private async Task ExtendReservation(Guid eventId, Guid ticketId, Guid userId)
     {
-        var db = connectionMultiplexer.GetDatabase();
+        var db = ConnectionMultiplexer.GetDatabase();
         var value = await db.StringGetAsync(GetReservationKey(eventId, ticketId));
         if (value.HasValue && value == userId.ToString())
         {

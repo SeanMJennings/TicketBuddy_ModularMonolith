@@ -4,7 +4,7 @@ using Infrastructure.Queries;
 
 namespace Infrastructure.Tickets.Queries;
 
-public class TicketQuerier(Database database) : IQueryTickets
+public class TicketQuerist(Database database) : IQueryTickets
 {
     public async Task<IList<Ticket>> GetTicketsForEvent(Guid eventId)
     {

@@ -17,6 +17,8 @@ public class Event : Entity, IAmAnAggregateRoot
         Price = price;
     }
     
+    private Event() : base(Guid.Empty) { }
+    
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
@@ -79,12 +81,11 @@ public class Event : Entity, IAmAnAggregateRoot
             ticket.Purchase(userId);
         }
         
-        CheckIfSoldOut();
+        if (IsSoldOut()) AddDomainEvent(new AllTicketsSold(Id));
     }
     
-    private void CheckIfSoldOut()
+    private bool IsSoldOut()
     {
-        var allTicketsSold = Tickets.Count > 0 && Tickets.All(t => t.UserId != null);
-        if (allTicketsSold) AddDomainEvent(new AllTicketsSold(Id));
+        return Tickets.Count > 0 && Tickets.All(t => t.UserId != null);
     }
 }

@@ -25,6 +25,14 @@ public partial class DomainSpecs : Specification
             .GetTypes();
     }
 
+    private void domain_primitives()
+    {
+        types = Types.InAssembly(DomainAssembly)
+            .That()
+            .ResideInNamespace("Domain.Tickets.Primitives")
+            .GetTypes();
+    }
+
     private void entity_types_that_are_not_aggregate_roots()
     {
         types = Types.InAssembly(DomainAssembly)
@@ -66,7 +74,7 @@ public partial class DomainSpecs : Specification
         Assert.That(failingTypes, Is.Null.Or.Empty);
     }
     
-    private void should_be_internal_if_not_aggregate_root()
+    private void should_not_be_public_if_not_aggregate_root()
     {
         List<Type> failingTypes = [];
         foreach (var type in types)

@@ -5,7 +5,6 @@ VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{8578EFB1-3D7D-46B6-A63B-A2B147064E21}"
 	ProjectSection(SolutionItems) = preProject
-		..\.gitignore = ..\.gitignore
 		..\Observability.png = ..\Observability.png
 		..\README.md = ..\README.md
 		ModularMonolith.drawio = ModularMonolith.drawio
@@ -90,6 +89,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-44FF-8373-16AFC8F59D86}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\BuildModularMonolith.yaml = ..\.github\workflows\BuildModularMonolith.yaml
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"

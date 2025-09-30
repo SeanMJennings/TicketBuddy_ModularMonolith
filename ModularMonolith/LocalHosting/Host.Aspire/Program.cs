@@ -1,4 +1,5 @@
-﻿using Common.Environment;
+﻿using System.Diagnostics;
+using Common.Environment;
 
 const string Environment = "Environment";
 var builder = DistributedApplication.CreateBuilder(args);

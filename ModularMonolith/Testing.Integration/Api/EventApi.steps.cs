@@ -6,6 +6,7 @@ using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Domain.Events.Primitives;
 using Integration.Events.Messaging;
+using Integration.Tickets.Messaging.Messages;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Migrations;
@@ -186,6 +187,15 @@ public partial class EventApiSpecs : TruncateDbSpecification
         creating_the_event();
     }
 
+    private void it_has_sold_out()
+    {
+        testHarness.Bus.Publish(new EventSoldOut
+        {
+            EventId = returned_id,
+        }).Await();
+        testHarness.Consumed.Any<EventSoldOut>(x => x.Context.Message.EventId == returned_id).Await();
+    }
+
     private static void a_short_wait()
     {
         Thread.Sleep(2000);
@@ -301,6 +311,14 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvent.Count.ShouldBe(1);
         theEvent.Single().Id.ShouldBe(returned_id);
         theEvent.Single().EventName.ToString().ShouldBe(name);
+    }
+
+    private void the_event_is_marked_as_sold_out()
+    {
+        var theEvent = JsonSerialization.Deserialize<Event>(content.ReadAsStringAsync().Await());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theEvent.Id.ShouldBe(returned_id);
+        theEvent.IsSoldOut.ShouldBeTrue();
     }
 
     private void an_integration_event_is_published()

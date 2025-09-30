@@ -12,4 +12,12 @@ namespace Application.Tickets.IntegrationMessageConsumers
             await userRepository.Save(User.Create(context.Message.Id, context.Message.FullName, context.Message.Email));
         }
     }
+    
+    public class UserConsumerDefinition : ConsumerDefinition<UserConsumer>
+    {
+        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<UserConsumer> consumerConfigurator, IRegistrationContext context)
+        {
+            endpointConfigurator.UseMessageRetry(r => r.Intervals(500, 1000));
+        }
+    }
 }

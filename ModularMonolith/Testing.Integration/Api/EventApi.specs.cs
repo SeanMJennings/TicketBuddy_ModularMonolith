@@ -80,4 +80,13 @@ public partial class EventApiSpecs
         When(listing_the_events);
         Then(the_events_are_listed_without_the_past_event);
     }
+
+    [Test]
+    public void can_mark_events_as_sold_out()
+    {
+        Given(an_event_exists);
+        And(it_has_sold_out);
+        When(requesting_the_event);
+        Then(the_event_is_marked_as_sold_out);
+    }
 }

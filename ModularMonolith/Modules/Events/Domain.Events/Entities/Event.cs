@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Domain.Events.Primitives;
 
 namespace Domain.Events.Entities;
@@ -20,6 +21,9 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset EndDate { get; private set; }
     public Venue Venue { get; private set; }
     public decimal Price { get; private set; }
+    
+    [JsonInclude]
+    public bool IsSoldOut { get; private set; }
     public void UpdateName(EventName eventName) => EventName = eventName;
     public void UpdateDates(DateTimeOffset startDate, DateTimeOffset endDate)
     {
@@ -29,4 +33,5 @@ public class Event : Entity, IAmAnAggregateRoot
         EndDate = endDate;
     }
     public void UpdatePrice(decimal price) => Price = price;
+    public void MarkAsSoldOut() => IsSoldOut = true;
 }

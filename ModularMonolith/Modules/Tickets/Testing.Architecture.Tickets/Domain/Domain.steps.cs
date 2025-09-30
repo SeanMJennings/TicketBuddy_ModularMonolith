@@ -53,14 +53,6 @@ public partial class DomainSpecs : Specification
             .GetTypes();
     }
 
-    private void entity_types()
-    {
-        types = Types.InAssembly(DomainAssembly)
-            .That()
-            .Inherit(typeof(Entity))
-            .GetTypes();
-    }
-
     private void should_be_immutable()
     {
         List<Type> failingTypes = [];
@@ -104,21 +96,6 @@ public partial class DomainSpecs : Specification
                 properties.Any(p => aggregateRootTypes.Contains(p.PropertyType)))
             {
                 failingTypes.Add(entityType);
-            }
-        }
-
-        Assert.That(failingTypes, Is.Null.Or.Empty);
-    }
-
-    private void should_have_parameterless_private_constructor()
-    {
-        List<Type> failingTypes = [];
-        foreach (var type in types)
-        {
-            var constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
-            if (constructor == null || !constructor.IsPrivate)
-            {
-                failingTypes.Add(type);
             }
         }
 

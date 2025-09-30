@@ -10,7 +10,6 @@ namespace Domain.Tickets.Entities
             Email = email;
         }
         
-        private User() : base(Guid.Empty) { }
         public Name FullName { get; private set; }
         public Email Email { get; private set; }
         

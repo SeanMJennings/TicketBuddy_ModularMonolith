@@ -29,11 +29,4 @@ public partial class DomainSpecs
         Given(entity_types_that_are_aggregate_roots);
         Then(should_not_reference_other_aggregate_root);
     }
-
-    [Test]
-    public void entity_should_have_parameterless_private_constructor()
-    {
-        Given(entity_types);
-        Then(should_have_parameterless_private_constructor);
-    }
 }

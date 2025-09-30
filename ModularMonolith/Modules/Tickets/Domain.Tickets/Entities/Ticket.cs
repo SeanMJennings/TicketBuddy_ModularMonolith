@@ -10,7 +10,7 @@ internal class Ticket : Entity
         Price = price;
         SeatNumber = seatNumber;
     }
-    private Ticket() : base(Guid.Empty) { }
+    
     internal static Ticket Create(Guid id, Guid eventId, decimal price, uint seatNumber)
     {
         return new Ticket(id, eventId, price, seatNumber);

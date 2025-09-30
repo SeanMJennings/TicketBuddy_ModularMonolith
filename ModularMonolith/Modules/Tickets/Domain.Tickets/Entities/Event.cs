@@ -17,8 +17,6 @@ public class Event : Entity, IAmAnAggregateRoot
         Price = price;
     }
     
-    private Event() : base(Guid.Empty) { }
-    
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }

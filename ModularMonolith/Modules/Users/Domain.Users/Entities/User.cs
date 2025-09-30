@@ -2,7 +2,7 @@
 
 namespace Domain.Users.Entities
 {
-    public class User(Guid id, FullName fullName, Email email, UserType userType) : Entity(id)
+    public class User(Guid id, FullName fullName, Email email, UserType userType) : Entity(id), IAmAnAggregateRoot
     {
         public FullName FullName { get; private set; } = fullName;
         public Email Email { get; private set; } = email;

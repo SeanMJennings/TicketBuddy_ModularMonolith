@@ -2,18 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>default</LangVersion>
-        <RootNamespace>Unit</RootNamespace>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Domain.Users\Domain.Users.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
         <PackageReference Include="FluentAssertions" Version="8.5.0" />
         <PackageReference Include="NUnit" Version="4.3.2" />
@@ -21,9 +18,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="User.steps.cs">
-        <DependentUpon>User.specs.cs</DependentUpon>
+        <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Domain\Domain.steps.cs">
+        <DependentUpon>Domain.specs.cs</DependentUpon>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain.Users\Domain.Users.csproj" />
     </ItemGroup>
 
 </Project>

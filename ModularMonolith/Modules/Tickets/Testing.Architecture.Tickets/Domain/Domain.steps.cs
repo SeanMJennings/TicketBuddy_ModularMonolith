@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using BDD;
+using Domain;
 using Domain.DomainEvents;
 using Domain.Tickets.Entities;
 using NetArchTest.Rules;
@@ -24,6 +25,34 @@ public partial class DomainSpecs : Specification
             .GetTypes();
     }
 
+    private void entity_types_that_are_not_aggregate_roots()
+    {
+        types = Types.InAssembly(DomainAssembly)
+            .That()
+            .Inherit(typeof(Entity))
+            .And()
+            .DoNotImplementInterface(typeof(IAmAnAggregateRoot))
+            .GetTypes();
+    }
+
+    private void entity_types_that_are_aggregate_roots()
+    {
+        types = Types.InAssembly(DomainAssembly)
+            .That()
+            .Inherit(typeof(Entity))
+            .And()
+            .ImplementInterface(typeof(IAmAnAggregateRoot))
+            .GetTypes();
+    }
+
+    private void entity_types()
+    {
+        types = Types.InAssembly(DomainAssembly)
+            .That()
+            .Inherit(typeof(Entity))
+            .GetTypes();
+    }
+
     private void should_be_immutable()
     {
         List<Type> failingTypes = [];
@@ -32,6 +61,57 @@ public partial class DomainSpecs : Specification
             if (type.GetFields().All(x => x.IsInitOnly) && !type.GetProperties().Any(x => x.CanWrite)) continue;
             failingTypes.Add(type);
             break;
+        }
+
+        Assert.That(failingTypes, Is.Null.Or.Empty);
+    }
+    
+    private void should_be_internal_if_not_aggregate_root()
+    {
+        List<Type> failingTypes = [];
+        foreach (var type in types)
+        {
+            if (type.IsNotPublic) continue;
+            failingTypes.Add(type);
+            break;
+        }
+
+        Assert.That(failingTypes, Is.Null.Or.Empty);
+    }
+
+    private void should_not_reference_other_aggregate_root()
+    {
+        var aggregateRootTypes = Types.InAssembly(DomainAssembly)
+            .That()
+            .ImplementInterface(typeof(IAmAnAggregateRoot))
+            .GetTypes().ToList();
+
+        List<Type> failingTypes = [];
+        foreach (var entityType in types)
+        {
+            var fields = entityType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            var properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+
+            if (fields.Any(f => aggregateRootTypes.Contains(f.FieldType)) ||
+                properties.Any(p => aggregateRootTypes.Contains(p.PropertyType)))
+            {
+                failingTypes.Add(entityType);
+            }
+        }
+
+        Assert.That(failingTypes, Is.Null.Or.Empty);
+    }
+
+    private void should_have_parameterless_private_constructor()
+    {
+        List<Type> failingTypes = [];
+        foreach (var type in types)
+        {
+            var constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, Type.EmptyTypes, null);
+            if (constructor == null || !constructor.IsPrivate)
+            {
+                failingTypes.Add(type);
+            }
         }
 
         Assert.That(failingTypes, Is.Null.Or.Empty);

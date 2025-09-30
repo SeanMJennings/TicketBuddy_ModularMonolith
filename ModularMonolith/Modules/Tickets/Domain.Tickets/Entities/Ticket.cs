@@ -4,15 +4,18 @@ namespace Domain.Tickets.Entities;
 
 internal class Ticket : Entity
 {
-    internal Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber, Guid? userId = null, DateTimeOffset? purchasedAt = null) : base(Id)
+    private Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber) : base(Id)
     {
         EventId = eventId;
         Price = price;
         SeatNumber = seatNumber;
-        UserId = userId;
-        PurchasedAt = purchasedAt;
     }
     private Ticket() : base(Guid.Empty) { }
+    internal static Ticket Create(Guid id, Guid eventId, decimal price, uint seatNumber)
+    {
+        return new Ticket(id, eventId, price, seatNumber);
+    }
+    
     internal Guid EventId { get; private set; }
     internal decimal Price { get; private set; }
     internal uint SeatNumber { get; private set; }

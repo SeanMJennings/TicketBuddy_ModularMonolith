@@ -62,7 +62,7 @@ public class Event : Entity, IAmAnAggregateRoot
         
         for (uint i = 0; i < TheVenue.Capacity; i++)
         {
-            var ticket = new Ticket(
+            var ticket = Ticket.Create(
                 Guid.NewGuid(),
                 Id,
                 Price,

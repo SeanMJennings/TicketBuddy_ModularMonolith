@@ -9,7 +9,7 @@ namespace Application.Tickets.IntegrationMessageConsumers
     {
         public async Task Consume(ConsumeContext<UserUpserted> context)
         {
-            await userRepository.Save(new User(context.Message.Id, context.Message.FullName, context.Message.Email));
+            await userRepository.Save(User.Create(context.Message.Id, context.Message.FullName, context.Message.Email));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Testing.Architecture.Tickets.Domain;
 
-public partial class DomainSpecs
+internal partial class DomainSpecs
 {
     [Test]
     public void domain_events_should_be_immutable()

@@ -11,7 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Events\Application.Events\Application.Events.csproj" />
       <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
       <ProjectReference Include="..\..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />

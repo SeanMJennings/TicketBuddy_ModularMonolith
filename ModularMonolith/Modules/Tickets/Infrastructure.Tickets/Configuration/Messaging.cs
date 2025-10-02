@@ -1,5 +1,4 @@
-﻿using Application.Events;
-using Application.Tickets;
+﻿using Application.Tickets;
 using Integration.Users.Messaging.Messages;
 using MassTransit;
 
@@ -9,8 +8,6 @@ public static class Messaging
 {
     public static void AddTicketsConsumers(this IBusRegistrationConfigurator x)
     {
-        var eventsIntegrationMessagingAssembly = EventsIntegrationMessaging.Assembly;
-        x.AddConsumers(eventsIntegrationMessagingAssembly);
         var ticketsIntegrationMessagingAssembly = TicketsIntegrationMessaging.Assembly;
         x.AddConsumers(ticketsIntegrationMessagingAssembly);
     }

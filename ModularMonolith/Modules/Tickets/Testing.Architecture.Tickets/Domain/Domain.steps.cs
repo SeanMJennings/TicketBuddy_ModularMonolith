@@ -7,7 +7,7 @@ using NetArchTest.Rules;
 
 namespace Testing.Architecture.Tickets.Domain;
 
-public partial class DomainSpecs : Specification
+internal partial class DomainSpecs : Specification
 {
     private IEnumerable<Type> types = [];
     private static Assembly DomainAssembly => typeof(Event).Assembly;

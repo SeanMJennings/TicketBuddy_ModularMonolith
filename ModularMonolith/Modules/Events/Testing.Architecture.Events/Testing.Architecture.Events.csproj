@@ -25,10 +25,16 @@
       <Compile Update="Domain\Domain.steps.cs">
         <DependentUpon>Domain.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Modules\Module.steps.cs">
+        <DependentUpon>Module.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Application.Events\Application.Events.csproj" />
+      <ProjectReference Include="..\Controllers.Events\Controllers.Events.csproj" />
       <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
+      <ProjectReference Include="..\Infrastructure.Events\Infrastructure.Events.csproj" />
     </ItemGroup>
 
 </Project>

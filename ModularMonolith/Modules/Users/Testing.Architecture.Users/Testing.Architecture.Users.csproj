@@ -25,10 +25,15 @@
       <Compile Update="Domain\Domain.steps.cs">
         <DependentUpon>Domain.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Modules\Module.steps.cs">
+        <DependentUpon>Module.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Controllers.Users\Controllers.Users.csproj" />
       <ProjectReference Include="..\Domain.Users\Domain.Users.csproj" />
+      <ProjectReference Include="..\Infrastructure.Users\Infrastructure.Users.csproj" />
     </ItemGroup>
 
 </Project>

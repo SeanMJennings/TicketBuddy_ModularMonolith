@@ -64,7 +64,7 @@ export function ticketsPageIsRendered() {
 
 export const elements = {
   title: () => renderedComponent.getByRole('heading', { name: /Ticket Purchase/i }),
-  backButton: () => renderedComponent.getByText('Back to Seat Selection'),
+  backButton: () => renderedComponent.queryByText('Back to Seat Selection'),
   purchaseButton: () => renderedComponent.getByText('Complete Purchase'),
   mockedTicketsPage: () => renderedComponent.getByText('I am the mocked tickets page'),
   seatItems: () => renderedComponent.container.querySelectorAll('[data-testid="seat-item"]'),

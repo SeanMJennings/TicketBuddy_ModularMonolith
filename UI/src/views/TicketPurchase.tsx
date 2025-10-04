@@ -100,14 +100,17 @@ export const TicketPurchase = () => {
   return (
     <PurchaseContainer>
       <PageTitle>Ticket Purchase</PageTitle>
-
-        <ActionBar>
-            <Link to={`/tickets/${eventId}`}>
-                <Button>
-                    <BackIcon /> Back to Seat Selection
-                </Button>
-            </Link>
-        </ActionBar>
+        {
+            !purchaseComplete && (
+                <ActionBar>
+                    <Link to={`/tickets/${eventId}`}>
+                        <Button>
+                            <BackIcon /> Back to Seat Selection
+                        </Button>
+                    </Link>
+                </ActionBar>
+            )
+        }
 
       {purchaseComplete ? (
         <SuccessMessage>

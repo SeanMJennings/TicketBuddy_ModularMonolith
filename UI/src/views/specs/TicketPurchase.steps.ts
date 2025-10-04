@@ -62,6 +62,7 @@ export async function should_purchase_tickets_successfully() {
   await clickPurchaseButton();
   await waitUntil(wait_for_post_purchase);
   expect(mockServer.content).toStrictEqual({ UserId: Users[0].Id, TicketIds: [TicketsForFirstEvent[0].Id, TicketsForFirstEvent[1].Id, TicketsForFirstEvent[2].Id] });
+  expect(backButtonIsRendered()).toBeFalsy();
 }
 
 export async function should_navigate_back_to_seat_selection() {

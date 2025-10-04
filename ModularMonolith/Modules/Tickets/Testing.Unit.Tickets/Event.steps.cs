@@ -28,7 +28,7 @@ public partial class EventSpecs : Specification
         id = Guid.NewGuid();
         userId = Guid.NewGuid();
         name = null!;
-        venue = new Venue(Domain.Events.Primitives.Venue.EmiratesOldTraffordManchester, "Emirates Old Trafford, Manchester", 100);
+        venue = new Venue(Domain.Primitives.Venue.EmiratesOldTraffordManchester, "Emirates Old Trafford, Manchester", 100);
         price = 25m;
         updatedPrice = 30m;
         start_date = DateTimeOffset.UtcNow.AddDays(1);
@@ -122,7 +122,7 @@ public partial class EventSpecs : Specification
     
     private void updating_event_venue()
     {
-        var newVenue = new Venue(Domain.Events.Primitives.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200);
+        var newVenue = new Venue(Domain.Primitives.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200);
         theEvent.UpdateVenue(newVenue);
     }
     

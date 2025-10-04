@@ -4,6 +4,7 @@ using BDD;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Domain.Events.Primitives;
+using Domain.Primitives;
 using Integration.Events.Messaging;
 using Integration.Tickets.Messaging.Messages;
 using Integration.Users.Messaging.Messages;

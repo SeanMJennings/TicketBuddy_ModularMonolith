@@ -22,4 +22,11 @@ internal partial class ModuleSpecs
         Given(checking_the_infrastructure_layer_for_controller_layer_references);
         Then(there_should_be_no_references_to_controller_layer);
     }
+
+    [Test]
+    public void domain_layer_should_only_reference_integration_project_from_another_module()
+    {
+        Given(checking_the_domain_layer_for_references_to_other_modules);
+        Then(there_should_be_no_references_to_other_modules_except_integration_projects);
+    }
 }

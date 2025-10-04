@@ -1,6 +1,7 @@
 ﻿using BDD;
 using Domain.Events.Entities;
 using Domain.Events.Primitives;
+using Domain.Primitives;
 using FluentAssertions;
 
 namespace Unit;

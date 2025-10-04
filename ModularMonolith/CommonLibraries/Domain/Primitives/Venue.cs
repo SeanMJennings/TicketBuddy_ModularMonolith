@@ -1,4 +1,4 @@
-﻿namespace Domain.Events.Primitives;
+﻿namespace Domain.Primitives;
 
 public enum Venue
 {

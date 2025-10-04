@@ -2,6 +2,7 @@
 using Domain.Events.Contracts;
 using Domain.Events.Entities;
 using Domain.Events.Primitives;
+using Domain.Primitives;
 
 namespace Application.Events;
 

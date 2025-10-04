@@ -3,6 +3,7 @@ using Controllers.Events.Requests;
 using Controllers.Users.Requests;
 using Dataseeder.Hosting;
 using Domain.Events.Primitives;
+using Domain.Primitives;
 using Domain.Users.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

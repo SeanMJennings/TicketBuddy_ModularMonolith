@@ -8,7 +8,7 @@ namespace Infrastructure.Tickets.Commands;
 
 public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventRepository
 {
-    public Task<Venue> GetByVenueId(Domain.Events.Primitives.Venue venue)
+    public Task<Venue> GetByVenueId(Domain.Primitives.Venue venue)
     {
         return (ticketDbContext.Venues.FirstOrDefaultAsync(v => v.Id == venue) ?? throw new ValidationException($"Venue {venue} does not exist"))!;
     }

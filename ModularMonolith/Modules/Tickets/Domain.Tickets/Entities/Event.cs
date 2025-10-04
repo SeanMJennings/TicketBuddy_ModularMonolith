@@ -23,7 +23,7 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
     public decimal Price { get; private set; }
-    public Domain.Events.Primitives.Venue Venue { get; private set; }
+    public Domain.Primitives.Venue Venue { get; private set; }
     internal List<Ticket> Tickets { get; private set; } = [];
     internal Venue TheVenue { get; private set; }
     

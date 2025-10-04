@@ -14,11 +14,13 @@ internal partial class ModuleSpecs : Specification
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Commands.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Tickets.TicketController).Assembly;
     private TestResult testResult;
+    private AssemblyName[] assemblyNames = [];
     
     protected override void before_each()
     {
         base.before_each();
         testResult = null!;
+        assemblyNames = [];
     }
     
     private void checking_the_domain_layer_for_application_layer_references()
@@ -45,6 +47,11 @@ internal partial class ModuleSpecs : Specification
             .GetResult();
     }
 
+    private void checking_the_domain_layer_for_references_to_other_modules()
+    {
+        assemblyNames = DomainAssembly.GetReferencedAssemblies();
+    }
+
     private void there_should_be_no_references_to_infrastructure_layer()
     {
         Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
@@ -58,5 +65,17 @@ internal partial class ModuleSpecs : Specification
     private void there_should_be_no_references_to_controller_layer()
     {
         Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
+    }
+
+    private void there_should_be_no_references_to_other_modules_except_integration_projects()
+    {
+        Assert.That(assemblyNames
+            .Where(a => 
+                a.Name is not null 
+                && !a.Name.Contains("Tickets") 
+                && !a.Name.Contains("System")
+                && a.Name != "Domain")
+            .Select(a => a.Name!)
+            .ToArray(), Is.Null.Or.Empty);
     }
 }

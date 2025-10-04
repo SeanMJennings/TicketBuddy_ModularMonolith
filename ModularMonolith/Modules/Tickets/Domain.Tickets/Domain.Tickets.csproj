@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\CommonLibraries\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\Events\Domain.Events\Domain.Events.csproj" />
     </ItemGroup>
 
     <ItemGroup>

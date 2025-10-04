@@ -1,5 +1,6 @@
-﻿using Application.Tickets;
+﻿using Application.Tickets.Commands;
 using Application.Tickets.DomainEventHandlers;
+using Application.Tickets.Queries;
 using Domain.Tickets.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,8 @@ public static class Services
         services.AddScoped<IAmAnEventRepository, Commands.EventRepository>();
         services.AddScoped<IAmAUserRepository, Commands.UserRepository>();
         services.AddScoped<IQueryTickets, Queries.TicketQuerist>();
-        services.AddScoped<TicketService>();
+        services.AddScoped<TicketCommands>();
+        services.AddScoped<TicketQueries>();
         services.AddScoped<AllTicketsSoldHandler>();
         services.AddSingleton(DomainEventsToHandlersMap.Map);
     }

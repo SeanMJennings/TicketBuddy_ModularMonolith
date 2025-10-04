@@ -2,20 +2,12 @@
 using Domain.Tickets.Contracts;
 using StackExchange.Redis;
 
-namespace Application.Tickets;
+namespace Application.Tickets.Commands;
 
-public class TicketService(
+public class TicketCommands(
     IAmAnEventRepository EventRepository,
-    IQueryTickets TicketQuerist,
     IConnectionMultiplexer ConnectionMultiplexer)
 {
-    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTickets(Guid eventId)
-    {
-        var tickets = await TicketQuerist.GetTicketsForEvent(eventId);
-        await MarkTicketsWithReservationStatus(eventId, tickets);
-        return tickets;
-    }
-
     public async Task PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds)
     {
         foreach (var ticketId in ticketIds)
@@ -28,11 +20,6 @@ public class TicketService(
         theEvent.PurchaseTickets(userId, ticketIds);
         await EventRepository.Save(theEvent);
         await EventRepository.Commit();
-    }
-
-    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
-    {
-        return await TicketQuerist.GetTicketsForEventByUser(eventId, userId);
     }
 
     public async Task ReserveTickets(Guid eventId, Guid userId, Guid[] ticketIds)

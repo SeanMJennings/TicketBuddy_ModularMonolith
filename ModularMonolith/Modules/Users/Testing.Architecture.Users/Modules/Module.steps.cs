@@ -9,7 +9,7 @@ namespace Testing.Architecture.Users.Modules;
 internal partial class ModuleSpecs : Specification
 {
     private static Assembly DomainAssembly => typeof(User).Assembly;
-    private static Assembly ApplicationAssembly => typeof(Application.Users.UserService).Assembly;
+    private static Assembly ApplicationAssembly => typeof(Application.Users.Commands.UserCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Users.Persistence.UserRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Users.UserController).Assembly;
     private TestResult testResult;

@@ -3,20 +3,10 @@ using Domain.Users.Contracts;
 using Domain.Users.Entities;
 using Domain.Users.Primitives;
 
-namespace Application.Users;
+namespace Application.Users.Commands;
 
-public class UserService(IAmAUserRepository UserRepository)
+public class UserCommands(IAmAUserRepository UserRepository)
 {
-    public async Task<IList<User>> GetUsers()
-    {
-        return await UserRepository.GetAll();
-    }
-
-    public async Task<User?> Get(Guid id)
-    {
-        return await UserRepository.Get(id);
-    }
-    
     public async Task<Guid> CreateUser(FullName fullName, Email email, UserType userType)
     {
         var id = Guid.NewGuid();
@@ -31,7 +21,7 @@ public class UserService(IAmAUserRepository UserRepository)
     public async Task UpdateUser(Guid id, FullName fullName, Email email)
     {
         if (await IsEmailAlreadyUsedByOtherUser(id, email)) throw new ValidationException("Email already exists");
-        var existingUser = await Get(id);
+        var existingUser = await UserRepository.Get(id);
 
         if (existingUser is null) throw new ValidationException("User does not exist");
         

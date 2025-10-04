@@ -13,7 +13,7 @@ import {
     Legend,
     LegendItem,
     LegendColor,
-    SelectionInfo, CenteredButtonContainer, ActionBar
+    SelectionInfo, CenteredButtonContainer, ActionBar, LoadingContainer
 } from './Tickets.styles';
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
@@ -22,6 +22,7 @@ import {useUsersStore} from "../stores/users.store.ts";
 import {useShallow} from "zustand/react/shallow";
 import {handleError} from "../common/http.ts";
 import {PageTitle} from "./Common.styles.tsx";
+import {ScaleLoader} from "react-spinners";
 
 const SEATS_PER_ROW = 5;
 
@@ -138,7 +139,11 @@ export const Tickets = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <LoadingContainer>
+                <ScaleLoader color="#ffffff"/>
+            </LoadingContainer>
+        );
     }
 
     return (

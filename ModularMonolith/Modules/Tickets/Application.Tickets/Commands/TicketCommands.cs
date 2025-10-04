@@ -33,16 +33,6 @@ public class TicketCommands(
     
     private static string GetReservationKey(Guid eventId, Guid ticketId) => $"event:{eventId}:ticket:{ticketId}:reservation";
     
-    private async Task MarkTicketsWithReservationStatus(Guid id, IList<Domain.Tickets.Queries.Ticket> tickets)
-    {
-        var db = ConnectionMultiplexer.GetDatabase();
-        foreach (var ticket in tickets)
-        {
-            var value = await db.StringGetAsync(GetReservationKey(id, ticket.Id));
-            if (value.HasValue) ticket.MarkTicketAsReserved();
-        }
-    }
-    
     private async Task CheckIfTicketReservedForDifferentUser(Guid eventId, Guid ticketId, Guid userId)
     {
         var db = ConnectionMultiplexer.GetDatabase();

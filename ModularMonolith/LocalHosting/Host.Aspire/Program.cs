@@ -51,7 +51,7 @@ var dataseeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
     .WaitFor(api)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
-builder.AddViteApp(name: "User-Interface", workingDirectory: "../../UI")
+builder.AddViteApp(name: "User-Interface", workingDirectory: "../../../UI")
     .WithReference(api)
     .WaitFor(api)
     .WithReference(dataseeder)

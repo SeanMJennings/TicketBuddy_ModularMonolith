@@ -1,4 +1,6 @@
 using Application.Events;
+using Application.Events.Commands;
+using Application.Events.Queries;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -6,18 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Events;
 
 [ApiController]
-public class EventController(EventService EventService) : ControllerBase
+public class EventController(EventCommands eventCommands, EventQueries eventQueries) : ControllerBase
 {
     [HttpGet(Routes.Events)]
     public async Task<IList<Event>> GetEvents()
     {
-        return await EventService.GetEvents();
+        return await eventQueries.GetEvents();
     }    
     
     [HttpGet(Routes.TheEvent)]
     public async Task<ActionResult<Event>> GetEvent(Guid id)
     {
-        var @event = await EventService.GetEventById(id);
+        var @event = await eventQueries.GetEventById(id);
         if (@event is null) return NotFound();
         return @event;
     }    
@@ -25,14 +27,14 @@ public class EventController(EventService EventService) : ControllerBase
     [HttpPost(Routes.Events)]
     public async Task<ActionResult<Guid>> CreateEvent([FromBody] EventPayload payload)
     {
-        var eventId = await EventService.CreateEvent(payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
+        var eventId = await eventCommands.CreateEvent(payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
         return Created($"/{Routes.Events}/{eventId}", eventId);
     }
 
     [HttpPut(Routes.TheEvent)]
     public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] UpdateEventPayload payload)
     {
-        await EventService.UpdateEvent(id, payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
+        await eventCommands.UpdateEvent(id, payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
         return NoContent();
     }
 }

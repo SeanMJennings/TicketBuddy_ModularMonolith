@@ -4,20 +4,10 @@ using Domain.Events.Entities;
 using Domain.Events.Primitives;
 using Domain.Primitives;
 
-namespace Application.Events;
+namespace Application.Events.Commands;
 
-public class EventService(IAmAnEventRepository EventRepository)
+public class EventCommands(IAmAnEventRepository EventRepository)
 {
-    public async Task<IList<Event>> GetEvents()
-    {
-        return await EventRepository.GetAll();
-    }
-    
-    public async Task<Event?> GetEventById(Guid eventId)
-    {
-        return await EventRepository.Get(eventId);
-    }
-    
     public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
     {
         var eventId = Guid.NewGuid();

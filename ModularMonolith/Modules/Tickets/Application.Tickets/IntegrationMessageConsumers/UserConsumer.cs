@@ -1,6 +1,6 @@
 using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
-using Integration.Users.Messaging.Messages;
+using Integration.Users.Messaging;
 using MassTransit;
 
 namespace Application.Tickets.IntegrationMessageConsumers

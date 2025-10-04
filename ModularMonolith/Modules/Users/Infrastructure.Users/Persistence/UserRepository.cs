@@ -1,6 +1,6 @@
 ﻿using Domain.Users.Contracts;
 using Domain.Users.Entities;
-using Integration.Users.Messaging.Messages;
+using Integration.Users.Messaging;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,4 @@
 ﻿using Application.Tickets;
-using Integration.Users.Messaging.Messages;
 using MassTransit;
 
 namespace Infrastructure.Tickets.Configuration;
@@ -17,10 +16,7 @@ public static class Messaging
         cfg.ReceiveEndpoint("tickets-queue", e =>
         {
             e.Bind<Integration.Events.Messaging.EventUpserted>();
-        });
-        cfg.ReceiveEndpoint("tickets-queue", e =>
-        {
-            e.Bind<UserUpserted>();
+            e.Bind<Integration.Users.Messaging.UserUpserted>();
         });
     }
 }

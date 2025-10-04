@@ -10,7 +10,8 @@ export const Events : Event[] = [
         StartDate: moment(new Date().setDate(new Date().getDate() + 1)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 1 + 2)),
         Venue: Venue.EmiratesOldTraffordManchester,
-        Price: 50.00
+        Price: 50.00,
+        IsSoldOut: false
     },
     {
         Id: "2",
@@ -18,7 +19,8 @@ export const Events : Event[] = [
         StartDate: moment(new Date().setDate(new Date().getDate() + 2)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 2 + 3)),
         Venue: Venue.WembleyStadiumLondon,
-        Price: 75.00
+        Price: 75.00,
+        IsSoldOut: true
     },
     {
         Id: "3",
@@ -26,7 +28,8 @@ export const Events : Event[] = [
         StartDate: moment(new Date().setDate(new Date().getDate() + 3)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 3 + 1)),
         Venue: Venue.ManchesterArena,
-        Price: 60.00
+        Price: 60.00,
+        IsSoldOut: false
     },
     {
         Id: "4",
@@ -34,7 +37,8 @@ export const Events : Event[] = [
         StartDate: moment(new Date().setDate(new Date().getDate() + 4)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 4 + 1)),
         Venue: Venue.UtilitaArenaBirmingham,
-        Price: 55.00
+        Price: 55.00,
+        IsSoldOut: false
     },
     {
         Id: "5",
@@ -42,7 +46,8 @@ export const Events : Event[] = [
         StartDate: moment(new Date().setDate(new Date().getDate() + 5)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 5 + 1)),
         Venue: Venue.UtilitaArenaBirmingham,
-        Price: 65.00
+        Price: 65.00,
+        IsSoldOut: false
     }
 ]
 

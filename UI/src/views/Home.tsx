@@ -25,12 +25,12 @@ export const Home = () => {
             <PageTitle>Upcoming Events</PageTitle>
             <EventList>
                 {events.map((event, index) => (
-                    <EventItem key={index}>
+                    <EventItem key={index} data-testid="event-item">
                         <div>
                             <h2>{event.EventName}</h2>
                             <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
                             <p>Venue: {ConvertVenueToString(event.Venue)}</p>
-                            <Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>
+                            {event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>)}
                         </div>
                     </EventItem>
                 ))}

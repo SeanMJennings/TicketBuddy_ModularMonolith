@@ -6,7 +6,8 @@ export interface Event {
     StartDate: Moment;
     EndDate: Moment;
     Venue : Venue;
-    Price: number
+    Price: number;
+    IsSoldOut: boolean;
 }
 
 export interface EventPayload {

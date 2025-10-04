@@ -6,6 +6,7 @@ import {
     clickFindTicketsButton,
     eventExists,
     renderHome,
+    soldOutMessageExists,
     unmountHome
 } from "./Home.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
@@ -50,7 +51,15 @@ export async function should_navigate_to_tickets_page_when_find_tickets_clicked(
     renderHome();
     await waitUntil(wait_for_get_events);
     await waitUntil(wait_for_get_users);
-
     await clickFindTicketsButton(0);
-    expect(mockedUseNavigate).toHaveBeenCalledWith('/tickets/1');
+    expect(mockedUseNavigate).toHaveBeenCalledWith("/tickets/1");
 }
+
+export async function should_show_sold_out_message_for_sold_out_events() {
+    renderHome();
+    await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_users);
+
+    expect(soldOutMessageExists("Football Match at Wembley Stadium")).toBeTruthy();
+}
+

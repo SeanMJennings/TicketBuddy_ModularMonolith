@@ -89,7 +89,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-44FF-8373-16AFC8F59D86}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\BuildModularMonolith.yaml = ..\.github\workflows\BuildModularMonolith.yaml
-		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"
@@ -112,6 +111,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{1E5BDF95-3100-4F40-BDEF-62FF05F5F6BD}"
 	ProjectSection(SolutionItems) = preProject
 		NuGet.Config = NuGet.Config
+		..\.gitignore = ..\.gitignore
 	EndProjectSection
 EndProject
 Global

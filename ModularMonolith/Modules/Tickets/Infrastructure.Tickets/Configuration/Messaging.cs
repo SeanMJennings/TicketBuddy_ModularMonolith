@@ -14,10 +14,6 @@ public static class Messaging
     
     public static void ConfigureTicketsMessaging(this IRabbitMqBusFactoryConfigurator cfg)
     {
-        cfg.ReceiveEndpoint("events-queue", e =>
-        {
-            e.Bind<Integration.Tickets.Messaging.Messages.EventSoldOut>();
-        });
         cfg.ReceiveEndpoint("tickets-queue", e =>
         {
             e.Bind<Integration.Events.Messaging.EventUpserted>();

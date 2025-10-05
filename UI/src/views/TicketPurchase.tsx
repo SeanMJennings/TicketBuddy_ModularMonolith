@@ -147,10 +147,7 @@ export const TicketPurchase = () => {
           </PurchaseSummary>
 
             <CenteredButtonContainer>
-                <Button
-                    onClick={handlePurchase}
-                    disabled={purchasing}
-                >
+                <Button onClick={handlePurchase} disabled={purchasing}>
                     Complete Purchase
                 </Button>
             </CenteredButtonContainer>

@@ -66,7 +66,7 @@ export const Tickets = () => {
             if (prevSelectedSeats.includes(seatNumber)) {
                 return prevSelectedSeats.filter(seat => seat !== seatNumber);
             } else {
-                return [...prevSelectedSeats, seatNumber];
+                return [...prevSelectedSeats, seatNumber].sort((a, b) => a - b);
             }
         });
     };
@@ -158,15 +158,15 @@ export const Tickets = () => {
 
                         <Legend>
                             <LegendItem>
-                                <LegendColor $available={true}/>
+                                <LegendColor color="#4CAF50"/>
                                 <span>Available</span>
                             </LegendItem>
                             <LegendItem>
-                                <LegendColor $available={false}/>
-                                <span>Sold</span>
+                                <LegendColor color="#f5f5f5"/>
+                                <span>Booked</span>
                             </LegendItem>
                             <LegendItem>
-                                <LegendColor $selected={true}/>
+                                <LegendColor color="#FF9800"/>
                                 <span>Selected</span>
                             </LegendItem>
                         </Legend>
@@ -174,7 +174,7 @@ export const Tickets = () => {
                         {selectedSeats.length > 0 && (
                             <SelectionInfo data-testid="selection-info">
                                 <h3>Selected Seats</h3>
-                                <p>Seats: {selectedSeats.sort((a, b) => a - b).join(', ')}</p>
+                                <p>Seats: {selectedSeats.join(', ')}</p>
                                 <PriceInfo data-testid="price-info">
                                     Total: £{calculateTotalPrice().toFixed(2)}
                                 </PriceInfo>

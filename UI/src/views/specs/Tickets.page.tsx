@@ -85,7 +85,12 @@ export const elements = {
     backToEventsButton: () => renderedComponent.getByText('Back to Events'),
     homePageIsRendered: () => renderedComponent.getByText('I am the mocked Home component'),
     proceedToPurchaseButton: () => renderedComponent.getByText('Proceed to Purchase'),
-    getSelectedSeats: () => renderedComponent.container.querySelectorAll('.selected'),
+    getSelectedSeats: () => {
+        const selectedElements = renderedComponent.container.querySelectorAll('.selected');
+        return Array.from(selectedElements).map(element =>
+            parseInt(element.getAttribute('data-seat') || '0', 10)
+        ).filter(seatNumber => seatNumber > 0);
+    },
     purchasePageIsRendered: () => renderedComponent.queryByTestId('purchase-page'),
     toastElement: (errorMessage: string) => renderedComponent.queryByText(errorMessage),
 };

@@ -153,7 +153,7 @@ export async function should_display_event_date_and_venue_in_tickets() {
 
     const getEventDate = (theEvent: Event): string => {
 
-        const startDate = typeof theEvent.StartDate === 'string'
+        const startDate =   typeof theEvent.StartDate === 'string'
             ? moment(theEvent.StartDate)
             : theEvent.StartDate;
 
@@ -165,4 +165,79 @@ export async function should_display_event_date_and_venue_in_tickets() {
 
     expect(ticketsList[1]).toContain(getEventDate(Events[1]));
     expect(ticketsList[1]).toContain(ConvertVenueToString(Events[1].Venue));
+}
+
+export async function should_order_tickets_by_event_date_then_seat_number() {
+    const userTicketsUnordered = [
+        {
+            Id: "ticket-1",
+            EventId: "event-future",
+            Price: 50.00,
+            SeatNumber: 15,
+            Purchased: true
+        },
+        {
+            Id: "ticket-2",
+            EventId: "event-tomorrow",
+            Price: 75.00,
+            SeatNumber: 8,
+            Purchased: true
+        },
+        {
+            Id: "ticket-3",
+            EventId: "event-tomorrow",
+            Price: 60.00,
+            SeatNumber: 3,
+            Purchased: true
+        },
+        {
+            Id: "ticket-4",
+            EventId: "event-future",
+            Price: 40.00,
+            SeatNumber: 10,
+            Purchased: true
+        }
+    ];
+
+    const events = [
+        {
+            Id: "event-tomorrow",
+            EventName: "Tomorrow Concert",
+            StartDate: "2024-12-06T19:00:00",
+            EndDate: "2024-12-06T22:00:00",
+            Venue: 0,
+            Price: 50
+        },
+        {
+            Id: "event-future",
+            EventName: "Future Concert",
+            StartDate: "2024-12-20T20:00:00",
+            EndDate: "2024-12-20T23:00:00",
+            Venue: 1,
+            Price: 75
+        }
+    ];
+
+    mockServer.reset();
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTicketsUnordered);
+    mockServer.get('events', events);
+    mockServer.start();
+
+    renderUserProfile();
+    await waitUntil(wait_for_get_user_tickets);
+
+    const ticketsList = getTicketsList();
+    expect(ticketsList).toHaveLength(4);
+
+    expect(ticketsList[0]).toContain("Tomorrow Concert");
+    expect(ticketsList[0]).toContain("Seat 3");
+
+    expect(ticketsList[1]).toContain("Tomorrow Concert");
+    expect(ticketsList[1]).toContain("Seat 8");
+
+    expect(ticketsList[2]).toContain("Future Concert");
+    expect(ticketsList[2]).toContain("Seat 10");
+
+    expect(ticketsList[3]).toContain("Future Concert");
+    expect(ticketsList[3]).toContain("Seat 15");
 }

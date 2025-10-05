@@ -7,7 +7,8 @@ import {
     should_display_user_stats_when_tickets_exist,
     should_not_display_stats_when_no_tickets,
     should_display_event_names_in_tickets,
-    should_display_event_date_and_venue_in_tickets
+    should_display_event_date_and_venue_in_tickets,
+    should_order_tickets_by_event_date_then_seat_number
 } from "./UserProfile.steps.ts";
 
 describe("UserProfile", () => {
@@ -19,4 +20,5 @@ describe("UserProfile", () => {
     it("should not display stats when no tickets", should_not_display_stats_when_no_tickets);
     it("should display event names in tickets", should_display_event_names_in_tickets);
     it("should display event date and venue in tickets", should_display_event_date_and_venue_in_tickets);
+    it("should order tickets by event date then seat number", should_order_tickets_by_event_date_then_seat_number);
 });

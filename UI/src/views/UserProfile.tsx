@@ -10,7 +10,6 @@ import {Container, PageTitle, ActionBar} from './Common.styles';
 import {ContentLoading} from '../components/LoadingContainers.styles';
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
-import moment from 'moment';
 import {
     ProfileContainer,
     UserCard,
@@ -95,11 +94,11 @@ export const UserProfile = () => {
         const event = events.find(e => e.Id === eventId);
         if (!event) return '';
 
-        const startDate = typeof event.StartDate === 'string'
-            ? moment(event.StartDate)
-            : event.StartDate;
+        return event.StartDate.format('DD MMM YYYY');
+    };
 
-        return startDate.format('DD MMM YYYY');
+    const compareEventsByDate = (eventA: Event, eventB: Event): number => {
+        return eventA.StartDate.valueOf() - eventB.StartDate.valueOf();
     };
 
     const getEventVenueName = (eventId: string): string => {
@@ -107,6 +106,28 @@ export const UserProfile = () => {
         if (!event) return '';
 
         return ConvertVenueToString(event.Venue);
+    };
+
+    const compareTicketsByEventDateThenSeatNumber = (ticketA: Ticket, ticketB: Ticket): number => {
+        const eventA = events.find(e => e.Id === ticketA.EventId);
+        const eventB = events.find(e => e.Id === ticketB.EventId);
+
+        if (!eventA && !eventB) return 0;
+        if (!eventA) return 1;
+        if (!eventB) return -1;
+
+        const dateDiff = compareEventsByDate(eventA, eventB);
+        if (dateDiff !== 0) {
+            return dateDiff;
+        }
+
+        return ticketA.SeatNumber - ticketB.SeatNumber;
+    };
+
+    const getSortedTickets = (): Ticket[] => {
+        return tickets
+            .slice()
+            .sort(compareTicketsByEventDateThenSeatNumber);
     };
 
     return (
@@ -160,7 +181,7 @@ export const UserProfile = () => {
                     </EmptyState>
                 ) : (
                     <TicketsGrid>
-                        {tickets.map((ticket) => (
+                        {getSortedTickets().map((ticket) => (
                             <TicketCard key={ticket.Id} data-testid="ticket-item">
                                 <TicketHeader>
                                     <SeatNumber>Seat {ticket.SeatNumber}</SeatNumber>

@@ -41,7 +41,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private static RedisContainer redis = null!;
     private ITestHarness testHarness = null!;
     private Guid[] ticket_ids = null!;
-    private static string EventTicketsForUser(Guid eventId, Guid userId) => $"{Routes.Events}/{eventId}/tickets/user/{userId}";
+    private static string TicketsForUser(Guid userId) => $"tickets/user/{userId}";
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
     protected override void before_all()
@@ -285,7 +285,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     private void purchased_tickets_are_not_updated()
     {
-        var response = client.GetAsync(EventTicketsForUser(event_id, user_id)).GetAwaiter().GetResult();
+        var response = client.GetAsync(TicketsForUser(user_id)).GetAwaiter().GetResult();
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
         tickets.Count.ShouldBe(2);

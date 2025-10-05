@@ -26,9 +26,9 @@ public class TicketController(
     }
 
     [HttpGet(Routes.TicketsPurchased)]
-    public async Task<IList<Ticket>> GetTicketsForUser([FromRoute] Guid id, [FromRoute] Guid userId)
+    public async Task<IList<Ticket>> GetTicketsForUser([FromRoute] Guid userId)
     {
-        return await ticketQueries.GetTicketsForUser(id, userId);
+        return await ticketQueries.GetTicketsForUser(userId);
     }
     
     [HttpPost(Routes.TicketsReservation)]

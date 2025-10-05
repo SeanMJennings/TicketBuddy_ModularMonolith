@@ -16,12 +16,12 @@ public class TicketQuerist(Database database) : IQueryTickets
     }
     
         
-    public async Task<IList<Ticket>> GetTicketsForEventByUser(Guid eventId, Guid userId)
+    public async Task<IList<Ticket>> GetTicketsForUser(Guid userId)
     {
         return (await database.Query<Ticket>("""
                                               SELECT "Id", "EventId", "Price", "SeatNumber", ("PurchasedAt" IS NOT NULL) AS "Purchased"
                                               FROM "Ticket"."Tickets"
-                                              WHERE "EventId" = @EventId AND "UserId" = @UserId
-                                              """, new { EventId = eventId, UserId = userId })).ToList();
+                                              WHERE "UserId" = @UserId
+                                              """, new { UserId = userId })).ToList();
     }
 }

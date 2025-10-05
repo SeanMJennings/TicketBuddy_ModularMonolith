@@ -5,5 +5,5 @@ namespace Domain.Tickets.Contracts;
 public interface IQueryTickets
 {
     public Task<IList<Ticket>> GetTicketsForEvent(Guid eventId);
-    public Task<IList<Ticket>> GetTicketsForEventByUser(Guid eventId, Guid userId);
+    public Task<IList<Ticket>> GetTicketsForUser(Guid userId);
 }

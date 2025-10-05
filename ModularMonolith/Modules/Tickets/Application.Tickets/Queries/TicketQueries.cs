@@ -14,9 +14,9 @@ public class TicketQueries(
         return tickets;
     }
     
-    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid eventId, Guid userId)
+    public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTicketsForUser(Guid userId)
     {
-        return await TicketQuerist.GetTicketsForEventByUser(eventId, userId);
+        return await TicketQuerist.GetTicketsForUser(userId);
     }
     
     private static string GetReservationKey(Guid eventId, Guid ticketId) => $"event:{eventId}:ticket:{ticketId}:reservation";

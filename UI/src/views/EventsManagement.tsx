@@ -64,8 +64,8 @@ export const ListEvents = () => {
 
     return (
         <>
-            <PageTitle>Events Management</PageTitle>
             <PageContainer>
+                <PageTitle>Events Management</PageTitle>
                 <ActionBar>
                     <Link to="add">
                         <Button>
@@ -184,6 +184,7 @@ export const EventForm = ({ mode }: EventFormProps) => {
                     <BackIcon /> Back to Events
                 </Button>
             </Link>
+
             {loading ? (
                 <ContentLoading />
             ) : (

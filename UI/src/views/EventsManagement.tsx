@@ -18,6 +18,7 @@ import {Button} from "../components/Button.styles.tsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {EventItem, EventList, PageTitle, PageContainer, ActionBar, Container} from "./Common.styles.tsx";
+import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 
 type EventFormData = {
     eventName: string;
@@ -50,10 +51,14 @@ export const EventsManagement = () => {
 
 export const ListEvents = () => {
     const [events, setEvents] = useState<Event[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getEvents().then(data => {
             setEvents(data);
+            setLoading(false);
+        }).catch(() => {
+            setLoading(false);
         });
     },[]);
 
@@ -68,24 +73,28 @@ export const ListEvents = () => {
                         </Button>
                     </Link>
                 </ActionBar>
-                <EventList>
-                    {events.map((event, index) => (
-                        <EventItem key={index} className="event-item">
-                            <EventContent>
-                                <h2>{event.EventName}</h2>
-                                <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
-                                <p>Venue: {ConvertVenueToString(event.Venue)}</p>
-                            </EventContent>
-                            <EventActions>
-                                <Link to={`edit/${event.Id}`}>
-                                    <Button data-testid={`edit-event-${event.EventName}`}>
-                                        Edit Event
-                                    </Button>
-                                </Link>
-                            </EventActions>
-                        </EventItem>
-                    ))}
-                </EventList>
+                {loading ? (
+                    <ContentLoading />
+                ) : (
+                    <EventList>
+                        {events.map((event, index) => (
+                            <EventItem key={index} className="event-item">
+                                <EventContent>
+                                    <h2>{event.EventName}</h2>
+                                    <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
+                                    <p>Venue: {ConvertVenueToString(event.Venue)}</p>
+                                </EventContent>
+                                <EventActions>
+                                    <Link to={`edit/${event.Id}`}>
+                                        <Button data-testid={`edit-event-${event.EventName}`}>
+                                            Edit Event
+                                        </Button>
+                                    </Link>
+                                </EventActions>
+                            </EventItem>
+                        ))}
+                    </EventList>
+                )}
             </PageContainer>
         </>
     );
@@ -97,12 +106,14 @@ interface EventFormProps {
 
 export const EventForm = ({ mode }: EventFormProps) => {
     const [formData, setFormData] = useState<EventFormData>(initialFormData);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const isEditMode = mode === 'edit';
 
     useEffect(() => {
         if (isEditMode && id) {
+            setLoading(true);
             const fetchEventDetails = async () => {
                 getEventById(id).then(event => {
                 setFormData({
@@ -111,8 +122,11 @@ export const EventForm = ({ mode }: EventFormProps) => {
                     endDateTime: moment(event.EndDate).format('YYYY-MM-DDTHH:mm'),
                     venue: event.Venue,
                     price: event.Price,
-                })}).catch(() => {
+                });
+                setLoading(false);
+                }).catch(() => {
                     toast.error('Failed to fetch event details');
+                    setLoading(false);
                     navigate('/events-management');
                 });
             };
@@ -170,83 +184,87 @@ export const EventForm = ({ mode }: EventFormProps) => {
                     <BackIcon /> Back to Events
                 </Button>
             </Link>
-            <FormContainer
-                data-testid={isEditMode ? "event-update-form" : "event-creation-form"}
-                onSubmit={handleSubmit}
-            >
-                <h2>{isEditMode ? 'Edit Event' : 'Create New Event'}</h2>
-
-                <FormGroup>
-                    <Label htmlFor="eventName">Event Name</Label>
-                    <Input
-                        type="text"
-                        id="eventName"
-                        name="eventName"
-                        value={formData.eventName}
-                        onChange={handleInputChange}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <Label htmlFor="startDateTime">Start Date</Label>
-                    <Input
-                        type="datetime-local"
-                        id="startDateTime"
-                        name="startDateTime"
-                        value={formData.startDateTime}
-                        onChange={handleInputChange}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <Label htmlFor="endDateTime">End Date</Label>
-                    <Input
-                        type="datetime-local"
-                        id="endDateTime"
-                        name="endDateTime"
-                        value={formData.endDateTime}
-                        onChange={handleInputChange}
-                    />
-                </FormGroup>
-
-                <FormGroup>
-                    <Label htmlFor="venue">Venue</Label>
-                    <Select
-                        id="venue"
-                        name="venue"
-                        value={formData.venue}
-                        onChange={(e) => setFormData({ ...formData, venue: e.target.value as Venue })}
-                        disabled={isEditMode}
-                    >
-                        {Object.values(Venue).map((venue) => (
-                            <option key={venue} value={venue}>
-                                {ConvertVenueToString(venue)}
-                            </option>
-                        ))}
-                    </Select>
-                </FormGroup>
-
-                <FormGroup>
-                    <Label htmlFor="price">Ticket Price (£)</Label>
-                    <Input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value={formData.price}
-                        onChange={handleInputChange}
-                        placeholder="Enter ticket price to release tickets"
-                        step="0.01"
-                    />
-                </FormGroup>
-
-                <Button
-                    type="submit"
-                    data-testid={isEditMode ? "update-event-button" : "create-event-button"}
-                    disabled={!isFormValid()}
+            {loading ? (
+                <ContentLoading />
+            ) : (
+                <FormContainer
+                    data-testid={isEditMode ? "event-update-form" : "event-creation-form"}
+                    onSubmit={handleSubmit}
                 >
-                    {isEditMode ? 'Update Event' : 'Create Event'}
-                </Button>
-            </FormContainer>
+                    <h2>{isEditMode ? 'Edit Event' : 'Create New Event'}</h2>
+
+                    <FormGroup>
+                        <Label htmlFor="eventName">Event Name</Label>
+                        <Input
+                            type="text"
+                            id="eventName"
+                            name="eventName"
+                            value={formData.eventName}
+                            onChange={handleInputChange}
+                        />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label htmlFor="startDateTime">Start Date</Label>
+                        <Input
+                            type="datetime-local"
+                            id="startDateTime"
+                            name="startDateTime"
+                            value={formData.startDateTime}
+                            onChange={handleInputChange}
+                        />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label htmlFor="endDateTime">End Date</Label>
+                        <Input
+                            type="datetime-local"
+                            id="endDateTime"
+                            name="endDateTime"
+                            value={formData.endDateTime}
+                            onChange={handleInputChange}
+                        />
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label htmlFor="venue">Venue</Label>
+                        <Select
+                            id="venue"
+                            name="venue"
+                            value={formData.venue}
+                            onChange={(e) => setFormData({ ...formData, venue: e.target.value as Venue })}
+                            disabled={isEditMode}
+                        >
+                            {Object.values(Venue).map((venue) => (
+                                <option key={venue} value={venue}>
+                                    {ConvertVenueToString(venue)}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label htmlFor="price">Ticket Price (£)</Label>
+                        <Input
+                            type="number"
+                            id="price"
+                            name="price"
+                            value={formData.price}
+                            onChange={handleInputChange}
+                            placeholder="Enter ticket price to release tickets"
+                            step="0.01"
+                        />
+                    </FormGroup>
+
+                    <Button
+                        type="submit"
+                        data-testid={isEditMode ? "update-event-button" : "create-event-button"}
+                        disabled={!isFormValid()}
+                    >
+                        {isEditMode ? 'Update Event' : 'Create Event'}
+                    </Button>
+                </FormContainer>
+            )}
         </>
     );
 };

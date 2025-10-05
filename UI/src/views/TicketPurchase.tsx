@@ -24,6 +24,7 @@ import {
 import {purchaseTickets} from "../api/tickets.api.ts";
 import {handleError} from "../common/http.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
+import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 
 interface LocationState {
   selectedTickets: Ticket[];
@@ -79,6 +80,10 @@ export const TicketPurchase = () => {
           setPurchasing(false);
       });
   };
+
+  if (purchasing) {
+    return <ContentLoading />;
+  }
 
   if (!event || selectedTickets.length === 0) {
     return (
@@ -147,7 +152,7 @@ export const TicketPurchase = () => {
                     onClick={handlePurchase}
                     disabled={purchasing}
                 >
-                    {purchasing ? 'Processing...' : 'Complete Purchase'}
+                    Complete Purchase
                 </Button>
             </CenteredButtonContainer>
         </>

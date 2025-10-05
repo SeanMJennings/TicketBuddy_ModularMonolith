@@ -1,16 +1,17 @@
 ﻿import styled from "styled-components";
 import {ScaleLoader} from "react-spinners";
 
-export const LoadingContainer = styled.div`
+const ContentLoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  min-height: 200px;
+  padding: 40px;
 `;
 
-export const Loading = () => (
-    <LoadingContainer>
+
+export const ContentLoading = () => (
+    <ContentLoadingContainer>
         <ScaleLoader color="#0c4a6e"/>
-    </LoadingContainer>
+    </ContentLoadingContainer>
 );

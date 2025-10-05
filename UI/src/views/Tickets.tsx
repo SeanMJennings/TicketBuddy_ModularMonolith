@@ -21,7 +21,7 @@ import {useUsersStore} from "../stores/users.store.ts";
 import {useShallow} from "zustand/react/shallow";
 import {handleError} from "../common/http.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
-import {Loading} from "../components/LoadingContainers.styles.tsx";
+import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 
 const SEATS_PER_ROW = 5;
 
@@ -139,7 +139,7 @@ export const Tickets = () => {
 
     if (loading) {
         return (
-            <Loading/>
+            <ContentLoading/>
         );
     }
 

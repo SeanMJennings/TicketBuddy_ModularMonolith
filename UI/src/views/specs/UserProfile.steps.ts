@@ -47,7 +47,8 @@ vi.mock("../../stores/users.store", () => {
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get_user_tickets = mockServer.get(`/tickets/users/${Users[0].Id}`, userTickets);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    mockServer.get('events', []);
     mockServer.start();
 });
 
@@ -118,4 +119,30 @@ export async function should_not_display_stats_when_no_tickets() {
 
     const statsCards = getStatsCards();
     expect(statsCards).toHaveLength(0);
+}
+
+export async function should_display_event_names_in_tickets() {
+    const events = [
+        { Id: "event-1", EventName: "Rock Concert 2024", StartDate: "2024-06-15", EndDate: "2024-06-15", Venue: 0, Price: 50 },
+        { Id: "event-2", EventName: "Jazz Festival", StartDate: "2024-07-20", EndDate: "2024-07-20", Venue: 1, Price: 75 }
+    ];
+
+    mockServer.reset();
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    mockServer.get('events', events);
+    mockServer.start();
+
+    renderUserProfile();
+    await waitUntil(wait_for_get_user_tickets);
+
+    const ticketsList = getTicketsList();
+    expect(ticketsList).toHaveLength(2);
+
+    expect(ticketsList[0]).toContain("Rock Concert 2024");
+    expect(ticketsList[0]).not.toContain("event-1");
+    expect(ticketsList[0]).not.toContain("ticket-1");
+
+    expect(ticketsList[1]).toContain("Jazz Festival");
+    expect(ticketsList[1]).not.toContain("event-2");
+    expect(ticketsList[1]).not.toContain("ticket-2");
 }

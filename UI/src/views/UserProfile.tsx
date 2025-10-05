@@ -1,7 +1,9 @@
 ﻿import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {getTicketsForUser} from '../api/tickets.api';
+import {getEvents} from '../api/events.api';
 import {type Ticket} from '../domain/ticket';
+import {type Event} from '../domain/event';
 import {useUsersStore} from '../stores/users.store';
 import {useShallow} from 'zustand/react/shallow';
 import {Container, PageTitle, ActionBar} from './Common.styles';
@@ -29,6 +31,7 @@ import {
 
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
     const { user } = useUsersStore(useShallow((state) => ({
@@ -38,9 +41,13 @@ export const UserProfile = () => {
     useEffect(() => {
         if (!user) return;
 
-        getTicketsForUser(user.Id)
-            .then(data => {
-                setTickets(data);
+        Promise.all([
+            getTicketsForUser(user.Id),
+            getEvents()
+        ])
+            .then(([ticketsData, eventsData]) => {
+                setTickets(ticketsData);
+                setEvents(eventsData);
                 setLoading(false);
             })
             .catch(() => {
@@ -76,6 +83,11 @@ export const UserProfile = () => {
 
     const formatCurrency = (amount: number): string => {
         return `£${amount.toFixed(2)}`;
+    };
+
+    const getEventName = (eventId: string): string => {
+        const event = events.find(e => e.Id === eventId);
+        return event ? event.EventName : 'Unknown Event';
     };
 
     return (
@@ -115,7 +127,7 @@ export const UserProfile = () => {
                     </StatsGrid>
                 )}
 
-                <SectionTitle>My Tickets</SectionTitle>
+                <SectionTitle>My Bookings</SectionTitle>
 
                 {loading ? (
                     <div className="loading-indicator">
@@ -136,9 +148,7 @@ export const UserProfile = () => {
                                     <TicketPrice>{formatCurrency(ticket.Price)}</TicketPrice>
                                 </TicketHeader>
                                 <TicketMeta>
-                                    <TicketDetail>Event ID: {ticket.EventId}</TicketDetail>
-                                    <TicketDetail>Ticket ID: {ticket.Id}</TicketDetail>
-                                    <TicketDetail>Status: Purchased</TicketDetail>
+                                    <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
                                 </TicketMeta>
                             </TicketCard>
                         ))}

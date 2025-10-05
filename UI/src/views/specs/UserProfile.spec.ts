@@ -5,7 +5,8 @@ import {
     should_navigate_back_to_home,
     should_show_loading_while_fetching_tickets,
     should_display_user_stats_when_tickets_exist,
-    should_not_display_stats_when_no_tickets
+    should_not_display_stats_when_no_tickets,
+    should_display_event_names_in_tickets
 } from "./UserProfile.steps.ts";
 
 describe("UserProfile", () => {
@@ -15,4 +16,5 @@ describe("UserProfile", () => {
     it("should show loading while fetching tickets", should_show_loading_while_fetching_tickets);
     it("should display user stats when tickets exist", should_display_user_stats_when_tickets_exist);
     it("should not display stats when no tickets", should_not_display_stats_when_no_tickets);
+    it("should display event names in tickets", should_display_event_names_in_tickets);
 });

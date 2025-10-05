@@ -17,7 +17,7 @@ import {Link, Outlet, Route, Routes, useNavigate, useParams} from "react-router-
 import {Button} from "../components/Button.styles.tsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {EventItem, EventList, PageTitle, PageContainer, ActionBar} from "./Common.styles.tsx";
+import {EventItem, EventList, PageTitle, PageContainer, ActionBar, Container} from "./Common.styles.tsx";
 
 type EventFormData = {
     eventName: string;
@@ -37,14 +37,14 @@ const initialFormData: EventFormData = {
 
 export const EventsManagement = () => {
     return (
-        <>
+        <Container>
             <Routes>
                 <Route index element={<ListEvents />} />
                 <Route path="add" element={<EventForm mode="create" />} />
                 <Route path="edit/:id" element={<EventForm mode="edit" />} />
             </Routes>
             <Outlet />
-        </>
+        </Container>
     );
 }
 

@@ -1,9 +1,5 @@
 ﻿import styled from 'styled-components';
 
-export const PurchaseContainer = styled.div`
-  margin: 2rem auto;
-`;
-
 export const PurchaseTitle = styled.h1`
   text-align: center;
   margin-bottom: 2rem;

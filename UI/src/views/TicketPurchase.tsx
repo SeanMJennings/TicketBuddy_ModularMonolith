@@ -8,7 +8,6 @@ import {ConvertVenueToString, type Event} from '../domain/event';
 import { useUsersStore } from '../stores/users.store';
 import { useShallow } from 'zustand/react/shallow';
 import {
-    PurchaseContainer,
     PurchaseTitle,
     PurchaseSummary,
     EventDetails,
@@ -24,7 +23,7 @@ import {
 } from './TicketPurchase.styles';
 import {purchaseTickets} from "../api/tickets.api.ts";
 import {handleError} from "../common/http.ts";
-import {PageTitle} from "./Common.styles.tsx";
+import {Container, PageTitle} from "./Common.styles.tsx";
 
 interface LocationState {
   selectedTickets: Ticket[];
@@ -83,7 +82,7 @@ export const TicketPurchase = () => {
 
   if (!event || selectedTickets.length === 0) {
     return (
-      <PurchaseContainer>
+      <Container>
         <ActionBar>
           <Link to={`/tickets/${eventId}`}>
             <Button>
@@ -93,12 +92,12 @@ export const TicketPurchase = () => {
         </ActionBar>
         <PurchaseTitle>No tickets selected</PurchaseTitle>
         <p>Please select tickets before proceeding to purchase.</p>
-      </PurchaseContainer>
+      </Container>
     );
   }
 
   return (
-    <PurchaseContainer>
+    <Container>
       <PageTitle>Ticket Purchase</PageTitle>
         {
             !purchaseComplete && (
@@ -153,6 +152,6 @@ export const TicketPurchase = () => {
             </CenteredButtonContainer>
         </>
       )}
-    </PurchaseContainer>
+    </Container>
   );
 };

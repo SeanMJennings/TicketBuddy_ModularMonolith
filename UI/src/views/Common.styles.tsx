@@ -63,7 +63,7 @@ export const EventItem = styled.div`
         background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
         transition: all var(--transition-slow);
         opacity: 0;
-        pointer-events: none; /* Prevent blocking clicks */
+        pointer-events: none;
     }
     
     h2 {
@@ -126,27 +126,8 @@ export const PageTitle = styled.h1`
     }
 `;
 
-export const LoadingSpinner = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    
-    &::after {
-        content: '';
-        width: 40px;
-        height: 40px;
-        border: 3px solid var(--gray-600);
-        border-top: 3px solid var(--primary-500);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
+export const Container = styled.div`
+  margin: 2rem auto;
 `;
 
 export const PageContainer = styled.div`

@@ -1,7 +1,7 @@
 ﻿import {useEffect, useState} from "react";
 import {getEvents} from "../api/events.api";
 import {ConvertVenueToString, type Event} from "../domain/event";
-import {EventItem, EventList, PageTitle} from "./Common.styles.tsx";
+import {Container, EventItem, EventList, PageTitle} from "./Common.styles.tsx";
 import moment from "moment";
 import {Button} from "../components/Button.styles.tsx";
 import {useNavigate} from "react-router-dom";
@@ -21,7 +21,7 @@ export const Home = () => {
     };
 
     return (
-        <div>
+        <Container>
             <PageTitle>Upcoming Events</PageTitle>
             <EventList>
                 {events.map((event, index) => (
@@ -35,6 +35,6 @@ export const Home = () => {
                     </EventItem>
                 ))}
             </EventList>
-        </div>
+        </Container>
     );
 }

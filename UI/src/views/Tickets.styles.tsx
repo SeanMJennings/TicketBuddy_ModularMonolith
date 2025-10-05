@@ -1,9 +1,5 @@
 ﻿import styled from 'styled-components';
 
-export const TicketsContainer = styled.div`
-    margin: 2rem auto;
-`;
-
 export const ActionBar = styled.div`
   margin-bottom: 2rem;
   margin-left: 17rem;

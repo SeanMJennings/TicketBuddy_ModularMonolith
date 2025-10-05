@@ -100,15 +100,15 @@ export const UserProfile = () => {
 
                 {!loading && tickets.length > 0 && (
                     <StatsGrid>
-                        <StatCard>
+                        <StatCard data-testid="stat-card">
                             <div className="stat-value">{tickets.length}</div>
                             <div className="stat-label">Tickets Owned</div>
                         </StatCard>
-                        <StatCard>
+                        <StatCard data-testid="stat-card">
                             <div className="stat-value">{formatCurrency(calculateTotalSpent())}</div>
                             <div className="stat-label">Total Spent</div>
                         </StatCard>
-                        <StatCard>
+                        <StatCard data-testid="stat-card">
                             <div className="stat-value">{formatCurrency(calculateTotalSpent() / tickets.length)}</div>
                             <div className="stat-label">Average Price</div>
                         </StatCard>

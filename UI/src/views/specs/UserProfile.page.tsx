@@ -55,10 +55,18 @@ export function loadingIsDisplayed() {
     return elements.loadingIndicator() !== null;
 }
 
+export function getStatsCards(): string[] {
+    return elements.getStatsCards();
+}
+
 export const elements = {
     userNameDisplay: () => renderedComponent.queryByTestId('user-name'),
     userEmailDisplay: () => renderedComponent.queryByTestId('user-email'),
     backToHomeButton: () => renderedComponent.getByText('Back to Home'),
     homePageIsRendered: () => renderedComponent.queryByTestId('home-page'),
-    loadingIndicator: () => renderedComponent.queryByTestId('loading-indicator'),
+    loadingIndicator: () => renderedComponent.container.querySelector('.loading-indicator'),
+    getStatsCards: () => {
+        const statCards = renderedComponent.container.querySelectorAll('[data-testid="stat-card"]');
+        return Array.from(statCards).map(card => card.textContent || '');
+    }
 };

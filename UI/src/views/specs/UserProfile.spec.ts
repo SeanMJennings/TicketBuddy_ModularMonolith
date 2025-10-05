@@ -3,7 +3,9 @@ import {
     should_display_user_profile_information,
     should_display_user_tickets,
     should_navigate_back_to_home,
-    should_show_loading_while_fetching_tickets
+    should_show_loading_while_fetching_tickets,
+    should_display_user_stats_when_tickets_exist,
+    should_not_display_stats_when_no_tickets
 } from "./UserProfile.steps.ts";
 
 describe("UserProfile", () => {
@@ -11,4 +13,6 @@ describe("UserProfile", () => {
     it("should display user tickets", should_display_user_tickets);
     it("should navigate back to home when back button is clicked", should_navigate_back_to_home);
     it("should show loading while fetching tickets", should_show_loading_while_fetching_tickets);
+    it("should display user stats when tickets exist", should_display_user_stats_when_tickets_exist);
+    it("should not display stats when no tickets", should_not_display_stats_when_no_tickets);
 });

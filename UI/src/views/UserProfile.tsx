@@ -3,13 +3,14 @@ import {Link} from 'react-router-dom';
 import {getTicketsForUser} from '../api/tickets.api';
 import {getEvents} from '../api/events.api';
 import {type Ticket} from '../domain/ticket';
-import {type Event} from '../domain/event';
+import {type Event, ConvertVenueToString} from '../domain/event';
 import {useUsersStore} from '../stores/users.store';
 import {useShallow} from 'zustand/react/shallow';
 import {Container, PageTitle, ActionBar} from './Common.styles';
 import {ContentLoading} from '../components/LoadingContainers.styles';
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
+import moment from 'moment';
 import {
     ProfileContainer,
     UserCard,
@@ -90,6 +91,24 @@ export const UserProfile = () => {
         return event ? event.EventName : 'Unknown Event';
     };
 
+    const getEventDate = (eventId: string): string => {
+        const event = events.find(e => e.Id === eventId);
+        if (!event) return '';
+
+        const startDate = typeof event.StartDate === 'string'
+            ? moment(event.StartDate)
+            : event.StartDate;
+
+        return startDate.format('DD MMM YYYY');
+    };
+
+    const getEventVenueName = (eventId: string): string => {
+        const event = events.find(e => e.Id === eventId);
+        if (!event) return '';
+
+        return ConvertVenueToString(event.Venue);
+    };
+
     return (
         <Container>
             <ProfileContainer>
@@ -149,6 +168,8 @@ export const UserProfile = () => {
                                 </TicketHeader>
                                 <TicketMeta>
                                     <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
+                                    <TicketDetail>{getEventDate(ticket.EventId)}</TicketDetail>
+                                    <TicketDetail>{getEventVenueName(ticket.EventId)}</TicketDetail>
                                 </TicketMeta>
                             </TicketCard>
                         ))}

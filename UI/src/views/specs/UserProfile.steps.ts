@@ -12,8 +12,10 @@ import {
     getStatsCards
 } from "./UserProfile.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
-import {Users} from "../../testing/data.ts";
+import {Events, Users} from "../../testing/data.ts";
+import {ConvertVenueToString, type Event} from "../../domain/event.ts"
 import { vi } from "vitest";
+import moment from "moment/moment";
 
 const mockServer = MockServer.New();
 let wait_for_get_user_tickets: () => boolean;
@@ -21,14 +23,14 @@ let wait_for_get_user_tickets: () => boolean;
 const userTickets = [
     {
         Id: "ticket-1",
-        EventId: "event-1",
+        EventId: "1",
         Price: 50.00,
         SeatNumber: 15,
         Purchased: true
     },
     {
         Id: "ticket-2",
-        EventId: "event-2",
+        EventId: "2",
         Price: 75.00,
         SeatNumber: 8,
         Purchased: true
@@ -122,14 +124,9 @@ export async function should_not_display_stats_when_no_tickets() {
 }
 
 export async function should_display_event_names_in_tickets() {
-    const events = [
-        { Id: "event-1", EventName: "Rock Concert 2024", StartDate: "2024-06-15", EndDate: "2024-06-15", Venue: 0, Price: 50 },
-        { Id: "event-2", EventName: "Jazz Festival", StartDate: "2024-07-20", EndDate: "2024-07-20", Venue: 1, Price: 75 }
-    ];
-
     mockServer.reset();
     wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
-    mockServer.get('events', events);
+    mockServer.get('events', Events);
     mockServer.start();
 
     renderUserProfile();
@@ -138,11 +135,34 @@ export async function should_display_event_names_in_tickets() {
     const ticketsList = getTicketsList();
     expect(ticketsList).toHaveLength(2);
 
-    expect(ticketsList[0]).toContain("Rock Concert 2024");
-    expect(ticketsList[0]).not.toContain("event-1");
-    expect(ticketsList[0]).not.toContain("ticket-1");
+    expect(ticketsList[0]).toContain(Events[0].EventName);
+    expect(ticketsList[1]).toContain(Events[1].EventName);
+}
 
-    expect(ticketsList[1]).toContain("Jazz Festival");
-    expect(ticketsList[1]).not.toContain("event-2");
-    expect(ticketsList[1]).not.toContain("ticket-2");
+export async function should_display_event_date_and_venue_in_tickets() {
+    mockServer.reset();
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    mockServer.get('events', Events);
+    mockServer.start();
+
+    renderUserProfile();
+    await waitUntil(wait_for_get_user_tickets);
+
+    const ticketsList = getTicketsList();
+    expect(ticketsList).toHaveLength(2);
+
+    const getEventDate = (theEvent: Event): string => {
+
+        const startDate = typeof theEvent.StartDate === 'string'
+            ? moment(theEvent.StartDate)
+            : theEvent.StartDate;
+
+        return startDate.format('DD MMM YYYY');
+    };
+
+    expect(ticketsList[0]).toContain(getEventDate(Events[0]));
+    expect(ticketsList[0]).toContain(ConvertVenueToString(Events[0].Venue));
+
+    expect(ticketsList[1]).toContain(getEventDate(Events[1]));
+    expect(ticketsList[1]).toContain(ConvertVenueToString(Events[1].Venue));
 }

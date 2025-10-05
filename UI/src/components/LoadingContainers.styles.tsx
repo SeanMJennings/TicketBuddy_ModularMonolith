@@ -11,7 +11,7 @@ const ContentLoadingContainer = styled.div`
 
 
 export const ContentLoading = () => (
-    <ContentLoadingContainer>
+    <ContentLoadingContainer data-testid="loading-indicator">
         <ScaleLoader color="#0c4a6e"/>
     </ContentLoadingContainer>
 );

@@ -41,7 +41,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private static RedisContainer redis = null!;
     private ITestHarness testHarness = null!;
     private Guid[] ticket_ids = null!;
-    private static string TicketsForUser(Guid userId) => $"tickets/user/{userId}";
+    private static string TicketsForUser(Guid userId) => $"tickets/users/{userId}";
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
     protected override void before_all()

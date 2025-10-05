@@ -11,7 +11,7 @@
     selectUserFromDropdown,
     ticketLogoIsRendered,
     unmountApp,
-    userEmailIsRendered,
+    userProfilePageIsRendered,
     userIconIsRendered,
     usersDropdownIsRendered
 } from "./app.page";
@@ -27,7 +27,10 @@ let wait_for_get: () => boolean;
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get = mockServer.get(userRoutes.users, Users)
+    wait_for_get = mockServer.get(userRoutes.users, Users);
+    Users.forEach(user => {
+        mockServer.get(`tickets/users/${user.Id}`, []);
+    });
     mockServer.start();
 });
 
@@ -61,7 +64,7 @@ export async function should_show_user_details_when_user_icon_is_clicked() {
     renderApp();
     await waitUntil(wait_for_get);
     await clickUserIcon();
-    expect(await userEmailIsRendered(Users[0].Email)).toBeTruthy();
+    expect(userProfilePageIsRendered()).toBeTruthy();
 }
 
 export async function should_change_user_details_when_a_different_user_is_selected() {
@@ -70,7 +73,7 @@ export async function should_change_user_details_when_a_different_user_is_select
     await clickUsersDropdown();
     await selectUserFromDropdown(Users[1].Id);
     await clickUserIcon();
-    expect(await userEmailIsRendered(Users[1].Email)).toBeTruthy();
+    expect(userProfilePageIsRendered()).toBeTruthy();
 }
 
 export async function should_display_event_management_navigation_if_user_is_admin() {

@@ -34,8 +34,8 @@ vi.mock("../../stores/users.store", () => {
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get_event = mockServer.get(`events/${Events[0].Id}`, Events[0]);
-    wait_for_get_tickets = mockServer.get(`events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
+    wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, Events[0]);
+    wait_for_get_tickets = mockServer.get(`/events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
     wait_for_reserve_tickets = mockServer.post(`/events/${Events[0].Id}/tickets/reserve`, {}, true);
     mockServer.start();
 });

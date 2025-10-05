@@ -113,6 +113,10 @@ export async function clickTicketLogo() {
     return userEvent.click(logo);
 }
 
+export function userProfilePageIsRendered() {
+    return elements.userProfilePage() !== null;
+}
+
 const elements = {
     home: () => renderedComponent.queryByText("I am the mocked Home component"),
     notFound: () => renderedComponent.queryByText("Page not found"),
@@ -126,4 +130,5 @@ const elements = {
     eventsManagementPage: () => renderedComponent.queryByText("I am the mocked Home events management"),
     ticketLogo: () => renderedComponent.queryByAltText("Ticket Stub"),
     theTicketLogo: () => renderedComponent.findByAltText("Ticket Stub"),
+    userProfilePage: () => renderedComponent.queryByRole("heading", { name: "User Profile" }),
 }

@@ -17,3 +17,7 @@ export const purchaseTickets = async (eventId: string, payload: TicketsPayload) 
 export const reserveTickets = async (eventId: string, payload: TicketsPayload) => {
     return post(`/events/${eventId}/tickets/reserve`, payload);
 }
+
+export const getTicketsForUser = async (userId: string) => {
+    return get<Ticket[]>(`/tickets/users/${userId}`);
+}

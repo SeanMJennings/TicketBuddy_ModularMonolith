@@ -50,7 +50,7 @@ export const Tickets = () => {
                 setLoading(false);
             }).catch(_ => {
                 setLoading(false);
-            })
+            });
         };
 
         fetchEventAndTickets();
@@ -137,12 +137,6 @@ export const Tickets = () => {
         return ticketPrice * selectedSeats.length;
     };
 
-    if (loading) {
-        return (
-            <ContentLoading/>
-        );
-    }
-
     return (
         <Container>
             <PageTitle>Tickets for Event: {event?.EventName}</PageTitle>
@@ -154,51 +148,50 @@ export const Tickets = () => {
                 </Link>
             </ActionBar>
 
-            <Legend>
-                <LegendItem>
-                    <LegendColor color="#4CAF50"/>
-                    <span>Available</span>
-                </LegendItem>
-                <LegendItem>
-                    <LegendColor color="#f5f5f5"/>
-                    <span>Booked</span>
-                </LegendItem>
-                <LegendItem>
-                    <LegendColor color="#FF9800"/>
-                    <span>Selected</span>
-                </LegendItem>
-            </Legend>
+            {loading ? (
+                <ContentLoading />
+            ) : (
+                <>
+                    <SeatMapContainer>
+                        <ScreenArea>Screen / Stage</ScreenArea>
+                        {renderSeatMap()}
 
-            <SeatMapContainer>
-                <ScreenArea>STAGE</ScreenArea>
-                {renderSeatMap()}
-            </SeatMapContainer>
+                        <Legend>
+                            <LegendItem>
+                                <LegendColor $available={true}/>
+                                <span>Available</span>
+                            </LegendItem>
+                            <LegendItem>
+                                <LegendColor $available={false}/>
+                                <span>Sold</span>
+                            </LegendItem>
+                            <LegendItem>
+                                <LegendColor $selected={true}/>
+                                <span>Selected</span>
+                            </LegendItem>
+                        </Legend>
 
-            {tickets.length > 0 && (
-                <PriceInfo>
-                    Ticket Price: £{tickets[0].Price.toFixed(2)}
-                </PriceInfo>
+                        {selectedSeats.length > 0 && (
+                            <SelectionInfo data-testid="selection-info">
+                                <h3>Selected Seats</h3>
+                                <p>Seats: {selectedSeats.sort((a, b) => a - b).join(', ')}</p>
+                                <PriceInfo data-testid="price-info">
+                                    Total: £{calculateTotalPrice().toFixed(2)}
+                                </PriceInfo>
+                                <CenteredButtonContainer>
+                                    <Button
+                                        onClick={proceedToPurchase}
+                                        disabled={proceeding}
+                                        data-testid="proceed-to-purchase"
+                                    >
+                                        {proceeding ? 'Processing...' : 'Proceed to Purchase'}
+                                    </Button>
+                                </CenteredButtonContainer>
+                            </SelectionInfo>
+                        )}
+                    </SeatMapContainer>
+                </>
             )}
-
-            {selectedSeats.length > 0 && (
-                <SelectionInfo>
-                    You have selected {selectedSeats.length} seats.
-                    <br/>
-                    Seats: {selectedSeats.sort((a, b) => a - b).join(', ')}
-                    <br/>
-                    Total: £{calculateTotalPrice().toFixed(2)}
-                </SelectionInfo>
-            )}
-
-            <CenteredButtonContainer>
-                <Button
-                    onClick={proceedToPurchase}
-                    disabled={proceeding || selectedSeats.length === 0}
-                >
-                    Proceed to Purchase
-                </Button>
-            </CenteredButtonContainer>
-
         </Container>
     );
 };

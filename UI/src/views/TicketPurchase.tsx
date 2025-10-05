@@ -81,13 +81,10 @@ export const TicketPurchase = () => {
       });
   };
 
-  if (purchasing) {
-    return <ContentLoading />;
-  }
-
   if (!event || selectedTickets.length === 0) {
     return (
       <Container>
+        <PageTitle>Ticket Purchase</PageTitle>
         <ActionBar>
           <Link to={`/tickets/${eventId}`}>
             <Button>
@@ -116,7 +113,9 @@ export const TicketPurchase = () => {
             )
         }
 
-      {purchaseComplete ? (
+      {purchasing ? (
+        <ContentLoading />
+      ) : purchaseComplete ? (
         <SuccessMessage>
           <h2>Purchase Complete!</h2>
           <p>Thank you for your purchase. Your tickets have been reserved.</p>

@@ -1,7 +1,7 @@
 ﻿using BDD;
 using Npgsql;
 
-namespace Integration;
+namespace Component;
 
 public class TruncateDbSpecification : Specification
 {

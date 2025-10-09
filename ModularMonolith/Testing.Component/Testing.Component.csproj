@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
-        <RootNamespace>Integration</RootNamespace>
+        <RootNamespace>Component</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

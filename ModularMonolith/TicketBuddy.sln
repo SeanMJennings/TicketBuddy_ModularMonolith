@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 		ModularMonolith.drawio = ModularMonolith.drawio
 		ModularMonolith.drawio.png = ModularMonolith.drawio.png
 		README.md = README.md
+		..\ModernTestPyramid.png = ..\ModernTestPyramid.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}"
@@ -28,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Database\Migr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Events", "Modules\Events\Infrastructure.Events\Infrastructure.Events.csproj", "{DCB8DF11-462C-4604-88FE-C45BC822F7AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Integration", "Testing.Integration\Testing.Integration.csproj", "{220694EB-C7CD-47C6-8FC9-D8C9A6126BE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Component", "Testing.Component\Testing.Component.csproj", "{220694EB-C7CD-47C6-8FC9-D8C9A6126BE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Events", "Modules\Events\Controllers.Events\Controllers.Events.csproj", "{1D1FC05F-38B9-4DDE-A7F6-A7AE2E3E5A0D}"
 EndProject

@@ -10,7 +10,7 @@ using Shouldly;
 using Testcontainers.PostgreSql;
 using WebHost;
 
-namespace Integration.Api;
+namespace Component.Api;
 
 public partial class UserApiSpecs : TruncateDbSpecification
 {

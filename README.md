@@ -11,6 +11,11 @@ A modular monolith is where a team should start when building a new application.
 
 [Modular Monolith Architecture](./ModularMonolith/README.md)
 
+## Testing
+The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
+
+![Modern Test Pyramid](ModernTestPyramid.png)
+
 ## Key technologies/choices:
 - ASP.NET Core
 - Docker

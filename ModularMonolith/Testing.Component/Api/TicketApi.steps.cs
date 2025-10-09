@@ -15,7 +15,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using WebHost;
 
-namespace Integration.Api;
+namespace Component.Api;
 
 public partial class TicketApiSpecs : TruncateDbSpecification
 {

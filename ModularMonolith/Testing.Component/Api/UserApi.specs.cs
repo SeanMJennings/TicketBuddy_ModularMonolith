@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Integration.Api;
+namespace Component.Api;
 
 public partial class UserApiSpecs
 {

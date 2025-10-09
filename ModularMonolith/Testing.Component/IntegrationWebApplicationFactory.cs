@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 
-namespace Integration;
+namespace Component;
 
 public class IntegrationWebApplicationFactory<TProgram>(string connectionString, string? redisConnectionString = null)
     : WebApplicationFactory<TProgram> where TProgram : class

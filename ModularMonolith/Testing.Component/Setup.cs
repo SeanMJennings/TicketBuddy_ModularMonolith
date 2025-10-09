@@ -1,7 +1,7 @@
 ﻿using Common.Environment;
 using NUnit.Framework;
 
-namespace Integration;
+namespace Component;
 
 [SetUpFixture]
 public static class Setup

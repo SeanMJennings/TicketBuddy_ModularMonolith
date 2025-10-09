@@ -4,7 +4,6 @@ using BDD;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
-using Domain.Events.Primitives;
 using Domain.Primitives;
 using Integration.Events.Messaging;
 using Integration.Tickets.Messaging.Messages;
@@ -15,7 +14,7 @@ using Shouldly;
 using Testcontainers.PostgreSql;
 using WebHost;
 
-namespace Integration.Api;
+namespace Component.Api;
 
 public partial class EventApiSpecs : TruncateDbSpecification
 {

@@ -27,10 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="Testing.Integration" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Content Update="appsettings.local.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>

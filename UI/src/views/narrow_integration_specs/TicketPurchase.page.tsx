@@ -4,6 +4,7 @@ import { vi } from "vitest";
 import { userEvent } from "@testing-library/user-event";
 import { Main } from "../../app/App.tsx";
 import type {Ticket} from "../../domain/ticket.ts";
+import type { Event } from "../../domain/event.ts";
 
 vi.mock("../Tickets", () => {
   return {

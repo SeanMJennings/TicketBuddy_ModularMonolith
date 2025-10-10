@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <RootNamespace>Component</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
+      <ProjectReference Include="..\..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
+      <ProjectReference Include="..\..\Host\Host.csproj" />
+      <ProjectReference Include="..\..\CommonLibraries\Domain\Domain.csproj" />
+      <ProjectReference Include="..\..\Database\Migrations\Migrations.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+        <PackageReference Include="Common.Environment" Version="1.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.7" />
+        <PackageReference Include="NSubstitute" Version="5.3.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+        <PackageReference Include="NUnit" Version="4.3.2" />
+        <PackageReference Include="Testcontainers" Version="4.6.0" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.6.0" />
+        <PackageReference Include="Testcontainers.Redis" Version="4.6.0" />
+        <PackageReference Include="Testing.Bdd" Version="1.0.4" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Compile Update="Api\EventApi.steps.cs">
+        <DependentUpon>EventApi.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Api\UserApi.steps.cs">
+        <DependentUpon>UserApi.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Api\TicketApi.steps.cs">
+        <DependentUpon>TicketApi.specs.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

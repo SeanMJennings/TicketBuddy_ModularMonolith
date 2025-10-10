@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Database\Migr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Events", "Modules\Events\Infrastructure.Events\Infrastructure.Events.csproj", "{DCB8DF11-462C-4604-88FE-C45BC822F7AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Component", "Testing.Component\Testing.Component.csproj", "{220694EB-C7CD-47C6-8FC9-D8C9A6126BE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Component", "Testing\Testing.Component\Testing.Component.csproj", "{220694EB-C7CD-47C6-8FC9-D8C9A6126BE5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Events", "Modules\Events\Controllers.Events\Controllers.Events.csproj", "{1D1FC05F-38B9-4DDE-A7F6-A7AE2E3E5A0D}"
 EndProject
@@ -114,6 +114,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{1E
 		NuGet.Config = NuGet.Config
 		..\.gitignore = ..\.gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Acceptance", "Testing\Testing.Acceptance\Testing.Acceptance.csproj", "{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,6 +247,10 @@ Global
 		{B4891BDA-747D-4F8E-94D8-445593B20AEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4891BDA-747D-4F8E-94D8-445593B20AEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4891BDA-747D-4F8E-94D8-445593B20AEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,5 +293,6 @@ Global
 		{1FAA0D3A-4BA6-4D6C-BD24-9736B371E617} = {BFAD1DFA-E07E-4062-98FB-54AC88B5EA9D}
 		{D9A0303E-7D66-4C6C-A220-5181A3C7257E} = {1FAA0D3A-4BA6-4D6C-BD24-9736B371E617}
 		{B4891BDA-747D-4F8E-94D8-445593B20AEC} = {1FAA0D3A-4BA6-4D6C-BD24-9736B371E617}
+		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C} = {A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}
 	EndGlobalSection
 EndGlobal

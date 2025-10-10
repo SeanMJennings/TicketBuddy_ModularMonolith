@@ -146,7 +146,7 @@ public partial class UserApiSpecs : TruncateDbSpecification
     {
         a_request_to_create_an_user();
         creating_the_user();
-    }    
+    }  
     
     private void another_user_exists()
     {

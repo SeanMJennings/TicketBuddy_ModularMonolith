@@ -1,7 +1,7 @@
 ﻿import {render, type RenderResult, screen} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
-import {Main} from "../../App.tsx";
+import {Main} from "../../app/App.tsx";
 
 let renderedComponent: RenderResult;
 

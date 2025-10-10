@@ -1,6 +1,6 @@
 ﻿import {render, type RenderResult} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
-import App from "../../App.tsx";
+import App from "../../app/App.tsx";
 import {userEvent} from "@testing-library/user-event";
 
 let renderedComponent: RenderResult;

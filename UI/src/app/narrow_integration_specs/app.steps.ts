@@ -16,11 +16,11 @@
     usersDropdownIsRendered
 } from "./app.page";
 import {afterEach, beforeEach, expect} from "vitest";
-import {MockServer} from "../testing/mock-server";
-import {Users} from "../testing/data";
-import {waitUntil} from "../testing/utilities";
-import {userRoutes} from "../api/users.api";
-import {UserType} from "../domain/user";
+import {MockServer} from "../../testing/mock-server";
+import {Users} from "../../testing/data";
+import {waitUntil} from "../../testing/utilities";
+import {userRoutes} from "../../api/users.api";
+import {UserType} from "../../domain/user";
 
 const mockServer = MockServer.New();
 let wait_for_get: () => boolean;

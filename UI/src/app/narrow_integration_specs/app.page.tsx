@@ -6,7 +6,7 @@ import {userEvent} from "@testing-library/user-event";
 
 let renderedComponent: RenderResult;
 
-vi.mock("../views/Home", () => {
+vi.mock("../../views/Home", () => {
     return {
         Home: () => {
             return (
@@ -16,7 +16,7 @@ vi.mock("../views/Home", () => {
     }
 })
 
-vi.mock("../views/EventsManagement", () => {
+vi.mock("../../views/EventsManagement", () => {
     return {
         EventsManagement: () => {
             return (

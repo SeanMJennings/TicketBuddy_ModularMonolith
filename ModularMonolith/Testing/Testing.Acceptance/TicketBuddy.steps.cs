@@ -115,11 +115,18 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private void tickets_are_available_for_the_event()
     {
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        ticket_ids = tickets.Select(t => t.Id).ToArray();
+        var attempts = 0;
+        do
+        {
+            attempts++;
+            var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+            response_code = response.StatusCode;
+            content = response.Content;
+            var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+            ticket_ids = tickets.Select(t => t.Id).ToArray();
+            if (response_code == HttpStatusCode.OK) break;
+            Task.Delay(1000).Await();
+        } while (attempts < 5);
     }
     
     private void the_user_purchases_tickets_for_the_event()
@@ -129,21 +136,9 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             Encoding.UTF8,
             application_json);
 
-        attempt_requesting_tickets_for_up_to_15_seconds();
-    }
-
-    private void attempt_requesting_tickets_for_up_to_15_seconds()
-    {
-        var attempts = 0;
-        do
-        {
-            attempts++;
-            var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
-            response_code = response.StatusCode;
-            content = response.Content;
-            if (response_code == HttpStatusCode.NoContent) break;
-            Task.Delay(1000).Await();
-        } while (attempts < 15);
+        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
+        response_code = response.StatusCode;
+        content = response.Content;
     }
 
     private void the_purchase_is_successful()

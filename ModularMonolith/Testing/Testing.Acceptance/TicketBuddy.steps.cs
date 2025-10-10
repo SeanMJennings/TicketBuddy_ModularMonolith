@@ -44,17 +44,17 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1433)
+            .WithPortBinding(1434)
             .Build();
         database.StartAsync().Await();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
-            .WithPortBinding(5672)
+            .WithPortBinding(5673)
             .Build();
         rabbit.StartAsync().Await();
         redis = new RedisBuilder()
-            .WithPortBinding(6379)
+            .WithPortBinding(6380)
             .Build();
         redis.StartAsync().Await();
         Migration.Upgrade(database.GetConnectionString());
@@ -115,18 +115,11 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private void tickets_are_available_for_the_event()
     {
-        var attempts = 0;
-        do
-        {
-            attempts++;
-            var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
-            response_code = response.StatusCode;
-            content = response.Content;
-            var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-            ticket_ids = tickets.Select(t => t.Id).ToArray();
-            if (response_code == HttpStatusCode.OK) break;
-            Task.Delay(1000).Await();
-        } while (attempts < 5);
+        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        response_code = response.StatusCode;
+        content = response.Content;
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
     
     private void the_user_purchases_tickets_for_the_event()

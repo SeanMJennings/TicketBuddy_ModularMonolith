@@ -48,7 +48,7 @@ export const Tickets = () => {
                 setEvent(data[0]);
                 setTickets(data[1]);
                 setLoading(false);
-            }).catch(_ => {
+            }).catch(() => {
                 setLoading(false);
             });
         };

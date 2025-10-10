@@ -157,3 +157,13 @@ export const TicketsForFirstEvent: Ticket[] = [
         Purchased: true
     }
 ]
+
+export const TicketBoughtForFirstEvent: Ticket[] = [
+    {
+        Id: "t1",
+        EventId: Events[0].Id,
+        Price: 50,
+        SeatNumber: 1,
+        Purchased: true
+    }
+]

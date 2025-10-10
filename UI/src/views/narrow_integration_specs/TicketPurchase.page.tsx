@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import { userEvent } from "@testing-library/user-event";
 import { Main } from "../../app/App.tsx";
+import type {Ticket} from "../../domain/ticket.ts";
 
 vi.mock("../Tickets", () => {
   return {
@@ -14,7 +15,7 @@ vi.mock("../Tickets", () => {
 
 let renderedComponent: RenderResult;
 
-export function renderTicketPurchase(eventId: string, selectedTickets: any[] = [], eventData: any = null) {
+export function renderTicketPurchase(eventId: string, selectedTickets: Ticket[] = [], eventData: Event | undefined = undefined) {
   const initialEntries = [{ pathname: `/tickets/${eventId}/purchase`, state: { selectedTickets, event: eventData }}];
 
   renderedComponent = render(

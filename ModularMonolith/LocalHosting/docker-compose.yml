@@ -17,7 +17,7 @@ services:
     container_name: monolith-aspire-dashboard
     image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
     environment:
-      - ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS:true
+      ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
     ports:
       - "18888:18888"
       - "4317:18889"
@@ -59,8 +59,8 @@ services:
   migrations:
     container_name: monolith-migrations
     build:
-      context: .
-      dockerfile: ../Database/Host.Migrations/Dockerfile
+      context: ../Database
+      dockerfile: Host.Migrations/Dockerfile
     depends_on:
       postgresql:
         condition: service_started
@@ -72,8 +72,8 @@ services:
   api:
     container_name: monolith-api
     build:
-      context: .
-      dockerfile: ../Host/Dockerfile
+      context: ..
+      dockerfile: Host/Dockerfile
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -92,8 +92,8 @@ services:
   dataseeder:
     container_name: monolith-dataseeder
     build:
-      context: .
-      dockerfile: Host.DataSeeder/Dockerfile
+      context: ..
+      dockerfile: LocalHosting/Host.Dataseeder/Dockerfile
     depends_on:
       api:
         condition: service_started

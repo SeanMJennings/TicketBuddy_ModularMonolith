@@ -9,6 +9,12 @@ services:
     ports:
       - "5432:5432"
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d TicketBuddy -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     volumes:
       - postgresql_data:/var/lib/postgresql/data
     networks:
@@ -63,7 +69,7 @@ services:
       dockerfile: Host.Migrations/Dockerfile
     depends_on:
       postgresql:
-        condition: service_started
+        condition: service_healthy
     environment:
       - ENVIRONMENT=Development
     networks:
@@ -102,6 +108,8 @@ services:
     networks:
       - ticketbuddy-monolith-network
     restart: "no"
+    ## need healthcheck for api before running dataseeder
+    entrypoint: ["/bin/sh", "-c", "sleep 15 && dotnet Host.Dataseeder.dll"]
 
 volumes:
   postgresql_data:

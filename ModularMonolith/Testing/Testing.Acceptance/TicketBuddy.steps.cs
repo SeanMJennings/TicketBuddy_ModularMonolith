@@ -115,6 +115,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private void tickets_are_available_for_the_event()
     {
+        Thread.Sleep(5000);
         var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
         response_code = response.StatusCode;
         content = response.Content;

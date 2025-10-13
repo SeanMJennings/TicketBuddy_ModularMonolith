@@ -16,7 +16,7 @@ public static class Healthcheck
         });
         services.AddHealthChecks()
             //.AddNpgSql(postgresConnectionString, name: "PostgreSQL", tags: ["ready"])
-            //.AddRedis(redisConnectionString, name: "Redis", tags: ["ready"])
+            .AddRedis(redisConnectionString, name: "Redis", tags: ["ready"])
             .AddRabbitMQ();
     }
 }

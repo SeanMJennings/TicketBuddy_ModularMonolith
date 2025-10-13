@@ -7,7 +7,7 @@ public static class Healthcheck
     public static void ConfigureHealthChecks(this IServiceCollection services, string postgresConnectionString, string redisConnectionString, string rabbitMqConnectionString)
     {
         AddRabbitMqConnectionForHealthChecks(services, rabbitMqConnectionString);
-        AddHealthChecksOnTopOfExistingMassTransitHealthCheck(services, redisConnectionString);
+        AddHealthChecksOnTopOfExistingMassTransitHealthCheck(services, postgresConnectionString, redisConnectionString);
     }
 
     private static void AddRabbitMqConnectionForHealthChecks(IServiceCollection services, string rabbitMqConnectionString)
@@ -22,10 +22,10 @@ public static class Healthcheck
         });
     }
 
-    private static void AddHealthChecksOnTopOfExistingMassTransitHealthCheck(IServiceCollection services, string redisConnectionString)
+    private static void AddHealthChecksOnTopOfExistingMassTransitHealthCheck(IServiceCollection services, string postgresConnectionString, string redisConnectionString)
     {
         services.AddHealthChecks()
-            //.AddNpgSql(postgresConnectionString, name: "PostgreSQL", tags: ["ready"])
+            .AddNpgSql(postgresConnectionString, name: "PostgreSQL", tags: ["ready"])
             .AddRedis(redisConnectionString, name: "Redis", tags: ["ready"])
             .AddRabbitMQ();
     }

@@ -6,6 +6,12 @@ public static class Healthcheck
 {
     public static void ConfigureHealthChecks(this IServiceCollection services, string postgresConnectionString, string redisConnectionString, string rabbitMqConnectionString)
     {
+        AddRabbitMqConnectionForHealthChecks(services, rabbitMqConnectionString);
+        AddHealthChecksOnTopOfExistingMassTransitHealthCheck(services, redisConnectionString);
+    }
+
+    private static void AddRabbitMqConnectionForHealthChecks(IServiceCollection services, string rabbitMqConnectionString)
+    {
         services.AddSingleton<IConnection>(_ =>
         {
             var factory = new ConnectionFactory
@@ -14,6 +20,10 @@ public static class Healthcheck
             };
             return factory.CreateConnectionAsync().GetAwaiter().GetResult();
         });
+    }
+
+    private static void AddHealthChecksOnTopOfExistingMassTransitHealthCheck(IServiceCollection services, string redisConnectionString)
+    {
         services.AddHealthChecks()
             //.AddNpgSql(postgresConnectionString, name: "PostgreSQL", tags: ["ready"])
             .AddRedis(redisConnectionString, name: "Redis", tags: ["ready"])

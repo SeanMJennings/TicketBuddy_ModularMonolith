@@ -26,6 +26,7 @@
         <PackageReference Include="NUnit" Version="4.4.0" />
         <PackageReference Include="Testcontainers" Version="4.7.0" />
         <PackageReference Include="Testcontainers.PostgreSql" Version="4.7.0" />
+        <PackageReference Include="Testcontainers.RabbitMq" Version="4.7.0" />
         <PackageReference Include="Testcontainers.Redis" Version="4.7.0" />
         <PackageReference Include="Testing.Bdd" Version="1.0.6" />
     </ItemGroup>
@@ -39,6 +40,9 @@
       </Compile>
       <Compile Update="Api\TicketApi.steps.cs">
         <DependentUpon>TicketApi.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Api\HealthApi.steps.cs">
+        <DependentUpon>HealthApi.specs.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

@@ -21,7 +21,8 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
         services.ConfigureDatabase(_settings.Database.Connection);
         services.ConfigureCache(_settings.Cache.Connection);
         services.ConfigureServices();
-        if (IsNotLocalTestingOrBuildPipeline()) services.ConfigureMessaging(_settings.RabbitMq.ConnectionString.ToString());
+        if (!string.IsNullOrEmpty(_settings.RabbitMq.ConnectionString.ToString())) services.ConfigureMessaging(_settings.RabbitMq.ConnectionString.ToString());
+        //services.ConfigureHealthChecks(_settings.Database.Connection, _settings.Cache.Connection, _settings.RabbitMq.ConnectionString.ToString());
         services.AddCorsAllowAll();
     }
 
@@ -34,6 +35,7 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
     protected override void ConfigureApplication(WebApplication theApp)
     {
         base.ConfigureApplication(theApp);
+        //theApp.UseHealthChecks("/health");
         theApp.UseCorsAllowAll();
     }
 }

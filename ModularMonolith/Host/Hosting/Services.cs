@@ -1,6 +1,4 @@
-﻿using Application.Tickets.DomainEventHandlers;
-using Infrastructure.Configuration;
-using Infrastructure.DomainEventsDispatching;
+﻿using Infrastructure.Configuration;
 using Infrastructure.Events.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Users.Configuration;

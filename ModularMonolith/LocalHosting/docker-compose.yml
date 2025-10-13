@@ -95,6 +95,13 @@ services:
     restart: on-failure
     networks:
       - ticketbuddy-monolith-network
+    healthcheck:
+      # need to remove install curl part
+      test: ["CMD-SHELL", "apt-get update && apt-get --yes install curl && curl --fail http://localhost:8080/health || exit 1"]
+      interval: 1s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
   dataseeder:
     container_name: monolith-dataseeder
     build:
@@ -102,14 +109,12 @@ services:
       dockerfile: LocalHosting/Host.Dataseeder/Dockerfile
     depends_on:
       api:
-        condition: service_started
+        condition: service_healthy
     environment:
       - ENVIRONMENT=Development
     networks:
       - ticketbuddy-monolith-network
     restart: "no"
-    ## need healthcheck for api before running dataseeder
-    entrypoint: ["/bin/sh", "-c", "sleep 15 && dotnet Host.Dataseeder.dll"]
 
 volumes:
   postgresql_data:

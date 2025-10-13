@@ -50,11 +50,11 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1433, true)
+            .WithPortBinding(1434, true)
             .Build();
         database.StartAsync().Await();
         Migration.Upgrade(database.GetConnectionString());
-        redis = new RedisBuilder().WithPortBinding(6379, true).Build();
+        redis = new RedisBuilder().WithPortBinding(6380, true).Build();
         redis.StartAsync().Await();
     }
     

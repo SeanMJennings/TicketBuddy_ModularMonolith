@@ -45,7 +45,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1433, true)
+            .WithPortBinding(1434, true)
             .Build();
         database.StartAsync().Await();
         Migration.Upgrade(database.GetConnectionString());

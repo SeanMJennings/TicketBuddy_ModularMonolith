@@ -38,17 +38,17 @@ public partial class HealthApiSpecs : TruncateDbSpecification
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434)
+            .WithPortBinding(1433)
             .Build();
         database.StartAsync().Await();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
-            .WithPortBinding(5673)
+            .WithPortBinding(5672)
             .Build();
         rabbit.StartAsync().Await();
         redis = new RedisBuilder()
-            .WithPortBinding(6380)
+            .WithPortBinding(6379)
             .Build();
         redis.StartAsync().Await();
         Migration.Upgrade(database.GetConnectionString());

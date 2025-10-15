@@ -61,13 +61,13 @@ export type ApiResponseError = {
 
 function handleResponse(): ((value: Response) => unknown) | null | undefined {
     return async (response) => {
+        if (response.status === 204) return;
         if (!response.ok) {
             throw {
                 errors: (await response?.json())?.Errors,
                 code: response.status
             };
         }
-        if (response.status === 204) return;
         return (await response.json());
     };
 }

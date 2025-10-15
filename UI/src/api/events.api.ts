@@ -12,12 +12,7 @@ export const getEvents = async () => {
 };
 
 export const getEventById = async (id: string) => {
-    return get<Event>(`/events/${id}`).then(
-        (event) => ({
-            ...event,
-            StartDate: moment(event.StartDate),
-            EndDate: moment(event.EndDate),
-        }));
+    return get<Event>(`/events/${id}`);
 }
 
 export const postEvent = async (event: EventPayload) => {

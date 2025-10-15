@@ -3,7 +3,7 @@ using Domain.Users.Entities;
 
 namespace Application.Users.Queries;
 
-public class UserQueries(IAmAUserRepository UserRepository)
+public class UserQueries(IPersistUsers UserRepository)
 {
     public async Task<IList<User>> GetUsers()
     {

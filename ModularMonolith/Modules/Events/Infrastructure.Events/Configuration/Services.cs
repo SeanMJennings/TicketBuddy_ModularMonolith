@@ -11,7 +11,7 @@ public static class Services
 {
     public static void ConfigureEventsServices(this IServiceCollection services)
     {
-        services.AddScoped<IAmAnEventRepository, EventRepository>();
+        services.AddScoped<IPersistEvents, EventRepository>();
         services.AddScoped<EventCommands>();
         services.AddScoped<EventQueries>();
     }

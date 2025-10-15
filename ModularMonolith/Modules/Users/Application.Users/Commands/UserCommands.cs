@@ -5,7 +5,7 @@ using Domain.Users.Primitives;
 
 namespace Application.Users.Commands;
 
-public class UserCommands(IAmAUserRepository UserRepository)
+public class UserCommands(IPersistUsers UserRepository)
 {
     public async Task<Guid> CreateUser(FullName fullName, Email email, UserType userType)
     {

@@ -6,7 +6,7 @@ using Event = Domain.Tickets.Entities.Event;
 
 namespace Infrastructure.Tickets.Commands;
 
-public class EventRepository(TicketDbContext ticketDbContext) : IAmAnEventRepository
+public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
 {
     public Task<Venue> GetByVenueId(Domain.Primitives.Venue venue)
     {

@@ -6,7 +6,7 @@ using Domain.Primitives;
 
 namespace Application.Events.Commands;
 
-public class EventCommands(IAmAnEventRepository EventRepository)
+public class EventCommands(IPersistEvents EventRepository)
 {
     public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
     {

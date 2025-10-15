@@ -11,7 +11,7 @@ public static class Services
 {
     public static void ConfigureUsersServices(this IServiceCollection services)
     {
-        services.AddScoped<IAmAUserRepository, UserRepository>();
+        services.AddScoped<IPersistUsers, UserRepository>();
         services.AddScoped<UserCommands>();
         services.AddScoped<UserQueries>();
     }

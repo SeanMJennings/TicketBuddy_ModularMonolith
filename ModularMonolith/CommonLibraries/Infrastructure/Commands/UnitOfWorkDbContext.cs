@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Commands;
 
 public abstract class UnitOfWorkDbContext<T>(DbContextOptions<T> options, DomainEventsDispatcher domainEventsDispatcher) 
-    : DbContext(options), IAmAUnitOfWork 
+    : DbContext(options), IManageAUnitOfWork 
     where T : DbContext
 {
     public async Task<int> Commit(CancellationToken cancellationToken = default)

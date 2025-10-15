@@ -4,7 +4,7 @@ using MassTransit;
 
 namespace Application.Events.IntegrationMessageConsumers
 {
-    public class EventSoldOutConsumer(IAmAnEventRepository eventRepository) : IConsumer<EventSoldOut>
+    public class EventSoldOutConsumer(IPersistEvents eventRepository) : IConsumer<EventSoldOut>
     {
         public async Task Consume(ConsumeContext<EventSoldOut> context)
         {

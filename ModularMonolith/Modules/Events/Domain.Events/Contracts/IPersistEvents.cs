@@ -3,7 +3,7 @@ using Domain.Events.Entities;
 
 namespace Domain.Events.Contracts;
 
-public interface IAmAnEventRepository : IAmARepository
+public interface IPersistEvents : IPersist
 {
     public Task Add(Event theEvent);
     public Task Update(Event theEvent);

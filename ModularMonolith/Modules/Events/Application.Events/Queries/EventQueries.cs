@@ -3,7 +3,7 @@ using Domain.Events.Entities;
 
 namespace Application.Events.Queries;
 
-public class EventQueries(IAmAnEventRepository EventRepository)
+public class EventQueries(IPersistEvents EventRepository)
 {
     public async Task<IList<Event>> GetEvents()
     {

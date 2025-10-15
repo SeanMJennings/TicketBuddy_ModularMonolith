@@ -1,6 +1,6 @@
 ﻿namespace Domain.Contracts;
 
-public interface IAmAUnitOfWork
+public interface IManageAUnitOfWork
 {
     Task<int> Commit(CancellationToken cancellationToken = default);
 }

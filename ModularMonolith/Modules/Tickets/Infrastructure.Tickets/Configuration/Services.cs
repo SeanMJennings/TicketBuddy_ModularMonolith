@@ -10,8 +10,8 @@ public static class Services
 {
     public static void ConfigureTicketsServices(this IServiceCollection services)
     {
-        services.AddScoped<IAmAnEventRepository, Commands.EventRepository>();
-        services.AddScoped<IAmAUserRepository, Commands.UserRepository>();
+        services.AddScoped<IPersistEvents, Commands.EventRepository>();
+        services.AddScoped<IPersistUsers, Commands.UserRepository>();
         services.AddScoped<IQueryTickets, Queries.TicketQuerist>();
         services.AddScoped<TicketCommands>();
         services.AddScoped<TicketQueries>();

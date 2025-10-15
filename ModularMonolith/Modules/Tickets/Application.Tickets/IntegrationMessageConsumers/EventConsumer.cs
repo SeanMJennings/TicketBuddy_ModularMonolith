@@ -5,7 +5,7 @@ using EventUpserted = Integration.Events.Messaging.EventUpserted;
 
 namespace Application.Tickets.IntegrationMessageConsumers
 {
-    public class EventConsumer(IAmAnEventRepository eventRepository) : IConsumer<EventUpserted>
+    public class EventConsumer(IPersistEvents eventRepository) : IConsumer<EventUpserted>
     {
         public async Task Consume(ConsumeContext<EventUpserted> context)
         {

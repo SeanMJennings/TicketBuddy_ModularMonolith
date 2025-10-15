@@ -3,7 +3,7 @@ using Domain.Tickets.Entities;
 
 namespace Infrastructure.Tickets.Commands;
 
-public class UserRepository(TicketDbContext ticketDbContext) : IAmAUserRepository
+public class UserRepository(TicketDbContext ticketDbContext) : IPersistUsers
 {
     public async Task Save(User theUser)
     {

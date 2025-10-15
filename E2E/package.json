@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start:api": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,4 +1,3 @@
-using Domain.Events.Primitives;
 using Domain.Primitives;
 
 namespace Integration.Events.Messaging;

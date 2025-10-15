@@ -5,7 +5,7 @@ using MassTransit;
 
 namespace Application.Tickets.IntegrationMessageConsumers
 {
-    public class UserConsumer(IAmAUserRepository userRepository) : IConsumer<UserUpserted>
+    public class UserConsumer(IPersistUsers userRepository) : IConsumer<UserUpserted>
     {
         public async Task Consume(ConsumeContext<UserUpserted> context)
         {

@@ -1,6 +1,6 @@
 ﻿namespace Domain.Contracts;
 
-public interface IAmARepository
+public interface IPersist
 {
     public Task Commit(CancellationToken cancellationToken = default);
 }

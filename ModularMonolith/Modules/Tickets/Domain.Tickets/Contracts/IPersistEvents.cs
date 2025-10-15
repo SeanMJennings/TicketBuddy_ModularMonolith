@@ -3,7 +3,7 @@ using Domain.Tickets.Entities;
 
 namespace Domain.Tickets.Contracts;
 
-public interface IAmAnEventRepository : IAmARepository
+public interface IPersistEvents : IPersist
 {
     public Task<Event?> GetById(Guid Id);
     public Task<Venue> GetByVenueId(Domain.Primitives.Venue venue);

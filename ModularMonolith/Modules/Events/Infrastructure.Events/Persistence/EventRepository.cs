@@ -5,7 +5,7 @@ using Event = Domain.Events.Entities.Event;
 
 namespace Infrastructure.Events.Persistence;
 
-public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint publishEndpoint) : IAmAnEventRepository
+public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint publishEndpoint) : IPersistEvents
 {
     public async Task Add(Event theEvent)
     {

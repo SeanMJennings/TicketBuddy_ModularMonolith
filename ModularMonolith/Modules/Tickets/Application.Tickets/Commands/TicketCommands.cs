@@ -5,7 +5,7 @@ using StackExchange.Redis;
 namespace Application.Tickets.Commands;
 
 public class TicketCommands(
-    IAmAnEventRepository EventRepository,
+    IPersistEvents EventRepository,
     IConnectionMultiplexer ConnectionMultiplexer)
 {
     public async Task PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds)

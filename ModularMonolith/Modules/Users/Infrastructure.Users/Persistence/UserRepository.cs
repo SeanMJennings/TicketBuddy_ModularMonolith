@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Users.Persistence;
 
-public class UserRepository(UserDbContext userDbContext, IPublishEndpoint publishEndpoint) : IAmAUserRepository
+public class UserRepository(UserDbContext userDbContext, IPublishEndpoint publishEndpoint) : IPersistUsers
 {
     public async Task Add(User theUser)
     {

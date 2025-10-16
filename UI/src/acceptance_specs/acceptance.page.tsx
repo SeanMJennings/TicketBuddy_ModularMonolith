@@ -13,7 +13,6 @@ export function renderApp() {
     return renderedComponent;
 }
 
-
 export function unmountApp() {
     renderedComponent.unmount();
 }
@@ -27,7 +26,6 @@ export async function selectUserFromDropdown(id: string) {
     const usersDropdown = await elements.theUsersDropdown();
     await userEvent.click(usersDropdown);
     return userEvent.selectOptions(usersDropdown, id);
-
 }
 
 export async function clickFirstEvent() {

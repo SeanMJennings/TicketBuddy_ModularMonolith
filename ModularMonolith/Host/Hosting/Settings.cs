@@ -20,7 +20,14 @@ internal class Settings
     
     internal class TelemetrySettings
     {
-        internal string ConnectionString => Configuration["ConnectionStrings:Telemetry"]!;
+        internal string ConnectionString
+        {
+            get
+            {
+                var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT");
+                return !string.IsNullOrEmpty(otelEndpoint) ? otelEndpoint : Configuration["ConnectionStrings:Telemetry"]!;
+            }
+        }
     }
 
     internal class DatabaseSettings

@@ -26,7 +26,7 @@ var redis = builder
     .WithImage("redis:7.0-alpine")
     .WithDataVolume("TicketBuddy.Monolith.Redis")
     .WithPassword(builder.AddParameter("RedisPassword", "YourStrong@Passw0rd"))
-    .WithHostPort(16379)
+    .WithHostPort(6379)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var migrations = builder.AddProject<Projects.Host_Migrations>("Migrations")

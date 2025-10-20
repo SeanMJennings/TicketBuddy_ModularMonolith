@@ -136,7 +136,7 @@ jobs:
         
       - name: Install Node.js dependencies
         working-directory: E2E
-        run: npm run install && npx playwright install chromium --with-deps
+        run: npm install && npx playwright install chromium --with-deps
         
       - name: Start up API and wait for health check
         working-directory: E2E

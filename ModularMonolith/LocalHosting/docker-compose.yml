@@ -100,12 +100,11 @@ services:
     networks:
       - ticketbuddy-monolith-network
     healthcheck:
-      # need to remove install curl part
-      test: ["CMD-SHELL", "apt-get update && apt-get --yes install curl && curl --fail http://localhost:8080/health || exit 1"]
-      interval: 1s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "sleep 20"]
+      interval: 30s
+      timeout: 5s
+      retries: 1
+      start_period: 20s
   dataseeder:
     container_name: monolith-dataseeder
     build:

@@ -67,6 +67,8 @@ services:
     build:
       context: ..
       dockerfile: Database/Host.Migrations/Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       postgresql:
         condition: service_healthy

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:api:docker": "docker-compose -f ../LocalHosting/docker-compose.yml -f ../LocalHosting/docker-compose.override.yml up -d api",
+    "start:api:docker": "docker-compose -f ../LocalHosting/docker-compose.yml -f ../LocalHosting/docker-compose.override.yml up -d",
     "stop:api:docker": "docker-compose -f ../LocalHosting/docker-compose.yml -f ../LocalHosting/docker-compose.override.yml down",
     "start:api:aspire": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj",
     "start:ui": "cd ../UI && npm run dev",

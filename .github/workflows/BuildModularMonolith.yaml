@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  backend:
+  Backend:
     runs-on: ubuntu-latest
     services:
       docker:
@@ -52,7 +52,7 @@ jobs:
           DOCKER_HOST: tcp://localhost:2375
         run: dotnet test ModularMonolith/TicketBuddy.sln --configuration Release --no-build --no-restore
   
-  frontend:
+  Frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -81,7 +81,7 @@ jobs:
         working-directory: UI
         run: npm run test
 
-  endToEnd:
+  EndToEnd:
     runs-on: ubuntu-latest
     services:
       docker:
@@ -129,13 +129,15 @@ jobs:
         working-directory: UI
         run: npm install
 
-      - name: Build frontend
-        working-directory: UI
-        run: npm run build
-        
       - name: Install Node.js dependencies
         working-directory: E2E
-        run: npm install && npx playwright install chromium --with-deps
+        run: npm install
+        
+      - name: Install Playwright Browsers
+        run: |
+            npx playwright install chromium
+            sudo apt-get update
+            sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1
         
       - name: Start up API and wait for health check
         working-directory: E2E

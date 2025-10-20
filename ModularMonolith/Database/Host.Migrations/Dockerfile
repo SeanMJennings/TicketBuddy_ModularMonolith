@@ -7,6 +7,8 @@ ARG BUILD_CONFIGURATION=Release
 ARG GITHUB_TOKEN
 WORKDIR /src
 COPY . .
+# Remove conflicting appsettings files from Host directory to prevent publish conflicts
+RUN rm -f Host/appsettings.docker.json Host/appsettings.local.json
 RUN dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json \
     --name github \
     --username SeanMJennings \

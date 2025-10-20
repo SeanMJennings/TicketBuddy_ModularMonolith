@@ -61,7 +61,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'latest'
           cache: 'npm'
           cache-dependency-path: UI/package-lock.json
 
@@ -80,3 +80,65 @@ jobs:
       - name: Test
         working-directory: UI
         run: npm run test
+
+  endToEnd:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    services:
+      docker:
+        image: docker:20.10.24-dind
+        options: --privileged
+        ports:
+          - 2375:2375
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Ensure Docker is running
+        run: |
+          docker version
+          docker info
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ github.token }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+          cache: 'npm'
+          cache-dependency-path: UI/package-lock.json
+
+      - name: Restore .NET dependencies
+        run: dotnet restore ModularMonolith/TicketBuddy.sln --no-cache --force-evaluate
+
+      - name: Build .NET solution
+        run: dotnet build ModularMonolith/TicketBuddy.sln --configuration Release --no-restore
+
+      - name: Install Node.js dependencies
+        working-directory: UI
+        run: npm install
+
+      - name: Build frontend
+        working-directory: UI
+        run: npm run build
+        
+      - name: Install Node.js dependencies
+        working-directory: E2E
+        run: npm run install && npx playwright install chromium --with-deps
+        
+      - name: Start up API and wait for health check
+        working-directory: E2E
+        run: npm run start:api & npx wait-on https://localhost:5001/health
+        
+      - name: Run end-to-end tests
+        working-directory: E2E
+        run: npm run test:e2e

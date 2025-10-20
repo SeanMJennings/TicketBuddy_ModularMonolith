@@ -45,7 +45,7 @@ var api = builder.AddProject<Projects.Host>("Api")
     .WaitFor(redis)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
-var dataseeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
+var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
     .WithReference(api)
     .WaitFor(api)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
@@ -53,8 +53,8 @@ var dataseeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
 builder.AddViteApp(name: "User-Interface", workingDirectory: "../../../UI")
     .WithReference(api)
     .WaitFor(api)
-    .WithReference(dataseeder)
-    .WaitFor(dataseeder)
+    .WithReference(dataSeeder)
+    .WaitFor(dataSeeder)
     .WithNpmPackageInstallation();
 
 var app = builder.Build();

@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:api": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj"
+    "start:api": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj",
+    "start:ui": "cd ../UI && npm run dev",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.56.0",
-    "@types/node": "^24.7.1"
+    "@types/node": "^24.7.1",
+    "concurrently": "^9.2.1",
+    "start-server-and-test": "^2.1.2"
   }
 }

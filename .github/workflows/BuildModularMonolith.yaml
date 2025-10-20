@@ -83,7 +83,6 @@ jobs:
 
   endToEnd:
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
     services:
       docker:
         image: docker:20.10.24-dind
@@ -140,7 +139,7 @@ jobs:
         
       - name: Start up API and wait for health check
         working-directory: E2E
-        run: npm run start:api & npx wait-on https://localhost:5001/health
+        run: npm run start:api:docker & npx wait-on https://localhost:5001/health
         
       - name: Run end-to-end tests
         working-directory: E2E

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:api": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj",
+    "start:api:docker": "docker compose -f ../ModularMonolith/LocalHosting/docker-compose.dcproj up",
+    "start:api:aspire": "dotnet run --project ../ModularMonolith/LocalHosting/Host.Aspire/Host.Aspire.csproj",
     "start:ui": "cd ../UI && npm run dev",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"

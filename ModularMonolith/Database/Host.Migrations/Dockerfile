@@ -14,11 +14,11 @@ RUN dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.jso
     --store-password-in-clear-text
 RUN dotnet restore "Database/Host.Migrations/Host.Migrations.csproj"
 WORKDIR "/src/Database/Host.Migrations"
-RUN dotnet build "Host.Migrations.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "Host.Migrations.csproj" -c $BUILD_CONFIGURATION --no-restore
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Host.Migrations.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Host.Migrations.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false --no-restore
 
 FROM base AS final
 WORKDIR /app

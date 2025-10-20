@@ -14,12 +14,12 @@ RUN dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.jso
     --password $GITHUB_TOKEN \
     --store-password-in-clear-text
 RUN dotnet restore "Host/Host.csproj"
-RUN dotnet build "Host/Host.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
+WORKDIR "/src/Host"
+RUN dotnet build "Host.csproj" -c $BUILD_CONFIGURATION --no-restore
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-WORKDIR "/src"
-RUN dotnet publish "Host/Host.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false --no-build
+RUN dotnet publish "Host.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false --no-restore
 
 FROM base AS final
 WORKDIR /app

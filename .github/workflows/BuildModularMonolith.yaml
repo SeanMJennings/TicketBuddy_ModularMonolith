@@ -117,7 +117,7 @@ jobs:
         with:
           node-version: 'latest'
           cache: 'npm'
-          cache-dependency-path: UI/package-lock.json
+          cache-dependency-path: E2E/package-lock.json
 
       - name: Restore .NET dependencies
         run: dotnet restore ModularMonolith/TicketBuddy.sln --no-cache --force-evaluate
@@ -125,11 +125,11 @@ jobs:
       - name: Build .NET solution
         run: dotnet build ModularMonolith/TicketBuddy.sln --configuration Release --no-restore
 
-      - name: Install Node.js dependencies
+      - name: Install Node.js dependencies for UI
         working-directory: UI
         run: npm install
 
-      - name: Install Node.js dependencies
+      - name: Install Node.js dependencies for E2E
         working-directory: E2E
         run: npm install
         

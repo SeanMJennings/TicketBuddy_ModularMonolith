@@ -9,7 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Host\Host.csproj" />
+      <ProjectReference Include="..\..\Host\Host.csproj">
+        <ExcludeAssets>contentFiles</ExcludeAssets>
+      </ProjectReference>
       <ProjectReference Include="..\Migrations\Migrations.csproj" />
     </ItemGroup>
 

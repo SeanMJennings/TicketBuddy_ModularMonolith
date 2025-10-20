@@ -30,12 +30,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="appsettings.local.json">
+      <None Update="appsettings.local.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-      <Content Update="appsettings.docker.json">
+      </None>
+      <None Update="appsettings.docker.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

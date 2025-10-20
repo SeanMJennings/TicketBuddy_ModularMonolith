@@ -99,12 +99,6 @@ services:
     restart: on-failure
     networks:
       - ticketbuddy-monolith-network
-    healthcheck:
-      test: ["CMD-SHELL", "sleep 20"]
-      interval: 30s
-      timeout: 25s
-      retries: 1
-      start_period: 20s
   dataseeder:
     container_name: monolith-dataseeder
     build:
@@ -114,12 +108,13 @@ services:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       api:
-        condition: service_healthy
+        condition: service_started
     environment:
       - ENVIRONMENT=Development
     networks:
       - ticketbuddy-monolith-network
     restart: "no"
+    command: ["sh", "-c", "sleep 20 && dotnet Host.Dataseeder.dll"]
 
 volumes:
   postgresql_data:

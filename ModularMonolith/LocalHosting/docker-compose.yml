@@ -80,6 +80,8 @@ services:
     build:
       context: ..
       dockerfile: Host/Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -107,6 +109,8 @@ services:
     build:
       context: ..
       dockerfile: LocalHosting/Host.Dataseeder/Dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
       api:
         condition: service_healthy

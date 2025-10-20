@@ -9,12 +9,12 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
 # restore needs to be done outside of this in build pipeline
-RUN dotnet build "Host.Dataseeder.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
+RUN dotnet build "LocalHosting/Host.Dataseeder/Host.Dataseeder.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 WORKDIR "/src"
-RUN dotnet publish "Host.Dataseeder.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false --no-build
+RUN dotnet publish "LocalHosting/Host.Dataseeder/Host.Dataseeder.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false --no-build
 
 FROM base AS final
 WORKDIR /app

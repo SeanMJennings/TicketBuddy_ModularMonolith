@@ -118,5 +118,5 @@ public partial class TicketApiSpecs
         And(requesting_the_tickets);
         When(purchasing_all_tickets);
         Then(event_sold_out_integration_event_is_published);
-    }
+    } 
 }

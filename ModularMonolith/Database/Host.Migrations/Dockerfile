@@ -4,12 +4,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG GITHUB_TOKEN
 WORKDIR /src
-COPY ["Host.Migrations/Host.Migrations.csproj", "Host.Migrations/"]
-COPY ["Migrations/Migrations.csproj", "Migrations/"]
-RUN dotnet restore "Host.Migrations/Host.Migrations.csproj"
 COPY . .
-WORKDIR "/src/Host.Migrations"
+RUN dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json \
+    --name github \
+    --username SeanMJennings \
+    --password $GITHUB_TOKEN \
+    --store-password-in-clear-text
+RUN dotnet restore "Database/Host.Migrations/Host.Migrations.csproj"
+WORKDIR "/src/Database/Host.Migrations"
 RUN dotnet build "Host.Migrations.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

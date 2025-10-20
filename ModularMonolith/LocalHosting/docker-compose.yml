@@ -65,8 +65,8 @@ services:
   migrations:
     container_name: monolith-migrations
     build:
-      context: ../Database
-      dockerfile: Host.Migrations/Dockerfile
+      context: ..
+      dockerfile: Database/Host.Migrations/Dockerfile
     depends_on:
       postgresql:
         condition: service_healthy

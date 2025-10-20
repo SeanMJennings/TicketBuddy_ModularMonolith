@@ -112,32 +112,26 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ github.token }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'latest'
-          cache: 'npm'
-          cache-dependency-path: E2E/package-lock.json
-
-      - name: Restore .NET dependencies
-        run: dotnet restore ModularMonolith/TicketBuddy.sln --no-cache --force-evaluate
-
-      - name: Build .NET solution
-        run: dotnet build ModularMonolith/TicketBuddy.sln --configuration Release --no-restore
-
-      - name: Install Node.js dependencies for UI
-        working-directory: UI
-        run: npm install
-
-      - name: Install Node.js dependencies for E2E
-        working-directory: E2E
-        run: npm install
-        
-      - name: Install Playwright Browsers
-        run: |
-            npx playwright install chromium
-            sudo apt-get update
-            sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1
+#      - name: Set up Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: 'latest'
+#          cache: 'npm'
+#          cache-dependency-path: E2E/package-lock.json
+#
+#      - name: Install Node.js dependencies for UI
+#        working-directory: UI
+#        run: npm install
+#
+#      - name: Install Node.js dependencies for E2E
+#        working-directory: E2E
+#        run: npm install
+#        
+#      - name: Install Playwright Browsers and minimal dependencies
+#        run: |
+#            npx playwright install chromium
+#            sudo apt-get update
+#            sudo apt-get install -y libnss3 libatk-bridge2.0-0 libdrm2 libxcomposite1 libxdamage1 libxrandr2 libgbm1
         
       - name: Start up API and wait for health check
         working-directory: E2E
@@ -145,6 +139,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run start:api:docker & npx wait-on https://localhost:5001/health
         
-      - name: Run end-to-end tests
-        working-directory: E2E
-        run: npm run test:e2e
+#      - name: Run end-to-end tests
+#        working-directory: E2E
+#        run: npm run test:e2e

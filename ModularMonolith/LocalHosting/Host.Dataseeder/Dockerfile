@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY . .
-# restore needs to be done outside of this in build pipeline
+RUN dotnet restore "LocalHosting/Host.Dataseeder/Host.Dataseeder.csproj"
 RUN dotnet build "LocalHosting/Host.Dataseeder/Host.Dataseeder.csproj" -c $BUILD_CONFIGURATION -o /app/build --no-restore
 
 FROM build AS publish

@@ -8,7 +8,6 @@ using Domain.Users.Primitives;
 using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
-using WebHost;
 
 namespace Component.Api;
 
@@ -94,16 +93,6 @@ public partial class UserApiSpecs : TruncateDbSpecification
         create_update_content(new_name, new_email);
     }
 
-    private void a_request_to_create_a_user_with_same_email()
-    {
-        create_content(name, email);
-    }
-    
-    private void a_request_to_update_user_with_duplicate_email()
-    {
-        create_update_content(name, email);
-    }
-
     private void creating_the_user()
     {
         var response = client.PostAsync(Routes.Users, content).GetAwaiter().GetResult();
@@ -119,27 +108,11 @@ public partial class UserApiSpecs : TruncateDbSpecification
         another_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
     }
     
-    private void creating_the_user_which_fails()
-    {
-        var response = client.PostAsync(Routes.Users, content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        content = response.Content;
-    }
-    
     private void updating_the_user()
     {
         var response = client.PutAsync(Routes.Users + $"/{returned_id}", content).GetAwaiter().GetResult();
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.NoContent);
-    }
-    
-    private void updating_another_user_which_fails()
-    {
-        var response = client.PutAsync(Routes.Users + $"/{another_id}", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        content = response.Content;
     }
     
     private void a_user_exists()
@@ -201,11 +174,5 @@ public partial class UserApiSpecs : TruncateDbSpecification
         theUser.Count.ShouldBe(2);
         theUser.Single(e => e.Id == returned_id).FullName.ToString().ShouldBe(name);
         theUser.Single(e => e.Id == another_id).FullName.ToString().ShouldBe(new_name);
-    }
-
-    private void email_already_exists()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult()).Errors.ShouldContain("Email already exists");
     }
 }

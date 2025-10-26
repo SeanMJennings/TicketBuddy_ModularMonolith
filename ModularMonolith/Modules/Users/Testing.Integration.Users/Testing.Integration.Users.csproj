@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>default</LangVersion>
+        <RootNamespace>Integration</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
+        <PackageReference Include="Common.Environment" Version="1.0.11" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.9" />
+        <PackageReference Include="NSubstitute" Version="5.3.0" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+        <PackageReference Include="NUnit" Version="4.4.0" />
+        <PackageReference Include="Testcontainers" Version="4.7.0" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.7.0" />
+        <PackageReference Include="Testcontainers.RabbitMq" Version="4.7.0" />
+        <PackageReference Include="Testcontainers.Redis" Version="4.7.0" />
+        <PackageReference Include="Testing.Bdd" Version="1.0.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Database\Migrations\Migrations.csproj" />
+        <ProjectReference Include="..\Controllers.Users\Controllers.Users.csproj" />
+        <ProjectReference Include="..\Infrastructure.Users\Infrastructure.Users.csproj" />
+        <ProjectReference Include="..\Integration.Users.Messaging\Integration.Users.Messaging.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 
-namespace Component.Api;
+namespace Integration;
 
-public partial class UserApiSpecs
+public partial class UserControllerSpecs
 {
     [Test]
     public void can_create_user()
@@ -30,5 +30,24 @@ public partial class UserApiSpecs
         And(another_user_exists);
         When(listing_the_users);
         Then(the_users_are_listed);
+    }
+    
+    [Test]
+    public void cannot_create_user_with_duplicate_email()
+    {
+        Given(a_user_exists);
+        And(a_request_to_create_a_user_with_same_email);
+        When(creating_the_user_which_fails);
+        Then(email_already_exists);
+    }
+    
+    [Test]
+    public void cannot_update_user_with_duplicate_email()
+    {
+        Given(a_user_exists);
+        And(another_user_exists);
+        And(a_request_to_update_user_with_duplicate_email);
+        When(updating_another_user_which_fails);
+        Then(email_already_exists);
     }
 }

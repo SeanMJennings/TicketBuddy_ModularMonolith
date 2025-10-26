@@ -31,7 +31,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private ServiceProvider serviceProvider = null!;
     private EventPayload eventPayload = null!;
     private UpdateEventPayload updateEventPayload = null!;
-    private Exception theError = null!;
+    private ValidationException theError = null!;
     private Event theEvent = null!;
     private List<Event> theEvents = [];
 
@@ -277,19 +277,16 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     
     private void the_event_is_not_created()
     {
-        theError.ShouldBeOfType<ValidationException>();
         theError.Message.ShouldContain("Event date cannot be in the past");
     }
 
     private void the_user_is_informed_that_the_venue_is_unavailable()
     {
-        theError.ShouldBeOfType<ValidationException>();
         theError.Message.ShouldContain("Venue is not available at the selected time");
     }
     
     private void the_event_is_not_updated()
     {
-        theError.ShouldBeOfType<ValidationException>();
         theError.Message.ShouldContain("Event date cannot be in the past");
     }
     

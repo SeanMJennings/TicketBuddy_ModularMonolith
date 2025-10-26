@@ -25,7 +25,7 @@ public class UserController(UserCommands userCommands, UserQueries userQueries) 
     }    
     
     [HttpPost(Routes.Users)]
-    public async Task<ActionResult<Guid>> CreateUser([FromBody] UserPayload payload)
+    public async Task<CreatedResult> CreateUser([FromBody] UserPayload payload)
     {
         var id = await userCommands.CreateUser(payload.FullName, payload.Email, payload.UserType);
         return Created($"/{Routes.Users}/{id}", id);

@@ -121,6 +121,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Integration.Events"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Integration.Tickets", "Modules\Tickets\Testing.Integration.Tickets\Testing.Integration.Tickets.csproj", "{E1096C0B-2878-4CF2-B943-39925E3FCFED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Integration.Users", "Modules\Users\Testing.Integration.Users\Testing.Integration.Users.csproj", "{B83BD312-6CFD-4747-834D-99D664BA67C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -263,6 +265,10 @@ Global
 		{E1096C0B-2878-4CF2-B943-39925E3FCFED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1096C0B-2878-4CF2-B943-39925E3FCFED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1096C0B-2878-4CF2-B943-39925E3FCFED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B83BD312-6CFD-4747-834D-99D664BA67C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B83BD312-6CFD-4747-834D-99D664BA67C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B83BD312-6CFD-4747-834D-99D664BA67C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B83BD312-6CFD-4747-834D-99D664BA67C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -308,5 +314,6 @@ Global
 		{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C} = {A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}
 		{65919C1C-B149-4908-994A-ED450B9375C3} = {941704C9-A452-4C0D-9B60-E7CC0C871CAE}
 		{E1096C0B-2878-4CF2-B943-39925E3FCFED} = {9ED07BC2-571C-4D7B-B514-25B4D12ACACD}
+		{B83BD312-6CFD-4747-834D-99D664BA67C3} = {1FAA0D3A-4BA6-4D6C-BD24-9736B371E617}
 	EndGlobalSection
 EndGlobal

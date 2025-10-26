@@ -8,7 +8,7 @@ namespace Infrastructure.Tickets.Configuration;
 
 public static class Services
 {
-    public static void ConfigureTicketsServices(this IServiceCollection services)
+    public static IServiceCollection ConfigureTicketsServices(this IServiceCollection services)
     {
         services.AddScoped<IPersistEvents, Commands.EventRepository>();
         services.AddScoped<IPersistUsers, Commands.UserRepository>();
@@ -17,5 +17,6 @@ public static class Services
         services.AddScoped<TicketQueries>();
         services.AddScoped<AllTicketsSoldHandler>();
         services.AddSingleton(DomainEventsToHandlersMap.Map);
+        return services;
     }
 }

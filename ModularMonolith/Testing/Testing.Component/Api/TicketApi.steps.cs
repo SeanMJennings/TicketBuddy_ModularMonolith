@@ -5,7 +5,6 @@ using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Integration.Events.Messaging;
-using Integration.Tickets.Messaging.Messages;
 using Integration.Users.Messaging;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,6 @@ using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
-using WebHost;
 
 namespace Component.Api;
 
@@ -25,16 +23,13 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     private Guid event_id = Guid.NewGuid();
     private Guid user_id = Guid.NewGuid();
-    private readonly Guid another_user_id = Guid.NewGuid();
     private const decimal price = 25.00m;
     private const decimal new_price = 26.00m;
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
     private const string name = "wibble";
     private const string full_name = "John Smith";
-    private const string another_full_name = "Johnny Smith";
     private const string email = "john.smith@gmail.com";
-    private const string another_email = "johnny.smith@gmail.com";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
     private readonly DateTime event_end_date = DateTime.Now.AddDays(1).AddHours(2);
     private static PostgreSqlContainer database = null!;
@@ -118,17 +113,6 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         testHarness.Consumed.Any<UserUpserted>(x => x.Context.Message.Id == user_id).Await();
     }
 
-    private void another_user_exists()
-    {
-        testHarness.Bus.Publish(new UserUpserted
-        {
-            Id = another_user_id,
-            FullName = another_full_name,
-            Email = another_email
-        });
-        testHarness.Consumed.Any<UserUpserted>(x => x.Context.Message.Id == another_user_id).Await();
-    }
-
     private void requesting_the_tickets()
     {
         var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
@@ -154,11 +138,6 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         purchasing_two_tickets();
     }
     
-    private void purchasing_two_tickets_again()
-    {
-        purchasing_two_tickets();
-    }
-    
     private void reserving_a_ticket()
     {
         content = new StringContent(
@@ -166,49 +145,6 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             Encoding.UTF8,
             application_json);
         var response = client.PostAsync(EventTickets(event_id) + "/reserve", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-    }
-
-    private void the_user_extends_their_reservation()
-    {
-        reserving_a_ticket();
-    }
-
-    private void another_user_reserving_a_ticket()
-    {
-        content = new StringContent(
-            JsonSerialization.Serialize(new TicketReservationPayload(another_user_id, ticket_ids.Take(1).ToArray())),
-            Encoding.UTF8,
-            application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/reserve", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-    }
-
-    private void the_user_purchases_their_reserved_ticket()
-    {
-        purchasing_two_tickets();
-    }
-
-    private void another_user_purchasing_the_reserved_ticket()
-    {
-        content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload(another_user_id, ticket_ids.Take(1).ToArray())),
-            Encoding.UTF8,
-            application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-    }
-
-    private void purchasing_two_non_existent_tickets()
-    {
-        content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload(user_id, [Guid.NewGuid(), Guid.NewGuid()])),
-            Encoding.UTF8,
-            application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
         response_code = response.StatusCode;
         content = response.Content;
     }
@@ -254,20 +190,6 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         {
             ticket.Purchased.ShouldBeTrue();
         }
-    }
-
-    private void user_informed_they_cannot_purchase_tickets_that_are_purchased()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var theError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        theError.Errors.ShouldContain("Tickets are not available");
-    }
-
-    private void user_informed_they_cannot_purchase_tickets_that_are_non_existent()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var theError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        theError.Errors.ShouldContain("One or more tickets do not exist");
     }
 
     private void the_ticket_prices_are_updated()
@@ -318,44 +240,6 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         var keyValue = db.StringGet(reservationKey);
         keyValue.HasValue.ShouldBeTrue();
         keyValue.ToString().ShouldBe(user_id.ToString());
-    }
-
-    private void user_informed_they_cannot_reserve_an_already_reserved_ticket()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var theError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        theError.Errors.ShouldContain("Tickets already reserved");
-    }
-
-    private void another_user_informed_they_cannot_purchase_a_reserved_ticket()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var theError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        theError.Errors.ShouldContain("Tickets already reserved");
-    }
-    
-    private void purchasing_all_tickets()
-    {
-        content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids)),
-            Encoding.UTF8,
-            application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-    }
-    
-    private void event_sold_out_integration_event_is_published()
-    {
-        response_code.ShouldBe(HttpStatusCode.NoContent);
-        
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-        tickets.Count.ShouldBe(17);
-        tickets.All(t => t.Purchased).ShouldBeTrue();
-        
-        testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id).Await().ShouldBeTrue();
     }
     
     // [NotMapped] property in read model class affects serialization, so using a private class here for testing

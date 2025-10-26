@@ -7,7 +7,7 @@ namespace Infrastructure.Tickets.Configuration;
 
 public static class Database
 {
-    public static void ConfigureTicketsDatabase(this IServiceCollection services, string connectionString)
+    public static IServiceCollection ConfigureTicketsDatabase(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<TicketDbContext>(options =>
         {
@@ -17,5 +17,6 @@ public static class Database
             });
         });
         services.AddScoped<TheDatabase>(_ => new TheDatabase(connectionString));
+        return services;
     }
 }

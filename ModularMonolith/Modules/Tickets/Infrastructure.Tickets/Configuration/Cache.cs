@@ -5,7 +5,7 @@ namespace Infrastructure.Tickets.Configuration;
 
 public static class Cache
 {
-    public static void ConfigureCache(this IServiceCollection services, string redisConnectionString)
+    public static IServiceCollection ConfigureCache(this IServiceCollection services, string redisConnectionString)
     {
         services.AddSingleton<IConnectionMultiplexer>(_ =>
         {
@@ -13,5 +13,6 @@ public static class Cache
             configuration.ResolveDns = true;
             return ConnectionMultiplexer.Connect(configuration);
         });
+        return services;
     }
 }

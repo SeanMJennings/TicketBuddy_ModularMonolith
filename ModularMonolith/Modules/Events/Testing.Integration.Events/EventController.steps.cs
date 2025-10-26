@@ -77,21 +77,20 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
+            .ConfigureEventsServices()
             .ConfigureEventsDatabase(database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
             })
             .AddSingleton(new Dictionary<Type, Type>())
+            .AddScoped<EventController>()
             .BuildServiceProvider();
         
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
         testHarness.Start().Await();
-        var publisher = serviceProvider.GetRequiredService<IPublishEndpoint>();
-        var eventDbContext = serviceProvider.GetRequiredService<EventDbContext>();
-        var eventsRepository = new EventRepository(eventDbContext, publisher);
-        eventController = new EventController(new EventCommands(eventsRepository), new EventQueries(eventsRepository));
-        eventSoldOutConsumer = new EventSoldOutConsumer(eventsRepository);
+        eventController = serviceProvider.GetRequiredService<EventController>();
+        eventSoldOutConsumer = serviceProvider.GetRequiredService<EventSoldOutConsumer>();
     }
 
     protected override void after_each()

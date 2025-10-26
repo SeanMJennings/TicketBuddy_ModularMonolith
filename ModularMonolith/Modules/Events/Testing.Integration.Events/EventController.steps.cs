@@ -3,7 +3,6 @@ using Application.Events.Commands;
 using Application.Events.IntegrationMessageConsumers;
 using Application.Events.Queries;
 using BDD;
-using Component;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Primitives;

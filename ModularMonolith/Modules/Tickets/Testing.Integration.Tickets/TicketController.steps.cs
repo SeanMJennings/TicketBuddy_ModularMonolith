@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Application.Tickets.IntegrationMessageConsumers;
 using BDD;
-using Component;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Infrastructure.Configuration;

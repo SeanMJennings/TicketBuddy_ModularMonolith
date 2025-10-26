@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BDD;
-using Component;
 using Controllers.Users;
 using Controllers.Users.Requests;
 using Domain.Users.Entities;

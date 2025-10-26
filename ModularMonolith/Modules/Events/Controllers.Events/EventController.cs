@@ -25,7 +25,7 @@ public class EventController(EventCommands eventCommands, EventQueries eventQuer
     }    
     
     [HttpPost(Routes.Events)]
-    public async Task<ActionResult<Guid>> CreateEvent([FromBody] EventPayload payload)
+    public async Task<CreatedResult> CreateEvent([FromBody] EventPayload payload)
     {
         var eventId = await eventCommands.CreateEvent(payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
         return Created($"/{Routes.Events}/{eventId}", eventId);

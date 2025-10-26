@@ -6,7 +6,7 @@ namespace Infrastructure.Events.Configuration;
 
 public static class Database
 {
-    public static void ConfigureEventsDatabase(this IServiceCollection services, string connectionString)
+    public static IServiceCollection ConfigureEventsDatabase(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<EventDbContext>(options =>
         {
@@ -15,5 +15,6 @@ public static class Database
                 sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
             });
         });
+        return services;
     }
 }

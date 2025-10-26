@@ -5,17 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
-        <RootNamespace>Component</RootNamespace>
+        <RootNamespace>Integration</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
-      <ProjectReference Include="..\..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
-      <ProjectReference Include="..\..\Host\Host.csproj" />
-      <ProjectReference Include="..\..\CommonLibraries\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\Database\Migrations\Migrations.csproj" />
-    </ItemGroup>
-    
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
@@ -30,19 +22,17 @@
         <PackageReference Include="Testcontainers.Redis" Version="4.7.0" />
         <PackageReference Include="Testing.Bdd" Version="1.0.6" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Compile Update="Api\UserApi.steps.cs">
-        <DependentUpon>UserApi.specs.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Api\TicketApi.steps.cs">
-        <DependentUpon>TicketApi.specs.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Api\HealthApi.steps.cs">
-        <DependentUpon>HealthApi.specs.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Api\EventApi.steps.cs">
-        <DependentUpon>EventApi.specs.cs</DependentUpon>
+      <ProjectReference Include="..\..\..\Database\Migrations\Migrations.csproj" />
+      <ProjectReference Include="..\Controllers.Events\Controllers.Events.csproj" />
+      <ProjectReference Include="..\Infrastructure.Events\Infrastructure.Events.csproj" />
+      <ProjectReference Include="..\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="EventController.steps.cs">
+        <DependentUpon>EventController.specs.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

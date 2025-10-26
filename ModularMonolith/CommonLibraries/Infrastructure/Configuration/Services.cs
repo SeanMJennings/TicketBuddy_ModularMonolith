@@ -5,9 +5,10 @@ namespace Infrastructure.Configuration;
 
 public static class Services
 {
-    public static void ConfigureInfrastructureServices(this IServiceCollection services)
+    public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
     {
         services.AddScoped<DomainEventsDispatcher>();
         services.AddScoped<DomainEventsMapper>();
+        return services;
     }
 }

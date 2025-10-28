@@ -22,7 +22,7 @@ import {
     SuccessMessage, CenteredButtonContainer
 } from './TicketPurchase.styles';
 import {purchaseTickets} from "../api/tickets.api.ts";
-import {handleError} from "../common/http.ts";
+import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 

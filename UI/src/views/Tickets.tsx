@@ -19,7 +19,7 @@ import {BackIcon} from './EventsManagement.styles';
 import {getTicketsForEvent, reserveTickets} from "../api/tickets.api.ts";
 import {useUsersStore} from "../stores/users.store.ts";
 import {useShallow} from "zustand/react/shallow";
-import {handleError} from "../common/http.ts";
+import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 

@@ -1,17 +1,26 @@
-﻿import {toast} from "react-toastify";
+﻿const api = import.meta.env.VITE_API_URL || '';
 
-const api = import.meta.env.VITE_API_URL || '';
+function redirectToErrorPage() {
+    window.location.assign('/error');
+}
 
 export async function get<T>(url: string): Promise<T> {
     return fetch(api + url, {})
         .then(async response => {
             if (!response.ok) {
+                if (response.status >= 500 && response.status < 600) {
+                    redirectToErrorPage();
+                }
                 throw {
                     error: (await response.json()).error,
                     code: response.status
                 };
             }
             return (await response.json());
+        })
+        .catch((err) => {
+            redirectToErrorPage();
+            throw err;
         });
 }
 
@@ -20,7 +29,12 @@ export async function post(url: string, body: unknown): Promise<unknown> {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body)
-    }).then(handleResponse())
+    })
+    .then(handleResponse())
+    .catch((err) => {
+        redirectToErrorPage();
+        throw err;
+    });
 }
 
 export async function put(url: string, body: unknown): Promise<unknown> {
@@ -28,7 +42,12 @@ export async function put(url: string, body: unknown): Promise<unknown> {
         method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body)
-    }).then(handleResponse())
+    })
+    .then(handleResponse())
+    .catch((err) => {
+        redirectToErrorPage();
+        throw err;
+    });
 }
 
 export async function deleteCall(url: string): Promise<unknown> {
@@ -37,6 +56,7 @@ export async function deleteCall(url: string): Promise<unknown> {
     })
         .then(handleResponse())
         .catch((err: Error) => {
+            redirectToErrorPage();
             throw {
                 message: err?.message || 'Network error',
                 status: 0
@@ -44,25 +64,13 @@ export async function deleteCall(url: string): Promise<unknown> {
         })
 }
 
-export function handleError(error: ApiResponseError) {
-    if (error.errors && Array.isArray(error.errors)) {
-        error.errors.forEach((errorMessage: string) => {
-            toast.error(errorMessage);
-        });
-    } else {
-        toast.error('Failed to complete purchase. Please try again.');
-    }
-}
-
-export type ApiResponseError = {
-    errors: string[];
-    code: number;
-}
-
 function handleResponse(): ((value: Response) => unknown) | null | undefined {
     return async (response) => {
         if (response.status === 204) return;
         if (!response.ok) {
+            if (response.status >= 500 && response.status < 600) {
+                redirectToErrorPage();
+            }
             throw {
                 errors: (await response?.json())?.Errors,
                 code: response.status

@@ -19,7 +19,9 @@ function App() {
     }))));
 
     useEffect(() => {
-        fetchUsers();
+        if (window.location.pathname !== "/error") {
+            fetchUsers();
+        }
     }, [fetchUsers]);
 
   return (

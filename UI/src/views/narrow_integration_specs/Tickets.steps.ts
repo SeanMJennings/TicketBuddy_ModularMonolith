@@ -36,7 +36,7 @@ beforeEach(() => {
     mockServer.reset();
     wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, Events[0]);
     wait_for_get_tickets = mockServer.get(`/events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
-    wait_for_reserve_tickets = mockServer.post(`/events/${Events[0].Id}/tickets/reserve`, {}, true);
+    wait_for_reserve_tickets = mockServer.post(`/events/${Events[0].Id}/tickets/reserve`, {});
     mockServer.start();
 });
 
@@ -90,7 +90,7 @@ export async function should_show_error_if_fail_to_reserve_ticket() {
     await waitUntil(wait_for_get_tickets);
 
     mockServer.reset();
-    wait_for_reserve_tickets = mockServer.post(`/events/${Events[0].Id}/tickets/reserve`, { Errors: ["Tickets already reserved"] }, false);
+    wait_for_reserve_tickets = mockServer.post(`/events/${Events[0].Id}/tickets/reserve`, { Errors: ["Tickets already reserved"] }, 422);
     mockServer.start();
 
     await clickSeat(1);

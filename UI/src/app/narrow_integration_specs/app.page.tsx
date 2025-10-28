@@ -50,12 +50,24 @@ export function renderAppAtUnknownRoute() {
     return renderedComponent;
 }
 
+export function renderAppAtError() {
+    renderedComponent = render(
+            <MemoryRouter initialEntries={['/error']}>
+                <App/>
+            </MemoryRouter>)
+    return renderedComponent;
+}
+
 export function unmountApp() {
     renderedComponent.unmount();
 }
 
 export function homePageIsRendered() {
     return elements.home() !== null;
+}
+
+export function errorPageIsRendered() {
+    return elements.errorPage() !== null;
 }
 
 export function notFoundIsRendered() {
@@ -131,4 +143,5 @@ const elements = {
     ticketLogo: () => renderedComponent.queryByAltText("Ticket Stub"),
     theTicketLogo: () => renderedComponent.findByAltText("Ticket Stub"),
     userProfilePage: () => renderedComponent.queryByRole("heading", { name: "User Profile" }),
+    errorPage: () => renderedComponent.queryByText("We're sorry, but an unexpected error occurred. Please try again later."),
 }

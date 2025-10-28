@@ -38,7 +38,7 @@ let wait_for_post_purchase: () => boolean;
 
 beforeEach(() => {
   mockServer.reset();
-  wait_for_post_purchase = mockServer.post(`/events/${event.Id}/tickets/purchase`, {}, true);
+  wait_for_post_purchase = mockServer.post(`/events/${event.Id}/tickets/purchase`, {});
   mockServer.start();
 });
 

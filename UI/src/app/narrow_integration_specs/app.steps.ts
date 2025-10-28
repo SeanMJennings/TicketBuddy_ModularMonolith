@@ -13,7 +13,7 @@
     unmountApp,
     userProfilePageIsRendered,
     userIconIsRendered,
-    usersDropdownIsRendered
+    usersDropdownIsRendered, errorPageIsRendered, renderAppAtError
 } from "./app.page";
 import {afterEach, beforeEach, expect} from "vitest";
 import {MockServer} from "../../testing/mock-server";
@@ -102,4 +102,9 @@ export async function should_navigate_to_home_page_when_ticket_logo_is_clicked()
     await clickTicketLogo();
     expect(homePageIsRendered()).toBeTruthy();
     expect(eventsManagementPageIsRendered()).toBeFalsy();
+}
+
+export async function should_redirect_to_error_page_on_server_error() {
+    renderAppAtError();
+    expect(errorPageIsRendered()).toBeTruthy();
 }

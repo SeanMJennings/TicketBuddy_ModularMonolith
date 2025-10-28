@@ -11,6 +11,7 @@ import {NotFound} from "../components/NotFound.tsx";
 import {Tickets} from "../views/Tickets.tsx";
 import {TicketPurchase} from "../views/TicketPurchase.tsx";
 import {UserProfile} from "../views/UserProfile.tsx";
+import { ErrorPage } from "../views/ErrorPage";
 
 function App() {
     const { fetchUsers } = useUsersStore(useShallow((state => ({
@@ -44,6 +45,7 @@ export const AppRoutes = () => (
         <Route path="/tickets/:eventId" element={<Tickets />} />
         <Route path="/tickets/:eventId/purchase" element={<TicketPurchase />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/error" element={<ErrorPage />} />
         <Route path="/" element={<Home/>} />
         <Route path="*" element={<NotFound/>}/>
     </Routes>

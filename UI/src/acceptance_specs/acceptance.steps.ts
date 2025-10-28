@@ -30,8 +30,8 @@ beforeEach(() => {
     wait_for_get_events = mockServer.get("events", Events);
     wait_for_get_event = mockServer.get(`events/${Events[0].Id}`, Events[0]);
     wait_for_get_tickets = mockServer.get(`events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
-    wait_for_post_reservation = mockServer.post(`events/${Events[0].Id}/tickets/reserve`, {}, true);
-    wait_for_post_ticket = mockServer.post(`events/${Events[0].Id}/tickets/purchase`, {}, true);
+    wait_for_post_reservation = mockServer.post(`events/${Events[0].Id}/tickets/reserve`, {});
+    wait_for_post_ticket = mockServer.post(`events/${Events[0].Id}/tickets/purchase`, {});
     wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[1].Id}`, TicketBoughtForFirstEvent);
     mockServer.start();
 });

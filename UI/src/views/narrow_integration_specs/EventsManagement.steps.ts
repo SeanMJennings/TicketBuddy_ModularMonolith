@@ -32,8 +32,8 @@ beforeEach(() => {
     mockServer.reset();
     wait_for_get_events = mockServer.get("/events", Events);
     wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, Events[0]);
-    wait_for_post = mockServer.post("/events", {}, true, undefined);
-    wait_for_put = mockServer.put(`/events/${Events[0].Id}`, {}, true);
+    wait_for_post = mockServer.post("/events", {});
+    wait_for_put = mockServer.put(`/events/${Events[0].Id}`, {});
     mockServer.start();
 });
 
@@ -175,7 +175,7 @@ export async function should_show_error_toast_when_event_update_fails() {
         Message: "The request could not be correctly validated.",
         Errors: ["End date cannot be before start date"]
     };
-    wait_for_put = mockServer.put(`/events/${eventToEdit.Id}`, errorResponse, false);
+    wait_for_put = mockServer.put(`/events/${eventToEdit.Id}`, errorResponse, 422);
     mockServer.start();
 
     const currentDate = new Date();
@@ -213,7 +213,7 @@ export async function should_show_error_toast_when_event_creation_fails() {
         Message: "The request could not be correctly validated.",
         Errors: ["End date cannot be before start date"]
     };
-    wait_for_post = mockServer.post("/events", errorResponse, false, 400);
+    wait_for_post = mockServer.post("/events", errorResponse, 422, 400);
     mockServer.start();
 
     const currentDate = new Date();

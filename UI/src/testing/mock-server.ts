@@ -24,20 +24,19 @@ export class MockServer {
         this.content = null;
     }
 
-    public get(url: string, response: JsonBodyType, delayValue?: number, success = true): () => boolean {
+    public get(url: string, response: JsonBodyType, delayValue?: number, statusCode: number = 200): () => boolean {
         let called = false;
         const was_called = () => called;
         this.server.use(http.get(url, async (req) => {
             if (delayValue) await delay(delayValue)
             called = true;
             this.headers = req.request.headers
-            if (!success) return HttpResponse.json(response, {status: 422})
-            return HttpResponse.json(response, {status: 200})
+            return HttpResponse.json(response, {status: statusCode})
         }));
         return was_called
     }
 
-    public post(url: string, response?: JsonBodyType, success = true, delayValue?: number, onCall?: () => void): () => boolean {
+    public post(url: string, response?: JsonBodyType, statusCode: number = 201, delayValue?: number, onCall?: () => void): () => boolean {
         let called = false;
         const was_called = () => called;
         this.server.use(http.post(url, async (req) => {
@@ -48,14 +47,13 @@ export class MockServer {
             req.request.body!.getReader().read().then(response => {
                 this.content = JSON.parse(new TextDecoder().decode(response.value));
             })
-            if (!success) return HttpResponse.json(response, {status: 422})
-            if (response) return HttpResponse.json(response, {status: 201})
+            if (response) return HttpResponse.json(response, {status: statusCode})
             return HttpResponse.json({}, {status: 204})
         }));
         return was_called
     }
 
-    public put(url: string, response = {}, success = true) {
+    public put(url: string, response = {}, statusCode: number = 200) {
         let called = false;
         const was_called = () => called;
         this.server.use(http.put(url, (req) => {
@@ -64,20 +62,18 @@ export class MockServer {
             req.request.body!.getReader().read().then(response => {
                 this.content = JSON.parse(new TextDecoder().decode(response.value));
             })
-            if (!success) return HttpResponse.json(response, {status: 422})
-            return HttpResponse.json({}, {status: 200})
+            return HttpResponse.json(response, {status: statusCode})
         }));
         return was_called
     }
 
-    public delete(url: string, response = {}, success = true) {
+    public delete(url: string, response = {}, statusCode: number = 200) {
         let called = false;
         const was_called = () => called;
         this.server.use(http.delete(url, (req) => {
             called = true;
             this.headers = req.request.headers
-            if (!success) return HttpResponse.json(response, {status: 422})
-            return HttpResponse.json({}, {status: 200})
+            return HttpResponse.json(response, {status: statusCode})
         }));
         return was_called
     }

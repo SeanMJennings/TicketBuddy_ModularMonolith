@@ -4,14 +4,14 @@ import {get} from "../http.ts";
 const originalLocation = window.location;
 
 beforeEach(() => {
-    // @ts-ignore
+    // @ts-expect-error
     delete window.location;
-    // @ts-ignore
+    // @ts-expect-error
     window.location = { assign: vi.fn() };
 });
 
 afterEach(() => {
-    // @ts-ignore
+    // @ts-expect-error
     window.location = originalLocation;
 })
 

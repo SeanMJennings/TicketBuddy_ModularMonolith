@@ -49,7 +49,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private static PostgreSqlContainer database = null!;
     private ITestHarness testHarness = null!;
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -57,11 +57,11 @@ public partial class EventControllerSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override Task before_each()
     {
         base.before_each();
         returned_id = Guid.Empty;
@@ -90,18 +90,19 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         testHarness.Start().Await();
         eventController = serviceProvider.GetRequiredService<EventController>();
         eventSoldOutConsumer = serviceProvider.GetRequiredService<EventSoldOutConsumer>();
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
-        testHarness.Stop().Await();
+        await Truncate(database.GetConnectionString());
+        await testHarness.Stop();
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
     }
 
     private void a_request_to_create_an_event()
@@ -159,17 +160,17 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         create_update_content(new_name, new_event_start_date, new_event_end_date, new_price);
     }
 
-    private void creating_the_event()
+    private async Task creating_the_event()
     {
-        var response = eventController.CreateEvent(eventPayload).Await();
+        var response = await eventController.CreateEvent(eventPayload);
         returned_id = Guid.Parse(response.Value!.ToString());
     }    
     
-    private void creating_the_event_that_will_fail()
+    private async Task creating_the_event_that_will_fail()
     {
         try
         {
-            eventController.CreateEvent(eventPayload).Await();
+            await eventController.CreateEvent(eventPayload);
         }
         catch (ValidationException e)
         {
@@ -177,28 +178,28 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         }
     }
     
-    private void creating_another_event()
+    private async Task creating_another_event()
     {
-        var response = eventController.CreateEvent(eventPayload).Await();
+        var response = await eventController.CreateEvent(eventPayload);
         another_id = Guid.Parse(response.Value!.ToString());
     }
     
-    private void creating_third_event()
+    private async Task creating_third_event()
     {
-        var response = eventController.CreateEvent(eventPayload).Await();
+        var response = await eventController.CreateEvent(eventPayload);
         third_id = Guid.Parse(response.Value!.ToString());
     }
     
-    private void updating_the_event()
+    private async Task updating_the_event()
     {
-        eventController.UpdateEvent(returned_id, updateEventPayload).Await();
+        await eventController.UpdateEvent(returned_id, updateEventPayload);
     }
     
-    private void updating_the_event_that_will_fail()
+    private async Task updating_the_event_that_will_fail()
     {
         try
         {
-            eventController.UpdateEvent(returned_id, updateEventPayload).Await();
+            await eventController.UpdateEvent(returned_id, updateEventPayload);
         }
         catch (ValidationException e)
         {
@@ -206,10 +207,10 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         }
     }
     
-    private void an_event_exists()
+    private async Task an_event_exists()
     {
         a_request_to_create_an_event();
-        creating_the_event();
+        await creating_the_event();
     }
 
     private void it_has_sold_out()
@@ -225,43 +226,43 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         Thread.Sleep(2000);
     }
     
-    private void an_imminent_event_exists()
+    private async Task an_imminent_event_exists()
     {
         a_request_to_create_an_event_imminently();
-        creating_the_event_that_will_fail();
+        await creating_the_event_that_will_fail();
     }
     
-    private void another_event_exists()
+    private async Task another_event_exists()
     {
         a_request_to_create_another_event();
-        creating_another_event();
+        await creating_another_event();
     }
 
-    private void a_third_event_exists()
+    private async Task a_third_event_exists()
     {
         a_request_to_create_third_event();
-        creating_third_event();
+        await creating_third_event();
     }
 
-    private void another_event_at_same_venue_exists()
+    private async Task another_event_at_same_venue_exists()
     {
         create_content(new_name, new_event_start_date, new_event_end_date, Venue.FirstDirectArenaLeeds, new_price);
-        creating_another_event();
+        await creating_another_event();
     }
 
-    private void requesting_the_event()
+    private async Task requesting_the_event()
     {
-        theEvent = eventController.GetEvent(returned_id).Await().Value!;
+        theEvent = (await eventController.GetEvent(returned_id)).Value!;
     }
     
-    private void requesting_the_updated_event()
+    private async Task requesting_the_updated_event()
     {
-        theEvent = eventController.GetEvent(returned_id).Await().Value!;
+        theEvent = (await eventController.GetEvent(returned_id)).Value!;
     }
     
-    private void listing_the_events()
+    private async Task listing_the_events()
     {
-        theEvents = eventController.GetEvents().Await().ToList();
+        theEvents = (await eventController.GetEvents()).ToList();
     }
 
     private void the_event_is_created()

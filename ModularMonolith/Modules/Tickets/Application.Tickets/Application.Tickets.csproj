@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MassTransit" Version="8.5.4" />
-      <PackageReference Include="StackExchange.Redis" Version="2.9.25" />
+      <PackageReference Include="MassTransit" Version="8.5.5" />
+      <PackageReference Include="StackExchange.Redis" Version="2.9.32" />
     </ItemGroup>
 
 </Project>

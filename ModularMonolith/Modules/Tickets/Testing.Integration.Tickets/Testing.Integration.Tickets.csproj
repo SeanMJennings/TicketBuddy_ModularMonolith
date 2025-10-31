@@ -30,4 +30,10 @@
         <ProjectReference Include="..\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="TicketController.steps.cs">
+        <DependentUpon>TicketController.specs.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

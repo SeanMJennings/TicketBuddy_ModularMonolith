@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text;
-using BDD;
 using Controllers.Users;
 using Controllers.Users.Requests;
 using Domain.Users.Entities;
@@ -27,7 +26,7 @@ public partial class UserApiSpecs : TruncateDbSpecification
     private const string new_email = "wobble@wibble.com";
     private static PostgreSqlContainer database = null!;
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -35,30 +34,30 @@ public partial class UserApiSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override Task before_each()
     {
-        base.before_each();
         content = null!;
         returned_id = Guid.Empty;
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString());
         client = factory.CreateClient();
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
+        await  Truncate(database.GetConnectionString());
         client.Dispose();
-        factory.Dispose();
+        await factory.DisposeAsync();
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
     }
 
     private void a_request_to_create_an_user()
@@ -93,64 +92,64 @@ public partial class UserApiSpecs : TruncateDbSpecification
         create_update_content(new_name, new_email);
     }
 
-    private void creating_the_user()
+    private async Task creating_the_user()
     {
-        var response = client.PostAsync(Routes.Users, content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Users, content);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
-        returned_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        returned_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
     }
     
-    private void creating_another_user()
+    private async Task creating_another_user()
     {
-        var response = client.PostAsync(Routes.Users, content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Users, content);
         response_code = response.StatusCode;
-        another_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        another_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
     }
     
-    private void updating_the_user()
+    private async Task updating_the_user()
     {
-        var response = client.PutAsync(Routes.Users + $"/{returned_id}", content).GetAwaiter().GetResult();
+        var response = await client.PutAsync(Routes.Users + $"/{returned_id}", content);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.NoContent);
     }
     
-    private void a_user_exists()
+    private async Task a_user_exists()
     {
         a_request_to_create_an_user();
-        creating_the_user();
+        await creating_the_user();
     }  
     
-    private void another_user_exists()
+    private async Task another_user_exists()
     {
         a_request_to_create_another_user();
-        creating_another_user();
+        await creating_another_user();
     }
 
-    private void requesting_the_user()
+    private async Task requesting_the_user()
     {
-        var response = client.GetAsync(Routes.Users + $"/{returned_id}").GetAwaiter().GetResult();
+        var response = await client.GetAsync(Routes.Users + $"/{returned_id}");
         response_code = response.StatusCode;
         content = response.Content;
     }
     
-    private void requesting_the_updated_user()
+    private async Task requesting_the_updated_user()
     {
-        var response = client.GetAsync(Routes.Users + $"/{returned_id}").GetAwaiter().GetResult();
+        var response = await client.GetAsync(Routes.Users + $"/{returned_id}");
         response_code = response.StatusCode;
         content = response.Content;
     }
     
-    private void listing_the_users()
+    private async Task listing_the_users()
     {
-        var response = client.GetAsync(Routes.Users).GetAwaiter().GetResult();
+        var response =await client.GetAsync(Routes.Users);
         response_code = response.StatusCode;
         content = response.Content;
     }
 
-    private void the_user_is_created()
+    private async Task the_user_is_created()
     {
-        var theUser = JsonSerialization.Deserialize<User>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var theUser = JsonSerialization.Deserialize<User>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theUser.Id.ShouldBe(returned_id);
         theUser.FullName.ToString().ShouldBe(name);
@@ -158,18 +157,18 @@ public partial class UserApiSpecs : TruncateDbSpecification
         theUser.UserType.ShouldBe(UserType.Administrator);
     }
     
-    private void the_user_is_updated()
+    private async Task the_user_is_updated()
     {
-        var theUser = JsonSerialization.Deserialize<User>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var theUser = JsonSerialization.Deserialize<User>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theUser.Id.ShouldBe(returned_id);
         theUser.FullName.ToString().ShouldBe(new_name);
         theUser.Email.ToString().ShouldBe(new_email);
     }    
     
-    private void the_users_are_listed()
+    private async Task the_users_are_listed()
     {
-        var theUser = JsonSerialization.Deserialize<IReadOnlyList<User>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var theUser = JsonSerialization.Deserialize<IReadOnlyList<User>>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theUser.Count.ShouldBe(2);
         theUser.Single(e => e.Id == returned_id).FullName.ToString().ShouldBe(name);

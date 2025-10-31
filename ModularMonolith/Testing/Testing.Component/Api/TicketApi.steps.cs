@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text;
-using BDD;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
@@ -39,7 +38,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private static string TicketsForUser(Guid userId) => $"tickets/users/{userId}";
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -47,15 +46,14 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
         redis = new RedisBuilder().WithPortBinding(6380, true).Build();
-        redis.StartAsync().Await();
+        await redis.StartAsync();
     }
     
-    protected override void before_each()
+    protected override async Task before_each()
     {
-        base.before_each();
         content = null!;
         ticket_ids = [];
         event_id = Guid.NewGuid();
@@ -63,34 +61,34 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString());
         client = factory.CreateClient();
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
-        testHarness.Start().Await();
+        await testHarness.Start();
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
-        ClearRedisCache();
-        testHarness.Stop().Await();
+        await Truncate(database.GetConnectionString());
+        await ClearRedisCache();
+        await testHarness.Stop();
         client.Dispose();
-        factory.Dispose();
+        await factory.DisposeAsync();
     }
 
-    private void ClearRedisCache()
+    private async Task ClearRedisCache()
     {
-        redis.ExecScriptAsync("return redis.call('FLUSHALL')").Await();
+        await redis.ExecScriptAsync("return redis.call('FLUSHALL')");
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
-        redis.StopAsync().Await();
-        redis.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
+        await redis.StopAsync();
+        await redis.DisposeAsync();
     }
 
-    private void an_event_exists()
+    private async Task an_event_exists()
     {
-        testHarness.Bus.Publish(new EventUpserted
+        await testHarness.Bus.Publish(new EventUpserted
         {
             Id = event_id,
             EventName = name,
@@ -99,59 +97,59 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             Venue = Venue.EmiratesOldTraffordManchester,
             Price = price
         });
-        testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id).Await();
+        await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id);
     }
 
-    private void a_user_exists()
+    private async Task a_user_exists()
     {
-        testHarness.Bus.Publish(new UserUpserted
+        await testHarness.Bus.Publish(new UserUpserted
         {
             Id = user_id,
             FullName = full_name,
             Email = email
         });
-        testHarness.Consumed.Any<UserUpserted>(x => x.Context.Message.Id == user_id).Await();
+        await testHarness.Consumed.Any<UserUpserted>(x => x.Context.Message.Id == user_id);
     }
 
-    private void requesting_the_tickets()
+    private async Task requesting_the_tickets()
     {
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response_code = response.StatusCode;
         content = response.Content;
         var tickets = JsonSerialization.Deserialize<IList<Domain.Tickets.Queries.Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
 
-    private void purchasing_two_tickets()
+    private async Task purchasing_two_tickets()
     {
         content = new StringContent(
             JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray())),
             Encoding.UTF8,
             application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
         response_code = response.StatusCode;
         content = response.Content;
     }
 
-    private void two_tickets_are_purchased()
+    private async Task two_tickets_are_purchased()
     {
-        purchasing_two_tickets();
+        await purchasing_two_tickets();
     }
     
-    private void reserving_a_ticket()
+    private async Task reserving_a_ticket()
     {
         content = new StringContent(
             JsonSerialization.Serialize(new TicketReservationPayload(user_id, ticket_ids.Take(1).ToArray())),
             Encoding.UTF8,
             application_json);
-        var response = client.PostAsync(EventTickets(event_id) + "/reserve", content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);
         response_code = response.StatusCode;
         content = response.Content;
     }
 
-    private void updating_the_ticket_prices()
+    private async Task updating_the_ticket_prices()
     {
-        testHarness.Bus.Publish(new EventUpserted
+        await testHarness.Bus.Publish(new EventUpserted
         {
             Id = event_id,
             EventName = name,
@@ -160,13 +158,13 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             Venue = Venue.EmiratesOldTraffordManchester,
             Price = new_price
         });
-        testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price).Await();
+        await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price);
     }
 
-    private void the_tickets_are_released()
+    private async Task the_tickets_are_released()
     {
         response_code.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await content.ReadAsStringAsync());
         tickets.Count.ShouldBe(17);
         tickets = tickets.OrderBy(t => t.SeatNumber).ToList();
         uint counter = 1;
@@ -179,12 +177,12 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         }
     }
 
-    private void the_tickets_are_purchased()
+    private async Task the_tickets_are_purchased()
     {
         response_code.ShouldBe(HttpStatusCode.NoContent);
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(17);
         foreach (var ticket in tickets.Where(t => ticket_ids.Take(2).Contains(t.Id)).ToList())
         {
@@ -192,12 +190,12 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         }
     }
 
-    private void the_ticket_prices_are_updated()
+    private async Task the_ticket_prices_are_updated()
     {
         response_code.ShouldBe(HttpStatusCode.NoContent);
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(17);
         foreach (var ticket in tickets.Where(t => !ticket_ids.Take(2).Contains(t.Id)).ToList())
         {
@@ -205,11 +203,11 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         }
     }
 
-    private void purchased_tickets_are_not_updated()
+    private async Task purchased_tickets_are_not_updated()
     {
-        var response = client.GetAsync(TicketsForUser(user_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(TicketsForUser(user_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(2);
         foreach (var ticket in tickets)
         {
@@ -217,18 +215,18 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         }
     }
 
-    private void the_ticket_is_reserved()
+    private async Task the_ticket_is_reserved()
     {
         response_code.ShouldBe(HttpStatusCode.NoContent);
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().Await());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(17);
         var reservedTicket = tickets.Single(t => t.Id == ticket_ids.Take(1).First());
         reservedTicket.Reserved.ShouldBeTrue();
     }
 
-    private void the_reservation_expires_in_15_minutes()
+    private async Task the_reservation_expires_in_15_minutes()
     {
         var cache = factory.Services.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         var db = cache.GetDatabase();

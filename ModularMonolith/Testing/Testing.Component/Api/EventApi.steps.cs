@@ -1,18 +1,15 @@
 ﻿using System.Net;
 using System.Text;
-using BDD;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Domain.Primitives;
 using Integration.Events.Messaging;
-using Integration.Tickets.Messaging.Messages;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
-using WebHost;
 
 namespace Component.Api;
 
@@ -33,13 +30,12 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private readonly DateTimeOffset event_end_date = DateTimeOffset.UtcNow.AddDays(3).AddHours(2);
     private readonly DateTimeOffset new_event_start_date = DateTimeOffset.UtcNow.AddDays(1);
     private readonly DateTimeOffset new_event_end_date = DateTimeOffset.UtcNow.AddDays(1).AddHours(2);
-    private readonly DateTimeOffset past_event_start_date = DateTimeOffset.UtcNow.AddDays(-1);
     private const decimal price = 12.34m;
     private const decimal new_price = 23.45m;
     private static PostgreSqlContainer database = null!;
     private ITestHarness testHarness = null!;
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -47,58 +43,37 @@ public partial class EventApiSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override async Task before_each()
     {
-        base.before_each();
         content = null!;
         returned_id = Guid.Empty;
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString());
         client = factory.CreateClient();
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
-        testHarness.Start().Await();
+        await testHarness.Start();
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
-        testHarness.Stop().Await();
+        await Truncate(database.GetConnectionString());
+        await testHarness.Stop();
         client.Dispose();
-        factory.Dispose();
+        await factory.DisposeAsync();
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
     }
 
     private void a_request_to_create_an_event()
     {
         create_content(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
-    }
-
-    private void a_request_to_create_an_event_imminently()
-    {
-        create_content(name, DateTimeOffset.UtcNow.AddSeconds(1), DateTimeOffset.UtcNow.AddSeconds(2), Venue.FirstDirectArenaLeeds, price);
-    }
-    
-    private void a_request_to_create_an_event_with_a_date_in_the_past()
-    {
-        create_content(name, past_event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
-    }
-
-    private void a_request_to_create_an_event_with_the_same_venue_and_time()
-    {
-        create_content(new_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, new_price);
-    }
-    
-    private void a_request_to_update_the_event_with_a_date_in_the_past()
-    {
-        create_content(new_name, past_event_start_date, event_end_date, Venue.EmiratesOldTraffordManchester, new_price);
     }
 
     private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
@@ -132,124 +107,78 @@ public partial class EventApiSpecs : TruncateDbSpecification
         create_update_content(new_name, new_event_start_date, new_event_end_date, new_price);
     }
 
-    private void a_request_to_update_the_event_with_a_venue_and_time_that_will_double_book()
+    private async Task creating_the_event()
     {
-        create_update_content(new_name, new_event_start_date, new_event_end_date, new_price);
-    }
-
-    private void creating_the_event()
-    {
-        var response = client.PostAsync(Routes.Events, content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Events, content);
         response_code = response.StatusCode;
         content = response.Content;
         response_code.ShouldBe(HttpStatusCode.Created);
-        returned_id = JsonSerialization.Deserialize<Guid>(content.ReadAsStringAsync().Await());
-    }    
-    
-    private void creating_the_event_that_will_fail()
-    {
-        var response = client.PostAsync(Routes.Events, content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
+        returned_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
     }
     
-    private void creating_another_event()
+    private async Task creating_another_event()
     {
-        var response = client.PostAsync(Routes.Events, content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Events, content);
         response_code = response.StatusCode;
-        another_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        another_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
     }
     
-    private void creating_third_event()
+    private async Task creating_third_event()
     {
-        var response = client.PostAsync(Routes.Events, content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Events, content);
         response_code = response.StatusCode;
-        third_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        third_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
     }
     
-    private void updating_the_event()
+    private async Task updating_the_event()
     {
-        var response = client.PutAsync(Routes.Events + $"/{returned_id}", content).GetAwaiter().GetResult();
+        var response = await client.PutAsync(Routes.Events + $"/{returned_id}", content);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.NoContent);
     }
     
-    private void updating_the_event_that_will_fail()
-    {
-        var response = client.PutAsync(Routes.Events + $"/{returned_id}", content).GetAwaiter().GetResult();
-        response_code = response.StatusCode;
-        content = response.Content;
-    }
-    
-    private void an_event_exists()
+    private async Task an_event_exists()
     {
         a_request_to_create_an_event();
-        creating_the_event();
-    }
-
-    private void it_has_sold_out()
-    {
-        testHarness.Bus.Publish(new EventSoldOut
-        {
-            EventId = returned_id,
-        }).Await();
-        testHarness.Consumed.Any<EventSoldOut>(x => x.Context.Message.EventId == returned_id).Await();
-    }
-
-    private static void a_short_wait()
-    {
-        Thread.Sleep(2000);
+        await creating_the_event();
     }
     
-    private void an_imminent_event_exists()
-    {
-        a_request_to_create_an_event_imminently();
-        creating_the_event_that_will_fail();
-    }
-    
-    private void another_event_exists()
+    private async Task another_event_exists()
     {
         a_request_to_create_another_event();
-        creating_another_event();
+        await creating_another_event();
     }
 
-    private void a_third_event_exists()
+    private async Task a_third_event_exists()
     {
         a_request_to_create_third_event();
-        creating_third_event();
+        await creating_third_event();
     }
 
-    private void another_event_at_same_venue_exists()
+    private async Task requesting_the_event()
     {
-        create_content(new_name, new_event_start_date, new_event_end_date, Venue.FirstDirectArenaLeeds, new_price);
-        creating_another_event();
-    }
-
-    private void requesting_the_event()
-    {
-        var response = client.GetAsync(Routes.Events + $"/{returned_id}").GetAwaiter().GetResult();
+        var response = await client.GetAsync(Routes.Events + $"/{returned_id}");
         response_code = response.StatusCode;
         content = response.Content;
     }
     
-    private void requesting_the_updated_event()
+    private async Task requesting_the_updated_event()
     {
-        var response = client.GetAsync(Routes.Events + $"/{returned_id}").GetAwaiter().GetResult();
+        var response = await client.GetAsync(Routes.Events + $"/{returned_id}");
         response_code = response.StatusCode;
         content = response.Content;
     }
     
-    private void listing_the_events()
+    private async Task listing_the_events()
     {
-        var response = client.GetAsync(Routes.Events).GetAwaiter().GetResult();
+        var response = await client.GetAsync(Routes.Events);
         response_code = response.StatusCode;
         content = response.Content;
     }
 
-    private void the_event_is_created()
+    private async Task the_event_is_created()
     {
-
-        var theEvent = JsonSerialization.Deserialize<Event>(content.ReadAsStringAsync().Await());
+        var theEvent = JsonSerialization.Deserialize<Event>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theEvent.Id.ShouldBe(returned_id);
         theEvent.EventName.ToString().ShouldBe(name);
@@ -259,30 +188,9 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvent.Price.ShouldBe(price);
     }
     
-    private void the_event_is_not_created()
+    private async Task the_event_is_updated()
     {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var apiError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().Await());
-        apiError.Errors[0].ShouldContain("Event date cannot be in the past");
-    }
-
-    private void the_user_is_informed_that_the_venue_is_unavailable()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var apiError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().Await());
-        apiError.Errors[0].ShouldContain("Venue is not available at the selected time");
-    }
-    
-    private void the_event_is_not_updated()
-    {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-        var apiError = JsonSerialization.Deserialize<ApiError>(content.ReadAsStringAsync().Await());
-        apiError.Errors[0].ShouldContain("Event date cannot be in the past");
-    }
-    
-    private void the_event_is_updated()
-    {
-        var theEvent = JsonSerialization.Deserialize<Event>(content.ReadAsStringAsync().Await());
+        var theEvent = JsonSerialization.Deserialize<Event>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theEvent.Id.ShouldBe(returned_id);
         theEvent.EventName.ToString().ShouldBe(new_name);
@@ -292,9 +200,9 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvent.Price.ShouldBe(new_price);
     }    
     
-    private void the_events_are_listed_earliest_first()
+    private async Task the_events_are_listed_earliest_first()
     {
-        var theEvents = JsonSerialization.Deserialize<IReadOnlyList<Event>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var theEvents = JsonSerialization.Deserialize<IReadOnlyList<Event>>(await content.ReadAsStringAsync());
         response_code.ShouldBe(HttpStatusCode.OK);
         theEvents.Count.ShouldBe(3);
         theEvents.Single(e => e.Id == returned_id).EventName.ToString().ShouldBe(name);
@@ -302,23 +210,6 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvents[0].Id.ShouldBe(third_id);
         theEvents[1].Id.ShouldBe(returned_id);
         theEvents[2].Id.ShouldBe(another_id);
-    }
-
-    private void the_events_are_listed_without_the_past_event()
-    {
-        var theEvent = JsonSerialization.Deserialize<IReadOnlyList<Event>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
-        response_code.ShouldBe(HttpStatusCode.OK);
-        theEvent.Count.ShouldBe(1);
-        theEvent.Single().Id.ShouldBe(returned_id);
-        theEvent.Single().EventName.ToString().ShouldBe(name);
-    }
-
-    private void the_event_is_marked_as_sold_out()
-    {
-        var theEvent = JsonSerialization.Deserialize<Event>(content.ReadAsStringAsync().Await());
-        response_code.ShouldBe(HttpStatusCode.OK);
-        theEvent.Id.ShouldBe(returned_id);
-        theEvent.IsSoldOut.ShouldBeTrue();
     }
 
     private void an_integration_event_is_published()

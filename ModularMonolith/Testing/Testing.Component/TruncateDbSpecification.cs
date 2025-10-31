@@ -3,11 +3,11 @@ using Npgsql;
 
 namespace Component;
 
-public class TruncateDbSpecification : Specification
+public class TruncateDbSpecification : AsyncSpecification
 {
-    protected static void Truncate(string connectionString)
+    protected static async Task Truncate(string connectionString)
     {
-        using var connection = new NpgsqlConnection(connectionString);
+        await using var connection = new NpgsqlConnection(connectionString);
         connection.Open();
         
         var existingSchemas = new List<string>();
@@ -16,11 +16,11 @@ public class TruncateDbSpecification : Specification
                                         FROM information_schema.schemata 
                                         WHERE schema_name NOT IN ('pg_catalog', 'information_schema')
                                     """;
-            
-        using (var schemaCommand = new NpgsqlCommand(schemasQuery, connection))
-        using (var schemaReader = schemaCommand.ExecuteReader())
+
+        await using (var schemaCommand = new NpgsqlCommand(schemasQuery, connection))
+        await using (var schemaReader = await schemaCommand.ExecuteReaderAsync())
         {
-            while (schemaReader.Read())
+            while (await schemaReader.ReadAsync())
             {
                 existingSchemas.Add(schemaReader.GetString(0));
             }
@@ -39,20 +39,20 @@ public class TruncateDbSpecification : Specification
                                      """;
             
         var tablesToTruncate = new List<string>();
-        using (var command = new NpgsqlCommand(tablesToTruncateQuery, connection))
-        using (var reader = command.ExecuteReader())
+        await using (var command = new NpgsqlCommand(tablesToTruncateQuery, connection))
+        await using (var reader = await command.ExecuteReaderAsync())
         {
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 tablesToTruncate.Add(reader.GetString(0));
             }
         }
 
         if (tablesToTruncate.Count == 0) return;
-        
-        using (var disableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'replica';", connection))
+
+        await using (var disableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'replica';", connection))
         {
-            disableConstraintsCmd.ExecuteNonQuery();
+            await disableConstraintsCmd.ExecuteNonQueryAsync();
         }
 
         tablesToTruncate = tablesToTruncate
@@ -61,13 +61,13 @@ public class TruncateDbSpecification : Specification
         
         foreach (var table in tablesToTruncate)
         {
-            using var truncateCommand = new NpgsqlCommand($"TRUNCATE TABLE {table} CASCADE;", connection);
-            truncateCommand.ExecuteNonQuery();
+            await using var truncateCommand = new NpgsqlCommand($"TRUNCATE TABLE {table} CASCADE;", connection);
+            await truncateCommand.ExecuteNonQueryAsync();
         }
 
-        using (var enableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'origin';", connection))
+        await using (var enableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'origin';", connection))
         {
-            enableConstraintsCmd.ExecuteNonQuery();
+            await enableConstraintsCmd.ExecuteNonQueryAsync();
         }
     }
 }

@@ -31,7 +31,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     private readonly DateTimeOffset event_end_date = DateTimeOffset.UtcNow.AddDays(3).AddHours(2);
     private const decimal price = 12.34m;
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         CommonEnvironment.LocalDevelopment.SetEnvironment();
         database = new PostgreSqlBuilder()
@@ -40,7 +40,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
@@ -50,33 +50,34 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         redis = new RedisBuilder()
             .WithPortBinding(6380)
             .Build();
-        redis.StartAsync().Await();
+        await redis.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override Task before_each()
     {
         base.before_each();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
         response_content = null!;
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
+        await Truncate(database.GetConnectionString());
         client.Dispose();
-        factory.Dispose();
+        await factory.DisposeAsync();
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
-        rabbit.StopAsync().Await();
-        rabbit.DisposeAsync().GetAwaiter().GetResult();
-        redis.StopAsync().Await();
-        redis.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
+        await rabbit.StopAsync();
+        await rabbit.DisposeAsync();
+        await redis.StopAsync();
+        await redis.DisposeAsync();
         CommonEnvironment.LocalTesting.SetEnvironment();
     }
 
@@ -84,33 +85,33 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     private void a_redis_cache_is_available(){}
     private void a_rabbitmq_broker_is_available(){}
 
-    private void the_api_is_running()
+    private async Task the_api_is_running()
     {
-        ensureMassTransitIsAwakeAndWillPassHealthCheck();
+        await ensureMassTransitIsAwakeAndWillPassHealthCheck();
     }
 
-    private void ensureMassTransitIsAwakeAndWillPassHealthCheck()
+    private async Task ensureMassTransitIsAwakeAndWillPassHealthCheck()
     {
         var theContent = new StringContent(
             JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
             Encoding.UTF8,
             application_json);
-        var response = client.PostAsync(Routes.Events, theContent).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Events, theContent);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
         Thread.Sleep(1000);
     }
 
-    private void calling_the_health_endpoint()
+    private async Task calling_the_health_endpoint()
     {
-        var response = client.GetAsync("/health").Await();
+        var response = await client.GetAsync("/health");
         response_code = response.StatusCode;
         response_content = response.Content;
     }
     
-    private void the_response_is_ok()
+    private async Task the_response_is_ok()
     {
-        var content = response_content.ReadAsStringAsync().Await();
+        var content = await response_content.ReadAsStringAsync();
         response_code.ShouldBe(HttpStatusCode.OK);
         content.ShouldContain("Healthy");
     }

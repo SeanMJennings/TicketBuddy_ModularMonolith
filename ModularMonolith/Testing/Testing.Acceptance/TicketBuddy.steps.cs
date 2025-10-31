@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using BDD;
+using Component;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
@@ -38,7 +39,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     private Guid[] ticket_ids = [];
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -46,101 +47,101 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1435)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
             .WithPortBinding(5674)
             .Build();
-        rabbit.StartAsync().Await();
+        await rabbit.StartAsync();
         redis = new RedisBuilder()
             .WithPortBinding(6381)
             .Build();
-        redis.StartAsync().Await();
+        await redis.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override Task before_each()
     {
-        base.before_each();
         content = null!;
         user_id = Guid.Empty;
         ticket_ids = [];
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
+        await Truncate(database.GetConnectionString());
         client.Dispose();
-        factory.Dispose();
+        await factory.DisposeAsync();
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
-        rabbit.StopAsync().Await();
-        rabbit.DisposeAsync().GetAwaiter().GetResult();
-        redis.StopAsync().Await();
-        redis.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
+        await rabbit.StopAsync();
+        await rabbit.DisposeAsync();
+        await redis.StopAsync();
+        await redis.DisposeAsync();
     }
     
-    private void an_event_exists()
+    private async Task an_event_exists()
     {
         var theContent = new StringContent(
             JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
             Encoding.UTF8,
             application_json);
-        var response = client.PostAsync(Routes.Events, theContent).GetAwaiter().GetResult();
+        var response = await client.PostAsync(Routes.Events, theContent);
         response_code = response.StatusCode;
         content = response.Content;
         response_code.ShouldBe(HttpStatusCode.Created);
-        event_id = JsonSerialization.Deserialize<Guid>(content.ReadAsStringAsync().Await());
+        event_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
     }
     
-    private void a_user_exists()
+    private async Task a_user_exists()
     {
         var theContent = new StringContent(
             JsonSerialization.Serialize(new UserPayload(name, email, UserType.Customer)),
             Encoding.UTF8, 
             application_json);
 
-        var response = client.PostAsync(UserRoutes.Users, theContent).GetAwaiter().GetResult();
+        var response = await client.PostAsync(UserRoutes.Users, theContent);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
-        user_id = JsonSerialization.Deserialize<Guid>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        user_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
     }
     
-    private void tickets_are_available_for_the_event()
+    private async Task tickets_are_available_for_the_event()
     {
         Thread.Sleep(5000);
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response_code = response.StatusCode;
         content = response.Content;
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await content.ReadAsStringAsync());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
     
-    private void the_user_purchases_tickets_for_the_event()
+    private async Task the_user_purchases_tickets_for_the_event()
     {
         content = new StringContent(
             JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray())),
             Encoding.UTF8,
             application_json);
 
-        var response = client.PostAsync(EventTickets(event_id) + "/purchase", content).GetAwaiter().GetResult();
+        var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
         response_code = response.StatusCode;
         content = response.Content;
     }
 
-    private void the_purchase_is_successful()
+    private async Task the_purchase_is_successful()
     {
         response_code.ShouldBe(HttpStatusCode.NoContent);
-        var response = client.GetAsync(EventTickets(event_id)).GetAwaiter().GetResult();
+        var response = await client.GetAsync(EventTickets(event_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(15);
         foreach (var ticket in tickets.Where(t => ticket_ids.Take(2).Contains(t.Id)).ToList())
         {

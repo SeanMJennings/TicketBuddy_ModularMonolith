@@ -30,4 +30,10 @@
         <ProjectReference Include="..\Integration.Users.Messaging\Integration.Users.Messaging.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="UserController.steps.cs">
+        <DependentUpon>UserController.specs.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

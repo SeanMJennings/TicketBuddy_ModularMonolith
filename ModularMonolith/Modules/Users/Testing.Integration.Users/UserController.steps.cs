@@ -32,7 +32,7 @@ public partial class UserControllerSpecs : TruncateDbSpecification
     private const string new_email = "wobble@wibble.com";
     private static PostgreSqlContainer database = null!;
 
-    protected override void before_all()
+    protected override async Task before_all()
     {
         database = new PostgreSqlBuilder()
             .WithDatabase("TicketBuddy")
@@ -40,13 +40,12 @@ public partial class UserControllerSpecs : TruncateDbSpecification
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
             .Build();
-        database.StartAsync().Await();
+        await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
     }
     
-    protected override void before_each()
+    protected override Task before_each()
     {
-        base.before_each();
         returned_id = Guid.Empty;
         another_id = Guid.Empty;
         userPayload = null!;
@@ -65,17 +64,18 @@ public partial class UserControllerSpecs : TruncateDbSpecification
             .BuildServiceProvider();
         
         userController = serviceProvider.GetRequiredService<UserController>();
+        return Task.CompletedTask;
     }
 
-    protected override void after_each()
+    protected override async Task after_each()
     {
-        Truncate(database.GetConnectionString());
+        await Truncate(database.GetConnectionString());
     }
 
-    protected override void after_all()
+    protected override async Task after_all()
     {
-        database.StopAsync().Await();
-        database.DisposeAsync().GetAwaiter().GetResult();
+        await database.StopAsync();
+        await database.DisposeAsync();
     }
 
     private void a_request_to_create_an_user()
@@ -114,21 +114,21 @@ public partial class UserControllerSpecs : TruncateDbSpecification
         create_update_content(name, email);
     }
 
-    private void creating_the_user()
+    private async Task creating_the_user()
     {
-        returned_id = Guid.Parse(userController.CreateUser(userPayload).Await().Value!.ToString());
+        returned_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString());
     }
     
-    private void creating_another_user()
+    private async Task creating_another_user()
     {
-        another_id = Guid.Parse(userController.CreateUser(userPayload).Await().Value!.ToString());
+        another_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString());
     }
     
-    private void creating_the_user_which_fails()
+    private async Task creating_the_user_which_fails()
     {
         try
         {
-            userController.CreateUser(userPayload).Await();
+            await userController.CreateUser(userPayload);
         }
         catch (ValidationException e)
         {
@@ -136,16 +136,16 @@ public partial class UserControllerSpecs : TruncateDbSpecification
         }
     }
     
-    private void updating_the_user()
+    private async Task updating_the_user()
     {
-        userController.UpdateUser(returned_id, updateUserPayload).Await();
+        await userController.UpdateUser(returned_id, updateUserPayload);
     }
     
-    private void updating_another_user_which_fails()
+    private async Task updating_another_user_which_fails()
     {
         try
         {
-            userController.UpdateUser(another_id, updateUserPayload).Await();
+            await userController.UpdateUser(another_id, updateUserPayload);
         }
         catch (ValidationException e)
         {
@@ -153,31 +153,31 @@ public partial class UserControllerSpecs : TruncateDbSpecification
         }
     }
     
-    private void a_user_exists()
+    private async Task a_user_exists()
     {
         a_request_to_create_an_user();
-        creating_the_user();
+        await creating_the_user();
     }  
     
-    private void another_user_exists()
+    private async Task another_user_exists()
     {
         a_request_to_create_another_user();
-        creating_another_user();
+        await creating_another_user();
     }
 
-    private void requesting_the_user()
+    private async Task requesting_the_user()
     {
-        theUser = userController.GetUser(returned_id).Await().Value!;
+        theUser = (await userController.GetUser(returned_id)).Value!;
     }
     
-    private void requesting_the_updated_user()
+    private async Task requesting_the_updated_user()
     {
-        theUser = userController.GetUser(returned_id).Await().Value!;
+        theUser = (await userController.GetUser(returned_id)).Value!;
     }
     
-    private void listing_the_users()
+    private async Task listing_the_users()
     {
-        theUsers = userController.GetUsers().Await().ToList();
+        theUsers = (await userController.GetUsers()).ToList();
     }
 
     private void the_user_is_created()

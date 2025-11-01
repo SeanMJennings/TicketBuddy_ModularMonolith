@@ -56,6 +56,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
+            .WithReuse(true)
             .Build();
         await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());

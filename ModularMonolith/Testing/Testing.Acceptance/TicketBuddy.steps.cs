@@ -46,16 +46,19 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1435)
+            .WithReuse(true)
             .Build();
         await database.StartAsync();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
             .WithPortBinding(5674)
+            .WithReuse(true)
             .Build();
         await rabbit.StartAsync();
         redis = new RedisBuilder()
             .WithPortBinding(6381)
+            .WithReuse(true)
             .Build();
         await redis.StartAsync();
         Migration.Upgrade(database.GetConnectionString());

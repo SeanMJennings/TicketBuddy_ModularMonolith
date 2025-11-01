@@ -39,16 +39,19 @@ public partial class HealthApiSpecs : TruncateDbSpecification
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434)
+            .WithReuse(true)
             .Build();
         await database.StartAsync();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
             .WithPortBinding(5673)
+            .WithReuse(true)
             .Build();
         rabbit.StartAsync().Await();
         redis = new RedisBuilder()
             .WithPortBinding(6380)
+            .WithReuse(true)
             .Build();
         await redis.StartAsync();
         Migration.Upgrade(database.GetConnectionString());

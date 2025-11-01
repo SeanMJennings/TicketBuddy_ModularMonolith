@@ -53,10 +53,11 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(1434, true)
+            .WithReuse(true)
             .Build();
         await database.StartAsync();
         Migration.Upgrade(database.GetConnectionString());
-        redis = new RedisBuilder().WithPortBinding(6380, true).Build();
+        redis = new RedisBuilder().WithPortBinding(6380, true).WithReuse(true).Build();
         await redis.StartAsync();
     }
     

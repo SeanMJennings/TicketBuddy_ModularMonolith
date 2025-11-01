@@ -42,15 +42,15 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ github.token }}
 
       - name: Restore dependencies
-        run: dotnet restore ModularMonolith/TicketBuddy.sln --no-cache --force-evaluate /p:RestoreNoWarn=NU1507
+        run: dotnet restore ModularMonolith/TicketBuddy.sln --no-cache --force-evaluate -p:NoWarn=NU1507
 
       - name: Build solution
-        run: dotnet build ModularMonolith/TicketBuddy.sln --configuration Release --no-restore
+        run: dotnet build ModularMonolith/TicketBuddy.sln --configuration Release --no-restore -p:NoWarn=NU1507
 
       - name: Run tests
         env:
           DOCKER_HOST: tcp://localhost:2375
-        run: dotnet test ModularMonolith/TicketBuddy.sln --configuration Release --no-build --no-restore
+        run: dotnet test ModularMonolith/TicketBuddy.sln --configuration Release --no-build --no-restore -p:NoWarn=NU1507
   
   Frontend:
     runs-on: ubuntu-latest

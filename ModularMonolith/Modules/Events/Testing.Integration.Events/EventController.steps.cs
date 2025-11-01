@@ -163,7 +163,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private async Task creating_the_event()
     {
         var response = await eventController.CreateEvent(eventPayload);
-        returned_id = Guid.Parse(response.Value!.ToString());
+        returned_id = Guid.Parse(response.Value!.ToString()!);
     }    
     
     private async Task creating_the_event_that_will_fail()
@@ -181,13 +181,13 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private async Task creating_another_event()
     {
         var response = await eventController.CreateEvent(eventPayload);
-        another_id = Guid.Parse(response.Value!.ToString());
+        another_id = Guid.Parse(response.Value!.ToString()!);
     }
     
     private async Task creating_third_event()
     {
         var response = await eventController.CreateEvent(eventPayload);
-        third_id = Guid.Parse(response.Value!.ToString());
+        third_id = Guid.Parse(response.Value!.ToString()!);
     }
     
     private async Task updating_the_event()

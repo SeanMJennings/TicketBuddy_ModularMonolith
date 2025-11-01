@@ -116,12 +116,12 @@ public partial class UserControllerSpecs : TruncateDbSpecification
 
     private async Task creating_the_user()
     {
-        returned_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString());
+        returned_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString()!);
     }
     
     private async Task creating_another_user()
     {
-        another_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString());
+        another_id = Guid.Parse((await userController.CreateUser(userPayload)).Value!.ToString()!);
     }
     
     private async Task creating_the_user_which_fails()

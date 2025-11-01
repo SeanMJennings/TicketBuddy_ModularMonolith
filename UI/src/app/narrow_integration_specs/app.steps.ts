@@ -28,6 +28,7 @@ let wait_for_get: () => boolean;
 beforeEach(() => {
     mockServer.reset();
     wait_for_get = mockServer.get(userRoutes.users, Users);
+    mockServer.get("events", []);
     Users.forEach(user => {
         mockServer.get(`tickets/users/${user.Id}`, []);
     });

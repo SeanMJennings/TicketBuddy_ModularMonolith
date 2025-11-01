@@ -13,7 +13,7 @@ internal partial class ModuleSpecs : Specification
     private static Assembly ApplicationAssembly => EventsIntegrationMessaging.Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Events.Persistence.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Events.EventController).Assembly;
-    private TestResult testResult;
+    private TestResult testResult = null!;
     
     protected override void before_each()
     {

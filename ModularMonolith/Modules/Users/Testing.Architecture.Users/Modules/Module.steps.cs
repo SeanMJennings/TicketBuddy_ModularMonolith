@@ -12,7 +12,7 @@ internal partial class ModuleSpecs : Specification
     private static Assembly ApplicationAssembly => typeof(Application.Users.Commands.UserCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Users.Persistence.UserRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Users.UserController).Assembly;
-    private TestResult testResult;
+    private TestResult testResult = null!;
     
     protected override void before_each()
     {

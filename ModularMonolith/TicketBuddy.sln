@@ -111,8 +111,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Architecture.Users"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{1E5BDF95-3100-4F40-BDEF-62FF05F5F6BD}"
 	ProjectSection(SolutionItems) = preProject
-		NuGet.Config = NuGet.Config
 		..\.gitignore = ..\.gitignore
+		Directory.Packages.props = Directory.Packages.props
+		nuget.config = nuget.config
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Acceptance", "Testing\Testing.Acceptance\Testing.Acceptance.csproj", "{DCFCF162-1C64-439D-9D4F-BEBEDCD5379C}"

@@ -42,6 +42,6 @@ public partial class TicketApiSpecs
         await And(requesting_the_tickets);
         await When(reserving_a_ticket);
         await Then(the_ticket_is_reserved);
-        await And(the_reservation_expires_in_15_minutes);
+              And(the_reservation_expires_in_15_minutes);
     }
 }

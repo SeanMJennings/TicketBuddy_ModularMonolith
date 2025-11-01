@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="dbup-postgresql" Version="6.0.3" />
+      <PackageReference Include="dbup-postgresql"/>
     </ItemGroup>
 
     <ItemGroup>

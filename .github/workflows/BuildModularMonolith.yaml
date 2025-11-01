@@ -22,8 +22,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
-      - name: Delete ModularMonolith NuGet.Config
-        run: rm -f ModularMonolith/NuGet.Config
+      - name: Delete ModularMonolith nuget.config
+        run: rm -f ModularMonolith/nuget.config
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

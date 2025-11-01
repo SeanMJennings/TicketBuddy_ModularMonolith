@@ -226,7 +226,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         reservedTicket.Reserved.ShouldBeTrue();
     }
 
-    private async Task the_reservation_expires_in_15_minutes()
+    private void the_reservation_expires_in_15_minutes()
     {
         var cache = factory.Services.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         var db = cache.GetDatabase();

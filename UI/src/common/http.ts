@@ -18,10 +18,15 @@ export async function get<T>(url: string): Promise<T> {
             }
             return (await response.json());
         })
-        .catch((err) => {
-            redirectToErrorPage();
-            throw err;
-        });
+        .catch(handleNetworkError)
+}
+
+function handleNetworkError(error : { code: number | undefined }) {
+    if (error?.code === undefined) {
+        redirectToErrorPage();
+        return;
+    }
+    throw error;
 }
 
 export async function post(url: string, body: unknown): Promise<unknown> {
@@ -31,10 +36,7 @@ export async function post(url: string, body: unknown): Promise<unknown> {
         body: JSON.stringify(body)
     })
     .then(handleResponse())
-    .catch((err) => {
-        redirectToErrorPage();
-        throw err;
-    });
+    .catch(handleNetworkError);
 }
 
 export async function put(url: string, body: unknown): Promise<unknown> {
@@ -44,31 +46,22 @@ export async function put(url: string, body: unknown): Promise<unknown> {
         body: JSON.stringify(body)
     })
     .then(handleResponse())
-    .catch((err) => {
-        redirectToErrorPage();
-        throw err;
-    });
+    .catch(handleNetworkError);
 }
 
 export async function deleteCall(url: string): Promise<unknown> {
     return fetch(api + url, {
         method: "DELETE",
     })
-        .then(handleResponse())
-        .catch((err: Error) => {
-            redirectToErrorPage();
-            throw {
-                message: err?.message || 'Network error',
-                status: 0
-            }
-        })
+    .then(handleResponse())
+    .catch(handleNetworkError);
 }
 
 function handleResponse(): ((value: Response) => unknown) | null | undefined {
     return async (response) => {
         if (response.status === 204) return;
         if (!response.ok) {
-            if (response.status >= 500 && response.status < 600) {
+            if (response.status >= 500) {
                 redirectToErrorPage();
             }
             throw {

@@ -27,6 +27,6 @@ export async function redirects_to_error_on_5xx_response() {
 
 export async function redirects_to_error_on_network_failure() {
     global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
-    await expect(get('/test')).rejects.toThrow();
+    await get('/test');
     expect(window.location.assign).toHaveBeenCalledWith('/error');
 }

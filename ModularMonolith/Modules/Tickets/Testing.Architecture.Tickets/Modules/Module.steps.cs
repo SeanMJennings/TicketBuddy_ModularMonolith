@@ -13,7 +13,7 @@ internal partial class ModuleSpecs : Specification
     private static Assembly ApplicationAssembly => TicketsIntegrationMessaging.Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Commands.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Tickets.TicketController).Assembly;
-    private TestResult testResult;
+    private TestResult testResult = null!;
     private AssemblyName[] assemblyNames = [];
     
     protected override void before_each()

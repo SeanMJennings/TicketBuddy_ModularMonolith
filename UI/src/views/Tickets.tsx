@@ -110,8 +110,8 @@ export const Tickets = () => {
                 seats.push(
                     <Seat
                         key={seatNumber}
-                        isbooked={isBooked}
-                        isselected={isSelected}
+                        isbooked={isBooked.toString()}
+                        isselected={isSelected.toString()}
                         className={isBooked ? 'booked' : isSelected ? 'selected' : ''}
                         data-seat={seatNumber}
                         onClick={() => handleSeatClick(seatNumber)}

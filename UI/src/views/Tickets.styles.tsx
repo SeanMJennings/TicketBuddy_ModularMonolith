@@ -19,7 +19,8 @@ export const SeatRow = styled.div`
   gap: 10px;
 `;
 
-export const Seat = styled.div<{ isbooked: boolean; isselected?: boolean }>`
+// get warnings about passing booleans so pass string instead
+export const Seat = styled.div<{ isbooked: string; isselected: string }>`
   width: 40px;
   height: 40px;
   border: 2px solid #ccc;
@@ -28,16 +29,16 @@ export const Seat = styled.div<{ isbooked: boolean; isselected?: boolean }>`
   align-items: center;
   justify-content: center;
   background-color: ${props => {
-    if (props.isbooked) return '#f5f5f5';
-    if (props.isselected) return '#FF9800';
+    if (props.isbooked === "true") return '#f5f5f5';
+    if (props.isselected === "true") return '#FF9800';
     return '#4CAF50';
   }};
-  color: ${props => props.isbooked ? '#999' : '#fff'};
+  color: ${props => props.isbooked === "true" ? '#999' : '#fff'};
   font-weight: bold;
-  cursor: ${props => props.isbooked ? 'not-allowed' : 'pointer'};
+  cursor: ${props => props.isbooked === "true" ? 'not-allowed' : 'pointer'};
   
   &:hover {
-    transform: ${props => props.isbooked ? 'none' : 'scale(1.05)'};
+    transform: ${props => props.isbooked === "true" ? 'none' : 'scale(1.05)'};
   }
   
   &.booked {

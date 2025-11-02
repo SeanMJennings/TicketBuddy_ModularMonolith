@@ -1,7 +1,5 @@
 ﻿using System.Net;
 using System.Text;
-using BDD;
-using Component;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
@@ -9,11 +7,11 @@ using Controllers.Users.Requests;
 using Domain.Primitives;
 using Domain.Tickets.Queries;
 using Domain.Users.Primitives;
-using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
+using Testing;
 using Testing.Containers;
 using UserRoutes = Controllers.Users.Routes;
 

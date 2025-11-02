@@ -11,6 +11,7 @@ using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
+using Testing;
 using Testing.Containers;
 
 namespace Component.Api;

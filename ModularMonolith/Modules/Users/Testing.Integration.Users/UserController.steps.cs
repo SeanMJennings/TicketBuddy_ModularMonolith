@@ -9,6 +9,7 @@ using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Testcontainers.PostgreSql;
+using Testing;
 using Testing.Containers;
 
 namespace Integration;

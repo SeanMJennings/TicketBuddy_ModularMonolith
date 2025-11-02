@@ -19,6 +19,7 @@ using Infrastructure.Events.Configuration;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using NSubstitute;
+using Testing;
 using Testing.Containers;
 using Event = Domain.Events.Entities.Event;
 

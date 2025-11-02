@@ -4,12 +4,12 @@ namespace Testing.Containers;
 
 public static class RabbitMq
 {
-    public static RabbitMqContainer CreateContainer()
+    public static RabbitMqContainer CreateContainer(int port = 5673)
     {
         return new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
-            .WithPortBinding(5673)
+            .WithPortBinding(port)
             .Build();
     }
 }

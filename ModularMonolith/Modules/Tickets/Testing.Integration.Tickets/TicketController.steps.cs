@@ -16,6 +16,7 @@ using NSubstitute;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
+using Testing;
 using Testing.Containers;
 using Venue = Domain.Primitives.Venue;
 

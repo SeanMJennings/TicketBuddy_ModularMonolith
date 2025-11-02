@@ -11,6 +11,7 @@ using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
+using Testing;
 using Testing.Containers;
 
 namespace Component.Api;
@@ -37,7 +38,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         CommonEnvironment.LocalDevelopment.SetEnvironment();
         database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        rabbit = RabbitMq.CreateContainer();
+        rabbit = RabbitMq.CreateContainer(5674);
         await rabbit.StartAsync();
         redis = Redis.CreateContainer();
         await redis.StartAsync();

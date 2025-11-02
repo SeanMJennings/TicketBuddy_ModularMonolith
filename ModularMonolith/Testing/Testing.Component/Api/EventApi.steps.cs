@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
+using Testing;
 using Testing.Containers;
 
 namespace Component.Api;

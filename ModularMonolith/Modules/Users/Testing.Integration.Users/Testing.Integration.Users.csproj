@@ -9,25 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="NUnit3TestAdapter"/>
-        <PackageReference Include="Common.Environment" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-        <PackageReference Include="NSubstitute"/>
-        <PackageReference Include="Microsoft.Data.SqlClient"/>
-        <PackageReference Include="NUnit"/>
-        <PackageReference Include="Testcontainers"/>
-        <PackageReference Include="Testcontainers.PostgreSql"/>
-        <PackageReference Include="Testcontainers.RabbitMq"/>
-        <PackageReference Include="Testcontainers.Redis"/>
-        <PackageReference Include="Testing.Bdd"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <ProjectReference Include="..\..\..\CommonLibraries\Testing\Testing.csproj" />
         <ProjectReference Include="..\..\..\Database\Migrations\Migrations.csproj" />
         <ProjectReference Include="..\Controllers.Users\Controllers.Users.csproj" />
         <ProjectReference Include="..\Infrastructure.Users\Infrastructure.Users.csproj" />
         <ProjectReference Include="..\Integration.Users.Messaging\Integration.Users.Messaging.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NUnit"/>
     </ItemGroup>
 
     <ItemGroup>

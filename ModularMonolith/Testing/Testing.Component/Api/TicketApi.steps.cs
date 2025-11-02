@@ -11,6 +11,7 @@ using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
+using Testing.Containers;
 
 namespace Component.Api;
 
@@ -40,15 +41,9 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434, true)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
+        database.Migrate();
         redis = new RedisBuilder().WithPortBinding(6380, true).Build();
         await redis.StartAsync();
     }

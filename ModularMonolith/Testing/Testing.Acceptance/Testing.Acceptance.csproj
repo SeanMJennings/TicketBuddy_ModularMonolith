@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\CommonLibraries\Testing\Testing.csproj" />
         <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
         <ProjectReference Include="..\..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
         <ProjectReference Include="..\..\Host\Host.csproj" />
@@ -19,16 +20,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NUnit3TestAdapter"/>
-        <PackageReference Include="Common.Environment" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="NSubstitute"/>
-        <PackageReference Include="Microsoft.Data.SqlClient"/>
         <PackageReference Include="NUnit"/>
-        <PackageReference Include="Testcontainers"/>
-        <PackageReference Include="Testcontainers.PostgreSql"/>
-        <PackageReference Include="Testcontainers.RabbitMq"/>
-        <PackageReference Include="Testcontainers.Redis"/>
-        <PackageReference Include="Testing.Bdd"/>
     </ItemGroup>
 
     <ItemGroup>

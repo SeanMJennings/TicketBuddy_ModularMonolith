@@ -16,6 +16,7 @@ using NSubstitute;
 using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
+using Testing.Containers;
 using Venue = Domain.Primitives.Venue;
 
 namespace Integration;
@@ -48,16 +49,10 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434, true)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
-        redis = new RedisBuilder().WithPortBinding(6380, true).WithReuse(true).Build();
+        database.Migrate();
+        redis = new RedisBuilder().WithPortBinding(6380, true).Build();
         await redis.StartAsync();
     }
     

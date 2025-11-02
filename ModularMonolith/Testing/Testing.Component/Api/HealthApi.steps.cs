@@ -11,6 +11,7 @@ using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
+using Testing.Containers;
 
 namespace Component.Api;
 
@@ -34,27 +35,19 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     protected override async Task before_all()
     {
         CommonEnvironment.LocalDevelopment.SetEnvironment();
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
             .WithPortBinding(5673)
-            .WithReuse(true)
             .Build();
         rabbit.StartAsync().Await();
         redis = new RedisBuilder()
             .WithPortBinding(6380)
-            .WithReuse(true)
             .Build();
         await redis.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
+        database.Migrate();
     }
     
     protected override Task before_each()
@@ -68,7 +61,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
 
     protected override async Task after_each()
     {
-        await Truncate(database.GetConnectionString());
+        database.Migrate();
         client.Dispose();
         await factory.DisposeAsync();
     }

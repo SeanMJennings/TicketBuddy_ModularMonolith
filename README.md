@@ -7,6 +7,8 @@ Built in well-defined modules to be hosted as a single application. Modules comm
 You could also use synchronous network calls between modules if preferred though it will not scale as well.
 In-process calls between modules are monolithic and not recommended.
 
+Strictly speaking, the common libraries are slightly against the modular nature but they help reduce code duplication and improve consistency across modules.
+
 A modular monolith is where a team should start when building a new application.
 
 [Modular Monolith Architecture](./ModularMonolith/README.md)

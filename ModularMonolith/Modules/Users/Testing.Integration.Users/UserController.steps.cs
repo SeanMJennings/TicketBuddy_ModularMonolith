@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BDD;
 using Controllers.Users;
 using Controllers.Users.Requests;
 using Domain.Users.Entities;
@@ -8,9 +7,9 @@ using Infrastructure.Configuration;
 using Infrastructure.Users.Configuration;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
-using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
+using Testing.Containers;
 
 namespace Integration;
 
@@ -34,15 +33,9 @@ public partial class UserControllerSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434, true)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
+        database.Migrate();
     }
     
     protected override Task before_each()

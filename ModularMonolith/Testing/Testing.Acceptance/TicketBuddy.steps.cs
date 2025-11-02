@@ -14,6 +14,7 @@ using Shouldly;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
+using Testing.Containers;
 using UserRoutes = Controllers.Users.Routes;
 
 namespace Acceptance;
@@ -41,27 +42,19 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1435)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
+        database.Migrate();
         rabbit = new RabbitMqBuilder()
             .WithUsername("guest")
             .WithPassword("guest")
             .WithPortBinding(5674)
-            .WithReuse(true)
             .Build();
         await rabbit.StartAsync();
         redis = new RedisBuilder()
             .WithPortBinding(6381)
-            .WithReuse(true)
             .Build();
         await redis.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
     }
     
     protected override Task before_each()

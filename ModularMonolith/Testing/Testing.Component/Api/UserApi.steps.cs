@@ -7,6 +7,7 @@ using Domain.Users.Primitives;
 using Migrations;
 using Shouldly;
 using Testcontainers.PostgreSql;
+using Testing.Containers;
 
 namespace Component.Api;
 
@@ -28,15 +29,9 @@ public partial class UserApiSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = new PostgreSqlBuilder()
-            .WithDatabase("TicketBuddy")
-            .WithUsername("sa")
-            .WithPassword("yourStrong(!)Password")
-            .WithPortBinding(1434, true)
-            .WithReuse(true)
-            .Build();
+        database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        Migration.Upgrade(database.GetConnectionString());
+        database.Migrate();
     }
     
     protected override Task before_each()

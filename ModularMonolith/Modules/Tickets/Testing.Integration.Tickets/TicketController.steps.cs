@@ -11,7 +11,6 @@ using Integration.Users.Messaging;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Migrations;
 using NSubstitute;
 using Shouldly;
 using Testcontainers.PostgreSql;
@@ -95,7 +94,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task ClearRedisCache()
     {
-        await redis.ExecScriptAsync("return redis.call('FLUSHALL')");
+        await redis.Clear();
     }
 
     protected override async Task after_all()

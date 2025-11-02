@@ -10,4 +10,9 @@ public static class Redis
            .WithPortBinding(port)
            .Build();
    }
+   
+   public static async Task Clear(this RedisContainer container)
+   {
+       await container.ExecScriptAsync("return redis.call('FLUSHALL')");
+   }
 }

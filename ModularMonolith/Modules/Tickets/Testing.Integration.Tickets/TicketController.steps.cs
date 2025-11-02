@@ -52,7 +52,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         database = PostgreSql.CreateContainer();
         await database.StartAsync();
         database.Migrate();
-        redis = new RedisBuilder().WithPortBinding(6380, true).Build();
+        redis = Redis.CreateContainer();
         await redis.StartAsync();
     }
     

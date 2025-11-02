@@ -45,15 +45,9 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         database = PostgreSql.CreateContainer();
         await database.StartAsync();
         database.Migrate();
-        rabbit = new RabbitMqBuilder()
-            .WithUsername("guest")
-            .WithPassword("guest")
-            .WithPortBinding(5674)
-            .Build();
+        rabbit = RabbitMq.CreateContainer();
         await rabbit.StartAsync();
-        redis = new RedisBuilder()
-            .WithPortBinding(6381)
-            .Build();
+        redis = Redis.CreateContainer();
         await redis.StartAsync();
     }
     

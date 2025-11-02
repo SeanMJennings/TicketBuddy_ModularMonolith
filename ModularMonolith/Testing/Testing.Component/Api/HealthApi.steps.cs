@@ -37,15 +37,9 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         CommonEnvironment.LocalDevelopment.SetEnvironment();
         database = PostgreSql.CreateContainer();
         await database.StartAsync();
-        rabbit = new RabbitMqBuilder()
-            .WithUsername("guest")
-            .WithPassword("guest")
-            .WithPortBinding(5673)
-            .Build();
-        rabbit.StartAsync().Await();
-        redis = new RedisBuilder()
-            .WithPortBinding(6380)
-            .Build();
+        rabbit = RabbitMq.CreateContainer();
+        await rabbit.StartAsync();
+        redis = Redis.CreateContainer();
         await redis.StartAsync();
         database.Migrate();
     }

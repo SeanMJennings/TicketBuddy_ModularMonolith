@@ -40,12 +40,12 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = PostgreSql.CreateContainer();
+        database = PostgreSql.CreateContainer(1435);
         await database.StartAsync();
         database.Migrate();
-        rabbit = RabbitMq.CreateContainer();
+        rabbit = RabbitMq.CreateContainer(5674);
         await rabbit.StartAsync();
-        redis = Redis.CreateContainer();
+        redis = Redis.CreateContainer(6381);
         await redis.StartAsync();
     }
     

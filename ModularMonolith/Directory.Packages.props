@@ -2,51 +2,51 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
-    <ItemGroup>
-        <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
-        <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
-        <PackageVersion Include="Aspire.Hosting" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.2" />
-        <PackageVersion Include="Aspire.Microsoft.Data.SqlClient" Version="9.5.2" />
-        <PackageVersion Include="Common.Environment" Version="1.0.11" />
-        <PackageVersion Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions" Version="9.8.0" />
-        <PackageVersion Include="Dapper" Version="2.1.66" />
-        <PackageVersion Include="FluentAssertions" Version="8.8.0" />
-        <PackageVersion Include="MassTransit" Version="8.5.5" />
-        <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.5" />
-        <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
-        <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.2" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-        <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
-        <PackageVersion Include="NSubstitute" Version="5.3.0" />
-        <PackageVersion Include="NUnit" Version="4.4.0" />
-        <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
-        <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
-        <PackageVersion Include="Npgsql" Version="9.0.4" />
-        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-        <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
-        <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
-        <PackageVersion Include="StackExchange.Redis" Version="2.9.32" />
-        <PackageVersion Include="Testcontainers" Version="4.8.1" />
-        <PackageVersion Include="Testcontainers.PostgreSql" Version="4.8.1" />
-        <PackageVersion Include="Testcontainers.RabbitMq" Version="4.8.1" />
-        <PackageVersion Include="Testcontainers.Redis" Version="4.8.1" />
-        <PackageVersion Include="Testing.Bdd" Version="1.0.9" />
-        <PackageVersion Include="WebApi.Host" Version="1.0.18" />
-        <PackageVersion Include="dbup-postgresql" Version="6.0.3" />
-    </ItemGroup>
-
+  <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.Keycloak" Version="9.5.2-preview.1.25522.3" />
+    <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.Rabbitmq" Version="9.0.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
+    <PackageVersion Include="Aspire.Hosting" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.5.2" />
+    <PackageVersion Include="Aspire.Microsoft.Data.SqlClient" Version="9.5.2" />
+    <PackageVersion Include="Common.Environment" Version="1.0.11" />
+    <PackageVersion Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions" Version="9.8.0" />
+    <PackageVersion Include="Dapper" Version="2.1.66" />
+    <PackageVersion Include="FluentAssertions" Version="8.8.0" />
+    <PackageVersion Include="MassTransit" Version="8.5.5" />
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.5.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="NUnit" Version="4.4.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
+    <PackageVersion Include="NetArchTest.Rules" Version="1.3.2" />
+    <PackageVersion Include="Npgsql" Version="9.0.4" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
+    <PackageVersion Include="StackExchange.Redis" Version="2.9.32" />
+    <PackageVersion Include="Testcontainers" Version="4.8.1" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.8.1" />
+    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.8.1" />
+    <PackageVersion Include="Testcontainers.Redis" Version="4.8.1" />
+    <PackageVersion Include="Testing.Bdd" Version="1.0.9" />
+    <PackageVersion Include="WebApi.Host" Version="1.0.18" />
+    <PackageVersion Include="dbup-postgresql" Version="6.0.3" />
+  </ItemGroup>
 </Project>

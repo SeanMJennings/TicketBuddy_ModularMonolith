@@ -19,7 +19,8 @@ var rabbitmq = builder
     .WithImage("masstransit/rabbitmq")
     .WithDataVolume("TicketBuddy.Monolith.RabbitMQ")
     .WithHttpEndpoint(port: 5672, targetPort: 5672)
-    .WithHttpsEndpoint(port: 15672, targetPort: 15672);
+    .WithHttpsEndpoint(port: 15672, targetPort: 15672)
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var redis = builder
     .AddRedis("Cache")
@@ -27,6 +28,14 @@ var redis = builder
     .WithDataVolume("TicketBuddy.Monolith.Redis")
     .WithPassword(builder.AddParameter("RedisPassword", "YourStrong@Passw0rd"))
     .WithHostPort(6379)
+    .WithLifetime(ContainerLifetime.Persistent);
+
+var keycloak = builder
+    .AddKeycloak("Identity", 8180, 
+        adminUsername: builder.AddParameter("KeycloakAdminUsername", "admin"), 
+        adminPassword: builder.AddParameter("KeycloakAdminPassword", "admin"))
+    .WithDataVolume("TicketBuddy.Monolith.Identity")
+    .WithRealmImport("../ticketbuddy-realm.json")
     .WithLifetime(ContainerLifetime.Persistent);
 
 var migrations = builder.AddProject<Projects.Host_Migrations>("Migrations")
@@ -43,6 +52,8 @@ var api = builder.AddProject<Projects.Host>("Api")
     .WaitFor(rabbitmq)
     .WithReference(redis)
     .WaitFor(redis)
+    .WithReference(keycloak)
+    .WaitFor(keycloak)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
 var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")

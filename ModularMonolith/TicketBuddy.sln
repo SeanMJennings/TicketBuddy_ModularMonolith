@@ -62,6 +62,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonLibraries", "CommonLibraries", "{B27BEC3F-9630-4040-83C5-60B309ADC70A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LocalHosting", "LocalHosting", "{6A03D0AD-A745-4B9F-BE59-C34FDE457431}"
+	ProjectSection(SolutionItems) = preProject
+		LocalHosting\ticketbuddy-realm.json = LocalHosting\ticketbuddy-realm.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{ED768F79-3791-45D7-BE9B-E5C77804D384}"
 EndProject

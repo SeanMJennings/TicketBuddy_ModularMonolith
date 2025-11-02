@@ -32,7 +32,7 @@ services:
     networks:
       - ticketbuddy-monolith-network
   rabbitmq:
-    container_name: rabbitmq
+    container_name: monolith-rabbitmq
     image: masstransit/rabbitmq
     ports:
       - "15672:15672"
@@ -51,7 +51,7 @@ services:
       timeout: 5s
       retries: 5
   redis:
-    container_name: redis
+    container_name: monolith-redis
     image: "redis:latest"
     ports:
     - "6379:6379"
@@ -62,6 +62,32 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  keycloak:
+    container_name: monolith-keycloak
+    image: quay.io/keycloak/keycloak:latest
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        set -ex
+        /opt/keycloak/bin/kc.sh import --dir /opt/keycloak/data/import
+        /opt/keycloak/bin/kc.sh start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
+    restart: always
+    networks:
+      - ticketbuddy-monolith-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
   migrations:
     container_name: monolith-migrations
     build:

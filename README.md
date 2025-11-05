@@ -13,6 +13,12 @@ A modular monolith is where a team should start when building a new application.
 
 [Modular Monolith Architecture](./ModularMonolith/README.md)
 
+## Pre-requisites
+- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet
+- [Docker](https://www.docker.com/get-started)
+- [Node.js](https://nodejs.org/en/download/)
+- [.NET Aspire](https://dotnetaspire.com/)
+
 ## Testing
 The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
 

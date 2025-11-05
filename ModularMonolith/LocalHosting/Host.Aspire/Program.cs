@@ -18,8 +18,8 @@ var rabbitmq = builder
         password: builder.AddParameter("RabbitMQPassword", "guest", secret: true))
     .WithImage("masstransit/rabbitmq")
     .WithDataVolume("TicketBuddy.Monolith.RabbitMQ")
-    .WithHttpEndpoint(port: 5672, targetPort: 5672)
-    .WithHttpsEndpoint(port: 15672, targetPort: 15672)
+    .WithHttpEndpoint(port: 5672, targetPort: 7000)
+    .WithHttpsEndpoint(port: 15672, targetPort: 17000)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var redis = builder

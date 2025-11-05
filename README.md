@@ -11,7 +11,8 @@ Strictly speaking, the common libraries are slightly against the modular nature 
 
 A modular monolith is where a team should start when building a new application.
 
-[Modular Monolith Architecture](./ModularMonolith/README.md)
+## Architecture Overview
+![Modular Monolith Architecture](./ModularMonolith.drawio.png)
 
 ## Pre-requisites
 - [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
@@ -23,6 +24,10 @@ A modular monolith is where a team should start when building a new application.
 The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
 
 ![Modern Test Pyramid](ModernTestPyramid.png)
+
+## Architecture Style
+![Clean Architecture inside Modular Monolith](./CleanArchitecture/.jpg)
+
 
 ## Key technologies/choices:
 - ASP.NET Core

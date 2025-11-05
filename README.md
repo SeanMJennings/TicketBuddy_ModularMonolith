@@ -14,7 +14,7 @@ A modular monolith is where a team should start when building a new application.
 [Modular Monolith Architecture](./ModularMonolith/README.md)
 
 ## Pre-requisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet
+- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
 - [Docker](https://www.docker.com/get-started)
 - [Node.js](https://nodejs.org/en/download/)
 - [.NET Aspire](https://dotnetaspire.com/)

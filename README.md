@@ -26,7 +26,7 @@ The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/opt
 ![Modern Test Pyramid](ModernTestPyramid.png)
 
 ## Architecture Style
-![Clean Architecture inside Modular Monolith](./ModularMonolith/CleanArchitecture/.jpg)
+![Clean Architecture inside Modular Monolith](./ModularMonolith/CleanArchitecture.jpg)
 
 
 ## Key technologies/choices:

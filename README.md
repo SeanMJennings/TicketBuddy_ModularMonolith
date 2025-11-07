@@ -9,13 +9,21 @@ In-process calls between modules are monolithic and not recommended.
 
 Strictly speaking, the common libraries are slightly against the modular nature but they help reduce code duplication and improve consistency across modules.
 
-A modular monolith is where a team should start when building a new application.
+A modular monolith is a good place for a team to start when building a new application.
 
 ## Pre-requisites
 - [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
 - [Docker](https://www.docker.com/get-started)
 - [Node.js](https://nodejs.org/en/download/)
 - [.NET Aspire](https://dotnetaspire.com/)
+- Sign in to GitHub and authorise a package feed
+
+## Ways to Run Locally
+- A: Ensure docker is running and then run the Host.Aspire project
+
+- B: Run docker compose and then run UI with `npm run dev`
+- C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations, then API + dataseeder and then UI with `npm run dev`
+
 
 ## Architecture Overview
 ![Modular Monolith Architecture](./ModularMonolith/ModularMonolith.drawio.png)
@@ -26,6 +34,8 @@ The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/opt
 ![Modern Test Pyramid](ModernTestPyramid.png)
 
 ## Architecture Style
+The architecture style used is Clean Architecture by [Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+
 ![Clean Architecture inside Modular Monolith](./ModularMonolith/CleanArchitecture.jpg)
 
 ## Key technologies/choices:

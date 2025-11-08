@@ -36,6 +36,7 @@ var keycloak = builder
         adminPassword: builder.AddParameter("KeycloakAdminPassword", "admin"))
     .WithDataVolume("TicketBuddy.Monolith.Identity")
     .WithRealmImport("../ticketbuddy-realm.json")
+    .WithHttpEndpoint(name: "keycloak-http", port: 8180, targetPort: 8180)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var migrations = builder.AddProject<Projects.Host_Migrations>("Migrations")

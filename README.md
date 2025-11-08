@@ -24,19 +24,27 @@ A modular monolith is a good place for a team to start when building a new appli
 - B: Run docker compose and then run UI with `npm run dev`
 - C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations, then API + dataseeder and then UI with `npm run dev`
 
+### Pre-seeded Users
+There are some initial hardcoded users
+- Admin User. Email: admin@ticketbuddy.com Password: admin
+- Customer 1. Email: john.smith@example.com Password: johnsmith
+- Customer 2. Email: jane.doe@example.com Password: janedoe
+- Customer 3. Email: robert.johnson@example.com Password: robertjohnson
+- Customer 4. Email: emily.davis@example.com Password: emilydavis
+
 
 ## Architecture Overview
 ![Modular Monolith Architecture](./ModularMonolith/ModularMonolith.drawio.png)
-
-## Testing
-The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
-
-![Modern Test Pyramid](ModernTestPyramid.png)
 
 ## Architecture Style
 The architecture style used is Clean Architecture by [Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 ![Clean Architecture inside Modular Monolith](./ModularMonolith/CleanArchitecture.jpg)
+
+## Testing
+The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
+
+![Modern Test Pyramid](ModernTestPyramid.png)
 
 ## Key technologies/choices:
 - ASP.NET Core

@@ -55,6 +55,7 @@ The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/opt
 - .NET Aspire
 - Redis Distributed Cache
 - PostgreSQL
+- Authentication & Authorization using Keycloak
 - CQRS using Entity Framework Core & Dapper
 - React + Vite + Vitest
 

@@ -2,13 +2,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './app/App.tsx'
 import {BrowserRouter} from "react-router-dom";
-import {ReactKeycloakProvider} from "@react-keycloak/web";
-import {initOptions, keycloak} from "./oauth2/keycloak.ts";
+import {AuthProvider} from 'react-oidc-context';
+import {onSigninCallback, userManager} from "./oidc/config.ts";
 
 createRoot(document.getElementById('root')!).render(
-    <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
+    <AuthProvider userManager={userManager} onSigninCallback={onSigninCallback}>
         <BrowserRouter>
             <App />
         </BrowserRouter>,
-    </ReactKeycloakProvider>
+    </AuthProvider>
 )

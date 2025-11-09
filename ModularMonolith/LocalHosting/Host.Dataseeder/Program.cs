@@ -89,7 +89,7 @@ public static class Program
             (Name: "Classical Symphony", StartDate: DateTime.Now.AddDays(45), EndDate: DateTime.Now.AddDays(45).AddHours(1),Venue: Venue.RoyalAlbertHallLondon, Price: 75m),
             (Name: "International Football Match", StartDate: DateTime.Now.AddDays(60), EndDate: DateTime.Now.AddDays(60).AddHours(1),Venue: Venue.WembleyStadiumLondon, Price: 100m),
             (Name: "Comedy Night Special", StartDate: DateTime.Now.AddDays(15), EndDate: DateTime.Now.AddDays(15).AddHours(1),Venue: Venue.ManchesterArena, Price: 30m),
-            (Name: "Tech Conference 2025", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), Venue: Venue.PrincipalityStadiumCardiff, Price: 200m),
+            (Name: "Tech Conference", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), Venue: Venue.PrincipalityStadiumCardiff, Price: 200m),
             (Name: "Jazz Evening", StartDate: DateTime.Now.AddDays(20), EndDate: DateTime.Now.AddDays(20).AddHours(1), Venue: Venue.O2ArenaLondon, Price: 60m),
             (Name: "Pop Concert", StartDate: DateTime.Now.AddDays(25), EndDate: DateTime.Now.AddDays(25).AddHours(1), Venue: Venue.RoyalAlbertHallLondon, Price: 80m),
             (Name: "Basketball Championship", StartDate: DateTime.Now.AddDays(35), EndDate: DateTime.Now.AddDays(35).AddHours(1), Venue: Venue.WembleyStadiumLondon, Price: 120m),

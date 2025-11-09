@@ -2,14 +2,18 @@
 import App from "../app/App.tsx";
 import {MemoryRouter} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
+import {initOptions, keycloak} from "../oauth2/keycloak.ts";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 let renderedComponent: RenderResult;
 
 export function renderApp() {
     renderedComponent = render(
-        <MemoryRouter>
-            <App/>
-        </MemoryRouter>)
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
+            <MemoryRouter>
+                <App/>
+            </MemoryRouter>
+        </ReactKeycloakProvider>)
     return renderedComponent;
 }
 

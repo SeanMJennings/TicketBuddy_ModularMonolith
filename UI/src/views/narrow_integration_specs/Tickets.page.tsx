@@ -3,6 +3,8 @@ import {MemoryRouter} from "react-router-dom";
 import {vi} from "vitest";
 import {userEvent} from "@testing-library/user-event";
 import {Main} from "../../app/App.tsx";
+import {initOptions, keycloak} from "../../oauth2/keycloak.ts";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 vi.mock("../Home", () => {
     return {
@@ -28,9 +30,11 @@ let renderedComponent: RenderResult;
 
 export function renderTickets(eventId: string) {
     renderedComponent = render(
-        <MemoryRouter initialEntries={[`/tickets/${eventId}`]}>
-            <Main/>
-        </MemoryRouter>);
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
+            <MemoryRouter initialEntries={[`/tickets/${eventId}`]}>
+                <Main/>
+            </MemoryRouter>
+        </ReactKeycloakProvider>);
     return renderedComponent;
 }
 

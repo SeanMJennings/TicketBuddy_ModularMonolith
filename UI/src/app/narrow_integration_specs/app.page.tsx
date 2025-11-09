@@ -3,6 +3,8 @@ import {render, type RenderResult} from "@testing-library/react";
 import App from "../App.tsx";
 import {MemoryRouter} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
+import {initOptions, keycloak} from "../../oauth2/keycloak.ts";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 let renderedComponent: RenderResult;
 
@@ -28,33 +30,41 @@ vi.mock("../../views/EventsManagement", () => {
 
 export function renderApp() {
     renderedComponent = render(
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
             <MemoryRouter>
                 <App/>
-            </MemoryRouter>)
+            </MemoryRouter>
+        </ReactKeycloakProvider>)
     return renderedComponent;
 }
 
 export function renderAppAtEventsManagement() {
     renderedComponent = render(
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
             <MemoryRouter initialEntries={['/events-management']}>
                 <App/>
-            </MemoryRouter>)
+            </MemoryRouter>
+        </ReactKeycloakProvider>)
     return renderedComponent;
 }
 
 export function renderAppAtUnknownRoute() {
     renderedComponent = render(
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
             <MemoryRouter initialEntries={['/wibble']}>
                 <App/>
-            </MemoryRouter>)
+            </MemoryRouter>
+        </ReactKeycloakProvider>)
     return renderedComponent;
 }
 
 export function renderAppAtError() {
     renderedComponent = render(
+        <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
             <MemoryRouter initialEntries={['/error']}>
                 <App/>
-            </MemoryRouter>)
+            </MemoryRouter>
+        </ReactKeycloakProvider>)
     return renderedComponent;
 }
 

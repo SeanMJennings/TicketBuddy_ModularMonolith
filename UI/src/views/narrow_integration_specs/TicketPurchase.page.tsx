@@ -5,6 +5,8 @@ import { userEvent } from "@testing-library/user-event";
 import { Main } from "../../app/App.tsx";
 import type {Ticket} from "../../domain/ticket.ts";
 import type { Event } from "../../domain/event.ts";
+import {initOptions, keycloak} from "../../oauth2/keycloak.ts";
+import {ReactKeycloakProvider} from "@react-keycloak/web";
 
 vi.mock("../Tickets", () => {
   return {
@@ -20,9 +22,11 @@ export function renderTicketPurchase(eventId: string, selectedTickets: Ticket[] 
   const initialEntries = [{ pathname: `/tickets/${eventId}/purchase`, state: { selectedTickets, event: eventData }}];
 
   renderedComponent = render(
-    <MemoryRouter initialEntries={initialEntries}>
-      <Main />
-    </MemoryRouter>
+      <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions}>
+        <MemoryRouter initialEntries={initialEntries}>
+          <Main />
+        </MemoryRouter>
+      </ReactKeycloakProvider>
   );
 
   return renderedComponent;

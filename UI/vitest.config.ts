@@ -8,6 +8,6 @@ export default mergeConfig(viteConfig, defineProject({
     test: {
         environment: 'jsdom',
         env: loadEnv('testing', process.cwd(), ''),
-        globalSetup: './vitest.setup.ts',
+        setupFiles: './src/setupTests.ts',
     }
 }));

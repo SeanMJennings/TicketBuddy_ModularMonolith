@@ -23,20 +23,18 @@ var rabbitmq = builder
     .WithLifetime(ContainerLifetime.Persistent);
 
 var redis = builder
-    .AddRedis("Cache")
+    .AddRedis("Cache", 6379)
     .WithImage("redis:7.0-alpine")
     .WithDataVolume("TicketBuddy.Monolith.Redis")
     .WithPassword(builder.AddParameter("RedisPassword", "YourStrong@Passw0rd"))
-    .WithHostPort(6379)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var keycloak = builder
-    .AddKeycloak("Identity", 8180, 
+    .AddKeycloak("Identity", 8180,
         adminUsername: builder.AddParameter("KeycloakAdminUsername", "admin"), 
         adminPassword: builder.AddParameter("KeycloakAdminPassword", "admin"))
     .WithDataVolume("TicketBuddy.Monolith.Identity")
     .WithRealmImport("../ticketbuddy-realm.json")
-    .WithHttpEndpoint(name: "keycloak-http", port: 8180, targetPort: 8180)
     .WithLifetime(ContainerLifetime.Persistent);
 
 var migrations = builder.AddProject<Projects.Host_Migrations>("Migrations")

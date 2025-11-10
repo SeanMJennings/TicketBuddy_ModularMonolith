@@ -3,6 +3,7 @@ import {MemoryRouter} from "react-router-dom";
 import {vi} from "vitest";
 import {userEvent} from "@testing-library/user-event";
 import {Main} from "../../app/App.tsx";
+import React from "react";
 
 vi.mock("../Home", () => {
     return {

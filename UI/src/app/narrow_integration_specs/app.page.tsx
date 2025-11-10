@@ -74,33 +74,23 @@ export function notFoundIsRendered() {
     return elements.notFound() !== null;
 }
 
-export function usersDropdownIsRendered() {
-    return elements.usersDropdown() !== null;
+export async function clickLoginButton() {
+    const loginButton = await elements.theLoginButton();
+    return userEvent.click(loginButton);
+}
+
+export async function clickLogoutButton() {
+    const logoutButton = await elements.theLogoutButton();
+    return userEvent.click(logoutButton);
 }
 
 export function userIconIsRendered() {
     return elements.userIcon() !== null;
 }
 
-export async function clickUsersDropdown() {
-    const usersDropdown = await elements.theUsersDropdown();
-    return userEvent.click(usersDropdown);
-}
-
-export async function selectUserFromDropdown(id: string) {
-    const usersDropdown = await elements.theUsersDropdown();
-    await userEvent.click(usersDropdown);
-    return userEvent.selectOptions(usersDropdown, id);
-
-}
-
 export async function clickUserIcon() {
     const theUserIcon = await elements.theUserIcon();
     return userEvent.click(theUserIcon);
-}
-
-export function userEmailIsRendered(email: string) {
-    return elements.userEmail(email);
 }
 
 export function eventsManagementLinkIsRendered() {
@@ -132,11 +122,10 @@ export function userProfilePageIsRendered() {
 const elements = {
     home: () => renderedComponent.queryByText("I am the mocked Home component"),
     notFound: () => renderedComponent.queryByText("Page not found"),
-    usersDropdown: () => renderedComponent.queryByTestId("users-dropdown"),
-    theUsersDropdown: () => renderedComponent.findByTestId("users-dropdown"),
+    theLoginButton: () => renderedComponent.findByRole("button", { name: "Login" }),
+    theLogoutButton: () => renderedComponent.findByRole("button", { name: "Logout" }),
     userIcon: () => renderedComponent.queryByTestId("user-icon"),
     theUserIcon: () => renderedComponent.findByTestId("user-icon"),
-    userEmail: (email: string) => renderedComponent.findByText(email),
     eventsManagementLink: () => renderedComponent.queryByText("Events Management"),
     theEventsManagementLink: () => renderedComponent.findByText("Events Management"),
     eventsManagementPage: () => renderedComponent.queryByText("I am the mocked Home events management"),

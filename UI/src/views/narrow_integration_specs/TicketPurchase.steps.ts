@@ -13,8 +13,9 @@ import {
 } from "./TicketPurchase.page.tsx";
 import { MockServer } from "../../testing/mock-server.ts";
 import { waitUntil } from "../../testing/utilities.ts";
-import {Events, TicketsForFirstEvent, Users} from "../../testing/data.ts";
+import {Events, OidcUsers, TicketsForFirstEvent, Users} from "../../testing/data.ts";
 import { vi } from "vitest";
+import React from "react";
 
 const mockServer = MockServer.New();
 const event = Events[0];
@@ -24,15 +25,21 @@ const mockTickets = [
     TicketsForFirstEvent[2],
 ];
 
-vi.mock("../../stores/users.store", () => {
+vi.resetModules();
+
+vi.mock('react-oidc-context', () => {
     return {
-        useUsersStore: () => {
-            return {
-                user: Users[0],
-            }
-        }
-    }
-})
+        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
+            return React.createElement(React.Fragment, null, children);
+        },
+        useAuth: () => ({
+            isAuthenticated: true,
+            user: OidcUsers[0],
+            signinRedirect: async () => {},
+            signoutRedirect: async () => {},
+        }),
+    };
+});
 
 let wait_for_post_purchase: () => boolean;
 

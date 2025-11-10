@@ -3,9 +3,6 @@ import {Home} from "../views/Home.tsx";
 import {ToastContainer} from "react-toastify";
 import {Header} from "../components/Header.tsx";
 import {MainContainer} from "../components/MainContainer.styles.tsx";
-import {useUsersStore} from "../stores/users.store.ts";
-import {useShallow} from "zustand/react/shallow";
-import {useEffect} from "react";
 import {EventsManagement} from "../views/EventsManagement.tsx";
 import {NotFound} from "../components/NotFound.tsx";
 import {Tickets} from "../views/Tickets.tsx";
@@ -14,17 +11,7 @@ import {UserProfile} from "../views/UserProfile.tsx";
 import { ErrorPage } from "../views/ErrorPage";
 
 function App() {
-    const { fetchUsers } = useUsersStore(useShallow((state => ({
-        fetchUsers: state.fetchUsers
-    }))));
-
-    useEffect(() => {
-        if (window.location.pathname !== "/error") {
-            fetchUsers();
-        }
-    }, [fetchUsers]);
-
-  return (
+    return (
       <>
           <Header />
           <Main/>

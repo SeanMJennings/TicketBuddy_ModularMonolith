@@ -5,36 +5,22 @@
     TicketStubImage,
     UserIcon,
     UserIconContainer,
-    UsersDropdown
 } from "./Header.styles.tsx";
-import {useUsersStore} from "../stores/users.store.ts";
-import {useShallow} from "zustand/react/shallow";
 import * as React from "react";
 import {UserType} from "../domain/user.ts";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "react-oidc-context";
+import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 
 export const Header = () => {
-    const { user, users } = useUsersStore(useShallow((state => ({
-        user: state.user,
-        users: state.users
-    }))));
-
+    const auth = useAuth();
+    const user = convertToTicketBuddyUser(auth.user);
     const navigate = useNavigate();
 
     const onUserIconClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         navigate('/profile');
     };
-
-    const onUsersDropdownChange = (e: React.MouseEvent<HTMLSelectElement>) => {
-        e.stopPropagation();
-        const target = e.target as HTMLSelectElement;
-        const selectedUserId = target.value;
-        const selectedUser = users.find(user => user.Id === selectedUserId);
-        if (selectedUser?.Id !== user?.Id) {
-            useUsersStore.setState({ user: selectedUser });
-        }
-    }
 
     return (
         <HeaderBar>
@@ -49,13 +35,11 @@ export const Header = () => {
                         </UserIconContainer>
                     </>
                 }
-                {users?.length > 0 && <UsersDropdown data-testid="users-dropdown" onClick={onUsersDropdownChange}>
-                    {users.map(user => (
-                        <option key={user.Id} value={user.Id}>
-                            {user.FullName}
-                        </option>
-                    ))}
-                </UsersDropdown>}
+                {
+                    !auth.isAuthenticated ?
+                    <button onClick={() => auth.signinRedirect()}>Login</button> :
+                    <button onClick={() => auth.signoutRedirect()}>Logout</button>
+                }
             </Container>
         </HeaderBar>
     );

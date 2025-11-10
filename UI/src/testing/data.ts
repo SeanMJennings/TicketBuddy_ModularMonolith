@@ -2,6 +2,11 @@
 import {type User, UserType} from "../domain/user.ts";
 import moment from "moment";
 import type {Ticket} from "../domain/ticket.ts";
+import type {User as OidcUser} from "oidc-client-ts;"
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = 'test-secret-key';
+const JWT_EXPIRY = '1h';
 
 export const Events : Event[] = [
     {
@@ -84,6 +89,40 @@ export const Users : User[] = [
     },
 ]
 
+const createJwt = (payload: object): string => {
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+};
+
+
+export const OidcUsers: OidcUser[] = Users.map(user => {
+    const tokenPayload = {
+        sub: user.Id,
+        name: user.FullName,
+        email: user.Email,
+        email_verified: true,
+        iat: Math.floor(Date.now() / 1000),
+        realm_access: {
+            roles: [user.UserType === UserType.Administrator ? 'ticketbuddy-admin' : 'ticketbuddy-customer']
+        }
+    };
+
+    return {
+        profile: {
+            sub: user.Id,
+            name: user.FullName,
+            email: user.Email,
+            email_verified: true
+        },
+        id_token: createJwt(tokenPayload),
+        access_token: createJwt({ ...tokenPayload, scope: "openid profile email" }),
+        token_type: "Bearer",
+        scope: "openid profile email",
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        session_state: null
+    };
+});
+
+export const AnOidcAdminUser: OidcUser = OidcUsers.find(u => u.profile.email === Users[3].Email)!;
 
 export const TicketsForFirstEvent: Ticket[] = [
     {

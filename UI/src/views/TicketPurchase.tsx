@@ -5,8 +5,6 @@ import { Button } from '../components/Button.styles';
 import { BackIcon } from './EventsManagement.styles';
 import { type Ticket } from '../domain/ticket';
 import {ConvertVenueToString, type Event} from '../domain/event';
-import { useUsersStore } from '../stores/users.store';
-import { useShallow } from 'zustand/react/shallow';
 import {
     PurchaseTitle,
     PurchaseSummary,
@@ -25,6 +23,8 @@ import {purchaseTickets} from "../api/tickets.api.ts";
 import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
+import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
+import { useAuth } from 'react-oidc-context';
 
 interface LocationState {
   selectedTickets: Ticket[];
@@ -38,9 +38,8 @@ export const TicketPurchase = () => {
   const [purchasing, setPurchasing] = useState(false);
   const [purchaseComplete, setPurchaseComplete] = useState(false);
 
-  const { user } = useUsersStore(useShallow((state) => ({
-      user: state.user
-  })));
+  const auth = useAuth();
+  const user = convertToTicketBuddyUser(auth.user);
 
   const state = location.state as LocationState;
   const { selectedTickets, event } = state || { selectedTickets: [], event: null };
@@ -73,7 +72,7 @@ export const TicketPurchase = () => {
       purchaseTickets(eventId, {
           UserId: user.Id,
           TicketIds: ticketIds
-      }).then(() => {
+      }, auth.user?.access_token).then(() => {
               setPurchaseComplete(true);
           }
       ).catch(handleError).finally(() => {

@@ -2,6 +2,7 @@
 import {MemoryRouter} from "react-router-dom";
 import App from "../../app/App.tsx";
 import {userEvent} from "@testing-library/user-event";
+import React from "react";
 
 let renderedComponent: RenderResult;
 

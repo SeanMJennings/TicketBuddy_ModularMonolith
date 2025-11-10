@@ -4,8 +4,11 @@ function redirectToErrorPage() {
     window.location.assign('/error');
 }
 
-export async function get<T>(url: string): Promise<T> {
-    return fetch(api + url, {})
+export async function get<T>(url: string, jwt: string | null | undefined = undefined): Promise<T> {
+    return fetch(api + url, {
+        method: "GET",
+        headers: getHeaders(jwt)
+    })
         .then(async response => {
             if (!response.ok) {
                 if (response.status >= 500 && response.status < 600) {
@@ -21,6 +24,16 @@ export async function get<T>(url: string): Promise<T> {
         .catch(handleNetworkError)
 }
 
+function getHeaders(jwt: string | null | undefined) {
+    let headers: Record<string, string> = {
+        "Content-Type": "application/json"
+    };
+    if (jwt) {
+        headers["Authorization"] = `Bearer ${jwt}`;
+    }
+    return headers;
+}
+
 function handleNetworkError(error : { code: number | undefined }) {
     if (error?.code === undefined) {
         redirectToErrorPage();
@@ -29,29 +42,30 @@ function handleNetworkError(error : { code: number | undefined }) {
     throw error;
 }
 
-export async function post(url: string, body: unknown): Promise<unknown> {
+export async function post(url: string, body: unknown, jwt: string | null | undefined = undefined): Promise<unknown> {
     return fetch(api + url, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(body)
+        headers: getHeaders(jwt),
+        body: JSON.stringify(body),
     })
     .then(handleResponse())
     .catch(handleNetworkError);
 }
 
-export async function put(url: string, body: unknown): Promise<unknown> {
+export async function put(url: string, body: unknown, jwt: string | null | undefined = undefined): Promise<unknown> {
     return fetch(api + url, {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: getHeaders(jwt),
         body: JSON.stringify(body)
     })
     .then(handleResponse())
     .catch(handleNetworkError);
 }
 
-export async function deleteCall(url: string): Promise<unknown> {
+export async function deleteCall(url: string, jwt: string | null | undefined = undefined): Promise<unknown> {
     return fetch(api + url, {
         method: "DELETE",
+        headers: getHeaders(jwt)
     })
     .then(handleResponse())
     .catch(handleNetworkError);

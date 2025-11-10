@@ -1,5 +1,6 @@
-﻿import {MockServer} from "../../testing/mock-server.ts";
-import {afterEach, beforeEach, expect} from "vitest";
+﻿import { afterEach, beforeEach, expect, vi } from "vitest";
+import React from "react";
+import {MockServer} from "../../testing/mock-server.ts";
 import {
     renderUserProfile,
     unmountUserProfile,
@@ -9,13 +10,28 @@ import {
     clickBackToHomeButton,
     homePageIsRendered,
     loadingIsDisplayed,
-    getStatsCards
+    getStatsCards,
 } from "./UserProfile.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
-import {Events, Users} from "../../testing/data.ts";
+import {Events, OidcUsers, Users} from "../../testing/data.ts";
 import {ConvertVenueToString, type Event} from "../../domain/event.ts"
-import { vi } from "vitest";
 import moment from "moment/moment";
+
+vi.resetModules();
+
+vi.mock('react-oidc-context', () => {
+    return {
+        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
+            return React.createElement(React.Fragment, null, children);
+        },
+        useAuth: () => ({
+            isAuthenticated: true,
+            user: OidcUsers[0],
+            signinRedirect: async () => {},
+            signoutRedirect: async () => {},
+        }),
+    };
+});
 
 const mockServer = MockServer.New();
 let wait_for_get_user_tickets: () => boolean;
@@ -36,16 +52,6 @@ const userTickets = [
         Purchased: true
     }
 ];
-
-vi.mock("../../stores/users.store", () => {
-    return {
-        useUsersStore: () => {
-            return {
-                user: Users[0],
-            }
-        }
-    }
-});
 
 beforeEach(() => {
     mockServer.reset();

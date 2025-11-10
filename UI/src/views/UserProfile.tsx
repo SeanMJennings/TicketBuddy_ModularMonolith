@@ -4,8 +4,6 @@ import {getTicketsForUser} from '../api/tickets.api';
 import {getEvents} from '../api/events.api';
 import {type Ticket} from '../domain/ticket';
 import {type Event, ConvertVenueToString} from '../domain/event';
-import {useUsersStore} from '../stores/users.store';
-import {useShallow} from 'zustand/react/shallow';
 import {Container, PageTitle, ActionBar} from './Common.styles';
 import {ContentLoading} from '../components/LoadingContainers.styles';
 import {Button} from '../components/Button.styles';
@@ -28,21 +26,25 @@ import {
     StatsGrid,
     StatCard
 } from './UserProfile.styles';
+import {useAuth} from "react-oidc-context";
+import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const { user } = useUsersStore(useShallow((state) => ({
-        user: state.user
-    })));
+    const auth = useAuth();
+    const user = convertToTicketBuddyUser(auth.user);
 
     useEffect(() => {
+        if (!auth.user?.access_token) return;
+
+        const user = convertToTicketBuddyUser(auth.user);
         if (!user) return;
 
         Promise.all([
-            getTicketsForUser(user.Id),
+            getTicketsForUser(user.Id, auth.user?.access_token),
             getEvents()
         ])
             .then(([ticketsData, eventsData]) => {
@@ -53,7 +55,7 @@ export const UserProfile = () => {
             .catch(() => {
                 setLoading(false);
             });
-    }, [user]);
+    }, [auth.user]);
 
     if (!user) {
         return (
@@ -144,7 +146,7 @@ export const UserProfile = () => {
 
                 <UserCard>
                     <UserAvatar data-testid="user-avatar">
-                        {getInitials(user.FullName)}
+                        {getInitials(user.FullName ?? '')}
                     </UserAvatar>
                     <UserName data-testid="user-name">{user.FullName}</UserName>
                     <UserEmail data-testid="user-email">{user.Email}</UserEmail>

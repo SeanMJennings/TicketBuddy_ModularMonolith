@@ -2,32 +2,58 @@
     clickEventsManagementLink,
     clickTicketLogo,
     clickUserIcon,
-    clickUsersDropdown,
     eventsManagementLinkIsRendered,
     eventsManagementPageIsRendered,
-    homePageIsRendered, notFoundIsRendered,
+    homePageIsRendered,
+    notFoundIsRendered,
     renderApp,
-    renderAppAtEventsManagement, renderAppAtUnknownRoute,
-    selectUserFromDropdown,
+    renderAppAtEventsManagement,
+    renderAppAtUnknownRoute,
     ticketLogoIsRendered,
     unmountApp,
     userProfilePageIsRendered,
     userIconIsRendered,
-    usersDropdownIsRendered, errorPageIsRendered, renderAppAtError
+    errorPageIsRendered,
+    renderAppAtError,
+    clickLoginButton,
+    clickLogoutButton
 } from "./app.page";
-import {afterEach, beforeEach, expect} from "vitest";
+import {afterEach, beforeEach, expect, vi} from "vitest";
 import {MockServer} from "../../testing/mock-server";
-import {Users} from "../../testing/data";
-import {waitUntil} from "../../testing/utilities";
-import {userRoutes} from "../../api/users.api";
-import {UserType} from "../../domain/user";
+import {AnOidcAdminUser, OidcUsers, Users} from "../../testing/data";
+import React from "react";
 
 const mockServer = MockServer.New();
-let wait_for_get: () => boolean;
+let isAuthenticated = true;
+let user = null
+let signInWasCalled = false;
+let signOutWasCalled = false;
+
+vi.resetModules();
+vi.mock('react-oidc-context', () => {
+    return {
+        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
+            return React.createElement(React.Fragment, null, children);
+        },
+        useAuth: () => ({
+            isAuthenticated: isAuthenticated,
+            user: user,
+            signinRedirect: async () => {
+                signInWasCalled = true;
+            },
+            signoutRedirect: async () => {
+                signOutWasCalled = true;
+            },
+        }),
+    };
+});
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get = mockServer.get(userRoutes.users, Users);
+    isAuthenticated = false;
+    user = null;
+    signInWasCalled = false;
+    signOutWasCalled = false;
     mockServer.get("events", []);
     Users.forEach(user => {
         mockServer.get(`tickets/users/${user.Id}`, []);
@@ -49,55 +75,55 @@ export function should_display_not_found_for_unknown_routes() {
     expect(notFoundIsRendered()).toBeTruthy();
 }
 
-export async function should_load_list_of_users_to_select_from() {
+export async function should_let_a_user_login() {
+    isAuthenticated = false;
     renderApp();
-    await waitUntil(wait_for_get);
-    expect(usersDropdownIsRendered()).toBeTruthy();
+    await clickLoginButton();
+    expect(signInWasCalled).toBeTruthy();
 }
 
-export async function should_show_user_icon_when_selected() {
+export async function should_let_a_user_logout() {
+    isAuthenticated = true;
     renderApp();
-    await waitUntil(wait_for_get);
+    await clickLogoutButton();
+    expect(signOutWasCalled).toBeTruthy();
+}
+
+export async function should_show_user_icon_when_user_logged_in() {
+    isAuthenticated = true;
+    user = OidcUsers[0];
+    renderApp();
     expect(userIconIsRendered()).toBeTruthy();
 }
 
 export async function should_show_user_details_when_user_icon_is_clicked() {
+    isAuthenticated = true;
+    user = OidcUsers[0];
     renderApp();
-    await waitUntil(wait_for_get);
-    await clickUserIcon();
-    expect(userProfilePageIsRendered()).toBeTruthy();
-}
-
-export async function should_change_user_details_when_a_different_user_is_selected() {
-    renderApp();
-    await waitUntil(wait_for_get);
-    await clickUsersDropdown();
-    await selectUserFromDropdown(Users[1].Id);
     await clickUserIcon();
     expect(userProfilePageIsRendered()).toBeTruthy();
 }
 
 export async function should_display_event_management_navigation_if_user_is_admin() {
+    isAuthenticated = true;
+    user = AnOidcAdminUser;
     renderApp();
-    await waitUntil(wait_for_get);
-    await clickUsersDropdown();
-    await selectUserFromDropdown(Users.filter(u => u.UserType === UserType.Administrator)[0].Id);
     expect(eventsManagementLinkIsRendered()).toBeTruthy();
 }
 
 export async function should_navigate_to_events_management_page_when_link_is_clicked() {
+    isAuthenticated = true;
+    user = AnOidcAdminUser;
     renderApp();
-    await waitUntil(wait_for_get);
-    await clickUsersDropdown();
-    await selectUserFromDropdown(Users.filter(u => u.UserType === UserType.Administrator)[0].Id);
     expect(eventsManagementLinkIsRendered()).toBeTruthy();
     await clickEventsManagementLink();
     expect(eventsManagementPageIsRendered()).toBeTruthy();
 }
 
 export async function should_navigate_to_home_page_when_ticket_logo_is_clicked() {
+    isAuthenticated = true;
+    user = OidcUsers[0];
     renderAppAtEventsManagement();
-    await waitUntil(wait_for_get);
     expect(eventsManagementPageIsRendered()).toBeTruthy();
     expect(ticketLogoIsRendered()).toBeTruthy();
     await clickTicketLogo();
@@ -106,6 +132,8 @@ export async function should_navigate_to_home_page_when_ticket_logo_is_clicked()
 }
 
 export async function should_redirect_to_error_page_on_server_error() {
+    isAuthenticated = false;
+    user = null
     renderAppAtError();
     expect(errorPageIsRendered()).toBeTruthy();
 }

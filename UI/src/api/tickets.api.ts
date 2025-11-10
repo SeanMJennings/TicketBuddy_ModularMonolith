@@ -10,14 +10,14 @@ export type TicketsPayload = {
     TicketIds: string[];
 };
 
-export const purchaseTickets = async (eventId: string, payload: TicketsPayload) => {
-    return post(`/events/${eventId}/tickets/purchase`, payload);
+export const purchaseTickets = async (eventId: string, payload: TicketsPayload, jwt: string) => {
+    return post(`/events/${eventId}/tickets/purchase`, payload, jwt);
 }
 
-export const reserveTickets = async (eventId: string, payload: TicketsPayload) => {
-    return post(`/events/${eventId}/tickets/reserve`, payload);
+export const reserveTickets = async (eventId: string, payload: TicketsPayload, jwt: string) => {
+    return post(`/events/${eventId}/tickets/reserve`, payload, jwt);
 }
 
-export const getTicketsForUser = async (userId: string) => {
-    return get<Ticket[]>(`/tickets/users/${userId}`);
+export const getTicketsForUser = async (userId: string, jwt: string) => {
+    return get<Ticket[]>(`/tickets/users/${userId}`, jwt);
 }

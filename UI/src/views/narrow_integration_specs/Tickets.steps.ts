@@ -14,23 +14,29 @@ import {
     purchasePageIsRendered, errorToastIsDisplayed
 } from "./Tickets.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
-import {Events, TicketsForFirstEvent, Users} from "../../testing/data.ts";
+import {Events, OidcUsers, TicketsForFirstEvent} from "../../testing/data.ts";
 import { vi } from "vitest";
+import React from "react";
 
 const mockServer = MockServer.New();
 let wait_for_get_event: () => boolean;
 let wait_for_get_tickets: () => boolean;
 let wait_for_reserve_tickets: () => boolean;
 
-vi.mock("../../stores/users.store", () => {
+vi.resetModules();
+vi.mock('react-oidc-context', () => {
     return {
-        useUsersStore: () => {
-            return {
-                user: Users[0],
-            }
-        }
-    }
-})
+        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
+            return React.createElement(React.Fragment, null, children);
+        },
+        useAuth: () => ({
+            isAuthenticated: true,
+            user: OidcUsers[0],
+            signinRedirect: async () => {},
+            signoutRedirect: async () => {},
+        }),
+    };
+});
 
 beforeEach(() => {
     mockServer.reset();

@@ -1,5 +1,6 @@
 ﻿import { vi } from 'vitest';
 import React from 'react';
+import {AnOidcAdminUser} from "./testing/data.ts";
 
 vi.mock('react-oidc-context', () => {
     return {
@@ -8,7 +9,7 @@ vi.mock('react-oidc-context', () => {
         },
         useAuth: () => ({
             isAuthenticated: true,
-            user: null,
+            user: AnOidcAdminUser,
             signinRedirect: async () => {},
             signoutRedirect: async () => {},
         }),

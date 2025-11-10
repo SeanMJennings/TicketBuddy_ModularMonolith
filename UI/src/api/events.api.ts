@@ -15,20 +15,20 @@ export const getEventById = async (id: string) => {
     return get<Event>(`/events/${id}`);
 }
 
-export const postEvent = async (event: EventPayload) => {
+export const postEvent = async (event: EventPayload, jwt: string) => {
     const eventWithMoments = {
         ...event,
         StartDate: event.StartDate.toISOString(),
         EndDate: event.EndDate.toISOString(),
     }
-    return post("/events", eventWithMoments);
+    return post("/events", eventWithMoments, jwt);
 }
 
-export const putEvent = async (id: string, event: UpdateEventPayload) => {
+export const putEvent = async (id: string, event: UpdateEventPayload, jwt: string) => {
     const eventWithMoments = {
         ...event,
         StartDate: event.StartDate.toISOString(),
         EndDate: event.EndDate.toISOString(),
     }
-    return put(`/events/${id}`, eventWithMoments);
+    return put(`/events/${id}`, eventWithMoments, jwt);
 }

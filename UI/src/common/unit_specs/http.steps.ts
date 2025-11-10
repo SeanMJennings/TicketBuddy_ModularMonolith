@@ -4,6 +4,7 @@ import {MockServer} from '../../testing/mock-server';
 import {waitUntil} from '../../testing/utilities';
 
 const mockServer = MockServer.New();
+const fakeBearerToken = 'fake-bearer-token';
 let wait_for_get: () => boolean;
 let wait_for_post: () => boolean;
 let wait_for_put: () => boolean;
@@ -19,26 +20,30 @@ beforeEach(() => {
 });
 
 export async function make_get_request() {
-    const idObject = await get<{ id: string }>("/wibble")
+    const idObject = await get<{ id: string }>("/wibble", fakeBearerToken)
     await waitUntil(wait_for_get);
     expect(idObject.id).toBe('wobble');
+    expect(mockServer.headers.get("Authorization")).toBe(`Bearer ${fakeBearerToken}`);
 }
 
 export async function make_post_request() {
     const postBody = { test: 'wibble'};
-    await post("/wibble", { test: 'wibble'})
+    await post("/wibble", { test: 'wibble'}, fakeBearerToken)
     await waitUntil(wait_for_post);
     expect(mockServer.content).toStrictEqual(postBody);
+    expect(mockServer.headers.get("Authorization")).toBe(`Bearer ${fakeBearerToken}`);
 }
 
 export async function make_put_request() {
     const putBody = { test: 'wobble'};
-    await put("/wibble", putBody);
+    await put("/wibble", putBody, fakeBearerToken);
     await waitUntil(wait_for_put);
     expect(mockServer.content).toStrictEqual(putBody);
+    expect(mockServer.headers.get("Authorization")).toBe(`Bearer ${fakeBearerToken}`);
 }
 
 export async function make_delete_request() {
-    await deleteCall("/wibble");
+    await deleteCall("/wibble", fakeBearerToken);
     await waitUntil(wait_for_delete);
+    expect(mockServer.headers.get("Authorization")).toBe(`Bearer ${fakeBearerToken}`);
 }

@@ -1,19 +1,38 @@
 ﻿import {MockServer} from "../testing/mock-server.ts";
 import {afterEach, beforeEach, expect} from "vitest";
-import {userRoutes} from "../api/users.api.ts";
-import {Events, TicketBoughtForFirstEvent, TicketsForFirstEvent, Users} from "../testing/data.ts";
+import {Events, OidcUsers, TicketBoughtForFirstEvent, TicketsForFirstEvent, Users} from "../testing/data.ts";
 import {waitUntil} from "../testing/utilities.ts";
 import {
     clickBackToEventsButton,
-    clickFirstEvent, clickProceedToPurchaseButton, clickPurchaseButton, clickSeat, clickUserIcon,
-    clickUsersDropdown, getTicketsList, purchaseButtonIsDisplayed,
+    clickFirstEvent,
+    clickProceedToPurchaseButton,
+    clickPurchaseButton,
+    clickSeat,
+    clickUserIcon,
+    getTicketsList,
+    purchaseButtonIsDisplayed,
     renderApp,
-    selectUserFromDropdown,
     unmountApp
 } from "./acceptance.page.tsx";
+import { vi } from "vitest";
+import React from "react";
+
+vi.resetModules();
+vi.mock('react-oidc-context', () => {
+    return {
+        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
+            return React.createElement(React.Fragment, null, children);
+        },
+        useAuth: () => ({
+            isAuthenticated: true,
+            user: OidcUsers[0],
+            signinRedirect: async () => {},
+            signoutRedirect: async () => {},
+        }),
+    };
+});
 
 const mockServer = MockServer.New();
-let wait_for_get_user: () => boolean;
 let wait_for_get_events: () => boolean;
 let wait_for_get_event: () => boolean;
 let wait_for_get_tickets: () => boolean;
@@ -23,16 +42,12 @@ let wait_for_get_user_tickets: () => boolean;
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get_user = mockServer.get(userRoutes.users, Users);
-    Users.forEach(user => {
-        mockServer.get(`tickets/users/${user.Id}`, []);
-    });
     wait_for_get_events = mockServer.get("events", Events);
     wait_for_get_event = mockServer.get(`events/${Events[0].Id}`, Events[0]);
     wait_for_get_tickets = mockServer.get(`events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
     wait_for_post_reservation = mockServer.post(`events/${Events[0].Id}/tickets/reserve`, {});
     wait_for_post_ticket = mockServer.post(`events/${Events[0].Id}/tickets/purchase`, {});
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[1].Id}`, TicketBoughtForFirstEvent);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, TicketBoughtForFirstEvent);
     mockServer.start();
 });
 
@@ -42,10 +57,7 @@ afterEach(() => {
 
 export async function should_allow_a_user_to_purchase_a_ticket() {
     renderApp();
-    await waitUntil(wait_for_get_user);
     await waitUntil(wait_for_get_events);
-    await clickUsersDropdown();
-    await selectUserFromDropdown(Users[1].Id);
     await clickFirstEvent();
     await waitUntil(wait_for_get_event);
     await waitUntil(wait_for_get_tickets);
@@ -58,7 +70,7 @@ export async function should_allow_a_user_to_purchase_a_ticket() {
 
     mockServer.reset();
     wait_for_get_events = mockServer.get("events", Events);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[1].Id}`, TicketBoughtForFirstEvent);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, TicketBoughtForFirstEvent);
     mockServer.start();
 
     await clickBackToEventsButton();

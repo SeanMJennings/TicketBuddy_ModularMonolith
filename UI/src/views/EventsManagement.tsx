@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {EventItem, EventList, PageTitle, PageContainer, ActionBar, Container} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
+import { useAuth } from 'react-oidc-context';
 
 type EventFormData = {
     eventName: string;
@@ -110,6 +111,7 @@ export const EventForm = ({ mode }: EventFormProps) => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
     const isEditMode = mode === 'edit';
+    const auth = useAuth();
 
     useEffect(() => {
         if (isEditMode && id) {
@@ -154,8 +156,8 @@ export const EventForm = ({ mode }: EventFormProps) => {
             };
 
             const apiCall = isEditMode && id
-                ? putEvent(id, eventData)
-                : postEvent({ ...eventData, Venue: formData.venue });
+                ? putEvent(id, eventData, auth.user?.access_token)
+                : postEvent({ ...eventData, Venue: formData.venue }, auth.user?.access_token);
 
             apiCall.then(() => {
                 setFormData(initialFormData);

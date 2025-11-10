@@ -17,11 +17,11 @@ import {
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
 import {getTicketsForEvent, reserveTickets} from "../api/tickets.api.ts";
-import {useUsersStore} from "../stores/users.store.ts";
-import {useShallow} from "zustand/react/shallow";
 import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
+import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
+import { useAuth } from 'react-oidc-context';
 
 const SEATS_PER_ROW = 5;
 
@@ -34,9 +34,8 @@ export const Tickets = () => {
     const navigate = useNavigate();
     const [proceeding, setProceeding] = useState(false);
 
-    const {user} = useUsersStore(useShallow((state) => ({
-        user: state.user
-    })));
+    const auth = useAuth();
+    const user = convertToTicketBuddyUser(auth.user);
 
     useEffect(() => {
         const fetchEventAndTickets = async () => {
@@ -77,7 +76,8 @@ export const Tickets = () => {
             reserveTickets(eventId, {
                 UserId: user ? user.Id : '',
                 TicketIds: tickets.filter(t => selectedSeats.includes(t.SeatNumber)).map(t => t.Id)
-            }).then(() => {
+            }, auth.user?.access_token
+            ).then(() => {
                 navigate(`/tickets/${eventId}/purchase`, {
                     state: {
                         selectedTickets: tickets.filter(t => selectedSeats.includes(t.SeatNumber)),

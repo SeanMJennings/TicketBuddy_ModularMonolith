@@ -3,6 +3,9 @@ using System.Net.Http.Json;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Primitives;
+using Keycloak;
+using Keycloak.Client;
+using Keycloak.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using EventRoutes = Controllers.Events.Routes;
@@ -28,53 +31,21 @@ public static class Program
 
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         var apiHttpClient = httpClientFactory.CreateClient("ApiClient");
-        var keycloakApiHttpClient = await CreateKeycloakAdminClient(settings);
+        var keycloakApiHttpClient = await KeycloakAdminClient.CreateKeycloakAdminClient(
+            settings.Keycloak.BaseUrl,
+            settings.Keycloak.ClientId,
+            settings.Keycloak.AdminUsername,
+            settings.Keycloak.AdminPassword);
         
         var count = await GetUsersCount(keycloakApiHttpClient);
-        // if (count > 1)
-        // {
-        //     Console.WriteLine("Users already exist in Keycloak. Skipping data seeding.");
-        //     return;
-        // }
+        if (count > 1)
+        {
+            Console.WriteLine("Users already exist in Keycloak. Skipping data seeding.");
+            return;
+        }
 
         await CreateCustomerUsers(keycloakApiHttpClient);
         await CreateFutureEvents(apiHttpClient);
-    }
-    
-    private static async Task<HttpClient> CreateKeycloakAdminClient(Settings settings)
-    {
-        var keycloakHttpClient = new HttpClient
-        {
-            BaseAddress = settings.Keycloak.BaseUrl
-        };
-
-        var adminToken = await GetKeycloakAdminToken(keycloakHttpClient, settings);
-
-        var keycloakApiAdminHttpClient = new HttpClient
-        {
-            BaseAddress = settings.Keycloak.BaseUrl
-        };
-        keycloakApiAdminHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
-        keycloakApiAdminHttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        return keycloakApiAdminHttpClient;
-    }
-    
-    private static async Task<string> GetKeycloakAdminToken(HttpClient client, Settings settings)
-    {
-        var tokenRequest = new Dictionary<string, string>
-        {
-            { "client_id", settings.Keycloak.ClientId },
-            { "username", settings.Keycloak.AdminUsername },
-            { "password", settings.Keycloak.AdminPassword },
-            { "grant_type", "password" }
-        };
-
-        var response = await client.PostAsync("/realms/master/protocol/openid-connect/token", new FormUrlEncodedContent(tokenRequest));
-        response.EnsureSuccessStatusCode();
-
-        var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-        return tokenResponse!["access_token"].ToString();
     }
     
     private static async Task<int> GetUsersCount(HttpClient client)
@@ -147,23 +118,6 @@ public static class Program
         }
     }
     
-    private class UserRepresentation
-    {
-        public string firstName { get; init; }
-        public string lastName { get; init; }
-        public string email { get; init; }
-        public string[] realmRoles { get; } = ["default-roles-ticketbuddy"];
-        public bool emailVerified { get; } = true;
-        public bool enabled { get; } = true;
-        public int notBefore { get; } = 0;
-        public List<CredentialRepresentation> credentials { get; init; }
-    }
+
     
-    private class CredentialRepresentation
-    {
-        public string userLabel { get; } = "default";
-        public bool temporary { get; } = false;
-        public string type { get; } = "password";
-        public string value { get; init; }
-    }
 }

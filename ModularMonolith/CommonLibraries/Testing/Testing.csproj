@@ -27,4 +27,13 @@
       <ProjectReference Include="..\..\Database\Migrations\Migrations.csproj" />
     </ItemGroup>
 
+    <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
+        <ItemGroup>
+            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\Keycloak\Artifacts\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(KeycloakArtifacts)"
+              DestinationFiles="@(KeycloakArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+    </Target>
+
 </Project>

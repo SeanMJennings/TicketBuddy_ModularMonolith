@@ -1,11 +1,14 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Domain.Tickets.Queries;
+using Keycloak.Domain;
 using Shouldly;
+using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testcontainers.Redis;
@@ -18,13 +21,15 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 {
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;
+    private HttpClient keycloakClient = null!;
     private HttpContent content = null!;
 
     private Guid event_id;
     private Guid user_id;
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
-    private const string name = "wibble";
+    private const string first_name = "wibble";
+    private const string last_name = "wobble";
     private const string email = "wibble@wobble.com";
     private readonly DateTimeOffset event_start_date = DateTimeOffset.UtcNow.AddDays(3);
     private readonly DateTimeOffset event_end_date = DateTimeOffset.UtcNow.AddDays(3).AddHours(2);
@@ -32,6 +37,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     private static PostgreSqlContainer database = null!;
     private static RabbitMqContainer rabbit = null!;
     private static RedisContainer redis = null!;
+    private static KeycloakContainer keycloak = null!;
     private Guid[] ticket_ids = [];
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
@@ -44,6 +50,8 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await rabbit.StartAsync();
         redis = Redis.CreateContainer(6381);
         await redis.StartAsync();
+        keycloak = Testing.Containers.Keycloak.CreateContainer();
+        await keycloak.StartAsync();
     }
     
     protected override Task before_each()
@@ -53,6 +61,10 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         ticket_ids = [];
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
+        keycloakClient = new HttpClient
+        {
+            BaseAddress = new Uri(keycloak.GetBaseAddress() + "/admin/realms/ticketbuddy")
+        };
         return Task.CompletedTask;
     }
 
@@ -60,6 +72,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     {
         await Truncate(database.GetConnectionString());
         client.Dispose();
+        keycloakClient.Dispose();
         await factory.DisposeAsync();
     }
 
@@ -71,12 +84,14 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await rabbit.DisposeAsync();
         await redis.StopAsync();
         await redis.DisposeAsync();
+        await keycloak.StopAsync();
+        await keycloak.DisposeAsync();
     }
     
     private async Task an_event_exists()
     {
         var theContent = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
+            JsonSerialization.Serialize(new EventPayload(first_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(Routes.Events, theContent);
@@ -88,12 +103,21 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private async Task a_user_exists()
     {
-        var theContent = new StringContent(
-            JsonSerialization.Serialize(new UserPayload(name, email, UserType.Customer)),
-            Encoding.UTF8, 
-            application_json);
+        var payload = new UserRepresentation
+        {
+            firstName = first_name,
+            lastName = last_name,
+            email = email,
+            credentials =
+            [
+                new CredentialRepresentation
+                {
+                    value = first_name + last_name,
+                }
+            ]
+        };
 
-        var response = await client.PostAsync(UserRoutes.Users, theContent);
+        var response = await keycloakClient.PostAsJsonAsync("users", payload);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
         user_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());

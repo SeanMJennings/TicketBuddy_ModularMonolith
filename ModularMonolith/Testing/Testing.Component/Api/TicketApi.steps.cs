@@ -4,7 +4,7 @@ using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Integration.Events.Messaging;
-using Integration.Users.Messaging;
+using Integration.Keycloak.Users.Messaging;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;

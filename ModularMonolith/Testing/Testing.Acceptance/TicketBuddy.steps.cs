@@ -105,6 +105,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     {
         var payload = new UserRepresentation
         {
+            userId = user_id,
             firstName = first_name,
             lastName = last_name,
             email = email,

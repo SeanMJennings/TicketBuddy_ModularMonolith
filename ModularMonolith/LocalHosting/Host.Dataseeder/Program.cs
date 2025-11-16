@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Primitives;
-using Keycloak;
 using Keycloak.Client;
 using Keycloak.Domain;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,16 +59,17 @@ public static class Program
     {
         var customerData = new[]
         {
-            (Name: "John Smith", Email: "john.smith@example.com"),
-            (Name: "Jane Doe", Email: "jane.doe@example.com"),
-            (Name: "Robert Johnson", Email: "robert.johnson@example.com"),
-            (Name: "Emily Davis", Email: "emily.davis@example.com")
+            (UserId: Guid.NewGuid(), Name: "John Smith", Email: "john.smith@example.com"),
+            (UserId: Guid.NewGuid(), Name: "Jane Doe", Email: "jane.doe@example.com"),
+            (UserId: Guid.NewGuid(), Name: "Robert Johnson", Email: "robert.johnson@example.com"),
+            (UserId: Guid.NewGuid(), Name: "Emily Davis", Email: "emily.davis@example.com")
         };
 
         foreach (var customer in customerData)
         {
             var payload = new UserRepresentation
             {
+                userId = customer.UserId,
                 firstName = customer.Name.Split(' ')[0],
                 lastName = customer.Name.Split(' ')[1],
                 email = customer.Email,

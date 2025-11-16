@@ -9,7 +9,6 @@ public static class Keycloak
         return new KeycloakBuilder()
             .WithPortBinding(port, true)
             .WithRealm("ticketbuddy-realm.json")
-            .WithAcceptLicenseAgreement(true)
             .WithUsername("admin")
             .WithPassword("admin")
             .Build();

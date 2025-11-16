@@ -17,6 +17,7 @@ public class UserRegisteredConsumer(IPersistUsers UserRepository) : IConsumer<Us
         );
         
         await UserRepository.Save(user);
+        await UserRepository.Commit(context.CancellationToken);
     }
 }
 

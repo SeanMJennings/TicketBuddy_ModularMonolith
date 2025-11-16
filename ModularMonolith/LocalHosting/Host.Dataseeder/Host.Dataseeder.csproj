@@ -10,7 +10,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
-      <ProjectReference Include="..\..\Modules\Users\Controllers.Users\Controllers.Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>

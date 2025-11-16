@@ -25,7 +25,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 {
     private TicketController ticketController = null!;
     private EventConsumer eventConsumer = null!;
-    private UserConsumer userConsumer = null!;
+    private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private StackExchange.Redis.IConnectionMultiplexer cache = null!;
     private Exception theError = null!;
@@ -36,7 +36,6 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private const decimal price = 25.00m;
     private const decimal new_price = 26.00m;
     private const string name = "wibble";
-    private const string full_name = "John Smith";
     private const string another_full_name = "Johnny Smith";
     private const string email = "john.smith@gmail.com";
     private const string another_email = "johnny.smith@gmail.com";
@@ -81,7 +80,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         ticketController = serviceProvider.GetRequiredService<TicketController>();
         cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         eventConsumer = serviceProvider.GetRequiredService<EventConsumer>();
-        userConsumer = serviceProvider.GetRequiredService<UserConsumer>();
+        userRegisteredConsumer = serviceProvider.GetRequiredService<UserRegisteredConsumer>();
         return Task.CompletedTask;
     }
 
@@ -124,27 +123,29 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private async Task a_user_exists()
     {
         // would prefer to use the test harness here but haven't got it working yet
-        var mockContext = Substitute.For<ConsumeContext<UserUpserted>>();
-        mockContext.Message.Returns(new UserUpserted
+        var mockContext = Substitute.For<ConsumeContext<UserRegistered>>();
+        var details = new Dictionary<string, string>
         {
-            Id = user_id,
-            FullName = full_name,
-            Email = email
-        });
-        await userConsumer.Consume(mockContext);
+            { "first_name", "John" },
+            { "last_name", "Smith" },
+            { "email", email }
+        };
+        mockContext.Message.Returns(new UserRegistered(user_id, details));
+        await userRegisteredConsumer.Consume(mockContext);
     }
 
     private async Task another_user_exists()
     {
         // would prefer to use the test harness here but haven't got it working yet
-        var mockContext = Substitute.For<ConsumeContext<UserUpserted>>();
-        mockContext.Message.Returns(new UserUpserted
+        var mockContext = Substitute.For<ConsumeContext<UserRegistered>>();
+        var details = new Dictionary<string, string>
         {
-            Id = another_user_id,
-            FullName = another_full_name,
-            Email = another_email
-        });
-        await userConsumer.Consume(mockContext);
+            { "first_name", "Johnny" },
+            { "last_name", "Smith" },
+            { "email", another_email }
+        };
+        mockContext.Message.Returns(new UserRegistered(another_user_id, details));
+        await userRegisteredConsumer.Consume(mockContext);
     }
 
     private async Task requesting_the_tickets()

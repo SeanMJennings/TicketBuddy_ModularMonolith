@@ -15,7 +15,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="common.jsonserialization" />
       <PackageReference Include="MassTransit"/>
+      <PackageReference Include="MassTransit.RabbitMQ" />
+      <PackageReference Include="observability.logging" />
       <PackageReference Include="StackExchange.Redis"/>
     </ItemGroup>
 

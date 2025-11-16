@@ -1,4 +1,5 @@
 ﻿using Application.Tickets;
+using Application.Tickets.IntegrationMessageConsumers;
 using MassTransit;
 
 namespace Infrastructure.Tickets.Configuration;
@@ -9,6 +10,7 @@ public static class Messaging
     {
         var ticketsIntegrationMessagingAssembly = TicketsIntegrationMessaging.Assembly;
         x.AddConsumers(ticketsIntegrationMessagingAssembly);
+        x.AddConsumer<UserRegisteredConsumer, UserRegisteredConsumerDefinition>();
     }
     
     public static void ConfigureTicketsMessaging(this IRabbitMqBusFactoryConfigurator cfg)
@@ -16,7 +18,6 @@ public static class Messaging
         cfg.ReceiveEndpoint("tickets-queue", e =>
         {
             e.Bind<Integration.Events.Messaging.EventUpserted>();
-            e.Bind<Integration.Users.Messaging.UserUpserted>();
         });
     }
 }

@@ -24,9 +24,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Compile Update="Api\UserApi.steps.cs">
-        <DependentUpon>UserApi.specs.cs</DependentUpon>
-      </Compile>
       <Compile Update="Api\TicketApi.steps.cs">
         <DependentUpon>TicketApi.specs.cs</DependentUpon>
       </Compile>

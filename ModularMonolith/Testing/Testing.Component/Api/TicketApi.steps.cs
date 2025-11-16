@@ -28,7 +28,8 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
     private const string name = "wibble";
-    private const string full_name = "John Smith";
+    private const string first_name = "John";
+    private const string last_name = "Smith";
     private const string email = "john.smith@gmail.com";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
     private readonly DateTime event_end_date = DateTime.Now.AddDays(1).AddHours(2);
@@ -98,13 +99,14 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     private async Task a_user_exists()
     {
-        await testHarness.Bus.Publish(new UserUpserted
+        var details = new Dictionary<string, string>
         {
-            Id = user_id,
-            FullName = full_name,
-            Email = email
-        });
-        await testHarness.Consumed.Any<UserUpserted>(x => x.Context.Message.Id == user_id);
+            { "first_name", first_name },
+            { "last_name", last_name },
+            { "email", email }
+        };
+        await testHarness.Bus.Publish(new UserRegistered(user_id, details));
+        await testHarness.Consumed.Any<UserRegistered>(x => x.Context.Message.userId == user_id);
     }
 
     private async Task requesting_the_tickets()

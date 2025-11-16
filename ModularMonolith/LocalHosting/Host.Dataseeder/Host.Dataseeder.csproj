@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\CommonLibraries\Keycloak\Keycloak.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
     </ItemGroup>
 
@@ -32,5 +33,14 @@
         <Link>.dockerignore</Link>
       </None>
     </ItemGroup>
+
+    <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
+        <ItemGroup>
+            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\..\CommonLibraries\Keycloak\Artifacts\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(KeycloakArtifacts)"
+              DestinationFiles="@(KeycloakArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+    </Target>
 
 </Project>

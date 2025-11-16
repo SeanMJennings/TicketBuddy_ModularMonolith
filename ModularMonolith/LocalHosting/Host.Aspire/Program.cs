@@ -31,7 +31,7 @@ var redis = builder
     .WithPassword(builder.AddParameter("RedisPassword", "YourStrong@Passw0rd"))
     .WithLifetime(ContainerLifetime.Persistent);
 
-var keycloakJarHostPath = Path.GetFullPath(@"../../Modules/Users/keycloak-to-rabbit-3.0.5.jar");
+var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
 var kkToRmqUrlParam = builder.AddParameter("RabbitMQUrl", "Messaging");
 var kkToRmqVhostParam = builder.AddParameter("RabbitMQVHost", "/");
 
@@ -40,7 +40,7 @@ var keycloak = builder
         adminUsername: builder.AddParameter("KeycloakAdminUsername", "admin"), 
         adminPassword: builder.AddParameter("KeycloakAdminPassword", "admin"))
     .WithDataVolume("TicketBuddy.Monolith.Identity")
-    .WithRealmImport("../ticketbuddy-realm.json")
+    .WithRealmImport(Path.Combine(AppContext.BaseDirectory, "ticketbuddy-realm.json"))
     .WithBindMount(keycloakJarHostPath, "/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar")
     .WithEnvironment("KK_TO_RMQ_URL", kkToRmqUrlParam)
     .WithEnvironment("KK_TO_RMQ_VHOST", kkToRmqVhostParam)
@@ -66,16 +66,16 @@ var api = builder.AddProject<Projects.Host>("Api")
     .WaitFor(keycloak)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
-// var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
-//     .WithReference(api)
-//     .WaitFor(api)
-//     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
+var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
+    .WithReference(api)
+    .WaitFor(api)
+    .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
 builder.AddViteApp(name: "User-Interface", workingDirectory: "../../../UI")
     .WithReference(api)
     .WaitFor(api)
-    // .WithReference(dataSeeder)
-    // .WaitFor(dataSeeder)
+    .WithReference(dataSeeder)
+    .WaitFor(dataSeeder)
     .WithNpmPackageInstallation();
 
 var app = builder.Build();

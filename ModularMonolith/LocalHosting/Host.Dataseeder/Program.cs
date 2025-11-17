@@ -85,6 +85,8 @@ public static class Program
             var response = await client.PostAsJsonAsync("/admin/realms/ticketbuddy/users", payload);
             response.EnsureSuccessStatusCode();
         }
+        
+        // need to send message to rabbitmq as API call does not trigger message
     }
 
     private static async Task CreateFutureEvents(HttpClient client)

@@ -157,6 +157,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             Price = new_price
         });
         await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price);
+        Thread.Sleep(100);
     }
 
     private async Task the_tickets_are_released()

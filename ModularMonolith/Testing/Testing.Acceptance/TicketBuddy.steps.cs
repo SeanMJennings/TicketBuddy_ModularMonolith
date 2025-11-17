@@ -50,7 +50,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await rabbit.StartAsync();
         redis = Redis.CreateContainer(6381);
         await redis.StartAsync();
-        keycloak = Testing.Containers.Keycloak.CreateContainer();
+        keycloak = Testing.Containers.Keycloak.CreateContainer(new Uri($"{rabbit.Hostname}:{rabbit.GetMappedPublicPort(5672)}/"));
         await keycloak.StartAsync();
     }
     

@@ -25,7 +25,7 @@ export async function get<T>(url: string, jwt: string | null | undefined = undef
 }
 
 function getHeaders(jwt: string | null | undefined) {
-    let headers: Record<string, string> = {
+    const headers: Record<string, string> = {
         "Content-Type": "application/json"
     };
     if (jwt) {

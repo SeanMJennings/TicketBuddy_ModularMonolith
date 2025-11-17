@@ -156,8 +156,8 @@ export const EventForm = ({ mode }: EventFormProps) => {
             };
 
             const apiCall = isEditMode && id
-                ? putEvent(id, eventData, auth.user?.access_token)
-                : postEvent({ ...eventData, Venue: formData.venue }, auth.user?.access_token);
+                ? putEvent(id, eventData, auth.user?.access_token ?? '')
+                : postEvent({ ...eventData, Venue: formData.venue }, auth.user?.access_token ?? '');
 
             apiCall.then(() => {
                 setFormData(initialFormData);

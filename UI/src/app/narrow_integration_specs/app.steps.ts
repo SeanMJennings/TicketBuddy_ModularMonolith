@@ -25,7 +25,7 @@ import React from "react";
 
 const mockServer = MockServer.New();
 let isAuthenticated = true;
-let user = null
+let user: unknown = null
 let signInWasCalled = false;
 let signOutWasCalled = false;
 

@@ -2,7 +2,6 @@
 import {type User, UserType} from "../domain/user.ts";
 import moment from "moment";
 import type {Ticket} from "../domain/ticket.ts";
-import type {User as OidcUser} from "oidc-client-ts;"
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'test-secret-key';
@@ -94,7 +93,15 @@ const createJwt = (payload: object): string => {
 };
 
 
-export const OidcUsers: OidcUser[] = Users.map(user => {
+export const OidcUsers: {
+    profile: { sub: string; name: string; email: string; email_verified: boolean };
+    id_token: string;
+    access_token: string;
+    token_type: string;
+    scope: string;
+    expires_at: number;
+    session_state: null
+}[] = Users.map(user => {
     const tokenPayload = {
         sub: user.Id,
         name: user.FullName,
@@ -122,7 +129,15 @@ export const OidcUsers: OidcUser[] = Users.map(user => {
     };
 });
 
-export const AnOidcAdminUser: OidcUser = OidcUsers.find(u => u.profile.email === Users[3].Email)!;
+export const AnOidcAdminUser: {
+    profile: { sub: string; name: string; email: string; email_verified: boolean };
+    id_token: string;
+    access_token: string;
+    token_type: string;
+    scope: string;
+    expires_at: number;
+    session_state: null
+} = OidcUsers.find(u => u.profile.email === Users[3].Email)!;
 
 export const TicketsForFirstEvent: Ticket[] = [
     {

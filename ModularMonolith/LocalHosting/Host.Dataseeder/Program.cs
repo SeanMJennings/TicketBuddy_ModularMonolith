@@ -1,28 +1,32 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Primitives;
+using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
 using Keycloak.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Client;
 using EventRoutes = Controllers.Events.Routes;
 
 namespace Dataseeder;
 
 public static class Program
 {
+    private static Settings _settings = null!;
     public static async Task Main()
     {
         var configuration = Configuration.Build();
-        var settings = new Settings(configuration);
+        _settings = new Settings(configuration);
 
         var serviceProvider = new ServiceCollection()
             .AddLogging(builder => builder.AddConsole())
             .AddHttpClient("ApiClient", client =>
             {
-                client.BaseAddress = settings.Api.BaseUrl;
+                client.BaseAddress = _settings.Api.BaseUrl;
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             })
             .Services
@@ -31,10 +35,10 @@ public static class Program
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         var apiHttpClient = httpClientFactory.CreateClient("ApiClient");
         var keycloakApiHttpClient = await KeycloakAdminClient.CreateKeycloakAdminClient(
-            settings.Keycloak.BaseUrl,
-            settings.Keycloak.ClientId,
-            settings.Keycloak.AdminUsername,
-            settings.Keycloak.AdminPassword);
+            _settings.Keycloak.BaseUrl,
+            _settings.Keycloak.ClientId,
+            _settings.Keycloak.AdminUsername,
+            _settings.Keycloak.AdminPassword);
         
         var count = await GetUsersCount(keycloakApiHttpClient);
         if (count > 1)
@@ -84,9 +88,32 @@ public static class Program
         
             var response = await client.PostAsJsonAsync("/admin/realms/ticketbuddy/users", payload);
             response.EnsureSuccessStatusCode();
+            await RecreateKeycloakUserRegisteredEventFromKeycloak(customer.UserId, payload.firstName, payload.lastName, payload.email);
         }
-        
-        // need to send message to rabbitmq as API call does not trigger message
+    }
+    
+    private static async Task RecreateKeycloakUserRegisteredEventFromKeycloak(Guid user_id, string first_name, string last_name, string email)
+    {
+        var rabbitMqFactory = new ConnectionFactory
+        {
+            Uri = _settings.RabbitMq.ConnectionString
+        };
+        var rabbitMqConnection = await rabbitMqFactory.CreateConnectionAsync();
+        await using var channel = await rabbitMqConnection.CreateChannelAsync();
+        var details = new Dictionary<string, string>
+        {
+            { "first_name", first_name },
+            { "last_name", last_name },
+            { "email", email }
+        };
+        var message = JsonSerialization.Serialize(new UserRegistered(user_id, details));
+        var body = Encoding.UTF8.GetBytes(message);
+        var properties = new BasicProperties
+        {
+            Persistent = true
+        };
+        await channel.BasicPublishAsync("amq.topic", "KK.EVENT.CLIENT.ticketbuddy.SUCCESS.ticketbuddy-ui.REGISTER", true, properties, body);
+        await rabbitMqConnection.CloseAsync();
     }
 
     private static async Task CreateFutureEvents(HttpClient client)

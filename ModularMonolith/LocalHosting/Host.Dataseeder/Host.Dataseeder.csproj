@@ -11,14 +11,17 @@
     <ItemGroup>
       <ProjectReference Include="..\..\CommonLibraries\Keycloak\Keycloak.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
+      <ProjectReference Include="..\..\Modules\Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Common.Environment"/>
+      <PackageReference Include="Common.JsonSerialization" />
       <PackageReference Include="Microsoft.Extensions.Configuration"/>
       <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
       <PackageReference Include="Microsoft.Extensions.Http"/>
       <PackageReference Include="Microsoft.Extensions.Logging.Console"/>
+      <PackageReference Include="RabbitMQ.Client" />
     </ItemGroup>
 
     <ItemGroup>

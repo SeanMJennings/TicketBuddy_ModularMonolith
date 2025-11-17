@@ -6,8 +6,10 @@ using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Domain.Tickets.Queries;
+using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
 using Keycloak.Domain;
+using RabbitMQ.Client;
 using Shouldly;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
@@ -122,9 +124,33 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
         
-        // need to send user event to tickets or make a different API call
+        await RecreateKeycloakUserRegisteredEventFromKeycloak();
     }
-    
+
+    private async Task RecreateKeycloakUserRegisteredEventFromKeycloak()
+    {
+        var rabbitMqFactory = new ConnectionFactory
+        {
+            Uri = new Uri(rabbit.GetConnectionString())
+        };
+        var rabbitMqConnection = await rabbitMqFactory.CreateConnectionAsync();
+        await using var channel = await rabbitMqConnection.CreateChannelAsync();
+        var details = new Dictionary<string, string>
+        {
+            { "first_name", first_name },
+            { "last_name", last_name },
+            { "email", email }
+        };
+        var message = JsonSerialization.Serialize(new UserRegistered(user_id, details));
+        var body = Encoding.UTF8.GetBytes(message);
+        var properties = new BasicProperties
+        {
+            Persistent = true
+        };
+        await channel.BasicPublishAsync("amq.topic", "KK.EVENT.CLIENT.ticketbuddy.SUCCESS.ticketbuddy-ui.REGISTER", true, properties, body);
+        await rabbitMqConnection.CloseAsync();
+    }
+
     private async Task tickets_are_available_for_the_event()
     {
         Thread.Sleep(5000);

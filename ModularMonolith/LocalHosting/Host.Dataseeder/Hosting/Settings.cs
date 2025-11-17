@@ -7,6 +7,7 @@ internal class Settings
     private static IConfiguration Configuration = null!;
     internal ApiSettings Api => new();
     internal KeycloakSettings Keycloak => new();
+    internal RabbitMqSettings RabbitMq => new();
    
     internal Settings(IConfiguration theConfiguration)
     {
@@ -24,5 +25,10 @@ internal class Settings
         public string ClientId => Configuration["KeycloakSettings:ClientId"]!;
         public string AdminUsername => Configuration["KeycloakSettings:Username"]!;
         public string AdminPassword => Configuration["KeycloakSettings:Password"]!;
+    }
+    
+    internal class RabbitMqSettings
+    {
+        internal Uri ConnectionString => new(Configuration["ConnectionStrings:Messaging"]!);
     }
 }

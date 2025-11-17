@@ -6,6 +6,7 @@ using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Domain.Tickets.Queries;
+using Keycloak.Client;
 using Keycloak.Domain;
 using Shouldly;
 using Testcontainers.Keycloak;
@@ -21,11 +22,10 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 {
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;
-    private HttpClient keycloakClient = null!;
     private HttpContent content = null!;
 
     private Guid event_id;
-    private Guid user_id;
+    private readonly Guid user_id = Guid.NewGuid();
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
     private const string first_name = "wibble";
@@ -50,21 +50,16 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await rabbit.StartAsync();
         redis = Redis.CreateContainer(6381);
         await redis.StartAsync();
-        keycloak = Testing.Containers.Keycloak.CreateContainer(new Uri($"{rabbit.Hostname}:{rabbit.GetMappedPublicPort(5672)}/"));
+        keycloak = Testing.Containers.Keycloak.CreateContainer(new Uri($"https://{rabbit.Hostname}:{rabbit.GetMappedPublicPort(5672)}/"));
         await keycloak.StartAsync();
     }
     
     protected override Task before_each()
     {
         content = null!;
-        user_id = Guid.Empty;
         ticket_ids = [];
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
-        keycloakClient = new HttpClient
-        {
-            BaseAddress = new Uri(keycloak.GetBaseAddress() + "/admin/realms/ticketbuddy")
-        };
         return Task.CompletedTask;
     }
 
@@ -72,7 +67,6 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     {
         await Truncate(database.GetConnectionString());
         client.Dispose();
-        keycloakClient.Dispose();
         await factory.DisposeAsync();
     }
 
@@ -103,9 +97,15 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private async Task a_user_exists()
     {
+        var keycloakApiHttpClient = await KeycloakAdminClient.CreateKeycloakAdminClient(
+            new Uri(keycloak.GetBaseAddress()[..^1]),
+            "admin-cli",
+            Testing.Containers.Keycloak.AdminUserName,
+            Testing.Containers.Keycloak.AdminPassword);
+        
         var payload = new UserRepresentation
         {
-            userId = user_id,
+            id = user_id,
             firstName = first_name,
             lastName = last_name,
             email = email,
@@ -118,10 +118,11 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             ]
         };
 
-        var response = await keycloakClient.PostAsJsonAsync("users", payload);
+        var response = await keycloakApiHttpClient.PostAsJsonAsync("/admin/realms/ticketbuddy/users", payload);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
-        user_id = JsonSerialization.Deserialize<Guid>(await response.Content.ReadAsStringAsync());
+        
+        // need to send user event to tickets or make a different API call
     }
     
     private async Task tickets_are_available_for_the_event()

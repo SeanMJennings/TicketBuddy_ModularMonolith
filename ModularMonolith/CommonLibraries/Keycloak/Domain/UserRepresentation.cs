@@ -2,7 +2,7 @@
 
 public class UserRepresentation
 {
-    public Guid userId { get; init; }
+    public Guid id { get; init; }
     public string firstName { get; init; }
     public string lastName { get; init; }
     public string email { get; init; }

@@ -69,7 +69,7 @@ public static class Program
         {
             var payload = new UserRepresentation
             {
-                userId = customer.UserId,
+                id = customer.UserId,
                 firstName = customer.Name.Split(' ')[0],
                 lastName = customer.Name.Split(' ')[1],
                 email = customer.Email,

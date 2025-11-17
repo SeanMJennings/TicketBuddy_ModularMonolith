@@ -70,7 +70,7 @@ services:
       - -c
       - |
         set -ex
-        ADD --chown=keycloak:keycloak ../../Modules/Users/keycloak-to-rabbit-3.0.5.jar /opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
+        ADD --chown=keycloak:keycloak ../../CommonLibraries/Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar /opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
         /opt/keycloak/bin/kc.sh import --dir /opt/keycloak/data/import
         /opt/keycloak/bin/kc.sh start-dev
     environment:
@@ -79,7 +79,7 @@ services:
     ports:
       - "8180:8080"
     volumes:
-      - ./ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
+      - ../../CommonLibraries/Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
     restart: always
     networks:
       - ticketbuddy-monolith-network

@@ -1,7 +1,6 @@
 {
   "name": "e2e",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start:api:docker": "docker compose -f ../ModularMonolith/LocalHosting/docker-compose.yml -f ../ModularMonolith/LocalHosting/docker-compose.override.yml up -d",
@@ -11,8 +10,6 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.56.0",

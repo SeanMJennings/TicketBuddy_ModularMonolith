@@ -11,6 +11,7 @@ import {UserType} from "../domain/user.ts";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
+import {Button} from "./Button.styles.tsx";
 
 export const Header = () => {
     const auth = useAuth();
@@ -37,8 +38,8 @@ export const Header = () => {
                 }
                 {
                     !auth.isAuthenticated ?
-                    <button onClick={() => auth.signinRedirect()}>Login</button> :
-                    <button onClick={() => auth.signoutRedirect()}>Logout</button>
+                    <Button onClick={() => auth.signinRedirect()}>Login</Button> :
+                    <Button onClick={() => auth.signoutRedirect()}>Logout</Button>
                 }
             </Container>
         </HeaderBar>

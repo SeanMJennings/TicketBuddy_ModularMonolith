@@ -1,5 +1,9 @@
 ﻿import {Locator, Page} from "@playwright/test";
 
+export const getLoginButton = (page: Page) => page.getByRole('button', { name: 'Login' });
+export const getLoginEmailField = (page: Page) => page.getByLabel('Email');
+export const getLoginPasswordField = (page: Page) => page.getByLabel('Password').first();
+export const getLoginSubmitButton = (page: Page) => page.getByRole('button', { name: ' Sign In ' });
 export const getFirstEvent = (page: Page) => page.getByTestId("event-item").first();
 export const getFindTicketButton = (locator: Locator) => locator.locator("button").first();
 export const getSeatByNumber = (page: Page, number: number) => page.locator(`[data-seat="${number}"]`);

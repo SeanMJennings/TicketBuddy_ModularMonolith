@@ -3,7 +3,7 @@ import {
     getBackToEventsButton,
     getCompletePurchaseButton,
     getFindTicketButton,
-    getFirstEvent,
+    getFirstEvent, getLoginButton, getLoginEmailField, getLoginPasswordField, getLoginSubmitButton,
     getProceedToPurchaseButton,
     getSeatByNumber, getTicketItems, getUserIcon
 } from "./ticketbuddy.page";
@@ -11,6 +11,12 @@ import {
 export const user_can_buy_tickets = async ({ page }) => {
     await page.goto('http://localhost:5173');
 
+    await expect(page).toHaveTitle(/TicketBuddy/);
+    await getLoginButton(page).click();
+    await expect(page).toHaveTitle(/Sign in to ticketbuddy/);
+    await getLoginEmailField(page).fill('john.smith@example.com');
+    await getLoginPasswordField(page).fill('johnsmith');
+    await getLoginSubmitButton(page).click();
     await expect(page).toHaveTitle(/TicketBuddy/);
     await getFindTicketButton(getFirstEvent(page)).click();
     await getSeatByNumber(page, 5).click();

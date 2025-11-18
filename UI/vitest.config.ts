@@ -8,6 +8,6 @@ export default mergeConfig(viteConfig, defineProject({
     test: {
         environment: 'jsdom',
         env: loadEnv('testing', process.cwd(), ''),
-        setupFiles: './src/setupTests.ts',
+        setupFiles: ['vitest-localstorage-mock','./src/setupTests.ts'],
     }
 }));

@@ -5,7 +5,7 @@ import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions";
 import type {UserType} from "../domain/user.ts";
 
 type ProtectedRouteProps = {
-    requiredUserType: UserType;
+    requiredUserType?: UserType;
     children: ReactNode;
 };
 
@@ -14,7 +14,7 @@ export function ProtectedRoute({requiredUserType, children}: ProtectedRouteProps
     const user = convertToTicketBuddyUser(auth.user);
 
     if (!user) return <Navigate to="/" replace />;
-    if (user.UserType !== requiredUserType) return <Navigate to="/unauthorized" replace />;
+    if (user.UserType !== requiredUserType && !!requiredUserType) return <Navigate to="/unauthorized" replace />;
     return <>{children}</>;
 }
 

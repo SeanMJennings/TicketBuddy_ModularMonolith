@@ -16,11 +16,11 @@
     errorPageIsRendered,
     renderAppAtError,
     clickLoginButton,
-    clickLogoutButton
+    clickLogoutButton, renderAppAtTickets, ticketsIsRendered, renderAppAtProfile
 } from "./app.page";
 import {afterEach, beforeEach, expect, vi} from "vitest";
 import {MockServer} from "../../testing/mock-server";
-import {AnOidcAdminUser, OidcUsers, Users} from "../../testing/data";
+import {AnOidcAdminUser, AnOidcCustomerUser, OidcUsers, Users} from "../../testing/data";
 import React from "react";
 
 const mockServer = MockServer.New();
@@ -122,7 +122,7 @@ export async function should_navigate_to_events_management_page_when_link_is_cli
 
 export async function should_navigate_to_home_page_when_ticket_logo_is_clicked() {
     isAuthenticated = true;
-    user = OidcUsers[0];
+    user = AnOidcAdminUser
     renderAppAtEventsManagement();
     expect(eventsManagementPageIsRendered()).toBeTruthy();
     expect(ticketLogoIsRendered()).toBeTruthy();
@@ -136,4 +136,39 @@ export async function should_redirect_to_error_page_on_server_error() {
     user = null
     renderAppAtError();
     expect(errorPageIsRendered()).toBeTruthy();
+}
+
+export async function should_not_navigate_to_events_management_page_for_non_admin() {
+    isAuthenticated = true;
+    user = AnOidcCustomerUser;
+    renderAppAtEventsManagement();
+    expect(eventsManagementPageIsRendered()).toBeFalsy();
+}
+
+export async function should_let_a_user_navigate_to_tickets() {
+    isAuthenticated = true;
+    user = AnOidcCustomerUser;
+    renderAppAtTickets();
+    expect(ticketsIsRendered()).toBeTruthy();
+}
+
+export async function should_not_let_non_customers_navigate_to_tickets() {
+    isAuthenticated = true;
+    user = AnOidcAdminUser;
+    renderAppAtTickets();
+    expect(ticketsIsRendered()).toBeFalsy();
+}
+
+export async function should_let_a_logged_in_user_navigate_to_profile() {
+    isAuthenticated = true;
+    user = AnOidcCustomerUser;
+    renderAppAtProfile();
+    expect(userProfilePageIsRendered()).toBeTruthy();
+}
+
+export async function should_not_let_a_logged_out_user_navigate_to_profile() {
+    isAuthenticated = false;
+    user = null
+    renderAppAtProfile();
+    expect(userProfilePageIsRendered()).toBeFalsy();
 }

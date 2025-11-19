@@ -8,7 +8,9 @@ import {NotFound} from "../components/NotFound.tsx";
 import {Tickets} from "../views/Tickets.tsx";
 import {TicketPurchase} from "../views/TicketPurchase.tsx";
 import {UserProfile} from "../views/UserProfile.tsx";
-import { ErrorPage } from "../views/ErrorPage";
+import {ErrorPage} from "../views/ErrorPage";
+import {ProtectedRoute} from "../components/ProtectedRoute.tsx";
+import {UserType} from "../domain/user.ts";
 
 function App() {
     return (
@@ -30,10 +32,26 @@ export const Main = () => {
 
 export const AppRoutes = () => (
     <Routes>
-        <Route path="/events-management/*" element={<EventsManagement />} />
-        <Route path="/tickets/:eventId" element={<Tickets />} />
-        <Route path="/tickets/:eventId/purchase" element={<TicketPurchase />} />
-        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/events-management/*" element={
+            <ProtectedRoute requiredUserType={UserType.Administrator}>
+                <EventsManagement />
+            </ProtectedRoute>
+        } />
+        <Route path="/tickets/:eventId" element={
+            <ProtectedRoute requiredUserType={UserType.Customer}>
+                <Tickets />
+            </ProtectedRoute>
+        } />
+        <Route path="/tickets/:eventId/purchase" element={
+            <ProtectedRoute requiredUserType={UserType.Customer}>
+                <TicketPurchase />
+            </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+            <ProtectedRoute>
+                <UserProfile />
+            </ProtectedRoute>
+        } />
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/" element={<Home/>} />
         <Route path="*" element={<NotFound/>}/>

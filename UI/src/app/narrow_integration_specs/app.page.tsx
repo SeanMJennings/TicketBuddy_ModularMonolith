@@ -26,6 +26,16 @@ vi.mock("../../views/EventsManagement", () => {
     }
 })
 
+vi.mock("../../views/Tickets", () => {
+    return {
+        Tickets: () => {
+            return (
+                <div>I am the mocked tickets for an event</div>
+            );
+        }
+    }
+})
+
 export function renderApp() {
     renderedComponent = render(
             <MemoryRouter>
@@ -37,6 +47,22 @@ export function renderApp() {
 export function renderAppAtEventsManagement() {
     renderedComponent = render(
             <MemoryRouter initialEntries={['/events-management']}>
+                <App/>
+            </MemoryRouter>)
+    return renderedComponent;
+}
+
+export function renderAppAtTickets() {
+    renderedComponent = render(
+            <MemoryRouter initialEntries={['/tickets/event1']}>
+                <App/>
+            </MemoryRouter>)
+    return renderedComponent;
+}
+
+export function renderAppAtProfile() {
+    renderedComponent = render(
+            <MemoryRouter initialEntries={['/profile']}>
                 <App/>
             </MemoryRouter>)
     return renderedComponent;
@@ -106,6 +132,10 @@ export function eventsManagementPageIsRendered() {
     return elements.eventsManagementPage() !== null;
 }
 
+export function ticketsIsRendered() {
+    return elements.ticketsPage() !== null;
+}
+
 export function ticketLogoIsRendered() {
     return elements.ticketLogo() !== null;
 }
@@ -129,6 +159,7 @@ const elements = {
     eventsManagementLink: () => renderedComponent.queryByText("Events Management"),
     theEventsManagementLink: () => renderedComponent.findByText("Events Management"),
     eventsManagementPage: () => renderedComponent.queryByText("I am the mocked Home events management"),
+    ticketsPage: () => renderedComponent.queryByText("I am the mocked tickets for an event"),
     ticketLogo: () => renderedComponent.queryByAltText("Ticket Stub"),
     theTicketLogo: () => renderedComponent.findByAltText("Ticket Stub"),
     userProfilePage: () => renderedComponent.queryByRole("heading", { name: "User Profile" }),

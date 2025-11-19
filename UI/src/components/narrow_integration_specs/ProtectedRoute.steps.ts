@@ -35,7 +35,7 @@ beforeEach(() => {
 
 afterEach(() => unrenderProtectedRoute());
 
-export async function should_render_protected_content_for_authorized_user() {
+export async function should_render_protected_content_for_authorized_user_of_correct_type() {
     renderProtectedRoute({requiredType: UserType.Customer});
     expect(protectedContentIsRendered()).toBe(true);
 }
@@ -43,7 +43,7 @@ export async function should_render_protected_content_for_authorized_user() {
 export async function should_not_render_protected_content_for_unauthenticated_user() {
     authenticated = false;
     user = null;
-    renderProtectedRoute({requiredType: UserType.Customer});
+    renderProtectedRoute({});
     expect(protectedContentIsRendered()).toBe(false);
     expect(redirectedToLogin()).toBe(true);
 }
@@ -52,5 +52,10 @@ export async function should_not_render_protected_content_for_wrong_user_type() 
     renderProtectedRoute({requiredType: UserType.Administrator});
     expect(protectedContentIsRendered()).toBe(false);
     expect(redirectedToUnauthorized()).toBe(true);
+}
+
+export async function should_render_protected_content_for_authorized_user_of_any_type() {
+    renderProtectedRoute({});
+    expect(protectedContentIsRendered()).toBe(true);
 }
 

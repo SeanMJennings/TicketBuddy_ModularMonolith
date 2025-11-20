@@ -11,7 +11,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\CommonLibraries\Keycloak\Keycloak.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
-      <ProjectReference Include="..\..\Modules\Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
+      <ProjectReference Include="..\..\Modules\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
     </ItemGroup>
 
     <ItemGroup>

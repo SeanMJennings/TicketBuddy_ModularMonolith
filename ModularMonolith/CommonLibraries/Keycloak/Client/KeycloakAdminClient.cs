@@ -38,6 +38,6 @@ public static class KeycloakAdminClient
         response.EnsureSuccessStatusCode();
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
-        return tokenResponse!["access_token"].ToString();
+        return tokenResponse!["access_token"].ToString()!;
     }
 }

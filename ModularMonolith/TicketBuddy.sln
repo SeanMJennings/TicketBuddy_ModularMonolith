@@ -49,7 +49,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tickets", "Modules\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controllers.Tickets", "Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj", "{46AE2095-7383-4207-8EC8-7DF4EB2FE088}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Keycloak.Users.Messaging", "Modules\Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj", "{467F1445-ACC0-48D6-B40B-EE7C5DB01B10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Keycloak.Users.Messaging", "Modules\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj", "{467F1445-ACC0-48D6-B40B-EE7C5DB01B10}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.Tickets", "Modules\Tickets\Application.Tickets\Application.Tickets.csproj", "{F1A42FA6-9F73-4121-B082-1D2C7B7338A5}"
 EndProject

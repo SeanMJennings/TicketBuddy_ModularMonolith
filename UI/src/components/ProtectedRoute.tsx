@@ -13,8 +13,7 @@ export function ProtectedRoute({requiredUserType, children}: ProtectedRouteProps
     const auth = useAuth();
     const user = convertToTicketBuddyUser(auth.user);
 
-    if (!user) return <Navigate to="/" replace />;
-    if (user.UserType !== requiredUserType && !!requiredUserType) return <Navigate to="/unauthorized" replace />;
+    if (!user || user.UserType !== requiredUserType && !!requiredUserType) return <Navigate to="/" replace />;
     return <>{children}</>;
 }
 

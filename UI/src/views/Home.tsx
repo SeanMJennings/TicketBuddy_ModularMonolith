@@ -5,11 +5,16 @@ import {Container, EventItem, EventList, PageTitle} from "./Common.styles.tsx";
 import {Button} from "../components/Button.styles.tsx";
 import {useNavigate} from "react-router-dom";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
+import {useAuth} from "react-oidc-context";
+import {convertToTicketBuddyUser, isALoggedInCustomer} from "../oidc/key-cloak-user.extensions.ts";
 
 export const Home = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+    const auth = useAuth();
+    const user = convertToTicketBuddyUser(auth.user);
 
     useEffect(() => {
         getEvents().then(data => {
@@ -37,7 +42,7 @@ export const Home = () => {
                                 <h2>{event.EventName}</h2>
                                 <p>{event.StartDate.format('MMMM Do YYYY, h:mm A')} to {event.EndDate.format('MMMM Do YYYY, h:mm A')}</p>
                                 <p>Venue: {ConvertVenueToString(event.Venue)}</p>
-                                {event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>)}
+                                {isALoggedInCustomer(user) && (event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>))}
                             </div>
                         </EventItem>
                     ))}

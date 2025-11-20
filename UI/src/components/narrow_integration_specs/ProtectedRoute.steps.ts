@@ -1,8 +1,7 @@
 ﻿import {afterEach, beforeEach, expect, vi} from "vitest";
 import {
     protectedContentIsRendered,
-    redirectedToLogin,
-    redirectedToUnauthorized,
+    redirectedToHomePage,
     renderProtectedRoute, unrenderProtectedRoute
 } from "./ProtectedRoute.page";
 import React from "react";
@@ -45,13 +44,13 @@ export async function should_not_render_protected_content_for_unauthenticated_us
     user = null;
     renderProtectedRoute({});
     expect(protectedContentIsRendered()).toBe(false);
-    expect(redirectedToLogin()).toBe(true);
+    expect(redirectedToHomePage()).toBe(true);
 }
 
 export async function should_not_render_protected_content_for_wrong_user_type() {
     renderProtectedRoute({requiredType: UserType.Administrator});
     expect(protectedContentIsRendered()).toBe(false);
-    expect(redirectedToUnauthorized()).toBe(true);
+    expect(redirectedToHomePage()).toBe(true);
 }
 
 export async function should_render_protected_content_for_authorized_user_of_any_type() {

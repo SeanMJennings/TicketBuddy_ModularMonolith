@@ -33,7 +33,12 @@ export function clickFindTicketsButton(index: number) {
     return userEvent.click(buttons[index]);
 }
 
+export function findTicketsButtonExists(index: number): boolean {
+    return elements.findTicketsButtonQuery(index) !== undefined;
+}
+
 const elements = {
     theEvent: (eventName: string) => renderedComponent.getByText(eventName),
     findTicketsButtons: () => renderedComponent.getAllByRole('button', {name: /Find Tickets/i}),
+    findTicketsButtonQuery: (index: number) => renderedComponent.queryAllByRole('button', {name: /Find Tickets/i})[index],
 }

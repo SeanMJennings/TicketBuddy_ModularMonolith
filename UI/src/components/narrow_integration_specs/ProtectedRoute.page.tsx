@@ -14,8 +14,7 @@ export function renderProtectedRoute({ requiredType }: { requiredType?: UserType
                         <div data-testid="protected-content">Protected Content</div>
                     </ProtectedRoute>
                 } />
-                <Route path="/" element={<div data-testid="login-page">Login Page</div>} />
-                <Route path="/unauthorized" element={<div data-testid="unauthorized-page">Unauthorized Page</div>} />
+                <Route path="/" element={<div data-testid="home-page">Home Page</div>} />
             </Routes>
         </MemoryRouter>
     );
@@ -30,11 +29,7 @@ export function protectedContentIsRendered(): boolean {
     return screen.queryByTestId("protected-content") !== null;
 }
 
-export function redirectedToLogin(): boolean {
-    return screen.queryByTestId("login-page") !== null;
-}
-
-export function redirectedToUnauthorized(): boolean {
-    return screen.queryByTestId("unauthorized-page") !== null;
+export function redirectedToHomePage(): boolean {
+    return screen.queryByTestId("home-page") !== null;
 }
 

@@ -5,8 +5,8 @@ import type {UserType} from "../../domain/user.ts";
 
 let renderResult: ReturnType<typeof render>;
 
-function TestProtectedRoute({ requiredType }: { requiredType?: UserType }) {
-    return (
+export function renderProtectedRoute({ requiredType }: { requiredType?: UserType }) {
+    renderResult = render(
         <MemoryRouter initialEntries={["/protected"]}>
             <Routes>
                 <Route path="/protected" element={
@@ -21,9 +21,6 @@ function TestProtectedRoute({ requiredType }: { requiredType?: UserType }) {
     );
 }
 
-export function renderProtectedRoute(options: { requiredType?: UserType }) {
-    renderResult = render(<TestProtectedRoute {...options} />);
-}
 
 export function unrenderProtectedRoute() {
     renderResult.unmount();

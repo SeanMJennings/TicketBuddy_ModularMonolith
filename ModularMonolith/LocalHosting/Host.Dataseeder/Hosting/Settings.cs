@@ -16,19 +16,31 @@ internal class Settings
     
     internal class ApiSettings
     {
-        public Uri BaseUrl => new(Configuration["ApiSettings:BaseUrl"]!);
+        public Uri BaseUrl => new(Configuration.GetRequired("ApiSettings:BaseUrl"));
     }
     
     internal class KeycloakSettings
     {
-        public Uri BaseUrl => new(Configuration["KeycloakSettings:BaseUrl"]!);
-        public string ClientId => Configuration["KeycloakSettings:ClientId"]!;
-        public string AdminUsername => Configuration["KeycloakSettings:Username"]!;
-        public string AdminPassword => Configuration["KeycloakSettings:Password"]!;
+        public Uri BaseUrl => new(Configuration.GetRequired("KeycloakSettings:BaseUrl"));
+        public string AdminCliClientId => Configuration.GetRequired("KeycloakSettings:AdminCliClientId");
+        public string TicketBuddyApiClientId => Configuration.GetRequired("KeycloakSettings:TicketBuddyApiClientId");
+        public string AdminUsername => Configuration.GetRequired("KeycloakSettings:Username");
+        public string AdminPassword => Configuration.GetRequired("KeycloakSettings:Password");
+        public string MasterRealm => Configuration.GetRequired("KeycloakSettings:MasterRealm");
+        public string TicketBuddyRealm => Configuration.GetRequired("KeycloakSettings:TicketBuddyRealm");
     }
     
     internal class RabbitMqSettings
     {
-        internal Uri ConnectionString => new(Configuration["ConnectionStrings:Messaging"]!);
+        internal Uri ConnectionString => new(Configuration.GetRequired("ConnectionStrings:Messaging"));
+    }
+}
+
+internal static class ConfigurationExtensions
+{
+    internal static string GetRequired(this IConfiguration configuration, string key)
+    {
+        var value = configuration[key];
+        return string.IsNullOrEmpty(value) ? throw new InvalidOperationException($"Configuration key '{key}' is required but was not found.") : value;
     }
 }

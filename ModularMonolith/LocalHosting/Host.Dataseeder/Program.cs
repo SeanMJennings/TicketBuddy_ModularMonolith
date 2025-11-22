@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
+using Domain.Events.Entities;
 using Domain.Primitives;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
@@ -34,21 +35,26 @@ public static class Program
 
         var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
         var apiHttpClient = httpClientFactory.CreateClient("ApiClient");
-        var keycloakApiHttpClient = await KeycloakAdminClient.CreateKeycloakAdminClient(
+        var keycloakApiHttpClient = await KeycloakClient.CreateKeycloakAdminClient(
             _settings.Keycloak.BaseUrl,
-            _settings.Keycloak.ClientId,
+            _settings.Keycloak.MasterRealm,
+            _settings.Keycloak.AdminCliClientId,
             _settings.Keycloak.AdminUsername,
             _settings.Keycloak.AdminPassword);
         
-        var count = await GetUsersCount(keycloakApiHttpClient);
-        if (count > 1)
+        if (await GetUsersCount(keycloakApiHttpClient) <= 1) await CreateCustomerUsers(keycloakApiHttpClient);
+        
+        if (await GetEventsCount(apiHttpClient) == 0)
         {
-            Console.WriteLine("Users already exist in Keycloak. Skipping data seeding.");
-            return;
+            var keycloakJwt = await KeycloakClient.GetToken(
+                _settings.Keycloak.BaseUrl,
+                _settings.Keycloak.TicketBuddyRealm,
+                _settings.Keycloak.TicketBuddyApiClientId,
+                _settings.Keycloak.AdminUsername,
+                _settings.Keycloak.AdminPassword);
+            apiHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakJwt);
+            await CreateFutureEvents(apiHttpClient);
         }
-
-        await CreateCustomerUsers(keycloakApiHttpClient);
-        await CreateFutureEvents(apiHttpClient);
     }
     
     private static async Task<int> GetUsersCount(HttpClient client)
@@ -57,6 +63,14 @@ public static class Program
         response.EnsureSuccessStatusCode();
         var countResponse = await response.Content.ReadFromJsonAsync<int>();
         return countResponse!;
+    }
+    
+    private static async Task<int> GetEventsCount(HttpClient client)
+    {
+        var response = await client.GetAsync(EventRoutes.Events);
+        response.EnsureSuccessStatusCode();
+        var events = await response.Content.ReadFromJsonAsync<Event[]>();
+        return events!.Length;
     }
 
     private static async Task CreateCustomerUsers(HttpClient client)
@@ -146,7 +160,4 @@ public static class Program
             response.EnsureSuccessStatusCode();
         }
     }
-    
-
-    
 }

@@ -1,15 +1,23 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Domain.Primitives;
 using Integration.Events.Messaging;
+using Integration.Keycloak.Users.Messaging;
+using Keycloak.Client;
+using Keycloak.Domain;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Migrations;
+using RabbitMQ.Client;
 using Shouldly;
+using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
 
@@ -35,6 +43,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private const decimal price = 12.34m;
     private const decimal new_price = 23.45m;
     private static PostgreSqlContainer database = null!;
+    private static RabbitMqContainer rabbit = null!;
     private ITestHarness testHarness = null!;
 
     protected override async Task before_all()
@@ -42,6 +51,8 @@ public partial class EventApiSpecs : TruncateDbSpecification
         database = PostgreSql.CreateContainer();
         await database.StartAsync();
         database.Migrate();
+        rabbit = RabbitMq.CreateContainer();
+        await rabbit.StartAsync();
     }
     
     protected override async Task before_each()
@@ -51,6 +62,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString());
         client = factory.CreateClient();
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
+        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Admin));
         await testHarness.Start();
     }
 
@@ -66,11 +78,20 @@ public partial class EventApiSpecs : TruncateDbSpecification
     {
         await database.StopAsync();
         await database.DisposeAsync();
+        await rabbit.StopAsync();
+        await rabbit.DisposeAsync();
     }
 
     private void a_request_to_create_an_event()
     {
         create_content(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
+    }    
+    
+    private void a_request_to_create_an_event_as_a_non_admin_user()
+    {
+        a_request_to_create_an_event();
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Customer));
     }
 
     private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
@@ -103,6 +124,8 @@ public partial class EventApiSpecs : TruncateDbSpecification
     {
         create_update_content(new_name, new_event_start_date, new_event_end_date, new_price);
     }
+    
+    private void an_admin_user_exists() {}
 
     private async Task creating_the_event()
     {
@@ -111,6 +134,12 @@ public partial class EventApiSpecs : TruncateDbSpecification
         content = response.Content;
         response_code.ShouldBe(HttpStatusCode.Created);
         returned_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
+    }    
+    
+    private async Task creating_the_event_that_should_fail()
+    {
+        var response = await client.PostAsync(Routes.Events, content);
+        response_code = response.StatusCode;
     }
     
     private async Task creating_another_event()
@@ -171,6 +200,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         var response = await client.GetAsync(Routes.Events);
         response_code = response.StatusCode;
         content = response.Content;
+        client.DefaultRequestHeaders.Clear();
     }
 
     private async Task the_event_is_created()
@@ -183,6 +213,11 @@ public partial class EventApiSpecs : TruncateDbSpecification
         (theEvent.EndDate.ToUniversalTime() - event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
         theEvent.Price.ShouldBe(price);
+    }
+
+    private void the_event_creation_is_forbidden()
+    {
+        response_code.ShouldBe(HttpStatusCode.Forbidden);
     }
     
     private async Task the_event_is_updated()

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events;
@@ -25,6 +26,8 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     private IntegrationWebApplicationFactory<Program> factory = null!;
     private HttpClient client = null!;
     private HttpContent content = null!;
+    private string keycloakAdminJwt = null!;
+    private string keycloakCustomerJwt = null!;
 
     private Guid event_id;
     private readonly Guid user_id = Guid.NewGuid();
@@ -54,14 +57,28 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await redis.StartAsync();
         keycloak = Testing.Containers.Keycloak.CreateContainer(new Uri($"https://{rabbit.Hostname}:{rabbit.GetMappedPublicPort(5672)}/"));
         await keycloak.StartAsync();
+        await create_a_customer_user();
+        keycloakAdminJwt = await KeycloakClient.GetToken(
+            new Uri(keycloak.GetBaseAddress()),
+            Testing.Containers.Keycloak.TicketBuddyRealm,
+            Testing.Containers.Keycloak.TicketBuddyApiClientId,
+            Testing.Containers.Keycloak.AdminUserName,
+            Testing.Containers.Keycloak.AdminPassword);        
+        keycloakCustomerJwt = await KeycloakClient.GetToken(
+            new Uri(keycloak.GetBaseAddress()),
+            Testing.Containers.Keycloak.TicketBuddyRealm,
+            Testing.Containers.Keycloak.TicketBuddyApiClientId,
+            email,
+            first_name + last_name);
     }
     
     protected override Task before_each()
     {
         content = null!;
         ticket_ids = [];
-        factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
+        factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), keycloak.GetBaseAddress(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakAdminJwt);
         return Task.CompletedTask;
     }
 
@@ -84,24 +101,12 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         await keycloak.DisposeAsync();
     }
     
-    private async Task an_event_exists()
+    private async Task create_a_customer_user()
     {
-        var theContent = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(first_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
-            Encoding.UTF8,
-            application_json);
-        var response = await client.PostAsync(Routes.Events, theContent);
-        response_code = response.StatusCode;
-        content = response.Content;
-        response_code.ShouldBe(HttpStatusCode.Created);
-        event_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
-    }
-    
-    private async Task a_user_exists()
-    {
-        var keycloakApiHttpClient = await KeycloakAdminClient.CreateKeycloakAdminClient(
-            new Uri(keycloak.GetBaseAddress()[..^1]),
-            "admin-cli",
+        var keycloakApiHttpClient = await KeycloakClient.CreateKeycloakAdminClient(
+            new Uri(keycloak.GetBaseAddress()),
+            Testing.Containers.Keycloak.MasterRealm,
+            Testing.Containers.Keycloak.AdminCliClientId,
             Testing.Containers.Keycloak.AdminUserName,
             Testing.Containers.Keycloak.AdminPassword);
         
@@ -123,7 +128,23 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         var response = await keycloakApiHttpClient.PostAsJsonAsync("/admin/realms/ticketbuddy/users", payload);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.Created);
-        
+    }
+    
+    private async Task an_event_exists()
+    {
+        var theContent = new StringContent(
+            JsonSerialization.Serialize(new EventPayload(first_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
+            Encoding.UTF8,
+            application_json);
+        var response = await client.PostAsync(Routes.Events, theContent);
+        response_code = response.StatusCode;
+        content = response.Content;
+        response_code.ShouldBe(HttpStatusCode.Created);
+        event_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
+    }
+    
+    private async Task a_user_exists()
+    {
         await RecreateKeycloakUserRegisteredEventFromKeycloak();
     }
 
@@ -167,6 +188,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray())),
             Encoding.UTF8,
             application_json);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakCustomerJwt);
 
         var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
         response_code = response.StatusCode;

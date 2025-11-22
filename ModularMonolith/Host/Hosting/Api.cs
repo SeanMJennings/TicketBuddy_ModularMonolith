@@ -22,6 +22,7 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
         services.ConfigureServices();
         if (!string.IsNullOrEmpty(_settings.RabbitMq.ConnectionString.ToString())) services.ConfigureMessaging(_settings.RabbitMq.ConnectionString.ToString());
         services.ConfigureHealthChecks(_settings.Database.Connection, _settings.Cache.Connection, _settings.RabbitMq.ConnectionString.ToString());
+        services.ConfigureKeycloakAuth(_settings.Keycloak);
         services.AddCorsAllowAll();
     }
 

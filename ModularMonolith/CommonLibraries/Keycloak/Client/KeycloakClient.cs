@@ -3,16 +3,16 @@ using System.Net.Http.Json;
 
 namespace Keycloak.Client;
 
-public static class KeycloakAdminClient
+public static class KeycloakClient
 {
-    public static async Task<HttpClient> CreateKeycloakAdminClient(Uri baseUrl, string clientId, string userName, string password)
+    public static async Task<HttpClient> CreateKeycloakAdminClient(Uri baseUrl, string realm, string clientId, string userName, string password)
     {
         var keycloakHttpClient = new HttpClient
         {
             BaseAddress = baseUrl
         };
 
-        var adminToken = await GetKeycloakAdminToken(keycloakHttpClient, clientId, userName, password);
+        var adminToken = await GetKeycloakToken(keycloakHttpClient, realm,clientId, userName, password);
 
         var keycloakApiAdminHttpClient = new HttpClient
         {
@@ -24,7 +24,17 @@ public static class KeycloakAdminClient
         return keycloakApiAdminHttpClient;
     }
     
-    private static async Task<string> GetKeycloakAdminToken(HttpClient client, string clientId, string userName, string password)
+    public static async Task<string> GetToken(Uri baseUrl, string realm, string clientId, string userName, string password)
+    {
+        var keycloakHttpClient = new HttpClient
+        {
+            BaseAddress = baseUrl
+        };
+
+        return await GetKeycloakToken(keycloakHttpClient, realm, clientId, userName, password);
+    }
+    
+    private static async Task<string> GetKeycloakToken(HttpClient client, string realm, string clientId, string userName, string password)
     {
         var tokenRequest = new Dictionary<string, string>
         {
@@ -33,8 +43,8 @@ public static class KeycloakAdminClient
             { "password", password },
             { "grant_type", "password" }
         };
-
-        var response = await client.PostAsync("/realms/master/protocol/openid-connect/token", new FormUrlEncodedContent(tokenRequest));
+        
+        var response = await client.PostAsync($"/realms/{realm}/protocol/openid-connect/token", new FormUrlEncodedContent(tokenRequest));
         response.EnsureSuccessStatusCode();
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();

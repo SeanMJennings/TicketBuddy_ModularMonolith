@@ -1,8 +1,9 @@
-using Application.Events;
 using Application.Events.Commands;
 using Application.Events.Queries;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
+using Keycloak.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Events;
@@ -24,6 +25,7 @@ public class EventController(EventCommands eventCommands, EventQueries eventQuer
         return @event;
     }    
     
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost(Routes.Events)]
     public async Task<CreatedResult> CreateEvent([FromBody] EventPayload payload)
     {

@@ -4,7 +4,11 @@ namespace Testing.Containers;
 
 public static class Keycloak
 {
-    public const string AdminUserName = "admin";
+    public const string AdminCliClientId = "admin-cli";
+    public const string TicketBuddyApiClientId = "ticketbuddy-api";
+    public const string MasterRealm = "master";
+    public const string TicketBuddyRealm = "ticketbuddy";
+    public const string AdminUserName = "admin@ticketbuddy.com";
     public const string AdminPassword = "admin";
     public static KeycloakContainer CreateContainer(Uri rabbitMqUrl, int port = 8181)
     {

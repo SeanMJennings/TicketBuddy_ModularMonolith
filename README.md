@@ -20,7 +20,6 @@ A modular monolith is a good place for a team to start when building a new appli
 
 ## Ways to Run Locally
 - A: Ensure docker is running and then run the Host.Aspire project
-
 - B: Run docker compose and then run UI with `npm run dev`
 - C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations, then API + dataseeder and then UI with `npm run dev`
 

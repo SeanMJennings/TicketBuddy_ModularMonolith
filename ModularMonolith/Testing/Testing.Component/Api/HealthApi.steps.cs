@@ -5,6 +5,7 @@ using Common.Environment;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Primitives;
+using Keycloak.Domain;
 using Migrations;
 using NUnit.Framework;
 using Shouldly;
@@ -50,6 +51,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         base.before_each();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
+        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Admin));
         response_content = null!;
         return Task.CompletedTask;
     }

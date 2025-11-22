@@ -2,11 +2,14 @@
 using Application.Tickets.Queries;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Queries;
+using Keycloak.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Tickets;
 
 [ApiController]
+[Authorize(Roles = Roles.Customer)]
 public class TicketController(
     TicketCommands ticketCommands,
     TicketQueries ticketQueries)

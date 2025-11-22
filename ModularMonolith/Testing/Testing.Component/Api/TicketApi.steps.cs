@@ -5,6 +5,7 @@ using Controllers.Tickets.Requests;
 using Domain.Primitives;
 using Integration.Events.Messaging;
 using Integration.Keycloak.Users.Messaging;
+using Keycloak.Domain;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -57,6 +58,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         user_id = Guid.NewGuid();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString());
         client = factory.CreateClient();
+        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Customer));
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
         await testHarness.Start();
     }
@@ -116,6 +118,14 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         content = response.Content;
         var tickets = JsonSerialization.Deserialize<IList<Domain.Tickets.Queries.Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
+    }    
+    
+    private async Task requesting_the_tickets_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        var response = await client.GetAsync(EventTickets(event_id));
+        response_code = response.StatusCode;
+        content = response.Content;
     }
 
     private async Task purchasing_two_tickets()
@@ -158,6 +168,11 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         });
         await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price);
         Thread.Sleep(100);
+    }
+    
+    private void the_request_is_unauthorized()
+    {
+        response_code.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
     private async Task the_tickets_are_released()

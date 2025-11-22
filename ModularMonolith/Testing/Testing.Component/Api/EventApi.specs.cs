@@ -23,6 +23,15 @@ public partial class EventApiSpecs
         await When(creating_the_event_that_should_fail);
               Then(the_event_creation_is_forbidden);
     }
+    
+    [Test]
+    public async Task an_anonymous_user_can_view_events()
+    {
+              Given(an_admin_user_exists);
+        await And(an_event_exists);
+        await When(listing_the_events_as_an_anonymous_user);
+        await Then(the_events_are_returned);
+    }
 
     [Test]
     public async Task can_update_event()

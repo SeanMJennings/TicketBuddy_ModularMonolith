@@ -33,6 +33,7 @@ public class EventController(EventCommands eventCommands, EventQueries eventQuer
         return Created($"/{Routes.Events}/{eventId}", eventId);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut(Routes.TheEvent)]
     public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] UpdateEventPayload payload)
     {

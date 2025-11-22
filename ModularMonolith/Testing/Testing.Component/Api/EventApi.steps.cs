@@ -92,6 +92,12 @@ public partial class EventApiSpecs : TruncateDbSpecification
         a_request_to_create_an_event();
         client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Customer));
+    }    
+    
+    private void a_request_to_view_events_as_an_anonymous_user()
+    {
+        a_request_to_create_an_event();
+        client.DefaultRequestHeaders.Clear();
     }
 
     private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
@@ -202,6 +208,14 @@ public partial class EventApiSpecs : TruncateDbSpecification
         content = response.Content;
         client.DefaultRequestHeaders.Clear();
     }
+    
+    private async Task listing_the_events_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        var response = await client.GetAsync(Routes.Events);
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
 
     private async Task the_event_is_created()
     {
@@ -230,7 +244,16 @@ public partial class EventApiSpecs : TruncateDbSpecification
         (theEvent.EndDate.ToUniversalTime() - new_event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
         theEvent.Price.ShouldBe(new_price);
-    }    
+    }   
+    
+    private async Task the_events_are_returned()
+    {
+        var theEvents = JsonSerialization.Deserialize<IReadOnlyList<Event>>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theEvents.Count.ShouldBe(1);
+        theEvents[0].Id.ShouldBe(returned_id);
+        theEvents[0].EventName.ToString().ShouldBe(name);
+    }
     
     private async Task the_events_are_listed_earliest_first()
     {

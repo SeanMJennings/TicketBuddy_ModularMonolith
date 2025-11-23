@@ -148,7 +148,20 @@ services:
     networks:
       - ticketbuddy-monolith-network
     restart: "no"
-    command: ["sh", "-c", "sleep 15 && dotnet Host.Dataseeder.dll"]
+    command: ["sh", "-c", "sleep 20 && dotnet Host.Dataseeder.dll"]
+  ui:
+    container_name: monolith-ui
+    build:
+      context: ../../UI
+      dockerfile: ../UI/Dockerfile
+    depends_on:
+      dataseeder:
+        condition: service_completed_successfully
+    ports:
+      - "5173:5173"
+    networks:
+      - ticketbuddy-monolith-network
+    restart: "no"
 
 volumes:
   postgresql_data:

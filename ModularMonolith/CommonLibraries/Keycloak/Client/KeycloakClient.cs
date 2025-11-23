@@ -44,7 +44,7 @@ public static class KeycloakClient
             { "grant_type", "password" }
         };
         
-        var response = await client.PostAsync($"/realms/{realm}/protocol/openid-connect/token", new FormUrlEncodedContent(tokenRequest));
+        var response = await client.PostAsync($"realms/{realm}/protocol/openid-connect/token/", new FormUrlEncodedContent(tokenRequest));
         response.EnsureSuccessStatusCode();
 
         var tokenResponse = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();

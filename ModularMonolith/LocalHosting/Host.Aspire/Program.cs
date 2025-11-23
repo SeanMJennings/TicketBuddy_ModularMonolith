@@ -71,12 +71,57 @@ var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
     .WaitFor(api)
     .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
 
-// builder.AddViteApp(name: "User-Interface", workingDirectory: "../../../UI")
-//     .WithReference(api)
-//     .WaitFor(api)
-//     .WithReference(dataSeeder)
-//     .WaitFor(dataSeeder)
-//     .WithNpmPackageInstallation();
+var repoRoot = FindRepoRootContaining(AppContext.BaseDirectory, "UI");
+var uiBuildContext = Path.GetFullPath(Path.Combine(repoRoot, "UI"));
+var uiDockerfile = Path.GetFullPath(Path.Combine(uiBuildContext, "Dockerfile"));
+
+if (!Directory.Exists(uiBuildContext)) throw new DirectoryNotFoundException($"Could not locate folder `UI` at `{uiBuildContext}`");
+if (!File.Exists(uiDockerfile)) throw new FileNotFoundException($"Dockerfile not found at `{uiDockerfile}`");
+
+var imageName = "localhosting-ui:local";
+var psi = new System.Diagnostics.ProcessStartInfo("docker",
+    $"build -f \"{uiDockerfile}\" -t {imageName} \"{uiBuildContext}\"")
+{
+    RedirectStandardOutput = true,
+    RedirectStandardError = true,
+    UseShellExecute = false
+};
+
+using (var proc = System.Diagnostics.Process.Start(psi)!)
+{
+    var stdout = proc.StandardOutput.ReadToEndAsync();
+    var stderr = proc.StandardError.ReadToEndAsync();
+    proc.WaitForExit();
+    if (proc.ExitCode != 0)
+    {
+        var outText = await stdout;
+        var errText = await stderr;
+        throw new InvalidOperationException($"Docker build failed for `UI`.\nStdout:\n{outText}\nStderr:\n{errText}");
+    }
+}
+
+builder
+    .AddContainer("User-Interface", imageName)
+    .WithHttpEndpoint(port: 5173, targetPort: 5173)
+    .WithReference(api)
+    .WaitFor(api)
+    .WithReference(dataSeeder)
+    .WaitFor(dataSeeder)
+    .WithLifetime(ContainerLifetime.Persistent);
 
 var app = builder.Build();
 await app.RunAsync();
+
+return;
+
+static string FindRepoRootContaining(string startDir, string markerFolder)
+{
+    var dir = new DirectoryInfo(startDir);
+    while (dir != null)
+    {
+        if (Directory.Exists(Path.Combine(dir.FullName, markerFolder)))
+            return dir.FullName;
+        dir = dir.Parent;
+    }
+    throw new DirectoryNotFoundException($"Could not locate folder `{markerFolder}` from `{startDir}` upward.");
+}

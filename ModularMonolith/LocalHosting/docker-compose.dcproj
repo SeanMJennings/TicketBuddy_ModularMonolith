@@ -16,4 +16,12 @@
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
+    <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
+        <ItemGroup>
+            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\CommonLibraries\Keycloak\Artifacts\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(KeycloakArtifacts)"
+              DestinationFiles="@(KeycloakArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"
+              SkipUnchangedFiles="true" />
+    </Target>
 </Project>

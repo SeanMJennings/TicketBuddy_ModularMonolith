@@ -70,21 +70,26 @@ services:
       - -c
       - |
         set -ex
-        ADD --chown=keycloak:keycloak ../../CommonLibraries/Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar /opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
         /opt/keycloak/bin/kc.sh import --dir /opt/keycloak/data/import
         /opt/keycloak/bin/kc.sh start-dev
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KK_TO_RMQ_URL=amqp://guest:guest@monolith-rabbitmq:5672/
+      - KK_TO_RMQ_VHOST=/
+      - KK_TO_RMQ_USERNAME=guest
+      - KK_TO_RMQ_PASSWORD=guest
+      - KC_HEALTH_ENABLED=true
     ports:
       - "8180:8080"
     volumes:
-      - ../../CommonLibraries/Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
+      - ../CommonLibraries/Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
+      - ../CommonLibraries/Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar:/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
     restart: always
     networks:
       - ticketbuddy-monolith-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      test: [ "CMD-SHELL", "exec 3<> /dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\\r\\nhost: http://localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; if [ $? -eq 0 ]; then echo 'Healthcheck Successful'; exit 0; else echo 'Healthcheck Failed'; exit 1; fi;" ]
       interval: 10s
       timeout: 5s
       retries: 12
@@ -118,6 +123,8 @@ services:
         condition: service_started
       rabbitmq:
         condition: service_healthy
+      keycloak:
+        condition: service_healthy
     environment:
       - ENVIRONMENT=Development
     ports:
@@ -141,7 +148,7 @@ services:
     networks:
       - ticketbuddy-monolith-network
     restart: "no"
-    command: ["sh", "-c", "sleep 20 && dotnet Host.Dataseeder.dll"]
+    command: ["sh", "-c", "sleep 15 && dotnet Host.Dataseeder.dll"]
 
 volumes:
   postgresql_data:

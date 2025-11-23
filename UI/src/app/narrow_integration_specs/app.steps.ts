@@ -20,7 +20,7 @@
 } from "./app.page";
 import {afterEach, beforeEach, expect, vi} from "vitest";
 import {MockServer} from "../../testing/mock-server";
-import {AnOidcAdminUser, AnOidcCustomerUser, OidcUsers, Users} from "../../testing/data";
+import {AnOidcAdminUser, AnOidcCustomerUser, OidcUsers} from "../../testing/data";
 import React from "react";
 
 const mockServer = MockServer.New();
@@ -55,9 +55,7 @@ beforeEach(() => {
     signInWasCalled = false;
     signOutWasCalled = false;
     mockServer.get("events", []);
-    Users.forEach(user => {
-        mockServer.get(`tickets/users/${user.Id}`, []);
-    });
+    mockServer.get(`tickets/users/me`, []);
     mockServer.start();
 });
 

@@ -185,7 +185,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     private async Task the_user_purchases_tickets_for_the_event()
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray())),
+            JsonSerialization.Serialize(new TicketPurchasePayload(ticket_ids.Take(2).ToArray())),
             Encoding.UTF8,
             application_json);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakCustomerJwt);

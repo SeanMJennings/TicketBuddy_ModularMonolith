@@ -51,7 +51,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         base.before_each();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Admin));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Admin));
         response_content = null!;
         return Task.CompletedTask;
     }

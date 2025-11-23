@@ -24,20 +24,23 @@ public class TicketController(
     [HttpPost(Routes.TicketsPurchase)]
     public async Task<ActionResult> PurchaseTickets([FromRoute] Guid id, [FromBody] TicketPurchasePayload payload)
     {
-        await ticketCommands.PurchaseTickets(id, payload.userId, payload.ticketIds);
+        var userId = User.GetUserId();
+        await ticketCommands.PurchaseTickets(id, userId, payload.ticketIds);
         return NoContent();
     }
 
     [HttpGet(Routes.TicketsPurchased)]
-    public async Task<IList<Ticket>> GetTicketsForUser([FromRoute] Guid userId)
+    public async Task<IList<Ticket>> GetTicketsForUser()
     {
+        var userId = User.GetUserId();
         return await ticketQueries.GetTicketsForUser(userId);
     }
     
     [HttpPost(Routes.TicketsReservation)]
     public async Task<ActionResult> ReserveTickets([FromRoute] Guid id, [FromBody] TicketReservationPayload payload)
     {
-        await ticketCommands.ReserveTickets(id, payload.userId, payload.ticketIds);
+        var userId = User.GetUserId();
+        await ticketCommands.ReserveTickets(id, userId, payload.ticketIds);
         return NoContent();
     }
 }

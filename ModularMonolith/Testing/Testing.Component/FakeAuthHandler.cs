@@ -6,9 +6,10 @@ using Microsoft.Extensions.Options;
 
 namespace Component;
 
-public class UserTypeHeader
+public class UserHeaders
 {
-    public const string HeaderName = "X-Test-User-Type";
+    public const string UserType = "X-Test-User-Type";
+    public const string UserId = "X-Test-User-Id";
 }
 
 public class FakeAuthHandler(
@@ -19,7 +20,7 @@ public class FakeAuthHandler(
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        if (!Request.Headers.TryGetValue(UserTypeHeader.HeaderName, out var userTypeValues))
+        if (!Request.Headers.TryGetValue(UserHeaders.UserType, out var userTypeValues))
             return Task.FromResult(AuthenticateResult.Fail("Missing test user header"));
 
         var userType = userTypeValues.ToString();
@@ -35,10 +36,15 @@ public class FakeAuthHandler(
             nameof(UserType.Customer) => Roles.Customer,
             _ => null
         };
+
+        Request.Headers.TryGetValue(UserHeaders.UserId, out var userIdValues);
+        
+        var userId = userIdValues.ToString();
         
         var claims = new[]
         {
-            new Claim(ClaimTypes.Role, roleClaim!)
+            new Claim(ClaimTypes.Role, roleClaim!),
+            new Claim("sub", userId)
         };
 
         var identity = new ClaimsIdentity(claims, Scheme.Name);

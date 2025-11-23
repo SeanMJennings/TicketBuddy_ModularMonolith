@@ -38,7 +38,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private static RedisContainer redis = null!;
     private ITestHarness testHarness = null!;
     private Guid[] ticket_ids = null!;
-    private static string TicketsForUser(Guid userId) => $"tickets/users/{userId}";
+    private static string TicketsForUser => "tickets/users/me";
     private static string EventTickets(Guid id) => $"{Routes.Events}/{id}/tickets";
 
     protected override async Task before_all()
@@ -58,7 +58,8 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         user_id = Guid.NewGuid();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString());
         client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Customer));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserId, user_id.ToString());
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
         await testHarness.Start();
     }
@@ -131,7 +132,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private async Task purchasing_two_tickets()
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray())),
+            JsonSerialization.Serialize(new TicketPurchasePayload(ticket_ids.Take(2).ToArray())),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
@@ -147,7 +148,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private async Task reserving_a_ticket()
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new TicketReservationPayload(user_id, ticket_ids.Take(1).ToArray())),
+            JsonSerialization.Serialize(new TicketReservationPayload(ticket_ids.Take(1).ToArray())),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);
@@ -219,7 +220,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     private async Task purchased_tickets_are_not_updated()
     {
-        var response = await client.GetAsync(TicketsForUser(user_id));
+        var response = await client.GetAsync(TicketsForUser);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(2);

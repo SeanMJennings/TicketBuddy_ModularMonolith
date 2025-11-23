@@ -47,8 +47,7 @@ public static class UserInterface
         var dir = new DirectoryInfo(startDir);
         while (dir != null)
         {
-            if (Directory.Exists(Path.Combine(dir.FullName, markerFolder)))
-                return dir.FullName;
+            if (Directory.Exists(Path.Combine(dir.FullName, markerFolder))) return dir.FullName;
             dir = dir.Parent;
         }
         throw new DirectoryNotFoundException($"Could not locate folder `{markerFolder}` from `{startDir}` upward.");

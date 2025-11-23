@@ -44,7 +44,7 @@ export const UserProfile = () => {
         if (!user) return;
 
         Promise.all([
-            getTicketsForUser(user.Id, auth.user?.access_token),
+            getTicketsForUser(auth.user?.access_token),
             getEvents()
         ])
             .then(([ticketsData, eventsData]) => {

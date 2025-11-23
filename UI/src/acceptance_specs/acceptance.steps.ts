@@ -1,6 +1,6 @@
 ﻿import {MockServer} from "../testing/mock-server.ts";
 import {afterEach, beforeEach, expect} from "vitest";
-import {Events, OidcUsers, TicketBoughtForFirstEvent, TicketsForFirstEvent, Users} from "../testing/data.ts";
+import {Events, OidcUsers, TicketBoughtForFirstEvent, TicketsForFirstEvent} from "../testing/data.ts";
 import {waitUntil} from "../testing/utilities.ts";
 import {
     clickBackToEventsButton,
@@ -47,7 +47,7 @@ beforeEach(() => {
     wait_for_get_tickets = mockServer.get(`events/${Events[0].Id}/tickets`, TicketsForFirstEvent);
     wait_for_post_reservation = mockServer.post(`events/${Events[0].Id}/tickets/reserve`, {});
     wait_for_post_ticket = mockServer.post(`events/${Events[0].Id}/tickets/purchase`, {});
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, TicketBoughtForFirstEvent);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, TicketBoughtForFirstEvent);
     mockServer.start();
 });
 
@@ -70,7 +70,7 @@ export async function should_allow_a_user_to_purchase_a_ticket() {
 
     mockServer.reset();
     wait_for_get_events = mockServer.get("events", Events);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, TicketBoughtForFirstEvent);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, TicketBoughtForFirstEvent);
     mockServer.start();
 
     await clickBackToEventsButton();

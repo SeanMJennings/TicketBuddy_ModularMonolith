@@ -13,7 +13,7 @@ import {
 } from "./TicketPurchase.page.tsx";
 import { MockServer } from "../../testing/mock-server.ts";
 import { waitUntil } from "../../testing/utilities.ts";
-import {Events, OidcUsers, TicketsForFirstEvent, Users} from "../../testing/data.ts";
+import {Events, OidcUsers, TicketsForFirstEvent} from "../../testing/data.ts";
 import { vi } from "vitest";
 import React from "react";
 
@@ -68,7 +68,7 @@ export async function should_purchase_tickets_successfully() {
 
   await clickPurchaseButton();
   await waitUntil(wait_for_post_purchase);
-  expect(mockServer.content).toStrictEqual({ UserId: Users[0].Id, TicketIds: [TicketsForFirstEvent[0].Id, TicketsForFirstEvent[1].Id, TicketsForFirstEvent[2].Id] });
+  expect(mockServer.content).toStrictEqual({ TicketIds: [TicketsForFirstEvent[0].Id, TicketsForFirstEvent[1].Id, TicketsForFirstEvent[2].Id] });
   expect(backButtonIsRendered()).toBeFalsy();
 }
 

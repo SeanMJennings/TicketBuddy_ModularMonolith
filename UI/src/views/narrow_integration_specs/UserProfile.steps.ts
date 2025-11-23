@@ -55,7 +55,7 @@ const userTickets = [
 
 beforeEach(() => {
     mockServer.reset();
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', []);
     mockServer.start();
 });
@@ -120,7 +120,7 @@ export async function should_display_user_stats_when_tickets_exist() {
 export async function should_not_display_stats_when_no_tickets() {
     mockServer.reset();
     mockServer.get('events', []);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, []);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, []);
     mockServer.start();
 
     renderUserProfile();
@@ -133,7 +133,7 @@ export async function should_not_display_stats_when_no_tickets() {
 export async function should_display_event_names_in_tickets() {
     mockServer.reset();
     mockServer.get('events', []);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', Events);
     mockServer.start();
 
@@ -150,7 +150,7 @@ export async function should_display_event_names_in_tickets() {
 export async function should_display_event_date_and_venue_in_tickets() {
     mockServer.reset();
     mockServer.get('events', []);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTickets);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', Events);
     mockServer.start();
 
@@ -229,7 +229,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
 
     mockServer.reset();
     mockServer.get('events', []);
-    wait_for_get_user_tickets = mockServer.get(`tickets/users/${Users[0].Id}`, userTicketsUnordered);
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTicketsUnordered);
     mockServer.get('events', events);
     mockServer.start();
 

@@ -70,7 +70,6 @@ export const TicketPurchase = () => {
       const ticketIds = selectedTickets.map(ticket => ticket.Id);
 
       purchaseTickets(eventId, {
-          UserId: user.Id,
           TicketIds: ticketIds
       }, auth.user?.access_token).then(() => {
               setPurchaseComplete(true);

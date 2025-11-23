@@ -20,7 +20,6 @@ import {getTicketsForEvent, reserveTickets} from "../api/tickets.api.ts";
 import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
-import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import { useAuth } from 'react-oidc-context';
 
 const SEATS_PER_ROW = 5;
@@ -35,14 +34,13 @@ export const Tickets = () => {
     const [proceeding, setProceeding] = useState(false);
 
     const auth = useAuth();
-    const user = convertToTicketBuddyUser(auth.user);
 
     useEffect(() => {
         const fetchEventAndTickets = async () => {
             if (!eventId) return;
             await Promise.all([
                 getEventById(eventId),
-                getTicketsForEvent(eventId)
+                getTicketsForEvent(eventId, auth.user?.access_token ?? '')
             ]).then(data => {
                 setEvent(data[0]);
                 setTickets(data[1]);
@@ -74,7 +72,6 @@ export const Tickets = () => {
         if (selectedSeats.length > 0 && eventId) {
             setProceeding(true);
             reserveTickets(eventId, {
-                UserId: user ? user.Id : '',
                 TicketIds: tickets.filter(t => selectedSeats.includes(t.SeatNumber)).map(t => t.Id)
             }, auth.user?.access_token
             ).then(() => {

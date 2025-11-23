@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Application.Tickets.IntegrationMessageConsumers;
 using BDD;
 using Controllers.Tickets;
@@ -78,10 +79,20 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
         testHarness.Start().Await();
         ticketController = serviceProvider.GetRequiredService<TicketController>();
+        AddUserClaimToControllerContext(user_id);
         cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         eventConsumer = serviceProvider.GetRequiredService<EventConsumer>();
         userRegisteredConsumer = serviceProvider.GetRequiredService<UserRegisteredConsumer>();
         return Task.CompletedTask;
+    }
+
+    private void AddUserClaimToControllerContext(Guid userId)
+    {
+        var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", userId.ToString())], "TestAuth"));
+        ticketController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        {
+            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+        };
     }
 
     protected override async Task after_each()
@@ -156,7 +167,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task purchasing_two_tickets()
     {
-        var payload = new TicketPurchasePayload(user_id, ticket_ids.Take(2).ToArray());
+        var payload = new TicketPurchasePayload(ticket_ids.Take(2).ToArray());
         await ticketController.PurchaseTickets(event_id, payload);
     }
 
@@ -179,7 +190,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     
     private async Task reserving_a_ticket()
     {
-        var payload = new TicketReservationPayload(user_id, ticket_ids.Take(1).ToArray());
+        AddUserClaimToControllerContext(user_id);
+        var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
         await ticketController.ReserveTickets(event_id, payload);
     }
 
@@ -190,7 +202,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task another_user_reserving_a_ticket()
     {
-        var payload = new TicketReservationPayload(another_user_id, ticket_ids.Take(1).ToArray());
+        AddUserClaimToControllerContext(another_user_id);
+        var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
         try
         {
             await ticketController.ReserveTickets(event_id, payload);
@@ -208,7 +221,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task another_user_purchasing_the_reserved_ticket()
     {
-        var payload = new TicketPurchasePayload(another_user_id, ticket_ids.Take(1).ToArray());
+        AddUserClaimToControllerContext(another_user_id);
+        var payload = new TicketPurchasePayload(ticket_ids.Take(1).ToArray());
         try
         {
             await ticketController.PurchaseTickets(event_id, payload);
@@ -221,7 +235,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task purchasing_two_non_existent_tickets()
     {
-        var payload = new TicketPurchasePayload(user_id, [Guid.NewGuid(), Guid.NewGuid()]);
+        AddUserClaimToControllerContext(user_id);
+        var payload = new TicketPurchasePayload([Guid.NewGuid(), Guid.NewGuid()]);
         try
         {
             await ticketController.PurchaseTickets(event_id, payload);
@@ -295,7 +310,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task purchased_tickets_are_not_updated()
     {
-        var tickets = await ticketController.GetTicketsForUser(user_id);
+        AddUserClaimToControllerContext(user_id);
+        var tickets = await ticketController.GetTicketsForUser();
         tickets.Count.ShouldBe(2);
         foreach (var ticket in tickets)
         {
@@ -336,7 +352,8 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     
     private async Task purchasing_all_tickets()
     {
-        var payload = new TicketPurchasePayload(user_id, ticket_ids);
+        AddUserClaimToControllerContext(user_id);
+        var payload = new TicketPurchasePayload(ticket_ids);
         await ticketController.PurchaseTickets(event_id, payload);
     }
     

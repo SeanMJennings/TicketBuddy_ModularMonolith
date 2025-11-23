@@ -62,7 +62,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString());
         client = factory.CreateClient();
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
-        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Admin));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Admin));
         await testHarness.Start();
     }
 
@@ -91,7 +91,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
     {
         a_request_to_create_an_event();
         client.DefaultRequestHeaders.Clear();
-        client.DefaultRequestHeaders.Add(UserTypeHeader.HeaderName, nameof(UserType.Customer));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
     }    
     
     private void a_request_to_view_events_as_an_anonymous_user()

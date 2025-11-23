@@ -15,13 +15,11 @@
     <PackageReference Include="Aspire.Hosting"/>
     <PackageReference Include="Aspire.Hosting.AppHost"/>
     <PackageReference Include="Aspire.Hosting.Keycloak" />
-    <PackageReference Include="Aspire.Hosting.NodeJs"/>
     <PackageReference Include="Aspire.Hosting.PostgreSQL"/>
     <PackageReference Include="Aspire.Hosting.RabbitMQ"/>
     <PackageReference Include="Aspire.Hosting.Redis"/>
     <PackageReference Include="Aspire.Microsoft.Data.SqlClient"/>
     <PackageReference Include="Common.Environment"/>
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions"/>
     <PackageReference Include="Microsoft.Extensions.Hosting"/>
   </ItemGroup>
 

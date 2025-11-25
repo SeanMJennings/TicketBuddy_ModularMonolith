@@ -33,17 +33,17 @@ There are some initial hardcoded users
 
 
 ## Architecture Overview
-![Modular Monolith Architecture](./ModularMonolith/ModularMonolith.drawio.png)
+![Modular Monolith Architecture](./Documents/ModularMonolith.drawio.png)
 
 ## Architecture Style
 The architecture style used is Clean Architecture by [Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
-![Clean Architecture inside Modular Monolith](./ModularMonolith/CleanArchitecture.jpg)
+![Clean Architecture inside Modular Monolith](./Documents/CleanArchitecture.jpg)
 
 ## Testing
 The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
 
-![Modern Test Pyramid](ModernTestPyramid.png)
+![Modern Test Pyramid](./Documents/ModernTestPyramid.png)
 
 ## Key technologies/choices:
 - ASP.NET Core
@@ -63,4 +63,4 @@ The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/opt
 Ticket Buddy uses OpenTelemetry to provide comprehensive observability across all services. 
 The modular telemetry data is visualized in the Aspire dashboard.
 
-![Observability Architecture](./Observability.png)
+![Observability Architecture](./Documents/Observability.png)

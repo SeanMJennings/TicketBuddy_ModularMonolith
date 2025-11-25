@@ -5,12 +5,12 @@ VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{8578EFB1-3D7D-46B6-A63B-A2B147064E21}"
 	ProjectSection(SolutionItems) = preProject
-		..\Observability.png = ..\Observability.png
+		..\Documents\CleanArchitecture.jpg = ..\Documents\CleanArchitecture.jpg
+		..\Documents\ModernTestPyramid.png = ..\Documents\ModernTestPyramid.png
+		..\Documents\ModularMonolith.drawio = ..\Documents\ModularMonolith.drawio
+		..\Documents\ModularMonolith.drawio.png = ..\Documents\ModularMonolith.drawio.png
+		..\Documents\Observability.png = ..\Documents\Observability.png
 		..\README.md = ..\README.md
-		ModularMonolith.drawio = ModularMonolith.drawio
-		ModularMonolith.drawio.png = ModularMonolith.drawio.png
-		README.md = README.md
-		..\ModernTestPyramid.png = ..\ModernTestPyramid.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}"

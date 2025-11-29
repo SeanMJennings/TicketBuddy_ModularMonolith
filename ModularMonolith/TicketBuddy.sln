@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36221.1 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{8578EFB1-3D7D-46B6-A63B-A2B147064E21}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TopLevelDocuments", "TopLevelDocuments", "{8578EFB1-3D7D-46B6-A63B-A2B147064E21}"
 	ProjectSection(SolutionItems) = preProject
 		..\Documents\CleanArchitecture.jpg = ..\Documents\CleanArchitecture.jpg
 		..\Documents\ModernTestPyramid.png = ..\Documents\ModernTestPyramid.png
@@ -131,6 +131,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5
 		.claude\docs\ddd-summary.md = .claude\docs\ddd-summary.md
 		.claude\docs\testing.md = .claude\docs\testing.md
 		.claude\docs\workflow.md = .claude\docs\workflow.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\modular-monolith-architecture.md = Documents\modular-monolith-architecture.md
+		Documents\testing-section.md = Documents\testing-section.md
 	EndProjectSection
 EndProject
 Global

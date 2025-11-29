@@ -82,7 +82,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-
 		..\.github\workflows\BuildModularMonolith.yaml = ..\.github\workflows\BuildModularMonolith.yaml
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".claude", ".claude", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\CLAUDE.md = .claude\CLAUDE.md
 	EndProjectSection

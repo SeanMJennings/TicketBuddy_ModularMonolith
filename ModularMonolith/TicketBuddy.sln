@@ -84,21 +84,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"
 	ProjectSection(SolutionItems) = preProject
-		.claude\agents\adr.md = .claude\agents\adr.md
-		.claude\agents\docs-guardian.md = .claude\agents\docs-guardian.md
-		.claude\agents\learn.md = .claude\agents\learn.md
-		.claude\agents\README.md = .claude\agents\README.md
-		.claude\agents\refactor-scan.md = .claude\agents\refactor-scan.md
-		.claude\agents\tdd-guardian.md = .claude\agents\tdd-guardian.md
-		.claude\agents\use-case-data-patterns.md = .claude\agents\use-case-data-patterns.md
-		.claude\agents\wip-guardian.md = .claude\agents\wip-guardian.md
 		.claude\CLAUDE.md = .claude\CLAUDE.md
-		.claude\docs\architecture.md = .claude\docs\architecture.md
-		.claude\docs\code-style.md = .claude\docs\code-style.md
-		.claude\docs\ddd-summary.md = .claude\docs\ddd-summary.md
-		.claude\docs\testing.md = .claude\docs\testing.md
-		.claude\docs\workflow.md = .claude\docs\workflow.md
-		.claude\docs\working-with-claude.md = .claude\docs\working-with-claude.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{9ED07BC2-571C-4D7B-B514-25B4D12ACACD}"
@@ -125,6 +111,27 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "CommonLibraries\Testing\Testing.csproj", "{E86143F7-5497-4364-AF58-6EE582AB057C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak", "CommonLibraries\Keycloak\Keycloak.csproj", "{4B55C839-633B-4A3C-94D1-A8D7E9835168}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agents", "agents", "{F5650254-D6B7-4CBF-8BFE-672686B96778}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\agents\adr.md = .claude\agents\adr.md
+		.claude\agents\docs-guardian.md = .claude\agents\docs-guardian.md
+		.claude\agents\learn.md = .claude\agents\learn.md
+		.claude\agents\refactor-scan.md = .claude\agents\refactor-scan.md
+		.claude\agents\tdd-guardian.md = .claude\agents\tdd-guardian.md
+		.claude\agents\use-case-data-patterns.md = .claude\agents\use-case-data-patterns.md
+		.claude\agents\wip-guardian.md = .claude\agents\wip-guardian.md
+		.claude\agents\README.md = .claude\agents\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4A01221C-5866-41E9-823E-B4B9C391C935}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\docs\architecture.md = .claude\docs\architecture.md
+		.claude\docs\code-style.md = .claude\docs\code-style.md
+		.claude\docs\ddd-summary.md = .claude\docs\ddd-summary.md
+		.claude\docs\testing.md = .claude\docs\testing.md
+		.claude\docs\workflow.md = .claude\docs\workflow.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -292,5 +299,7 @@ Global
 		{E1096C0B-2878-4CF2-B943-39925E3FCFED} = {9ED07BC2-571C-4D7B-B514-25B4D12ACACD}
 		{E86143F7-5497-4364-AF58-6EE582AB057C} = {B27BEC3F-9630-4040-83C5-60B309ADC70A}
 		{4B55C839-633B-4A3C-94D1-A8D7E9835168} = {B27BEC3F-9630-4040-83C5-60B309ADC70A}
+		{F5650254-D6B7-4CBF-8BFE-672686B96778} = {C467696C-ECB3-4420-80F1-5DEB3F4554F8}
+		{4A01221C-5866-41E9-823E-B4B9C391C935} = {C467696C-ECB3-4420-80F1-5DEB3F4554F8}
 	EndGlobalSection
 EndGlobal

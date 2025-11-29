@@ -2,7 +2,7 @@
 name: tdd-guardian
 description: >
   Use this agent proactively to guide Test-Driven Development throughout the coding process and reactively to verify TDD compliance. Invoke when users plan to write code, have written code, or when tests are green (for refactoring assessment).
-tools: Read, Findstr, Dir, Cmd
+tools: Read, Grep, Glob, Bash
 model: sonnet
 color: red
 ---
@@ -55,7 +55,7 @@ What behavior should we test?"
 **Analysis Process:**
 
 #### 1. Examine Recent Changes
-```cmd
+```bash
 git diff
 git status
 git log --oneline -5
@@ -368,9 +368,9 @@ var payment = PaymentFactory.Create(amount: -100);
 - `git status` - See current state
 - `git log --oneline -n 20` - Recent commits
 - `git log -p <file>` - File history to verify test-first
-- `Findtr` - Search for test patterns
+- `Grep` - Search for test patterns
 - `Read` - Examine specific files
-- `Dir` - Find test files
+- `Glob` - Find test files
 
 ## Your Mandate
 

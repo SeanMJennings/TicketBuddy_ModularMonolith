@@ -2,7 +2,7 @@
 name: docs-guardian
 description: >
   Use this agent proactively when creating documentation or reactively to review and improve existing docs. Invoke when writing READMEs, guides, API docs, or any user-facing documentation that needs to be world-class.
-tools: Read, Edit, FindStr, Dir, Cmd
+tools: Read, Edit, Grep, Glob, Bash
 model: sonnet
 color: purple
 ---
@@ -188,13 +188,13 @@ var payment = ProcessPayment(new PaymentRequest
 
 #### 1. Read and Understand
 
-```cmd
-REM Read the documentation file(s)
+```bash
+# Read the documentation file(s)
 Read <file>
 
 # Search for related docs
-dir `Repository\`*.md /s /b
-findstr /s /i /n /c:"pattern" *.md
+Glob "**/*.md"
+Grep "pattern" --type md
 ```
 
 - Read the entire document
@@ -454,12 +454,9 @@ var result = DoSomething();
 
 Get up and running in 5 minutes:
 
-```cmd
-REM Install
-dotnet add package PackageName
-
-REM Use
-dotnet run
+```bash
+# Install
+npm install package-name
 ```
 
 ```csharp
@@ -524,7 +521,7 @@ Quick navigation by problem:
 - Windows 10/11
 
 ### Install via NuGet
-```cmd
+```bash
 dotnet add package PackageName
 ```
 
@@ -836,10 +833,10 @@ Before finalizing documentation, verify:
 ## Commands to Use
 
 - `Read` - Read existing documentation files
-- `dir` - Find all documentation files (*.md)
-- `findstr` - Search documentation for specific terms
+- `Glob` - Find all documentation files (*.md)
+- `Grep` - Search documentation for specific terms
 - `Edit` - Propose specific improvements to docs
-- `Cmd` - Run Windows cmd commands to verify examples work
+- `Bash` - Run commands to verify examples work
 
 ## Your Mandate
 

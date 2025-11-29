@@ -2,7 +2,7 @@
 name: wip-guardian
 description: >
   Use this agent proactively when starting significant multi-step work and reactively to update progress throughout development. Invoke when beginning features requiring multiple PRs, completing steps, encountering blockers, or at end of sessions. Orchestrates other agents and maintains WIP.md.
-tools: Read, Edit, Findstr, Dir, Cmd
+tools: Read, Edit, Grep, Glob, Bash
 model: sonnet
 color: green
 ---
@@ -471,8 +471,8 @@ A WIP document is **temporary short-term memory** - it lives only while work is 
 
 **DEFAULT: DELETE WIP.md when complete.**
 
-```cmd
-rem Standard completion flow:
+```bash
+# Standard completion flow:
 git rm WIP.md
 git commit -m "docs: complete payment validation feature, remove WIP"
 ```
@@ -782,9 +782,9 @@ All future work will be tracked via normal issue/PR workflow.
 The `wip-guardian` agent has access to:
 - **Read**: Read existing WIP.md and related code
 - **Edit**: Update WIP.md with progress, learnings, blockers
-- **Findstr**: Search for keywords in codebase
-- **Dir**: List files to check for WIP.md existence
-- **Cmd**: Run shell commands for git status, file operations
+- **Grep**: Search codebase for relevant context
+- **Glob**: Find related files
+- **Bash**: Check git status, test results, run builds
 
 ## Success Criteria
 

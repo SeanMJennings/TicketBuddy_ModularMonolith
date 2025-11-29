@@ -2,7 +2,7 @@
 name: refactor-scan
 description: >
   Use this agent proactively to guide refactoring decisions during code improvement and reactively to assess refactoring opportunities after tests pass (TDD's third step). Invoke when tests are green, when considering abstractions, or when reviewing code quality.
-tools: Read, Findstr, Dir, Cmd
+tools: Read, Grep, Glob, Bash
 model: sonnet
 color: yellow
 ---
@@ -73,7 +73,7 @@ Per CLAUDE.md: **"Evaluating refactoring opportunities is not optional - it's th
 #### 1. Examine Recent Code
 
 Use git to identify what just changed:
-```cmd
+```bash
 git diff
 git diff --cached
 git log --oneline -1
@@ -514,8 +514,8 @@ public Money ProcessOrder(Order order)
 - `git status` - Current state
 - `git log --oneline -5` - Recent commits
 - `Read` - Examine files in detail
-- `Findstr` - Search for repeated patterns (magic numbers, similar functions, duplicated strings)
-- `Dir` - Find related files that might contain duplication
+- `Grep` - Search for repeated patterns (magic numbers, similar functions, duplicated strings)
+- `Glob` - Find related files that might contain duplication
 
 ## Your Mandate
 

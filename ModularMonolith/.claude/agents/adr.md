@@ -2,7 +2,7 @@
 name: adr
 description: >
   Use this agent proactively when making significant architectural decisions and reactively to document architectural choices after they're made. Invoke when evaluating technology options, making foundational decisions, or discovering undocumented architectural choices.
-tools: Read, Write, Edit, Findstr, Dir, Cmd
+tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet
 color: purple
 ---
@@ -262,16 +262,9 @@ user: "We're going with a monorepo structure"
 
 When triggered, create a new ADR:
 
-```cmd
-# Determine next ADR number using cmd
-$ adr_files = Dir docs/adr/*.md | ForEach-Object {
-    $filename = $_.Name
-    if ($filename -match '(\d{3})-') {
-        [int]$matches[1]
-    }
-}
-$last_number = ($adr_files | Sort-Object -Descending | Select-Object -First 1)
-
+```bash
+# Determine next ADR number
+ls docs/adr/ | grep -E '^[0-9]+' | sort -n | tail -1
 # If last is 003, create 004
 
 # Create new ADR
@@ -837,9 +830,9 @@ The `adr` agent has access to:
 - **Read**: Read existing ADRs, codebase, documentation
 - **Write**: Create new ADR files
 - **Edit**: Update ADR index, mark ADRs as superseded
-- **Findstr**: Search for related code/decisions
-- **Dir**: Find existing ADRs
-- **Cmd**: Check ADR directory structure, numbering
+- **Grep**: Search for related code/decisions
+- **Glob**: Find existing ADRs
+- **Bash**: Check ADR directory structure, numbering
 
 ## Success Criteria
 

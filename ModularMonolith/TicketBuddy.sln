@@ -84,7 +84,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LLMs", "LLMs", "{C467696C-ECB3-4420-80F1-5DEB3F4554F8}"
 	ProjectSection(SolutionItems) = preProject
-		CLAUDE.md = CLAUDE.md
+		.claude\agents\adr.md = .claude\agents\adr.md
+		.claude\agents\docs-guardian.md = .claude\agents\docs-guardian.md
+		.claude\agents\learn.md = .claude\agents\learn.md
+		.claude\agents\README.md = .claude\agents\README.md
+		.claude\agents\refactor-scan.md = .claude\agents\refactor-scan.md
+		.claude\agents\tdd-guardian.md = .claude\agents\tdd-guardian.md
+		.claude\agents\use-case-data-patterns.md = .claude\agents\use-case-data-patterns.md
+		.claude\agents\wip-guardian.md = .claude\agents\wip-guardian.md
+		.claude\CLAUDE.md = .claude\CLAUDE.md
+		.claude\docs\architecture.md = .claude\docs\architecture.md
+		.claude\docs\code-style.md = .claude\docs\code-style.md
+		.claude\docs\ddd-summary.md = .claude\docs\ddd-summary.md
+		.claude\docs\testing.md = .claude\docs\testing.md
+		.claude\docs\workflow.md = .claude\docs\workflow.md
+		.claude\docs\working-with-claude.md = .claude\docs\working-with-claude.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{9ED07BC2-571C-4D7B-B514-25B4D12ACACD}"

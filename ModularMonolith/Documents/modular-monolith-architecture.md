@@ -389,7 +389,7 @@ public abstract class Entity(Guid Id)
 
 ### Testing
 - **NUnit 4.4.0** - Test framework
-- **FluentAssertions 8.8.0** - Assertion library
+- **Shouldly 9.0.0** - Assertion library
 - **NSubstitute 5.3.0** - Mocking framework
 - **Testcontainers 4.8.1** - Real infrastructure for integration tests
   - PostgreSQL, Redis, RabbitMQ, Keycloak containers
@@ -535,7 +535,7 @@ public class EventUpsertedConsumer : IConsumer<EventUpserted>
 
 **Tools:**
 - NUnit
-- FluentAssertions
+- Shouldly
 - BDD (Testing.Bdd package)
 
 **Example:**
@@ -592,7 +592,7 @@ public partial class EventSpecs
 using BDD;
 using Domain.Events.Entities;
 using Domain.Primitives;
-using FluentAssertions;
+using Shouldly;
 
 namespace Unit;
 
@@ -644,10 +644,10 @@ public partial class EventSpecs : Specification
 
     private void the_event_is_created()
     {
-        user.Id.Should().Be(id);
-        user.EventName.ToString().Should().Be(valid_name);
-        user.StartDate.Should().Be(start_date);
-        user.EndDate.Should().Be(end_date);
+        user.Id.ShouldBe(id);
+        user.EventName.ToString().ShouldBe(valid_name);
+        user.StartDate.ShouldBe(start_date);
+        user.EndDate.ShouldBe(end_date);
     }
 }
 ```

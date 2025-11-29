@@ -1,8 +1,7 @@
 ﻿using BDD;
 using Domain.Events.Entities;
-using Domain.Events.Primitives;
 using Domain.Primitives;
-using FluentAssertions;
+using Shouldly;
 
 namespace Unit;
 
@@ -60,11 +59,11 @@ public partial class EventSpecs : Specification
     
     private void the_event_is_created()
     {
-        user.Id.Should().Be(id);
-        user.EventName.ToString().Should().Be(valid_name);
-        user.StartDate.Should().Be(start_date);
-        user.EndDate.Should().Be(end_date);
-        user.Venue.Should().Be(Venue.FirstDirectArenaLeeds);
-        user.Price.Should().Be(25m);
+        user.Id.ShouldBe(id);
+        user.EventName.ToString().ShouldBe(valid_name);
+        user.StartDate.ShouldBe(start_date);
+        user.EndDate.ShouldBe(end_date);
+        user.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        user.Price.ShouldBe(25m);
     }
 }

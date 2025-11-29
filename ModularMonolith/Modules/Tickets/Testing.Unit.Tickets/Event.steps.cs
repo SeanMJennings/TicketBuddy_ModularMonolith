@@ -1,7 +1,7 @@
 using BDD;
 using Domain.Tickets.Entities;
 using Domain.Tickets.Primitives;
-using FluentAssertions;
+using Shouldly;
 
 namespace Unit;
 
@@ -144,48 +144,48 @@ public partial class EventSpecs : Specification
     
     private void the_event_is_created()
     {
-        theEvent.Should().NotBeNull();
-        theEvent.Id.Should().Be(id);
-        theEvent.EventName.ToString().Should().Be(valid_name);
-        theEvent.StartDate.Should().Be(start_date);
-        theEvent.EndDate.Should().Be(end_date);
-        theEvent.TheVenue.Should().BeEquivalentTo(venue);
-        theEvent.Price.Should().Be(price);
+        theEvent.ShouldNotBeNull();
+        theEvent.Id.ShouldBe(id);
+        theEvent.EventName.ToString().ShouldBe(valid_name);
+        theEvent.StartDate.ShouldBe(start_date);
+        theEvent.EndDate.ShouldBe(end_date);
+        theEvent.TheVenue.ShouldBeEquivalentTo(venue);
+        theEvent.Price.ShouldBe(price);
     }
     
     private void event_name_is_updated()
     {
-        theEvent.EventName.ToString().Should().Be(updated_name);
+        theEvent.EventName.ToString().ShouldBe(updated_name);
     }
     
     private void event_dates_are_updated()
     {
-        theEvent.StartDate.Should().Be(start_date);
-        theEvent.EndDate.Should().Be(end_date);
+        theEvent.StartDate.ShouldBe(start_date);
+        theEvent.EndDate.ShouldBe(end_date);
     }
     
     private void event_price_is_updated()
     {
-        theEvent.Price.Should().Be(updatedPrice);
+        theEvent.Price.ShouldBe(updatedPrice);
     }
     
     private void event_venue_is_updated()
     {
-        theEvent.TheVenue.Should().NotBeEquivalentTo(venue);
+        theEvent.TheVenue.ShouldBeEquivalentTo(new Venue(Domain.Primitives.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200));
     }
     
     private void tickets_are_released()
     {
-        theEvent.Tickets.Should().NotBeEmpty();
-        theEvent.Tickets.Count.Should().Be(venue.Capacity);
-        theEvent.Tickets.All(t => t.EventId == theEvent.Id).Should().BeTrue();
-        theEvent.Tickets.All(t => t.Price == price).Should().BeTrue();
-        theEvent.Tickets.All(t => t.UserId == null).Should().BeTrue();
+        theEvent.Tickets.ShouldNotBeNull();
+        theEvent.Tickets.Count.ShouldBe(venue.Capacity);
+        theEvent.Tickets.All(t => t.EventId == theEvent.Id).ShouldBeTrue();
+        theEvent.Tickets.All(t => t.Price == price).ShouldBeTrue();
+        theEvent.Tickets.All(t => t.UserId == null).ShouldBeTrue();
     }
     
     private void ticket_prices_are_updated()
     {
-        theEvent.Tickets.All(t => t.Price == updatedPrice).Should().BeTrue();
+        theEvent.Tickets.All(t => t.Price == updatedPrice).ShouldBeTrue();
     }
     
     private void tickets_are_purchased()
@@ -193,8 +193,8 @@ public partial class EventSpecs : Specification
         foreach (var ticketId in ticketIds)
         {
             var ticket = theEvent.Tickets.FirstOrDefault(t => t.Id == ticketId);
-            ticket.Should().NotBeNull();
-            ticket.UserId.Should().Be(userId);
+            ticket.ShouldNotBeNull();
+            ticket.UserId.ShouldBe(userId);
         }
     }
 }

@@ -112,7 +112,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "CommonLibraries\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak", "CommonLibraries\Keycloak\Keycloak.csproj", "{4B55C839-633B-4A3C-94D1-A8D7E9835168}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agents", "agents", "{F5650254-D6B7-4CBF-8BFE-672686B96778}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{F5650254-D6B7-4CBF-8BFE-672686B96778}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\agents\adr.md = .claude\agents\adr.md
 		.claude\agents\docs-guardian.md = .claude\agents\docs-guardian.md
@@ -124,7 +124,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agents", "agents", "{F56502
 		.claude\agents\README.md = .claude\agents\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{4A01221C-5866-41E9-823E-B4B9C391C935}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5866-41E9-823E-B4B9C391C935}"
 	ProjectSection(SolutionItems) = preProject
 		.claude\docs\architecture.md = .claude\docs\architecture.md
 		.claude\docs\code-style.md = .claude\docs\code-style.md

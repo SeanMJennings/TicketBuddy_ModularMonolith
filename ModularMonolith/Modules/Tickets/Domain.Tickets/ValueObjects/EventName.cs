@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
-namespace Domain.Tickets.Primitives;
+namespace Domain.Tickets.ValueObjects;
 
 [JsonConverter(typeof(EventNameConverter))]
 public readonly record struct EventName

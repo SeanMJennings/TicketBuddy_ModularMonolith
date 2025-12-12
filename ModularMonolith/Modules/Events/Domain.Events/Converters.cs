@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Domain.Events.Primitives;
+using Domain.Events.ValueObjects;
 
 namespace Domain.Events;
 

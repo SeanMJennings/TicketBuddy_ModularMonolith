@@ -1,6 +1,6 @@
 using BDD;
 using Domain.Tickets.Entities;
-using Domain.Tickets.Primitives;
+using Domain.Tickets.ValueObjects;
 using Shouldly;
 
 namespace Unit;

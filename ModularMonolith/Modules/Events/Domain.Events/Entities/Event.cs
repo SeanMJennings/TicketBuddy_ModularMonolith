@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Domain.Events.Primitives;
+using Domain.Events.ValueObjects;
 using Domain.Primitives;
 
 namespace Domain.Events.Entities;

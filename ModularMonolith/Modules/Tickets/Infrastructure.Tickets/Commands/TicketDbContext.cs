@@ -1,5 +1,5 @@
 ﻿using Domain.Tickets.Entities;
-using Domain.Tickets.Primitives;
+using Domain.Tickets.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;

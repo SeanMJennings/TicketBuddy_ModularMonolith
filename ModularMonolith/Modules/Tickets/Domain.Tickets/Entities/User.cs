@@ -1,4 +1,4 @@
-﻿using Domain.Tickets.Primitives;
+﻿using Domain.Tickets.ValueObjects;
 
 namespace Domain.Tickets.Entities
 {

@@ -1,4 +1,4 @@
-﻿using Domain.Events.Primitives;
+﻿using Domain.Events.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;

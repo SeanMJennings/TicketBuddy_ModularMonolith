@@ -1,4 +1,4 @@
-﻿using Domain.Events.Primitives;
+﻿using Domain.Events.ValueObjects;
 using Domain.Primitives;
 
 namespace Controllers.Events.Requests;

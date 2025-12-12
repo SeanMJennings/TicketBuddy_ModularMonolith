@@ -2,6 +2,7 @@
 using Application.Tickets.DomainEventHandlers;
 using Application.Tickets.Queries;
 using Domain.Tickets.Contracts;
+using Domain.Tickets.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Tickets.Configuration;
@@ -10,13 +11,14 @@ public static class Services
 {
     public static IServiceCollection ConfigureTicketsServices(this IServiceCollection services)
     {
-        services.AddScoped<IPersistEvents, Commands.EventRepository>();
-        services.AddScoped<IPersistUsers, Commands.UserRepository>();
-        services.AddScoped<IQueryTickets, Queries.TicketQuerist>();
-        services.AddScoped<TicketCommands>();
-        services.AddScoped<TicketQueries>();
-        services.AddScoped<AllTicketsSoldHandler>();
-        services.AddSingleton(DomainEventsToHandlersMap.Map);
+        services.AddScoped<IPersistEvents, Commands.EventRepository>()
+            .AddScoped<IPersistUsers, Commands.UserRepository>()
+            .AddScoped<IQueryTickets, Queries.TicketQuerist>()
+            .AddScoped<TicketCommands>()
+            .AddScoped<TicketQueries>()
+            .AddScoped<TicketsValidator>()
+            .AddScoped<AllTicketsSoldHandler>()
+            .AddSingleton(DomainEventsToHandlersMap.Map);
         return services;
     }
 }

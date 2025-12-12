@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Contracts;
+﻿using Domain.Tickets.Contracts;
+using Domain.Tickets.Services;
 using StackExchange.Redis;
 
 namespace Application.Tickets.Commands;
 
 public class TicketCommands(
-    IPersistEvents EventRepository,
-    IConnectionMultiplexer ConnectionMultiplexer)
+    IPersistEvents eventRepository,
+    TicketsValidator ticketsValidator,
+    IConnectionMultiplexer connectionMultiplexer)
 {
     public async Task PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds)
     {
@@ -14,12 +15,11 @@ public class TicketCommands(
         {
             await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
         }
-        var theEvent = await EventRepository.GetById(eventId);
-        if (theEvent is null) throw new ValidationException("Event does not exist");
+        var theEvent = await ticketsValidator.CheckEventExists(eventId);
         
         theEvent.PurchaseTickets(userId, ticketIds);
-        await EventRepository.Save(theEvent);
-        await EventRepository.Commit();
+        await eventRepository.Save(theEvent);
+        await eventRepository.Commit();
     }
 
     public async Task ReserveTickets(Guid eventId, Guid userId, Guid[] ticketIds)
@@ -35,14 +35,14 @@ public class TicketCommands(
     
     private async Task CheckIfTicketReservedForDifferentUser(Guid eventId, Guid ticketId, Guid userId)
     {
-        var db = ConnectionMultiplexer.GetDatabase();
+        var db = connectionMultiplexer.GetDatabase();
         var value = await db.StringGetAsync(GetReservationKey(eventId, ticketId));
-        if (value.HasValue && value != userId.ToString()) throw new ValidationException("Tickets already reserved");
+        TicketsValidator.CheckIfTicketReservedForDifferentUser(userId, value);
     }
     
     private async Task ExtendReservation(Guid eventId, Guid ticketId, Guid userId)
     {
-        var db = ConnectionMultiplexer.GetDatabase();
+        var db = connectionMultiplexer.GetDatabase();
         var value = await db.StringGetAsync(GetReservationKey(eventId, ticketId));
         if (value.HasValue && value == userId.ToString())
         {

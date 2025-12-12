@@ -2,9 +2,9 @@
 
 namespace Domain;
 
-public abstract class Entity(Guid Id)
+public abstract class Entity(Guid id)
 {
-    public Guid Id { get; } = Id;
+    public Guid Id { get; } = id;
     
     private readonly List<IAmADomainEvent> _domainEvents = [];
 

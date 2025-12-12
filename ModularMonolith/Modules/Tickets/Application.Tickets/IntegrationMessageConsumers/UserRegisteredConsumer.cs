@@ -6,7 +6,7 @@ using MassTransit;
 
 namespace Application.Tickets.IntegrationMessageConsumers;
 
-public class UserRegisteredConsumer(IPersistUsers UserRepository) : IConsumer<UserRegistered>
+public class UserRegisteredConsumer(IPersistUsers userRepository) : IConsumer<UserRegistered>
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {
@@ -16,8 +16,8 @@ public class UserRegisteredConsumer(IPersistUsers UserRepository) : IConsumer<Us
             new Email(context.Message.details["email"])
         );
         
-        await UserRepository.Save(user);
-        await UserRepository.Commit(context.CancellationToken);
+        await userRepository.Save(user);
+        await userRepository.Commit(context.CancellationToken);
     }
 }
 

@@ -16,12 +16,4 @@ namespace Application.Events.IntegrationMessageConsumers
             await eventRepository.Commit();
         }
     }
-    
-    public class EventConsumerDefinition : ConsumerDefinition<EventSoldOutConsumer>
-    {
-        protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, IConsumerConfigurator<EventSoldOutConsumer> consumerConfigurator, IRegistrationContext context)
-        {
-            endpointConfigurator.UseMessageRetry(r => r.Intervals(500, 1000));
-        }
-    }
 }

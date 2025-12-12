@@ -3,15 +3,15 @@ using Domain.Events.Entities;
 
 namespace Application.Events.Queries;
 
-public class EventQueries(IPersistEvents EventRepository)
+public class EventQueries(IPersistEvents eventRepository)
 {
     public async Task<IList<Event>> GetEvents()
     {
-        return await EventRepository.GetAll();
+        return await eventRepository.GetAll();
     }
     
     public async Task<Event?> GetEventById(Guid eventId)
     {
-        return await EventRepository.Get(eventId);
+        return await eventRepository.Get(eventId);
     }
 }

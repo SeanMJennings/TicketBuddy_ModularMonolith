@@ -4,7 +4,7 @@ namespace Domain.Tickets.Entities;
 
 internal class Ticket : Entity
 {
-    private Ticket(Guid Id, Guid eventId, decimal price, uint seatNumber) : base(Id)
+    private Ticket(Guid id, Guid eventId, decimal price, uint seatNumber) : base(id)
     {
         EventId = eventId;
         Price = price;

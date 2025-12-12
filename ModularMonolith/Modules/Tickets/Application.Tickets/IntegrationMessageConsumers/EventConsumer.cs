@@ -9,7 +9,6 @@ namespace Application.Tickets.IntegrationMessageConsumers
     {
         public async Task Consume(ConsumeContext<EventUpserted> context)
         {
-            Console.WriteLine($"Received EventUpserted message for Event ID: {context.Message.Id}");
             var theVenue = await eventRepository.GetByVenueId(context.Message.Venue);
             await eventRepository.Save(Event.Create(context.Message.Id,context.Message.EventName, context.Message.StartDate, context.Message.EndDate, theVenue, context.Message.Price));
             await eventRepository.Commit();

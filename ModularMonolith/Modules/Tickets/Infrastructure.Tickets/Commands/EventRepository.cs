@@ -48,12 +48,12 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
         ticketDbContext.Update(@event);
     }
 
-    public async Task<Event?> GetById(Guid Id)
+    public async Task<Event?> GetById(Guid id)
     {
         return await ticketDbContext.Events
             .Include(e => e.TheVenue)
             .Include(e => e.Tickets)
-            .FirstOrDefaultAsync(e => e.Id == Id);
+            .FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task Commit(CancellationToken cancellationToken = default)

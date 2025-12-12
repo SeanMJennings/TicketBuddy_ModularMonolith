@@ -1,6 +1,6 @@
 ﻿using Domain.Tickets.Queries;
 
-namespace Domain.Tickets.Contracts;
+namespace Application.Tickets.Contracts;
 
 public interface IQueryTickets
 {

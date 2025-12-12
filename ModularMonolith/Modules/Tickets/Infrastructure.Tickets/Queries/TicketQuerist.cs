@@ -1,4 +1,5 @@
-﻿using Domain.Tickets.Contracts;
+﻿using Application.Tickets.Contracts;
+using Domain.Tickets.Contracts;
 using Domain.Tickets.Queries;
 using Infrastructure.Queries;
 

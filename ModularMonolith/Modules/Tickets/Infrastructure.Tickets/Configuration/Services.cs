@@ -1,4 +1,5 @@
 ﻿using Application.Tickets.Commands;
+using Application.Tickets.Contracts;
 using Application.Tickets.DomainEventHandlers;
 using Application.Tickets.Queries;
 using Domain.Tickets.Contracts;

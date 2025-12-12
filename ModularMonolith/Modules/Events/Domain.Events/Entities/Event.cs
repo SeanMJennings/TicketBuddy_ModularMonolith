@@ -35,8 +35,4 @@ public class Event : Entity, IAmAnAggregateRoot
     }
     public void UpdatePrice(decimal price) => Price = price;
     public void MarkAsSoldOut() => IsSoldOut = true;
-    public static void ValidateDate(DateTimeOffset startDate)
-    {
-        if (startDate < DateTimeOffset.UtcNow) throw new ValidationException("Event date cannot be in the past");
-    }
 }

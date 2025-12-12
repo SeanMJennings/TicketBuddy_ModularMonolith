@@ -24,4 +24,9 @@ public class EventsValidator(IPersistEvents eventRepository)
         
         if (conflictingEvent is not null) throw new ValidationException("Venue is not available at the selected time");
     }
+    
+    public static void ValidateDate(DateTimeOffset startDate)
+    {
+        if (startDate < DateTimeOffset.UtcNow) throw new ValidationException("Event date cannot be in the past");
+    }
 }

@@ -11,7 +11,7 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
     public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
     {
         var eventId = Guid.NewGuid();
-        Event.ValidateDate(startDate);
+        EventsValidator.ValidateDate(startDate);
         var theEvent = new Event(eventId, eventName, startDate, endDate, Venue.FirstDirectArenaLeeds, price);
         
         await eventsValidator.CheckIfVenueAlreadyBooked(theEvent);
@@ -23,7 +23,7 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
     public async Task UpdateEvent(Guid eventId, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
     {
         var existingEvent = await eventsValidator.CheckEventExists(eventId);
-        Event.ValidateDate(startDate);
+        EventsValidator.ValidateDate(startDate);
         existingEvent.UpdateName(eventName);
         existingEvent.UpdateDates(startDate, endDate);
         existingEvent.UpdatePrice(price);

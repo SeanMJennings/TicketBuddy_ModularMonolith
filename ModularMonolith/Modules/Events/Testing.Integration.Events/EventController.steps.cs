@@ -46,8 +46,8 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private readonly DateTimeOffset new_event_start_date = DateTimeOffset.UtcNow.AddDays(1);
     private readonly DateTimeOffset new_event_end_date = DateTimeOffset.UtcNow.AddDays(1).AddHours(2);
     private readonly DateTimeOffset past_event_start_date = DateTimeOffset.UtcNow.AddDays(-1);
-    private const decimal price = 12.34m;
-    private const decimal new_price = 23.45m;
+    private readonly Money price = 12.34m;
+    private readonly Money new_price = 23.45m;
     private static PostgreSqlContainer database = null!;
     private ITestHarness testHarness = null!;
 

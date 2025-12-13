@@ -42,7 +42,7 @@ public class IntegrationWebApplicationFactory<TProgram>(string connectionString,
 
 public static class TestAuthExtensions
 {
-    public const string Scheme = "TestScheme";
+    private const string Scheme = "TestScheme";
 
     public static IServiceCollection AddTestAuthentication(this IServiceCollection services)
     {
@@ -53,7 +53,7 @@ public static class TestAuthExtensions
             })
             .AddScheme<AuthenticationSchemeOptions, FakeAuthHandler>(Scheme, _ => { });
 
-        services.AddAuthorization(); // keep normal policies but use the test scheme
+        services.AddAuthorization();
         return services;
     }
 }

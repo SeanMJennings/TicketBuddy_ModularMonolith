@@ -11,6 +11,7 @@ public readonly struct EventName : IEquatable<EventName>
 
     public EventName(string name)
     {
+        _value = new StringValueObject<EventName>(name);
         Validation.BasedOn(errors =>
         {
             if (Regex.IsMatch(name,@"[^a-zA-Z0-9\s]", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
@@ -18,7 +19,6 @@ public readonly struct EventName : IEquatable<EventName>
                 errors.Add("Name can only have alphanumerical characters");
             }
         });
-        _value = new StringValueObject<EventName>(name);
     }
     
     public override string ToString() => _value.ToString();

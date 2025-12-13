@@ -1,4 +1,5 @@
 ﻿using Common.Environment;
+using Domain;
 using NUnit.Framework;
 
 namespace Component;
@@ -10,6 +11,7 @@ public static class Setup
     public static void BeforeAll()
     {
         CommonEnvironment.LocalTesting.SetEnvironment();
+        JsonSerialization.RegisterConverters(Converters.GetConverters);
     }
     
     [OneTimeTearDown]

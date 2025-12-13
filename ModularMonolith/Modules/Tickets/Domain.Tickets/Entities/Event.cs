@@ -6,7 +6,7 @@ namespace Domain.Tickets.Entities;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    private Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price) : base(id)
+    private Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
@@ -22,12 +22,12 @@ public class Event : Entity, IAmAnAggregateRoot
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
-    public decimal Price { get; private set; }
+    public Money Price { get; private set; }
     public Domain.ValueObjects.Venue Venue { get; private set; }
     internal List<Ticket> Tickets { get; private set; } = [];
     internal Venue TheVenue { get; private set; }
     
-    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price)
+    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
     {
         return new Event(id, eventName, startDate, endDate, venue, price);
     }
@@ -41,7 +41,7 @@ public class Event : Entity, IAmAnAggregateRoot
         EndDate = endDate;
     }
     public void UpdateVenue(Venue venue) => TheVenue = venue;
-    public void UpdatePrice(decimal price) => Price = price;
+    public void UpdatePrice(Money price) => Price = price;
     
     public List<Guid> UpdateExistingTicketsThatAreNotPurchased()
     {

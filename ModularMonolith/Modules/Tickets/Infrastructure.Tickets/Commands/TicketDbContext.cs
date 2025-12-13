@@ -28,6 +28,7 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
     {
         modelBuilder.Entity<Event>().HasKey(e => e.Id);
         modelBuilder.Entity<Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
+        modelBuilder.Entity<Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
         modelBuilder.Entity<Event>().HasMany(e => e.Tickets)
             .WithOne()
             .HasForeignKey(nameof(Ticket.EventId));
@@ -37,7 +38,7 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Event>().ToTable("Events",DefaultSchema, e => e.ExcludeFromMigrations());
         
         modelBuilder.Entity<Ticket>().HasKey(t => t.Id);
-        modelBuilder.Entity<Ticket>().Property(t => t.Price).HasColumnType("decimal(18,2)");
+        modelBuilder.Entity<Ticket>().Property(t => t.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount)).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Ticket>().Property(t => t.SeatNumber).HasConversion(seat => (int)seat, seat => (uint)seat);
         modelBuilder.Entity<Ticket>().Property(t => t.PurchasedAt).IsRequired(false);
         modelBuilder.Entity<Ticket>().Property(t => t.UserId).IsRequired(false);

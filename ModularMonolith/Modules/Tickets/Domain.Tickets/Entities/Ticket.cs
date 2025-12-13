@@ -1,23 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.ValueObjects;
 
 namespace Domain.Tickets.Entities;
 
 internal class Ticket : Entity
 {
-    private Ticket(Guid id, Guid eventId, decimal price, uint seatNumber) : base(id)
+    private Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : base(id)
     {
         EventId = eventId;
         Price = price;
         SeatNumber = seatNumber;
     }
     
-    internal static Ticket Create(Guid id, Guid eventId, decimal price, uint seatNumber)
+    internal static Ticket Create(Guid id, Guid eventId, Money price, uint seatNumber)
     {
         return new Ticket(id, eventId, price, seatNumber);
     }
     
     internal Guid EventId { get; private set; }
-    internal decimal Price { get; private set; }
+    internal Money Price { get; private set; }
     internal uint SeatNumber { get; private set; }
     internal Guid? UserId { get; private set; }
     internal DateTimeOffset? PurchasedAt { get; private set; }
@@ -29,7 +30,7 @@ internal class Ticket : Entity
         PurchasedAt = DateTimeOffset.UtcNow;
     }
     
-    internal void UpdatePrice(decimal newPrice)
+    internal void UpdatePrice(Money newPrice)
     {
         if (UserId is not null) return;
         Price = newPrice;

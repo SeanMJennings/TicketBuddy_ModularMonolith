@@ -13,11 +13,11 @@ public partial class EventSpecs : Specification
     private DateTimeOffset start_date;
     private DateTimeOffset end_date;
     private Venue venue = null!;
-    private decimal price;
+    private Money price;
     private Event theEvent = null!;
     private Guid userId;
     private Guid[] ticketIds = [];
-    private decimal updatedPrice;
+    private Money updatedPrice;
     
     private const string invalid_name = "Jackie Chan 123!";
     private const string valid_name = "Jackie Chan 123";

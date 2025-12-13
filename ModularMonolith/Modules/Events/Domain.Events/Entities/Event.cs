@@ -6,7 +6,7 @@ namespace Domain.Events.Entities;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, decimal price) : base(id)
+    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
@@ -20,7 +20,7 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
     public Venue Venue { get; private set; }
-    public decimal Price { get; private set; }
+    public Money Price { get; private set; }
     
     [JsonInclude]
     public bool IsSoldOut { get; private set; }
@@ -32,6 +32,6 @@ public class Event : Entity, IAmAnAggregateRoot
         StartDate = startDate;
         EndDate = endDate;
     }
-    public void UpdatePrice(decimal price) => Price = price;
+    public void UpdatePrice(Money price) => Price = price;
     public void MarkAsSoldOut() => IsSoldOut = true;
 }

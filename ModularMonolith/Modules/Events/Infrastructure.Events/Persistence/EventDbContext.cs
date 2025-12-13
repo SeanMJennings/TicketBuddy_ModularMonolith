@@ -22,6 +22,7 @@ public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEven
     {
         modelBuilder.Entity<Event>().HasKey(e => e.Id);
         modelBuilder.Entity<Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
+        modelBuilder.Entity<Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
         modelBuilder.Entity<Event>().ToTable("Events","Event", e => e.ExcludeFromMigrations());
     }
 }

@@ -12,7 +12,7 @@ public partial class EventSpecs
             Given(valid_inputs);
             And(a_null_user_name);
             When(Validating(creating_an_event));
-            Then(Informs("Value cannot be empty"));
+            Then(Informs("Value cannot be null or empty"));
         });        
         
         Scenario(() =>
@@ -20,7 +20,7 @@ public partial class EventSpecs
             Given(valid_inputs);
             And(an_event_name);
             When(Validating(creating_an_event));
-            Then(Informs("Value cannot be empty"));
+            Then(Informs("Value cannot be null or empty"));
         });
         
         Scenario(() =>
@@ -40,6 +40,15 @@ public partial class EventSpecs
         When(Validating(creating_an_event));
         Then(Informs("End date cannot be before start date"));
     }
+    
+    [Test]
+    public void cannot_create_event_with_negative_price()
+    {
+        Given(valid_inputs);
+        And(an_event_with_negative_price);
+        When(Validating(creating_an_event));
+        Then(Informs("Amount cannot be negative."));
+    }
    
     [Test]
     public void can_create_valid_event()
@@ -48,5 +57,4 @@ public partial class EventSpecs
         When(creating_an_event);
         Then(the_event_is_created);
     }
-
 }

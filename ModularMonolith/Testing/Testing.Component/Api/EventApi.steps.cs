@@ -40,8 +40,8 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private readonly DateTimeOffset event_end_date = DateTimeOffset.UtcNow.AddDays(3).AddHours(2);
     private readonly DateTimeOffset new_event_start_date = DateTimeOffset.UtcNow.AddDays(1);
     private readonly DateTimeOffset new_event_end_date = DateTimeOffset.UtcNow.AddDays(1).AddHours(2);
-    private const decimal price = 12.34m;
-    private const decimal new_price = 23.45m;
+    private readonly Money price = 12.34m;
+    private readonly Money new_price = 23.45m;
     private static PostgreSqlContainer database = null!;
     private static RabbitMqContainer rabbit = null!;
     private ITestHarness testHarness = null!;
@@ -93,12 +93,6 @@ public partial class EventApiSpecs : TruncateDbSpecification
         client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
     }    
-    
-    private void a_request_to_view_events_as_an_anonymous_user()
-    {
-        a_request_to_create_an_event();
-        client.DefaultRequestHeaders.Clear();
-    }
 
     private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
     {

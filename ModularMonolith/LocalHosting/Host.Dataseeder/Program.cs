@@ -4,7 +4,7 @@ using System.Text;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Events.Entities;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
 using Keycloak.Domain;

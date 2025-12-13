@@ -1,6 +1,6 @@
 ﻿using BDD;
 using Domain.Events.Entities;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Shouldly;
 
 namespace Unit;

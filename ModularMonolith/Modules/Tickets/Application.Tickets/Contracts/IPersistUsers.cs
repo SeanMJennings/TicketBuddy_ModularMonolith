@@ -1,4 +1,5 @@
-﻿using Domain.Contracts;
+﻿using Application.Contracts;
+using Domain.Contracts;
 using Domain.Tickets.Entities;
 
 namespace Application.Tickets.Contracts;

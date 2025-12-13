@@ -5,7 +5,7 @@ using Application.Events.Queries;
 using BDD;
 using Controllers.Events;
 using Controllers.Events.Requests;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Persistence;
 using Integration.Events.Messaging;

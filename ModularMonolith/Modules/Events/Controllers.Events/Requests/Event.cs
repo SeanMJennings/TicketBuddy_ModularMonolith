@@ -1,5 +1,5 @@
 ﻿using Domain.Events.ValueObjects;
-using Domain.Primitives;
+using Domain.ValueObjects;
 
 namespace Controllers.Events.Requests;
 

@@ -2,7 +2,7 @@
 using System.Text;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Integration.Events.Messaging;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Domain;

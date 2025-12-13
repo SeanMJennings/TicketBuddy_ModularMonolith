@@ -5,7 +5,7 @@ using System.Text;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Integration.Events.Messaging;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;

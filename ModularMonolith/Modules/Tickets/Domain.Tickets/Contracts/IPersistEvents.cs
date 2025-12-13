@@ -6,6 +6,6 @@ namespace Domain.Tickets.Contracts;
 public interface IPersistEvents : IPersist
 {
     public Task<Event?> GetById(Guid id);
-    public Task<Venue> GetByVenueId(Domain.Primitives.Venue venue);
+    public Task<Venue> GetByVenueId(Domain.ValueObjects.Venue venue);
     public Task Save(Event theEvent);
 }

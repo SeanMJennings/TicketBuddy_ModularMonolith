@@ -1,4 +1,4 @@
-﻿using Domain.Contracts;
+﻿using Application.Contracts;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 

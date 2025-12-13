@@ -1,4 +1,4 @@
-﻿namespace Domain.Primitives;
+﻿namespace Domain.ValueObjects;
 
 public enum Venue
 {

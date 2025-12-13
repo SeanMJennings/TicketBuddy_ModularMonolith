@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <RootNamespace>Domain</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\CommonLibraries\Testing\Testing.csproj" />
+        <ProjectReference Include="..\..\CommonLibraries\Domain\Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NUnit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="StringValueObject.steps.cs">
+        <DependentUpon>StringValueObject.specs.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>

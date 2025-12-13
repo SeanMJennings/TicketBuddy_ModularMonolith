@@ -1,4 +1,4 @@
-﻿namespace Domain.Contracts;
+﻿namespace Application.Contracts;
 
 public interface IManageAUnitOfWork
 {

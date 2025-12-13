@@ -18,7 +18,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using Testing;
 using Testing.Containers;
-using Venue = Domain.Primitives.Venue;
+using Venue = Domain.ValueObjects.Venue;
 
 namespace Integration;
 

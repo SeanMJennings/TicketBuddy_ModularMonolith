@@ -2,7 +2,7 @@
 using Domain.Events.Entities;
 using Domain.Events.Services;
 using Domain.Events.ValueObjects;
-using Domain.Primitives;
+using Domain.ValueObjects;
 
 namespace Application.Events.Commands;
 

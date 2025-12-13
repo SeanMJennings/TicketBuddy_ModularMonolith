@@ -4,7 +4,7 @@ using BDD;
 using Common.Environment;
 using Controllers.Events;
 using Controllers.Events.Requests;
-using Domain.Primitives;
+using Domain.ValueObjects;
 using Keycloak.Domain;
 using Migrations;
 using NUnit.Framework;

@@ -1,9 +1,11 @@
 ﻿using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
+using Domain.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 using Event = Domain.Tickets.Entities.Event;
+using Venue = Domain.Tickets.Entities.Venue;
 
 namespace Infrastructure.Tickets.Commands;
 

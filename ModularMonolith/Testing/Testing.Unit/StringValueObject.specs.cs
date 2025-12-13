@@ -86,11 +86,19 @@ public partial class StringValueObjectSpecs : Specification
     }
     
     [Test]
-    public void can_handle_empty_values()
+    public void cannot_create_value_object_with_null_value()
     {
-        Given(a_value_object_with_empty_value);
-        When(converting_to_string);
-        Then(string_is_empty);
+        Given(a_null_value);
+        When(Validating(creating_value_object));
+        Then(Informs("Value cannot be null or empty"));
+    }
+    
+    [Test]
+    public void cannot_create_value_object_with_empty_value()
+    {
+        Given(an_empty_value);
+        When(Validating(creating_value_object));
+        Then(Informs("Value cannot be null or empty"));
     }
     
     [Test]

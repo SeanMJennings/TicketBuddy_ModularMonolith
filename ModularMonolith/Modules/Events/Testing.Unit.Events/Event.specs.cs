@@ -12,7 +12,7 @@ public partial class EventSpecs
             Given(valid_inputs);
             And(a_null_user_name);
             When(Validating(creating_an_event));
-            Then(Informs("Name cannot be empty"));
+            Then(Informs("Value cannot be empty"));
         });        
         
         Scenario(() =>
@@ -20,7 +20,7 @@ public partial class EventSpecs
             Given(valid_inputs);
             And(an_event_name);
             When(Validating(creating_an_event));
-            Then(Informs("Name cannot be empty"));
+            Then(Informs("Value cannot be empty"));
         });
         
         Scenario(() =>

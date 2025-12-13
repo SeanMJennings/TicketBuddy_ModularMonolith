@@ -1,9 +1,8 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Domain.ValueObjects;
 
-namespace Domain.Events.ValueObjects;
+namespace Domain.ValueObjects;
 
 [JsonConverter(typeof(EventNameConverter))]
 public readonly struct EventName : IEquatable<EventName>
@@ -14,11 +13,7 @@ public readonly struct EventName : IEquatable<EventName>
     {
         Validation.BasedOn(errors =>
         {
-            if (string.IsNullOrEmpty(name))
-            {
-                errors.Add("Name cannot be empty");
-            }
-            else if (Regex.IsMatch(name,@"[^a-zA-Z0-9\s]", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
+            if (Regex.IsMatch(name,@"[^a-zA-Z0-9\s]", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
             {
                 errors.Add("Name can only have alphanumerical characters");
             }

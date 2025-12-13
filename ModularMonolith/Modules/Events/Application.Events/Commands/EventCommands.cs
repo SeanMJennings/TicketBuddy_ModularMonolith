@@ -1,7 +1,6 @@
 ﻿using Domain.Events.Contracts;
 using Domain.Events.Entities;
 using Domain.Events.Services;
-using Domain.Events.ValueObjects;
 using Domain.ValueObjects;
 
 namespace Application.Events.Commands;

@@ -1,5 +1,4 @@
-﻿using Domain.Events.ValueObjects;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Controllers.Events.Requests;
 

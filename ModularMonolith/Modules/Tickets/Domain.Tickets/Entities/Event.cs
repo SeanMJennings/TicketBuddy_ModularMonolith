@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Tickets.DomainEvents;
-using EventName = Domain.Tickets.ValueObjects.EventName;
+using Domain.ValueObjects;
 
 namespace Domain.Tickets.Entities;
 

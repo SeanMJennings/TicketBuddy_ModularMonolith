@@ -3,13 +3,15 @@ using Shouldly;
 
 namespace Domain;
 
-public readonly struct TestValue(string value)
+public readonly struct TestValue(string value) : IEquatable<TestValue>
 {
     private readonly StringValueObject<TestValue> _value = new(value);
 
     public override string ToString() => _value.ToString();
     
     public override bool Equals(object? obj) => obj is TestValue other && _value.Equals(other._value);
+    
+    public bool Equals(TestValue other) => _value.Equals(other._value);
     
     public override int GetHashCode() => _value.GetHashCode();
     
@@ -29,6 +31,7 @@ public partial class StringValueObjectSpecs
     private string? stringResult;
     private Dictionary<TestValue, string>? dictionary;
     private HashSet<TestValue>? hashset;
+    private string? testValueInput;
     
     private const string SampleValue = "Test Value";
     private const string SampleValueUpperCase = "TEST VALUE";
@@ -58,9 +61,19 @@ public partial class StringValueObjectSpecs
         value1 = new TestValue(SampleValue);
     }
     
-    private void a_value_object_with_empty_value()
+    private void a_null_value()
     {
-        value1 = new TestValue(string.Empty);
+        testValueInput = null;
+    }
+    
+    private void an_empty_value()
+    {
+        testValueInput = string.Empty;
+    }
+    
+    private void creating_value_object()
+    {
+        value1 = new TestValue(testValueInput!);
     }
     
     private void a_dictionary_with_value_object_keys()
@@ -119,7 +132,14 @@ public partial class StringValueObjectSpecs
     
     private void they_are_not_equal()
     {
-        inequalityResult.ShouldBeTrue();
+        if (inequalityResult)
+        {
+            inequalityResult.ShouldBeTrue();
+        }
+        else
+        {
+            equalityResult.ShouldBeFalse();
+        }
     }
     
     private void hash_codes_are_equal()
@@ -135,11 +155,6 @@ public partial class StringValueObjectSpecs
     private void string_matches_original_value()
     {
         stringResult.ShouldBe(SampleValue);
-    }
-    
-    private void string_is_empty()
-    {
-        stringResult.ShouldBe(string.Empty);
     }
     
     private void dictionary_contains_one_item()

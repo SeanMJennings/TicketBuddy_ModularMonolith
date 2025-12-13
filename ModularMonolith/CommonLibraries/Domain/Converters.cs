@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Domain.Events.ValueObjects;
+using Domain.ValueObjects;
 
-namespace Domain.Events;
+namespace Domain;
 
 public static class EventsConverters
 {

@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Domain;
 using Domain.Events;
 using Infrastructure.Tickets.Configuration;
 using OpenTelemetry;

@@ -1,9 +1,21 @@
 ﻿namespace Domain.ValueObjects;
 
-public readonly struct StringValueObject<T>(string value) : IEquatable<StringValueObject<T>>
+public readonly struct StringValueObject<T> : IEquatable<StringValueObject<T>>
     where T : struct
 {
-    private readonly string _value = value;
+    private readonly string _value;
+    
+    public StringValueObject(string value)
+    {
+        Validation.BasedOn(errors =>
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                errors.Add("Value cannot be null or empty");
+            }
+        });
+        _value = value;
+    }
 
     public override string ToString() => _value;
 

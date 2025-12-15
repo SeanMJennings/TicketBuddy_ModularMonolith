@@ -3,7 +3,6 @@ using Application.Tickets.Queries;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Queries;
 using Keycloak.Domain;
-using Keycloak.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

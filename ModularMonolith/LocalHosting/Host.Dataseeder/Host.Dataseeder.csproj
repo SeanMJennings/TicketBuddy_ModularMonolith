@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Modules\Keycloak.Users\Keycloak.Infrastructure\Keycloak.Infrastructure.csproj" />
+      <ProjectReference Include="..\..\Modules\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
       <ProjectReference Include="..\..\Modules\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
     </ItemGroup>
@@ -39,7 +39,7 @@
 
     <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
         <ItemGroup>
-            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\..\Modules\Keycloak.Users\Keycloak.Infrastructure\Artifacts\**\*.*" />
+            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\..\Modules\Keycloak.Users\Infrastructure.Keycloak\Artifacts\**\*.*" />
         </ItemGroup>
         <Copy SourceFiles="@(KeycloakArtifacts)"
               DestinationFiles="@(KeycloakArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"

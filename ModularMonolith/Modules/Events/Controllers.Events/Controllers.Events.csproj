@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Keycloak.Users\Keycloak.Domain\Keycloak.Domain\Keycloak.Domain.csproj" />
       <ProjectReference Include="..\..\Keycloak.Users\Keycloak\Keycloak.csproj" />
       <ProjectReference Include="..\Application.Events\Application.Events.csproj" />
       <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />

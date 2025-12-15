@@ -139,7 +139,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit", "Testing\Testing.Unit\Testing.Unit.csproj", "{E31EB214-C955-47F0-96D7-71E283558949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak", "Modules\Keycloak.Users\Keycloak\Keycloak.csproj", "{66C978B1-3658-4174-B8B4-C255BD158B1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak.Infrastructure", "Modules\Keycloak.Users\Keycloak.Infrastructure\Keycloak.Infrastructure.csproj", "{66C978B1-3658-4174-B8B4-C255BD158B1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Keycloak.Domain", "Modules\Keycloak.Users\Keycloak.Domain\Keycloak.Domain\Keycloak.Domain.csproj", "{83091824-3CE4-47F5-BD16-81E483A9AC91}"
 EndProject

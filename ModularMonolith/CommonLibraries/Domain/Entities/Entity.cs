@@ -2,9 +2,21 @@
 
 namespace Domain.Entities;
 
-public abstract class Entity(Guid id)
+public abstract class Entity
 {
-    public Guid Id { get; } = id;
+    protected Entity(Guid id)
+    {
+        Validation.BasedOn(errors =>
+        {
+            if (id == Guid.Empty)
+            {
+                errors.Add("Entity ID cannot be an empty GUID.");
+            }
+        });
+        Id = id;
+    }
+    
+    public Guid Id { get; }
     
     private readonly List<IAmADomainEvent> _domainEvents = [];
 
@@ -15,8 +27,8 @@ public abstract class Entity(Guid id)
     {
         _domainEvents.Clear();
     }
-    
-    public void AddDomainEvent(IAmADomainEvent domainEvent)
+
+    protected void AddDomainEvent(IAmADomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }

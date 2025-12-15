@@ -110,7 +110,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             { "email", email }
         };
         await testHarness.Bus.Publish(new UserRegistered(user_id, details));
-        await testHarness.Consumed.Any<UserRegistered>(x => x.Context.Message.userId == user_id);
+        //await testHarness.Consumed.Any<UserRegistered>(x => x.Context.Message.userId == user_id);
     }
 
     private async Task requesting_the_tickets()

@@ -7,31 +7,34 @@ namespace Domain.Tickets.Entities;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    private Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
+    internal Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
         StartDate = startDate;
         EndDate = endDate;
-        TheVenue = venue;
-        Venue = TheVenue.Id;
+        Venue = venue;
         Price = price;
     }
     
-    private Event() : base(Guid.Empty) { }
+    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
+    {
+        if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
+        EventName = eventName;
+        StartDate = startDate;
+        EndDate = endDate;
+        Venue = venue.Id;
+        TheVenue = venue;
+        Price = price;
+    }
     
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
     public Money Price { get; private set; }
     public Domain.ValueObjects.Venue Venue { get; private set; }
-    internal List<Ticket> Tickets { get; private set; } = [];
-    internal Venue TheVenue { get; private set; }
-    
-    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
-    {
-        return new Event(id, eventName, startDate, endDate, venue, price);
-    }
+    internal List<Ticket> Tickets { get; private set; } = new List<Ticket>();
+    internal Venue? TheVenue { get; private set; }
     
     public void UpdateName(EventName eventName) => EventName = eventName;
     public void UpdateDates(DateTimeOffset startDate, DateTimeOffset endDate)
@@ -41,7 +44,12 @@ public class Event : Entity, IAmAnAggregateRoot
         StartDate = startDate;
         EndDate = endDate;
     }
-    public void UpdateVenue(Venue venue) => TheVenue = venue;
+    
+    public void UpdateVenue(Venue venue)
+    {
+        TheVenue = venue;
+        Venue = TheVenue.Id;
+    }
     public void UpdatePrice(Money price) => Price = price;
     
     public List<Guid> UpdateExistingTicketsThatAreNotPurchased()
@@ -60,14 +68,15 @@ public class Event : Entity, IAmAnAggregateRoot
     public void ReleaseNewTickets()
     {
         if (Tickets.Count != 0) throw new ValidationException("Tickets have already been released for this event");
-        
-        for (uint i = 0; i < TheVenue.Capacity; i++)
+        if (TheVenue == null) throw new ValidationException("Venue must be set before releasing tickets");
+
+        for (int i = 0; i < TheVenue.Capacity; i++)
         {
             var ticket = Ticket.Create(
                 Guid.NewGuid(),
                 Id,
                 Price,
-                i + 1);
+                (uint)(i + 1));
             Tickets.Add(ticket);
         }
     }

@@ -29,6 +29,7 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Event>().HasKey(e => e.Id);
         modelBuilder.Entity<Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
         modelBuilder.Entity<Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
+        modelBuilder.Entity<Event>().Property(e => e.Venue).HasColumnName("Venue");
         modelBuilder.Entity<Event>().HasMany(e => e.Tickets)
             .WithOne()
             .HasForeignKey(nameof(Ticket.EventId));

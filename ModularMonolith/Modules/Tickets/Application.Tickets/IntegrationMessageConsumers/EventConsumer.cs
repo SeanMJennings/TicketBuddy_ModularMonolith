@@ -10,7 +10,7 @@ namespace Application.Tickets.IntegrationMessageConsumers
         public async Task Consume(ConsumeContext<EventUpserted> context)
         {
             var theVenue = await eventRepository.GetByVenueId(context.Message.Venue);
-            await eventRepository.Save(Event.Create(context.Message.Id,context.Message.EventName, context.Message.StartDate, context.Message.EndDate, theVenue, context.Message.Price));
+            await eventRepository.Save(new Event(context.Message.Id,context.Message.EventName, context.Message.StartDate, context.Message.EndDate, theVenue, context.Message.Price));
             await eventRepository.Commit();
         }
     }

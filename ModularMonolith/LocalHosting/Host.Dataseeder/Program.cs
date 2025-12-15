@@ -7,7 +7,7 @@ using Domain.Events.Entities;
 using Domain.ValueObjects;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
-using Keycloak.Domain;
+using Keycloak.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;

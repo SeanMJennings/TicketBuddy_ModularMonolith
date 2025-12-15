@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\CommonLibraries\Keycloak\Keycloak.csproj" />
+      <ProjectReference Include="..\..\Keycloak.Users\Keycloak\Keycloak.csproj" />
       <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
     </ItemGroup>
 

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Keycloak.Domain;
+using Keycloak.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

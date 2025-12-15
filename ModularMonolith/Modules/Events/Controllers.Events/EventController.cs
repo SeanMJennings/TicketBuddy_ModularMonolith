@@ -3,6 +3,7 @@ using Application.Events.Queries;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Keycloak.Domain;
+using Keycloak.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

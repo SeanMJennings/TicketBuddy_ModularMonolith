@@ -6,6 +6,7 @@ using Domain.ValueObjects;
 using Integration.Events.Messaging;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Domain;
+using Keycloak.Requests;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;

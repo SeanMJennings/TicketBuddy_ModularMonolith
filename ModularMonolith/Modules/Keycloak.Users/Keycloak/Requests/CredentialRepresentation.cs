@@ -1,4 +1,4 @@
-﻿namespace Keycloak.Domain;
+﻿namespace Keycloak.Requests;
 
 public class CredentialRepresentation
 {

@@ -6,6 +6,7 @@ using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.ValueObjects;
 using Keycloak.Domain;
+using Keycloak.Requests;
 using Migrations;
 using NUnit.Framework;
 using Shouldly;

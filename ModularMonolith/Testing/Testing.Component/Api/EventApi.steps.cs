@@ -10,6 +10,7 @@ using Integration.Events.Messaging;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
 using Keycloak.Domain;
+using Keycloak.Requests;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Migrations;

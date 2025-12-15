@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CommonLibraries\Keycloak\Keycloak.csproj" />
+    <ProjectReference Include="..\..\Modules\Keycloak.Users\Keycloak\Keycloak.csproj" />
     <ProjectReference Include="..\..\Host\Host.csproj" />
     <ProjectReference Include="..\Host.Dataseeder\Host.Dataseeder.csproj" />
     <ProjectReference Include="..\..\Database\Host.Migrations\Host.Migrations.csproj" />
@@ -42,7 +42,7 @@
 
     <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
         <ItemGroup>
-            <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\..\CommonLibraries\Keycloak\Artifacts\**\*.*" />
+          <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\..\Modules\Keycloak.Users\Keycloak\Artifacts\**\*.*" />
         </ItemGroup>
         <Copy SourceFiles="@(KeycloakArtifacts)"
               DestinationFiles="@(KeycloakArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')"

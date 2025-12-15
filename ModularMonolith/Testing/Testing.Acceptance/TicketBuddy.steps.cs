@@ -9,7 +9,7 @@ using Domain.Tickets.Queries;
 using Domain.ValueObjects;
 using Integration.Keycloak.Users.Messaging;
 using Keycloak.Client;
-using Keycloak.Domain;
+using Keycloak.Requests;
 using RabbitMQ.Client;
 using Shouldly;
 using Testcontainers.Keycloak;

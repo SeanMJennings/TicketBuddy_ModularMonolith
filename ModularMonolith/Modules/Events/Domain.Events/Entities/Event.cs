@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Domain.Entities;
 using Domain.ValueObjects;
 
 namespace Domain.Events.Entities;

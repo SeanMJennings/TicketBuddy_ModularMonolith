@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.DomainEvents;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DomainEventsDispatching;

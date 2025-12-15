@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Entities;
 using Domain.Tickets.DomainEvents;
 using Domain.ValueObjects;
 

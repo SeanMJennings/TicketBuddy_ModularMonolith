@@ -1,6 +1,6 @@
 ﻿using Domain.DomainEvents;
 
-namespace Domain;
+namespace Domain.Entities;
 
 public abstract class Entity(Guid id)
 {

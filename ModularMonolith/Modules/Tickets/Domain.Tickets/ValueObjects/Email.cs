@@ -1,49 +1,40 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Domain.ValueObjects;
 
 namespace Domain.Tickets.ValueObjects;
 
 [JsonConverter(typeof(EmailConverter))]
-public readonly record struct Email
+public readonly struct Email : IEquatable<Email>
 {
-    private string value { get; }
+    private readonly StringValueObject<Email> _value;
 
     public Email(string email)
     {
+        _value = new StringValueObject<Email>(email);
         Validation.BasedOn(errors =>
         {
-            if (string.IsNullOrEmpty(email))
-            {
-                errors.Add("Email cannot be empty");
-            }
-            else if (!Regex.IsMatch(email,@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
+            if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
             {
                 errors.Add("Email must be valid");
             }
         });
-        value = email;
-    }
-    
-    public override string ToString()
-    {
-        return value;
     }
 
-    public static implicit operator string(Email email) => email.value;
-    
+    public override string ToString() => _value.ToString();
+    public override bool Equals(object? obj) => obj is Email other && _value.Equals(other._value);
+    public bool Equals(Email other) => _value.Equals(other._value);
+    public override int GetHashCode() => _value.GetHashCode();
+    public static bool operator ==(Email left, Email right) => left._value == right._value;
+    public static bool operator !=(Email left, Email right) => left._value != right._value;
+    public static implicit operator string(Email email) => email._value;
     public static implicit operator Email(string email) => new(email);
 }
 
-public class EmailConverter : JsonConverter<Email>
+public class EmailConverter : StringValueObjectJsonConverter<Email>
 {
-    public override void Write(Utf8JsonWriter writer, Email value, JsonSerializerOptions options)
+    protected override Email CreateFromString(string value)
     {
-        writer.WriteStringValue(value.ToString());
-    }
-
-    public override Email Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        return reader.GetString()!;
+        return new Email(value);
     }
 }

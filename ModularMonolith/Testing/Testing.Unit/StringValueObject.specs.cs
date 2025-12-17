@@ -90,7 +90,7 @@ public partial class StringValueObjectSpecs : Specification
     {
         Given(a_null_value);
         When(Validating(creating_value_object));
-        Then(Informs("Value cannot be null or empty"));
+        Then(Informs("TestValue cannot be null or empty"));
     }
     
     [Test]
@@ -98,7 +98,7 @@ public partial class StringValueObjectSpecs : Specification
     {
         Given(an_empty_value);
         When(Validating(creating_value_object));
-        Then(Informs("Value cannot be null or empty"));
+        Then(Informs("TestValue cannot be null or empty"));
     }
     
     [Test]

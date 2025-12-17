@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Domain.ValueObjects;
@@ -22,31 +21,19 @@ public readonly struct EventName : IEquatable<EventName>
     }
     
     public override string ToString() => _value.ToString();
-
     public override bool Equals(object? obj) => obj is EventName other && _value.Equals(other._value);
-
     public bool Equals(EventName other) => _value.Equals(other._value);
-
     public override int GetHashCode() => _value.GetHashCode();
-
     public static bool operator ==(EventName left, EventName right) => left._value == right._value;
-
     public static bool operator !=(EventName left, EventName right) => left._value != right._value;
-
     public static implicit operator string(EventName eventName) => eventName._value;
-
     public static implicit operator EventName(string name) => new(name);
 }
 
-public class EventNameConverter : JsonConverter<EventName>
+public class EventNameConverter : StringValueObjectJsonConverter<EventName>
 {
-    public override void Write(Utf8JsonWriter writer, EventName value, JsonSerializerOptions options)
+    protected override EventName CreateFromString(string value)
     {
-        writer.WriteStringValue(value.ToString());
-    }
-
-    public override EventName Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        return reader.GetString()!;
+        return new EventName(value);
     }
 }

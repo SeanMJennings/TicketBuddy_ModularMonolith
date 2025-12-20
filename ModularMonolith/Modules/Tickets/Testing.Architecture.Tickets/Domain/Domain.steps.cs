@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using BDD;
-using Domain;
 using Domain.DomainEvents;
 using Domain.Entities;
 using Domain.Tickets.Entities;

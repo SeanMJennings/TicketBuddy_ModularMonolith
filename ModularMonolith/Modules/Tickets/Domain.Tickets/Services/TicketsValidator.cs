@@ -4,9 +4,9 @@ using Domain.Tickets.Entities;
 
 namespace Domain.Tickets.Services;
 
-public class TicketsValidator(IPersistEvents eventRepository)
+public static class TicketsValidator
 {
-    public async Task<Event> CheckEventExists(Guid eventId)
+    public static async Task<Event> CheckEventExists(Guid eventId, IPersistEvents eventRepository)
     {
         var existingEvent = await eventRepository.GetById(eventId);
         return existingEvent ?? throw new ValidationException($"Event with id {eventId} not found");

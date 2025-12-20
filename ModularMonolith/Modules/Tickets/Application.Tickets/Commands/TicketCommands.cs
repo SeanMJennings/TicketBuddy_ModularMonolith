@@ -6,7 +6,7 @@ namespace Application.Tickets.Commands;
 
 public class TicketCommands(
     IPersistEvents eventRepository,
-    TicketsValidator ticketsValidator,
+    IPersistTickets ticketRepository,
     IConnectionMultiplexer connectionMultiplexer)
 {
     public async Task PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds)
@@ -15,11 +15,17 @@ public class TicketCommands(
         {
             await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
         }
-        var theEvent = await ticketsValidator.CheckEventExists(eventId);
         
-        theEvent.PurchaseTickets(userId, ticketIds);
-        await eventRepository.Save(theEvent);
-        await eventRepository.Commit();
+        var theEvent = await TicketsValidator.CheckEventExists(eventId, eventRepository);
+        var soldOut = await TicketsPurchaseService.PurchaseTickets(eventId, userId, ticketIds, ticketRepository);
+        
+        if (soldOut)
+        {
+            theEvent.MarkAsSoldOut();
+            await eventRepository.Save(theEvent);
+        }
+        
+        await ticketRepository.Commit();
     }
 
     public async Task ReserveTickets(Guid eventId, Guid userId, Guid[] ticketIds)

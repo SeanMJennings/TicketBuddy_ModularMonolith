@@ -15,8 +15,6 @@ public partial class EventSpecs : Specification
     private Venue venue = null!;
     private Money price;
     private Event theEvent = null!;
-    private Guid userId;
-    private Guid[] ticketIds = [];
     private Money updatedPrice;
     
     private const string invalid_name = "Jackie Chan 123!";
@@ -27,7 +25,6 @@ public partial class EventSpecs : Specification
     {
         base.before_each();
         id = Guid.NewGuid();
-        userId = Guid.NewGuid();
         name = null!;
         venue = new Venue(Domain.ValueObjects.Venue.EmiratesOldTraffordManchester, "Emirates Old Trafford, Manchester", 100);
         price = 25m;
@@ -84,22 +81,6 @@ public partial class EventSpecs : Specification
         creating_an_event();
     }
     
-    private void tickets_already_released()
-    {
-        theEvent.ReleaseNewTickets();
-        ticketIds = theEvent.Tickets.Select(t => t.Id).Take(2).ToArray();
-    }
-    
-    private void updated_price()
-    {
-        price = updatedPrice;
-    }
-    
-    private void nonexistent_ticket_ids()
-    {
-        ticketIds = [Guid.NewGuid(), Guid.NewGuid()];
-    }
-    
     private void creating_an_event()
     {
         var eventName = new EventName(name);
@@ -125,22 +106,6 @@ public partial class EventSpecs : Specification
     {
         var newVenue = new Venue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200);
         theEvent.UpdateVenue(newVenue);
-    }
-    
-    private void releasing_tickets()
-    {
-        theEvent.ReleaseNewTickets();
-    }
-    
-    private void updating_existing_tickets()
-    {
-        theEvent.UpdatePrice(updatedPrice);
-        theEvent.UpdateExistingTicketsThatAreNotPurchased();
-    }
-    
-    private void purchasing_tickets()
-    {
-        theEvent.PurchaseTickets(userId, ticketIds);
     }
     
     private void the_event_is_created()
@@ -173,29 +138,5 @@ public partial class EventSpecs : Specification
     private void event_venue_is_updated()
     {
         theEvent.TheVenue.ShouldBeEquivalentTo(new Venue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200));
-    }
-    
-    private void tickets_are_released()
-    {
-        theEvent.Tickets.ShouldNotBeNull();
-        theEvent.Tickets.Count.ShouldBe(venue.Capacity);
-        theEvent.Tickets.All(t => t.EventId == theEvent.Id).ShouldBeTrue();
-        theEvent.Tickets.All(t => t.Price == price).ShouldBeTrue();
-        theEvent.Tickets.All(t => t.UserId == null).ShouldBeTrue();
-    }
-    
-    private void ticket_prices_are_updated()
-    {
-        theEvent.Tickets.All(t => t.Price == updatedPrice).ShouldBeTrue();
-    }
-    
-    private void tickets_are_purchased()
-    {
-        foreach (var ticketId in ticketIds)
-        {
-            var ticket = theEvent.Tickets.FirstOrDefault(t => t.Id == ticketId);
-            ticket.ShouldNotBeNull();
-            ticket.UserId.ShouldBe(userId);
-        }
     }
 }

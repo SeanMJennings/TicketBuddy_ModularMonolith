@@ -14,6 +14,7 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
 {
     private const string DefaultSchema = "Ticket";
     public DbSet<Event> Events => Set<Event>();
+    public DbSet<Ticket> Tickets => Set<Ticket>();
     public DbSet<Venue> Venues => Set<Venue>();
     public DbSet<User> Users => Set<User>();
     
@@ -30,19 +31,18 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
         modelBuilder.Entity<Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
         modelBuilder.Entity<Event>().Property(e => e.Venue).HasColumnName("Venue");
-        modelBuilder.Entity<Event>().HasMany(e => e.Tickets)
-            .WithOne()
-            .HasForeignKey(nameof(Ticket.EventId));
         modelBuilder.Entity<Event>().HasOne(e => e.TheVenue)
             .WithOne()
             .HasForeignKey<Event>(nameof(Event.Venue));
         modelBuilder.Entity<Event>().ToTable("Events",DefaultSchema, e => e.ExcludeFromMigrations());
         
         modelBuilder.Entity<Ticket>().HasKey(t => t.Id);
+        modelBuilder.Entity<Ticket>().Property(t => t.EventId);
         modelBuilder.Entity<Ticket>().Property(t => t.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount)).HasColumnType("decimal(18,2)");
         modelBuilder.Entity<Ticket>().Property(t => t.SeatNumber).HasConversion(seat => (int)seat, seat => (uint)seat);
         modelBuilder.Entity<Ticket>().Property(t => t.PurchasedAt).IsRequired(false);
         modelBuilder.Entity<Ticket>().Property(t => t.UserId).IsRequired(false);
+        modelBuilder.Entity<Ticket>().HasIndex(t => t.EventId);
         modelBuilder.Entity<Ticket>().ToTable("Tickets",DefaultSchema, t => t.ExcludeFromMigrations());
         
         modelBuilder.Entity<Venue>().HasKey(v => v.Id);

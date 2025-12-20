@@ -1,7 +1,7 @@
 ﻿using Common.Environment;
 using TicketBuddy.AppHost;
 
-const string Environment = "Environment";
+const string environment = "Environment";
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder
@@ -52,7 +52,7 @@ var keycloak = builder
 var migrations = builder.AddProject<Projects.Host_Migrations>("Migrations")
     .WithReference(database)
     .WaitFor(database)
-    .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
+    .WithEnvironment(environment, CommonEnvironment.LocalDevelopment.ToString);
 
 var api = builder.AddProject<Projects.Host>("Api")
     .WithReference(database)
@@ -65,12 +65,12 @@ var api = builder.AddProject<Projects.Host>("Api")
     .WaitFor(redis)
     .WithReference(keycloak)
     .WaitFor(keycloak)
-    .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
+    .WithEnvironment(environment, CommonEnvironment.LocalDevelopment.ToString);
 
 var dataSeeder = builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
     .WithReference(api)
     .WaitFor(api)
-    .WithEnvironment(Environment, CommonEnvironment.LocalDevelopment.ToString);
+    .WithEnvironment(environment, CommonEnvironment.LocalDevelopment.ToString);
 
 await UserInterface.CreateImage();
 

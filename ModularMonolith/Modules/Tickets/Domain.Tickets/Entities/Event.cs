@@ -33,10 +33,10 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset EndDate { get; private set; }
     public Money Price { get; private set; }
     public Domain.ValueObjects.Venue Venue { get; private set; }
-    internal List<Ticket> Tickets { get; private set; } = new List<Ticket>();
     internal Venue? TheVenue { get; private set; }
     
     public void UpdateName(EventName eventName) => EventName = eventName;
+    
     public void UpdateDates(DateTimeOffset startDate, DateTimeOffset endDate)
     {
         if (startDate < DateTimeOffset.UtcNow || endDate < DateTimeOffset.UtcNow) throw new ValidationException("Event date cannot be in the past");
@@ -50,52 +50,11 @@ public class Event : Entity, IAmAnAggregateRoot
         TheVenue = venue;
         Venue = TheVenue.Id;
     }
+    
     public void UpdatePrice(Money price) => Price = price;
     
-    public List<Guid> UpdateExistingTicketsThatAreNotPurchased()
+    public void MarkAsSoldOut()
     {
-        if (Tickets.Count == 0) throw new ValidationException("No tickets have been released for this event");
-        
-        var existingTicketsNotPurchased = Tickets.Where(t => t.UserId == null).ToList();
-        var updatedIds = existingTicketsNotPurchased.Select(t => t.Id).ToList();
-        foreach (var ticket in existingTicketsNotPurchased)
-        {
-            ticket.UpdatePrice(Price);
-        }
-        return updatedIds;
-    }
-
-    public void ReleaseNewTickets()
-    {
-        if (Tickets.Count != 0) throw new ValidationException("Tickets have already been released for this event");
-        if (TheVenue == null) throw new ValidationException("Venue must be set before releasing tickets");
-
-        for (int i = 0; i < TheVenue.Capacity; i++)
-        {
-            var ticket = Ticket.Create(
-                Guid.NewGuid(),
-                Id,
-                Price,
-                (uint)(i + 1));
-            Tickets.Add(ticket);
-        }
-    }
-    
-    public void PurchaseTickets(Guid userId, Guid[] ticketIds)
-    {
-        var theTickets = Tickets.Where(t => ticketIds.Contains(t.Id)).ToArray();
-        if (theTickets.Length != ticketIds.Length) throw new ValidationException("One or more tickets do not exist");
-        
-        foreach (var ticket in theTickets)
-        {
-            ticket.Purchase(userId);
-        }
-        
-        if (IsSoldOut()) AddDomainEvent(new AllTicketsSold(Id));
-    }
-    
-    private bool IsSoldOut()
-    {
-        return Tickets.Count > 0 && Tickets.All(t => t.UserId != null);
+        AddDomainEvent(new AllTicketsSold(Id));
     }
 }

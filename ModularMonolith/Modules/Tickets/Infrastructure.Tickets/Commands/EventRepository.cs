@@ -28,7 +28,6 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
 
     private void AddEvent(Event theEvent)
     {
-        theEvent.ReleaseNewTickets();
         ticketDbContext.Add(theEvent);
     }
 
@@ -38,13 +37,6 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
         @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
         @event.UpdateVenue(theEvent.TheVenue);
         @event.UpdatePrice(theEvent.Price);
-        var updatedTicketIds = @event.UpdateExistingTicketsThatAreNotPurchased();
-
-        foreach (var ticket in @event.Tickets.Where(t => updatedTicketIds.Contains(t.Id)))
-        {
-            ticketDbContext.Entry(ticket).State = EntityState.Modified;
-        }
-            
         ticketDbContext.Update(@event);
     }
 
@@ -52,7 +44,6 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
     {
         return await ticketDbContext.Events
             .Include(e => e.TheVenue)
-            .Include(e => e.Tickets)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 

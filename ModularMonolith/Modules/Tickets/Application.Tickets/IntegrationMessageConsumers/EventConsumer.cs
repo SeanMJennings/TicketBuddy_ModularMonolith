@@ -16,13 +16,13 @@ namespace Application.Tickets.IntegrationMessageConsumers
             var theVenue = await eventRepository.GetByVenueId(context.Message.Venue);
             var existingEvent = await eventRepository.GetById(context.Message.Id);
             var isNewEvent = existingEvent is null;
-            var priceChanged = existingEvent is not null && existingEvent.Price != context.Message.Price;
+            var priceChangedForExistingEvent = existingEvent is not null && existingEvent.Price != context.Message.Price;
 
             await eventRepository.Save(new Event(context.Message.Id, context.Message.EventName,
                 context.Message.StartDate, context.Message.EndDate, theVenue, context.Message.Price));
 
-            if (await ReleaseTicketsIfEventIsNew(context, isNewEvent, theVenue)) return;
-            if (priceChanged) await UpdateTicketPrice(context);
+            if (isNewEvent) await ReleaseTicketsIfEventIsNew(context, isNewEvent, theVenue);
+            if (priceChangedForExistingEvent) await UpdateTicketPrice(context);
 
             await eventRepository.Commit();
         }
@@ -39,13 +39,11 @@ namespace Application.Tickets.IntegrationMessageConsumers
             await ticketRepository.Commit();
         }
 
-        private async Task<bool> ReleaseTicketsIfEventIsNew(ConsumeContext<EventUpserted> context, bool isNewEvent, Venue theVenue)
+        private async Task ReleaseTicketsIfEventIsNew(ConsumeContext<EventUpserted> context, bool isNewEvent, Venue theVenue)
         {
-            if (!isNewEvent) return false;
+            if (!isNewEvent) return;
             await TicketsReleaseService.ReleaseTicketsForEvent(context.Message.Id, context.Message.Price, theVenue, ticketRepository);
             await ticketRepository.Commit();
-            await eventRepository.Commit();
-            return true;
         }
     }
 }

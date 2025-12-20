@@ -53,8 +53,5 @@ public class Event : Entity, IAmAnAggregateRoot
     
     public void UpdatePrice(Money price) => Price = price;
     
-    public void MarkAsSoldOut()
-    {
-        AddDomainEvent(new AllTicketsSold(Id));
-    }
+    public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
 }

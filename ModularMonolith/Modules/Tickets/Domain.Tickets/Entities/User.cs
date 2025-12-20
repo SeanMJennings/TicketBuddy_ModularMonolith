@@ -14,20 +14,11 @@ namespace Domain.Tickets.Entities
         public Name FullName { get; private set; }
         public Email Email { get; private set; }
         
-        public static User Create(Guid id, Name fullName, Email email)
-        {
-            return new User(id, fullName, email);
-        }
+        public static User Create(Guid id, Name fullName, Email email) => new (id, fullName, email);
                 
-        public void UpdateName(Name newFullName)
-        {
-            FullName = newFullName;
-        }
+        public void UpdateName(Name newFullName) => FullName = newFullName;
         
-        public void UpdateEmail(Email newEmail)
-        {
-            Email = newEmail;
-        }
+        public void UpdateEmail(Email newEmail) => Email = newEmail;
     }
 }
     

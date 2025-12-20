@@ -9,20 +9,11 @@ public static class TicketsPurchaseService
     {
         var tickets = await ticketRepository.GetByIds(ticketIds);
         
-        if (tickets.Count != ticketIds.Length)
-        {
-            throw new ValidationException("One or more tickets do not exist");
-        }
+        if (tickets.Count != ticketIds.Length) throw new ValidationException("One or more tickets do not exist");
 
-        if (tickets.Any(t => t.EventId != eventId))
-        {
-            throw new ValidationException("One or more tickets do not belong to this event");
-        }
+        if (tickets.Any(t => t.EventId != eventId)) throw new ValidationException("One or more tickets do not belong to this event");
 
-        foreach (var ticket in tickets)
-        {
-            ticket.Purchase(userId);
-        }
+        foreach (var ticket in tickets) ticket.Purchase(userId);
 
         await ticketRepository.UpdateRange(tickets);
         await ticketRepository.Commit();

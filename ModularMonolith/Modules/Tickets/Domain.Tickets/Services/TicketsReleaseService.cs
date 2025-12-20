@@ -11,10 +11,7 @@ public static class TicketsReleaseService
     public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, Venue venue, IPersistTickets ticketRepository)
     {
         var existingCount = await ticketRepository.GetTotalCountByEventId(eventId);
-        if (existingCount > 0)
-        {
-            throw new ValidationException("Tickets have already been released for this event");
-        }
+        if (existingCount > 0) throw new ValidationException("Tickets have already been released for this event");
 
         var tickets = new List<Ticket>();
         for (var i = 0; i < venue.Capacity; i++)

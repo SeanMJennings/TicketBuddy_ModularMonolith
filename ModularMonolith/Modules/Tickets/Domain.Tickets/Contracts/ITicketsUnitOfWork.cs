@@ -2,7 +2,4 @@
 
 namespace Domain.Tickets.Contracts;
 
-public interface ITicketsUnitOfWork : IUnitOfWork
-{
-}
-
+public interface ITicketsUnitOfWork : IUnitOfWork;

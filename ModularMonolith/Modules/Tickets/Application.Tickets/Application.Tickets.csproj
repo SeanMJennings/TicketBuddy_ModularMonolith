@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\CommonLibraries\Application\Application.csproj" />
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
       <ProjectReference Include="..\..\Events\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
       <ProjectReference Include="..\..\Tickets\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj" />

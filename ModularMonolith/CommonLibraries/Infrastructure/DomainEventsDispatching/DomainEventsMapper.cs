@@ -1,5 +1,4 @@
-﻿using Application.Contracts;
-using Domain.DomainEvents;
+﻿using Domain.DomainEvents;
 
 namespace Infrastructure.DomainEventsDispatching;
 

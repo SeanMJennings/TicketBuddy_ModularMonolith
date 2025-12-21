@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Keycloak.Users\Domain.Keycloak\Domain.Keycloak.csproj" />
-      <ProjectReference Include="..\..\Keycloak.Users\Keycloak.Domain\Domain.Keycloak\Domain.Keycloak.csproj" />
       <ProjectReference Include="..\..\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" />
       <ProjectReference Include="..\Application.Events\Application.Events.csproj" />
       <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />

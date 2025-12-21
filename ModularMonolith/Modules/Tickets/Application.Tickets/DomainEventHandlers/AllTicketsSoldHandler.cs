@@ -1,4 +1,3 @@
-using Application.Contracts;
 using Domain.DomainEvents;
 using Domain.Tickets.DomainEvents;
 using Integration.Tickets.Messaging.Messages;

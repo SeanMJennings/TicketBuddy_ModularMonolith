@@ -17,7 +17,7 @@ public class Event : Entity, IAmAnAggregateRoot
         Price = price;
     }
 
-    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
+    internal Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
@@ -40,16 +40,6 @@ public class Event : Entity, IAmAnAggregateRoot
         var @event = new Event(id, eventName, startDate, endDate, venue, price);
         @event.RaiseEventUpdatedDomainEvent();
         return @event;
-    }
-    
-    private void RaiseEventCreatedDomainEvent()
-    {
-        AddDomainEvent(new EventCreated(Id, Price, TheVenue!.Capacity));
-    }    
-    
-    private void RaiseEventUpdatedDomainEvent()
-    {
-        AddDomainEvent(new EventUpdated(Id, Price));
     }
     
     public EventName EventName { get; private set; }
@@ -78,4 +68,14 @@ public class Event : Entity, IAmAnAggregateRoot
     public void UpdatePrice(Money price) => Price = price;
     
     public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
+    
+    private void RaiseEventCreatedDomainEvent()
+    {
+        AddDomainEvent(new EventCreated(Id, Price, TheVenue!.Capacity));
+    }    
+    
+    private void RaiseEventUpdatedDomainEvent()
+    {
+        AddDomainEvent(new EventUpdated(Id, Price));
+    }
 }

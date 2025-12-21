@@ -10,10 +10,7 @@ public class EventUpdatedHandler(IPersistTickets ticketsRepository) : HandleDoma
     {
         var tickets = await ticketsRepository.GetByEventId(message.EventId);
             
-        foreach (var ticket in tickets)
-        {
-            ticket.UpdatePrice(message.Price);
-        }
+        foreach (var ticket in tickets) ticket.UpdatePrice(message.Price);
 
         await ticketsRepository.UpdateRange(tickets);
     }

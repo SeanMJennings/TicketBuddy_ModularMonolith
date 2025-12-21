@@ -1,11 +1,12 @@
-﻿using Domain.Events.Contracts;
+﻿using Domain.Contracts;
+using Domain.Events.Contracts;
 using Domain.Events.Entities;
 using Domain.Events.Services;
 using Domain.ValueObjects;
 
 namespace Application.Events.Commands;
 
-public class EventCommands(EventsValidator eventsValidator, IPersistEvents eventRepository)
+public class EventCommands(EventsValidator eventsValidator, IPersistEvents eventRepository, IUnitOfWork unitOfWork)
 {
     public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
     {
@@ -15,7 +16,7 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
         
         await eventsValidator.CheckIfVenueAlreadyBooked(theEvent);
         await eventRepository.Add(theEvent);
-        await eventRepository.Commit();
+        await unitOfWork.Commit();
         return eventId;
     }
     
@@ -29,6 +30,6 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
         
         await eventsValidator.CheckIfVenueAlreadyBooked(existingEvent);
         await eventRepository.Update(existingEvent);
-        await eventRepository.Commit();
+        await unitOfWork.Commit();
     }
 }

@@ -1,10 +1,11 @@
-﻿using Domain.Events.Contracts;
+﻿using Domain.Contracts;
+using Domain.Events.Contracts;
 using Integration.Tickets.Messaging.Messages;
 using MassTransit;
 
 namespace Application.Events.IntegrationMessageConsumers
 {
-    public class EventSoldOutConsumer(IPersistEvents eventRepository) : IConsumer<EventSoldOut>
+    public class EventSoldOutConsumer(IPersistEvents eventRepository, IUnitOfWork unitOfWork) : IConsumer<EventSoldOut>
     {
         public async Task Consume(ConsumeContext<EventSoldOut> context)
         {
@@ -13,7 +14,7 @@ namespace Application.Events.IntegrationMessageConsumers
             
             theEvent.MarkAsSoldOut();
             await eventRepository.Update(theEvent);
-            await eventRepository.Commit();
+            await unitOfWork.Commit();
         }
     }
 }

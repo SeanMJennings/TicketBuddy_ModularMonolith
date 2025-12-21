@@ -1,4 +1,5 @@
 ﻿using Application.Tickets.Contracts;
+using Domain.Contracts;
 using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
@@ -7,7 +8,7 @@ using MassTransit;
 
 namespace Application.Tickets.IntegrationMessageConsumers;
 
-public class UserRegisteredConsumer(IPersistUsers userRepository) : IConsumer<UserRegistered>
+public class UserRegisteredConsumer(IPersistUsers userRepository, IUnitOfWork unitOfWork) : IConsumer<UserRegistered>
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {
@@ -18,7 +19,7 @@ public class UserRegisteredConsumer(IPersistUsers userRepository) : IConsumer<Us
         );
         
         await userRepository.Save(user);
-        await userRepository.Commit(context.CancellationToken);
+        await unitOfWork.Commit(context.CancellationToken);
     }
 }
 

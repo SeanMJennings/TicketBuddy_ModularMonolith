@@ -1,3 +1,4 @@
+using Domain.Contracts;
 using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.Services;
@@ -9,7 +10,8 @@ namespace Application.Tickets.IntegrationMessageConsumers
 {
     public class EventConsumer(
         IPersistEvents eventRepository,
-        IPersistTickets ticketRepository) : IConsumer<EventUpserted>
+        IPersistTickets ticketRepository,
+        IUnitOfWork unitOfWork) : IConsumer<EventUpserted>
     {
         public async Task Consume(ConsumeContext<EventUpserted> context)
         {
@@ -21,29 +23,27 @@ namespace Application.Tickets.IntegrationMessageConsumers
             await eventRepository.Save(new Event(context.Message.Id, context.Message.EventName,
                 context.Message.StartDate, context.Message.EndDate, theVenue, context.Message.Price));
 
-            if (isNewEvent) await ReleaseTicketsIfEventIsNew(context, isNewEvent, theVenue);
-            if (priceChangedForExistingEvent) await UpdateTicketPrice(context);
+            if (isNewEvent) await ReleaseTicketsForNewEvent(context, theVenue);
+            if (priceChangedForExistingEvent) await UpdateTicketPrices(context);
 
-            await eventRepository.Commit();
+            await unitOfWork.Commit();
         }
 
-        private async Task UpdateTicketPrice(ConsumeContext<EventUpserted> context)
+        private async Task UpdateTicketPrices(ConsumeContext<EventUpserted> context)
         {
             var tickets = await ticketRepository.GetByEventId(context.Message.Id);
+            
             foreach (var ticket in tickets)
             {
                 ticket.UpdatePrice(context.Message.Price);
             }
 
             await ticketRepository.UpdateRange(tickets);
-            await ticketRepository.Commit();
         }
 
-        private async Task ReleaseTicketsIfEventIsNew(ConsumeContext<EventUpserted> context, bool isNewEvent, Venue theVenue)
+        private async Task ReleaseTicketsForNewEvent(ConsumeContext<EventUpserted> context, Venue theVenue)
         {
-            if (!isNewEvent) return;
             await TicketsReleaser.ReleaseTicketsForEvent(context.Message.Id, context.Message.Price, theVenue, ticketRepository);
-            await ticketRepository.Commit();
         }
     }
 }

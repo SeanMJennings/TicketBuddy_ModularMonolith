@@ -1,9 +1,8 @@
-﻿using Domain.Contracts;
-using Domain.Events.Entities;
+﻿using Domain.Events.Entities;
 
 namespace Domain.Events.Contracts;
 
-public interface IPersistEvents : IPersist
+public interface IPersistEvents
 {
     public Task Add(Event theEvent);
     public Task Update(Event theEvent);

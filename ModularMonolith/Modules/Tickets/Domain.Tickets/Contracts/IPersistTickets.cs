@@ -1,9 +1,8 @@
-﻿using Domain.Contracts;
-using Domain.Tickets.Entities;
+﻿using Domain.Tickets.Entities;
 
 namespace Domain.Tickets.Contracts;
 
-public interface IPersistTickets : IPersist
+public interface IPersistTickets
 {
     Task<IReadOnlyList<Ticket>> GetByIds(Guid[] ids);
     Task<IReadOnlyList<Ticket>> GetByEventId(Guid eventId);

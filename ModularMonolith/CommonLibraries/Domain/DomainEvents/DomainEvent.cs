@@ -1,3 +1,3 @@
 ﻿namespace Domain.DomainEvents;
 
-public interface IAmADomainEvent;
+public interface IDescribeADomainEvent;

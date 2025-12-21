@@ -17,7 +17,7 @@ public class TicketCommands(
         }
         
         var theEvent = await TicketsValidator.CheckEventExists(eventId, eventRepository);
-        var soldOut = await TicketsPurchaseService.PurchaseTickets(eventId, userId, ticketIds, ticketRepository);
+        var soldOut = await TicketsPurchaser.PurchaseTickets(eventId, userId, ticketIds, ticketRepository);
         
         if (soldOut)
         {

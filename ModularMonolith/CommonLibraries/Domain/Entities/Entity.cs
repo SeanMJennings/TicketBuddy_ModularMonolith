@@ -18,17 +18,17 @@ public abstract class Entity
     
     public Guid Id { get; }
     
-    private readonly List<IAmADomainEvent> _domainEvents = [];
+    private readonly List<IDescribeADomainEvent> _domainEvents = [];
 
     [System.Text.Json.Serialization.JsonIgnore]
-    public IReadOnlyCollection<IAmADomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+    public IReadOnlyCollection<IDescribeADomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     public void ClearDomainEvents()
     {
         _domainEvents.Clear();
     }
 
-    protected void AddDomainEvent(IAmADomainEvent domainEvent)
+    protected void AddDomainEvent(IDescribeADomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }

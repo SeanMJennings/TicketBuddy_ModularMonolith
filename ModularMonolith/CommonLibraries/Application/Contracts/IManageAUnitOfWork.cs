@@ -2,5 +2,5 @@
 
 public interface IManageAUnitOfWork
 {
-    Task<int> Commit(CancellationToken cancellationToken = default);
+    Task Commit(CancellationToken cancellationToken = default);
 }

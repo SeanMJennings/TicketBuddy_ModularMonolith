@@ -22,7 +22,7 @@ public partial class DomainSpecs : Specification
     {
         types = Types.InAssembly(DomainAssembly)
             .That()
-            .Inherit(typeof(IAmADomainEvent))
+            .Inherit(typeof(IDescribeADomainEvent))
             .GetTypes();
     }
 

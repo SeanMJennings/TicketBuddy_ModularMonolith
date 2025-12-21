@@ -8,9 +8,9 @@ public abstract class UnitOfWorkDbContext<T>(DbContextOptions<T> options, Domain
     : DbContext(options), IManageAUnitOfWork 
     where T : DbContext
 {
-    public async Task<int> Commit(CancellationToken cancellationToken = default)
+    public async Task Commit(CancellationToken cancellationToken = default)
     {
+        await SaveChangesAsync(cancellationToken);
         await domainEventsDispatcher.DispatchEvents(this);
-        return await SaveChangesAsync(cancellationToken);
     }
 }

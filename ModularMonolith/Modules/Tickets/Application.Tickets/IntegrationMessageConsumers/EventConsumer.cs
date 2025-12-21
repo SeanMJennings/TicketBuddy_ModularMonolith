@@ -42,7 +42,7 @@ namespace Application.Tickets.IntegrationMessageConsumers
         private async Task ReleaseTicketsIfEventIsNew(ConsumeContext<EventUpserted> context, bool isNewEvent, Venue theVenue)
         {
             if (!isNewEvent) return;
-            await TicketsReleaseService.ReleaseTicketsForEvent(context.Message.Id, context.Message.Price, theVenue, ticketRepository);
+            await TicketsReleaser.ReleaseTicketsForEvent(context.Message.Id, context.Message.Price, theVenue, ticketRepository);
             await ticketRepository.Commit();
         }
     }

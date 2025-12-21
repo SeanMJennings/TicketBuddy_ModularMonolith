@@ -3,7 +3,7 @@ using Domain.Tickets.Contracts;
 
 namespace Domain.Tickets.Services;
 
-public static class TicketsPurchaseService
+public static class TicketsPurchaser
 {
     public static async Task<bool> PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds, IPersistTickets ticketRepository)
     {

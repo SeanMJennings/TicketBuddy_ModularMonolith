@@ -1,11 +1,12 @@
 using Application.Contracts;
+using Domain.DomainEvents;
 using Domain.Tickets.DomainEvents;
 using Integration.Tickets.Messaging.Messages;
 using MassTransit;
 
 namespace Application.Tickets.DomainEventHandlers;
 
-public class AllTicketsSoldHandler(IPublishEndpoint publishEndpoint) : DomainEventHandler<AllTicketsSold>
+public class AllTicketsSoldHandler(IPublishEndpoint publishEndpoint) : HandleDomainEvents<AllTicketsSold>
 {
     protected override async Task Handle(AllTicketsSold message)
     {

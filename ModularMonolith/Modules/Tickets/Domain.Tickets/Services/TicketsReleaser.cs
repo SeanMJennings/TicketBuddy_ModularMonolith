@@ -6,7 +6,7 @@ using Venue = Domain.Tickets.Entities.Venue;
 
 namespace Domain.Tickets.Services;
 
-public static class TicketsReleaseService
+public static class TicketsReleaser
 {
     public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, Venue venue, IPersistTickets ticketRepository)
     {

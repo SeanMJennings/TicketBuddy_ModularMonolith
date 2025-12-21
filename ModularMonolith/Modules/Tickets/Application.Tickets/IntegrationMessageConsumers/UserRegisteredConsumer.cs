@@ -1,6 +1,5 @@
 ﻿using Application.Tickets.Contracts;
 using Domain.Contracts;
-using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
 using Integration.Keycloak.Users.Messaging;

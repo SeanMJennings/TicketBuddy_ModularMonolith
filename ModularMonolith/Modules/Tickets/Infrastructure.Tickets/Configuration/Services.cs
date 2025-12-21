@@ -4,6 +4,7 @@ using Application.Tickets.DomainEventHandlers;
 using Application.Tickets.Queries;
 using Domain.Contracts;
 using Domain.Tickets.Contracts;
+using Domain.Tickets.DomainEventHandlers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Tickets.Configuration;
@@ -20,7 +21,9 @@ public static class Services
             .AddScoped<TicketCommands>()
             .AddScoped<TicketQueries>()
             .AddScoped<AllTicketsSoldHandler>()
-            .AddSingleton(ApplicationLevelDomainEventsToHandlersMap.Map);
+            .AddScoped<EventCreatedHandler>()
+            .AddScoped<EventUpdatedHandler>()
+            .AddSingleton(ApplicationLevelDomainEventsToHandlersMap.Map.Concat(DomainEventsToHandlersMap.Map).ToDictionary(kv => kv.Key, kv => kv.Value));
         return services;
     }
 }

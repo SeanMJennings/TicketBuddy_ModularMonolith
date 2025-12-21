@@ -84,7 +84,7 @@ public partial class EventSpecs : Specification
     private void creating_an_event()
     {
         var eventName = new EventName(name);
-        theEvent = new Event(id, eventName, start_date, end_date, venue, price);
+        theEvent = Event.CreateNew(id, eventName, start_date, end_date, venue, price);
     }
     
     private void updating_event_name()

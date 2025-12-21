@@ -37,6 +37,7 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
         @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
         @event.UpdateVenue(theEvent.TheVenue!);
         @event.UpdatePrice(theEvent.Price);
+        @event.TransferDomainEventsFrom(theEvent);
         ticketDbContext.Update(@event);
     }
 

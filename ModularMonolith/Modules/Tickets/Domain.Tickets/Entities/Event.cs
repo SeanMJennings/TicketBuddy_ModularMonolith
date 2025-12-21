@@ -16,7 +16,7 @@ public class Event : Entity, IAmAnAggregateRoot
         Venue = venue;
         Price = price;
     }
-    
+
     public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
@@ -26,6 +26,30 @@ public class Event : Entity, IAmAnAggregateRoot
         Venue = venue.Id;
         TheVenue = venue;
         Price = price;
+    }
+    
+    public static Event CreateNew(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
+    {
+        var newEvent = new Event(id, eventName, startDate, endDate, venue, price);
+        newEvent.RaiseEventCreatedDomainEvent();
+        return newEvent;
+    }    
+    
+    public static Event CreateExisting(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
+    {
+        var @event = new Event(id, eventName, startDate, endDate, venue, price);
+        @event.RaiseEventUpdatedDomainEvent();
+        return @event;
+    }
+    
+    private void RaiseEventCreatedDomainEvent()
+    {
+        AddDomainEvent(new EventCreated(Id, Price, TheVenue!.Capacity));
+    }    
+    
+    private void RaiseEventUpdatedDomainEvent()
+    {
+        AddDomainEvent(new EventUpdated(Id, Price));
     }
     
     public EventName EventName { get; private set; }

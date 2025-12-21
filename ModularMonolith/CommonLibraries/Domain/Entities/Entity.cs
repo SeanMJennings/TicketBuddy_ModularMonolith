@@ -28,6 +28,17 @@ public abstract class Entity
         _domainEvents.Clear();
     }
 
+    public void TransferDomainEventsFrom(Entity source)
+    {
+        foreach (var domainEvent in source.DomainEvents)
+        {
+            if (!_domainEvents.Contains(domainEvent))
+            {
+                _domainEvents.Add(domainEvent);
+            }
+        }
+    }
+
     protected void AddDomainEvent(IDescribeADomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);

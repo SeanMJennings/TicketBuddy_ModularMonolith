@@ -1,5 +1,5 @@
-﻿using Application.Tickets.Contracts;
-using Domain.Contracts;
+﻿﻿using Application.Tickets.Contracts;
+using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
 using Integration.Keycloak.Users.Messaging;
@@ -7,7 +7,7 @@ using MassTransit;
 
 namespace Application.Tickets.IntegrationMessageConsumers;
 
-public class UserRegisteredConsumer(IPersistUsers userRepository, IUnitOfWork unitOfWork) : IConsumer<UserRegistered>
+public class UserRegisteredConsumer(IPersistUsers userRepository, ITicketsUnitOfWork unitOfWork) : IConsumer<UserRegistered>
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {

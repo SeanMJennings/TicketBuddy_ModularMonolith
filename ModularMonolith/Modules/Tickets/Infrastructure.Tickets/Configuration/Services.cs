@@ -2,7 +2,6 @@
 using Application.Tickets.Contracts;
 using Application.Tickets.DomainEventHandlers;
 using Application.Tickets.Queries;
-using Domain.Contracts;
 using Domain.Tickets.Contracts;
 using Domain.Tickets.DomainEventHandlers;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ public static class Services
         services.AddScoped<IPersistEvents, Commands.EventRepository>()
             .AddScoped<IPersistTickets, Commands.TicketRepository>()
             .AddScoped<IPersistUsers, Commands.UserRepository>()
-            .AddScoped<IUnitOfWork, Commands.UnitOfWork>()
+            .AddScoped<ITicketsUnitOfWork, Commands.UnitOfWork>()
             .AddScoped<IQueryTickets, Queries.TicketQuerist>()
             .AddScoped<TicketCommands>()
             .AddScoped<TicketQueries>()

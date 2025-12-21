@@ -1,5 +1,4 @@
-﻿using Domain.Contracts;
-using Domain.Tickets.Contracts;
+﻿﻿using Domain.Tickets.Contracts;
 using Domain.Tickets.Services;
 using StackExchange.Redis;
 
@@ -8,7 +7,7 @@ namespace Application.Tickets.Commands;
 public class TicketCommands(
     IPersistEvents eventRepository,
     IPersistTickets ticketRepository,
-    IUnitOfWork unitOfWork,
+    ITicketsUnitOfWork unitOfWork,
     IConnectionMultiplexer connectionMultiplexer)
 {
     public async Task PurchaseTickets(Guid eventId, Guid userId, Guid[] ticketIds)

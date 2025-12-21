@@ -1,4 +1,3 @@
-using Domain.Contracts;
 using Domain.Tickets.Contracts;
 using MassTransit;
 using Event = Domain.Tickets.Entities.Event;
@@ -8,7 +7,7 @@ namespace Application.Tickets.IntegrationMessageConsumers
 {
     public class EventConsumer(
         IPersistEvents eventRepository,
-        IUnitOfWork unitOfWork) : IConsumer<EventUpserted>
+        ITicketsUnitOfWork unitOfWork) : IConsumer<EventUpserted>
     {
         public async Task Consume(ConsumeContext<EventUpserted> context)
         {

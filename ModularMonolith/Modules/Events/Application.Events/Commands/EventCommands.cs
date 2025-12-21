@@ -1,14 +1,13 @@
-﻿using Domain.Contracts;
-using Domain.Events.Contracts;
+﻿using Domain.Events.Contracts;
 using Domain.Events.Entities;
 using Domain.Events.Services;
 using Domain.ValueObjects;
 
 namespace Application.Events.Commands;
 
-public class EventCommands(EventsValidator eventsValidator, IPersistEvents eventRepository, IUnitOfWork unitOfWork)
+public class EventCommands(EventsValidator eventsValidator, IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork)
 {
-    public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
+    public async Task<Guid> CreateEvent(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Money price)
     {
         var eventId = Guid.NewGuid();
         EventsValidator.ValidateDate(startDate);
@@ -20,7 +19,7 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
         return eventId;
     }
     
-    public async Task UpdateEvent(Guid eventId, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, decimal price)
+    public async Task UpdateEvent(Guid eventId, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Money price)
     {
         var existingEvent = await eventsValidator.CheckEventExists(eventId);
         EventsValidator.ValidateDate(startDate);

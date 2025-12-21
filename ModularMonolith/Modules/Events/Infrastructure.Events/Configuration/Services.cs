@@ -1,6 +1,5 @@
 ﻿using Application.Events.Commands;
 using Application.Events.Queries;
-using Domain.Contracts;
 using Domain.Events.Contracts;
 using Domain.Events.Services;
 using Infrastructure.Events.Persistence;
@@ -12,7 +11,7 @@ public static class Services
 {
     public static IServiceCollection ConfigureEventsServices(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>()
+        services.AddScoped<IEventsUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistEvents, EventRepository>()
             .AddScoped<EventsValidator>()
             .AddScoped<EventCommands>()

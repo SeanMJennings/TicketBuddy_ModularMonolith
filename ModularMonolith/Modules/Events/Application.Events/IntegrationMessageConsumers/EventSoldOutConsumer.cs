@@ -1,11 +1,10 @@
-﻿using Domain.Contracts;
-using Domain.Events.Contracts;
+﻿﻿using Domain.Events.Contracts;
 using Integration.Tickets.Messaging.Messages;
 using MassTransit;
 
 namespace Application.Events.IntegrationMessageConsumers
 {
-    public class EventSoldOutConsumer(IPersistEvents eventRepository, IUnitOfWork unitOfWork) : IConsumer<EventSoldOut>
+    public class EventSoldOutConsumer(IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork) : IConsumer<EventSoldOut>
     {
         public async Task Consume(ConsumeContext<EventSoldOut> context)
         {

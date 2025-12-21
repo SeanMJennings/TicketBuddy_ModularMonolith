@@ -1,5 +1,4 @@
-﻿using Domain;
-using Domain.DomainEvents;
+﻿using Domain.DomainEvents;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +6,9 @@ namespace Infrastructure.DomainEventsDispatching;
 
 public static class DomainEventsAccessor
 {
-    public static IReadOnlyCollection<IDescribeADomainEvent> GetAllDomainEvents(DbContext DbContext)
+    public static IReadOnlyCollection<IDescribeADomainEvent> GetAllDomainEvents(DbContext dbContext)
     {
-        var domainEntities = DbContext.ChangeTracker
+        var domainEntities = dbContext.ChangeTracker
             .Entries<Entity>()
             .Where(x => x.Entity.DomainEvents.Count != 0).ToList();
 
@@ -18,9 +17,9 @@ public static class DomainEventsAccessor
             .ToList();
     }
 
-    public static void ClearAllDomainEvents(DbContext DbContext)
+    public static void ClearAllDomainEvents(DbContext dbContext)
     {
-        var domainEntities = DbContext.ChangeTracker
+        var domainEntities = dbContext.ChangeTracker
             .Entries<Entity>()
             .Where(x => x.Entity.DomainEvents.Count != 0).ToList();
 

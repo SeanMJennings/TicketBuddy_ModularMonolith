@@ -2,7 +2,7 @@
 
 namespace Infrastructure.DomainEventsDispatching;
 
-public class DomainEventsDispatcher(DomainEventsMapper DomainEventsMapper)
+public class DomainEventsDispatcher(DomainEventsMapper domainEventsMapper)
     {
         public async Task DispatchEvents(DbContext dbContext)
         {
@@ -12,7 +12,7 @@ public class DomainEventsDispatcher(DomainEventsMapper DomainEventsMapper)
 
             foreach (var domainEvent in domainEvents)
             {
-                var handler = DomainEventsMapper.GetHandler(domainEvent);
+                var handler = domainEventsMapper.GetHandler(domainEvent);
                 await handler.Handle(domainEvent);
             }
         }

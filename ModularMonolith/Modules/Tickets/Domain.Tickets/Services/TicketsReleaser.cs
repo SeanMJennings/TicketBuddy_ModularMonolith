@@ -7,7 +7,7 @@ namespace Domain.Tickets.Services;
 
 public static class TicketsReleaser
 {
-    public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, int venueCapacity, IPersistTickets ticketRepository)
+    public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, int venueCapacity, IPersistTickets ticketRepository, ITicketsUnitOfWork unitOfWork)
     {
         var existingCount = await ticketRepository.GetTotalCountByEventId(eventId);
         if (existingCount > 0) throw new ValidationException("Tickets have already been released for this event");
@@ -24,5 +24,6 @@ public static class TicketsReleaser
         }
 
         await ticketRepository.SaveRange(tickets);
+        await unitOfWork.Commit();
     }
 }

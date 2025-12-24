@@ -47,9 +47,4 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
             .OrderBy(e => e.StartDate)
             .ToListAsync();
     }
-
-    public async Task Commit(CancellationToken cancellationToken = default)
-    {
-        await eventDbContext.Commit(cancellationToken);
-    }
 }

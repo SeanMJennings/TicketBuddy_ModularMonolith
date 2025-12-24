@@ -1,4 +1,4 @@
-﻿﻿using Domain.Tickets.Contracts;
+﻿using Domain.Tickets.Contracts;
 using Domain.Tickets.Services;
 using StackExchange.Redis;
 

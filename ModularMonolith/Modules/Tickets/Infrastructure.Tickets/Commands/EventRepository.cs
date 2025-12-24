@@ -47,9 +47,4 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
             .Include(e => e.TheVenue)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
-
-    public async Task Commit(CancellationToken cancellationToken = default)
-    {
-        await ticketDbContext.Commit(cancellationToken);
-    }
 }

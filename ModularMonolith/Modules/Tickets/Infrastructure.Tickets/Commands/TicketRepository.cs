@@ -47,10 +47,5 @@ public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
         }
         return Task.CompletedTask;
     }
-
-    public async Task Commit(CancellationToken cancellationToken = default)
-    {
-        await ticketDbContext.Commit(cancellationToken);
-    }
 }
 

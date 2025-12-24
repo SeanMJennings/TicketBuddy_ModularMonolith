@@ -1,5 +1,4 @@
 ﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 
 namespace Infrastructure.Tickets.Commands;
@@ -24,10 +23,5 @@ public class UserRepository(TicketDbContext ticketDbContext) : IPersistUsers
     private async Task<User?> Get(Guid id)
     {
         return await ticketDbContext.Users.FindAsync(id);
-    }
-
-    public async Task Commit(CancellationToken cancellationToken = default)
-    {
-        await ticketDbContext.Commit(cancellationToken);
     }
 }

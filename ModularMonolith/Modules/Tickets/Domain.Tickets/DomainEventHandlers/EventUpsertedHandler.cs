@@ -13,8 +13,8 @@ public class EventUpsertedHandler(IPersistTickets ticketsRepository, ITicketsUni
 
         if (tickets.Count == 0)
         {
-            await TicketsReleaser.ReleaseTicketsForEvent(message.EventId, message.Price, message.VenueCapacity, ticketsRepository);
-            await unitOfWork.Commit();
+            await TicketsReleaser.ReleaseTicketsForEvent(message.EventId, message.Price, message.VenueCapacity,
+                ticketsRepository, unitOfWork);
             return;
         }
             

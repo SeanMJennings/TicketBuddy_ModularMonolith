@@ -20,8 +20,7 @@ public static class Services
             .AddScoped<TicketCommands>()
             .AddScoped<TicketQueries>()
             .AddScoped<AllTicketsSoldHandler>()
-            .AddScoped<EventCreatedHandler>()
-            .AddScoped<EventUpdatedHandler>()
+            .AddScoped<EventUpsertedHandler>()
             .AddSingleton(ApplicationLevelDomainEventsToHandlersMap.Map.Concat(DomainEventsToHandlersMap.Map).ToDictionary(kv => kv.Key, kv => kv.Value));
         return services;
     }

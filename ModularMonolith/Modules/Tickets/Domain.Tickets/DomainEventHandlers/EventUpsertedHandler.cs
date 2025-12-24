@@ -1,0 +1,25 @@
+﻿using Domain.DomainEvents;
+using Domain.Tickets.Contracts;
+using Domain.Tickets.DomainEvents;
+using Domain.Tickets.Services;
+
+namespace Domain.Tickets.DomainEventHandlers;
+
+public class EventUpsertedHandler(IPersistTickets ticketsRepository, ITicketsUnitOfWork unitOfWork) : HandleDomainEvents<EventUpserted>
+{
+    protected override async Task Handle(EventUpserted message)
+    {
+        var tickets = await ticketsRepository.GetByEventId(message.EventId);
+
+        if (tickets.Count == 0)
+        {
+            await TicketsReleaser.ReleaseTicketsForEvent(message.EventId, message.Price, message.VenueCapacity, ticketsRepository);
+            await unitOfWork.Commit();
+            return;
+        }
+            
+        foreach (var ticket in tickets) ticket.UpdatePrice(message.Price);
+        await ticketsRepository.UpdateRange(tickets);
+        await unitOfWork.Commit();
+    }
+}

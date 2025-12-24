@@ -28,18 +28,11 @@ public class Event : Entity, IAmAnAggregateRoot
         Price = price;
     }
     
-    public static Event CreateNew(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
+    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
     {
         var newEvent = new Event(id, eventName, startDate, endDate, venue, price);
-        newEvent.RaiseEventCreatedDomainEvent();
+        newEvent.RaiseEventUpsertedDomainEvent();
         return newEvent;
-    }    
-    
-    public static Event CreateExisting(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
-    {
-        var @event = new Event(id, eventName, startDate, endDate, venue, price);
-        @event.RaiseEventUpdatedDomainEvent();
-        return @event;
     }
     
     public EventName EventName { get; private set; }
@@ -68,14 +61,9 @@ public class Event : Entity, IAmAnAggregateRoot
     public void UpdatePrice(Money price) => Price = price;
     
     public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
-    
-    private void RaiseEventCreatedDomainEvent()
+
+    private void RaiseEventUpsertedDomainEvent()
     {
-        AddDomainEvent(new EventCreated(Id, Price, TheVenue!.Capacity));
-    }    
-    
-    private void RaiseEventUpdatedDomainEvent()
-    {
-        AddDomainEvent(new EventUpdated(Id, Price));
+        AddDomainEvent(new EventUpserted(Id, Price, TheVenue!.Capacity));
     }
 }

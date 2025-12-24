@@ -25,7 +25,7 @@ namespace Integration;
 public partial class TicketControllerSpecs : TruncateDbSpecification
 {
     private TicketController ticketController = null!;
-    private EventConsumer eventConsumer = null!;
+    private EventUpsertedConsumer _eventUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private StackExchange.Redis.IConnectionMultiplexer cache = null!;
@@ -81,7 +81,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         ticketController = serviceProvider.GetRequiredService<TicketController>();
         AddUserClaimToControllerContext(user_id);
         cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
-        eventConsumer = serviceProvider.GetRequiredService<EventConsumer>();
+        _eventUpsertedConsumer = serviceProvider.GetRequiredService<EventUpsertedConsumer>();
         userRegisteredConsumer = serviceProvider.GetRequiredService<UserRegisteredConsumer>();
         return Task.CompletedTask;
     }
@@ -128,7 +128,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             Venue = Venue.EmiratesOldTraffordManchester,
             Price = price
         });
-        await eventConsumer.Consume(mockContext);
+        await _eventUpsertedConsumer.Consume(mockContext);
     }
 
     private async Task a_user_exists()
@@ -260,7 +260,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             Venue = Venue.EmiratesOldTraffordManchester,
             Price = new_price
         });
-        await eventConsumer.Consume(mockContext);
+        await _eventUpsertedConsumer.Consume(mockContext);
     }
 
     private async Task the_tickets_are_released()

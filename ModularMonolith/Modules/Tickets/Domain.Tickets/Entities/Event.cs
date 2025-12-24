@@ -62,8 +62,5 @@ public class Event : Entity, IAmAnAggregateRoot
     
     public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
 
-    private void RaiseEventUpsertedDomainEvent()
-    {
-        AddDomainEvent(new EventUpserted(Id, Price, TheVenue!.Capacity));
-    }
+    private void RaiseEventUpsertedDomainEvent() => AddDomainEvent(new EventUpserted(Id, Price, TheVenue!.Capacity));
 }

@@ -35,7 +35,7 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
     {
         @event.UpdateName(theEvent.EventName);
         @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
-        @event.UpdateVenue(theEvent.TheVenue!);
+        @event.UpdateVenue(theEvent.Venue);
         @event.UpdatePrice(theEvent.Price);
         @event.TransferDomainEventsFrom(theEvent);
         ticketDbContext.Update(@event);
@@ -44,7 +44,6 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
     public async Task<Event?> GetById(Guid id)
     {
         return await ticketDbContext.Events
-            .Include(e => e.TheVenue)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 }

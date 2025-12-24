@@ -16,19 +16,8 @@ public class Event : Entity, IAmAnAggregateRoot
         Venue = venue;
         Price = price;
     }
-
-    internal Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
-    {
-        if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
-        EventName = eventName;
-        StartDate = startDate;
-        EndDate = endDate;
-        Venue = venue.Id;
-        TheVenue = venue;
-        Price = price;
-    }
     
-    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price)
+    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price)
     {
         var newEvent = new Event(id, eventName, startDate, endDate, venue, price);
         newEvent.RaiseEventUpsertedDomainEvent();
@@ -40,7 +29,6 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset EndDate { get; private set; }
     public Money Price { get; private set; }
     public Domain.ValueObjects.Venue Venue { get; private set; }
-    internal Venue? TheVenue { get; private set; }
     
     public void UpdateName(EventName eventName) => EventName = eventName;
     
@@ -52,15 +40,11 @@ public class Event : Entity, IAmAnAggregateRoot
         EndDate = endDate;
     }
     
-    public void UpdateVenue(Venue venue)
-    {
-        TheVenue = venue;
-        Venue = TheVenue.Id;
-    }
+    public void UpdateVenue(Domain.ValueObjects.Venue venue) => Venue = venue;
     
     public void UpdatePrice(Money price) => Price = price;
     
     public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
 
-    private void RaiseEventUpsertedDomainEvent() => AddDomainEvent(new EventUpserted(Id, Price, TheVenue!.Capacity));
+    private void RaiseEventUpsertedDomainEvent() => AddDomainEvent(new EventUpserted(Id, Price, Venue));
 }

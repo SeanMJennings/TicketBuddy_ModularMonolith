@@ -12,7 +12,7 @@ public partial class EventSpecs : Specification
     private string name = null!;
     private DateTimeOffset start_date;
     private DateTimeOffset end_date;
-    private Venue venue = null!;
+    private Domain.ValueObjects.Venue venue = Domain.ValueObjects.Venue.FirstDirectArenaLeeds;
     private Money price;
     private Event theEvent = null!;
     private Money updatedPrice;
@@ -26,7 +26,7 @@ public partial class EventSpecs : Specification
         base.before_each();
         id = Guid.NewGuid();
         name = null!;
-        venue = new Venue(Domain.ValueObjects.Venue.EmiratesOldTraffordManchester, "Emirates Old Trafford, Manchester", 100);
+        venue = Domain.ValueObjects.Venue.EmiratesOldTraffordManchester;
         price = 25m;
         updatedPrice = 30m;
         start_date = DateTimeOffset.UtcNow.AddDays(1);
@@ -104,8 +104,7 @@ public partial class EventSpecs : Specification
     
     private void updating_event_venue()
     {
-        var newVenue = new Venue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200);
-        theEvent.UpdateVenue(newVenue);
+        theEvent.UpdateVenue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds);
     }
     
     private void the_event_is_created()
@@ -115,7 +114,7 @@ public partial class EventSpecs : Specification
         theEvent.EventName.ToString().ShouldBe(valid_name);
         theEvent.StartDate.ShouldBe(start_date);
         theEvent.EndDate.ShouldBe(end_date);
-        theEvent.TheVenue.ShouldBeEquivalentTo(venue);
+        theEvent.Venue.ShouldBeEquivalentTo(venue);
         theEvent.Price.ShouldBe(price);
     }
     
@@ -137,6 +136,6 @@ public partial class EventSpecs : Specification
     
     private void event_venue_is_updated()
     {
-        theEvent.TheVenue.ShouldBeEquivalentTo(new Venue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds, "First Direct Arena, Leeds", 200));
+        theEvent.Venue.ShouldBeEquivalentTo(Domain.ValueObjects.Venue.FirstDirectArenaLeeds);
     }
 }

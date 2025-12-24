@@ -10,8 +10,9 @@ public class EventUpsertedHandler(IPersistTickets ticketsRepository, ITicketsUni
     protected override async Task Handle(EventUpserted message)
     {
         var tickets = await ticketsRepository.GetByEventId(message.EventId);
-
-        if (tickets.Count == 0)
+        var ticketsHaveNotBeenReleased = tickets.Count == 0;
+        
+        if (ticketsHaveNotBeenReleased)
         {
             await TicketsReleaser.ReleaseTicketsForEvent(message.EventId, message.Price, message.VenueCapacity,
                 ticketsRepository, unitOfWork);

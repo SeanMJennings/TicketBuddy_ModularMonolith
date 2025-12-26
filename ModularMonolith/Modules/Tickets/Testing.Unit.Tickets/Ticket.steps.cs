@@ -48,7 +48,7 @@ public partial class TicketSpecs : Specification
 
     private void creating_a_ticket()
     {
-        theTicket = Ticket.Create(ticketId, eventId, price, seatNumber);
+        theTicket = new Ticket(ticketId, eventId, price, seatNumber);
     }
 
     private void purchasing_the_ticket()

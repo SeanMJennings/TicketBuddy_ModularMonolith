@@ -15,7 +15,7 @@ public static class TicketsReleaser
         var tickets = new List<Ticket>();
         for (var i = 0; i < venueCapacity; i++)
         {
-            var ticket = Ticket.Create(
+            var ticket = new Ticket(
                 Guid.NewGuid(),
                 eventId,
                 price,

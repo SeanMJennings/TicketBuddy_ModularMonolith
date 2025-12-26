@@ -6,16 +6,11 @@ namespace Domain.Tickets.Entities;
 
 public class Ticket : Entity, IAmAnAggregateRoot
 {
-    private Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : base(id)
+    public Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : base(id)
     {
         EventId = eventId;
         Price = price;
         SeatNumber = seatNumber;
-    }
-    
-    public static Ticket Create(Guid id, Guid eventId, Money price, uint seatNumber)
-    {
-        return new Ticket(id, eventId, price, seatNumber);
     }
     
     public Guid EventId { get; private set; }

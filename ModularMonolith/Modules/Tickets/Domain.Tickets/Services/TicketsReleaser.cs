@@ -7,19 +7,19 @@ namespace Domain.Tickets.Services;
 
 public static class TicketsReleaser
 {
-    public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, int venueCapacity, IPersistTickets ticketRepository, ITicketsUnitOfWork unitOfWork)
+    public static async Task ReleaseTicketsForEvent(Guid eventId, Money price, uint venueCapacity, IPersistTickets ticketRepository, ITicketsUnitOfWork unitOfWork)
     {
         var existingCount = await ticketRepository.GetTotalCountByEventId(eventId);
         if (existingCount > 0) throw new ValidationException("Tickets have already been released for this event");
 
         var tickets = new List<Ticket>();
-        for (var i = 0; i < venueCapacity; i++)
+        for (uint i = 0; i < venueCapacity; i++)
         {
             var ticket = new Ticket(
                 Guid.NewGuid(),
                 eventId,
                 price,
-                (uint)(i + 1));
+                i + 1);
             tickets.Add(ticket);
         }
 

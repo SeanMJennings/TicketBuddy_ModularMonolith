@@ -1,4 +1,4 @@
-﻿﻿using Application.Tickets.Contracts;
+﻿using Application.Tickets.Contracts;
 using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
@@ -11,7 +11,7 @@ public class UserRegisteredConsumer(IPersistUsers userRepository, ITicketsUnitOf
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {
-        var user = User.Create(
+        var user = new User(
             context.Message.userId,
             new Name($"{context.Message.details["first_name"]} {context.Message.details["last_name"]}"),
             new Email(context.Message.details["email"])

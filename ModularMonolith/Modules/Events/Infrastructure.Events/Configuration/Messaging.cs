@@ -1,5 +1,5 @@
-﻿using Application.Events;
-using MassTransit;
+﻿using MassTransit;
+using Messaging.Events;
 
 namespace Infrastructure.Events.Configuration;
 
@@ -7,7 +7,7 @@ public static class Messaging
 {
     public static void AddEventsConsumers(this IBusRegistrationConfigurator x)
     {
-        var eventsIntegrationMessagingAssembly = EventsIntegrationMessaging.Assembly;
+        var eventsIntegrationMessagingAssembly = EventsMessaging.Assembly;
         x.AddConsumers(eventsIntegrationMessagingAssembly);
     }
     

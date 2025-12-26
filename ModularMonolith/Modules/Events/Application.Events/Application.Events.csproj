@@ -11,8 +11,4 @@
       <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="MassTransit"/>
-    </ItemGroup>
-
 </Project>

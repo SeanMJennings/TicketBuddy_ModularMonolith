@@ -143,6 +143,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Keycloak", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Tickets", "Modules\Tickets\Messaging.Tickets\Messaging.Tickets.csproj", "{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Events", "Modules\Events\Messaging.Events\Messaging.Events.csproj", "{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -277,6 +279,10 @@ Global
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,5 +327,6 @@ Global
 		{BFEC8CBC-91A6-4A69-B45B-A12FFFBBEB56} = {BFAD1DFA-E07E-4062-98FB-54AC88B5EA9D}
 		{13AE1BE0-27D3-4B8A-8FDD-B3F88AF59DF6} = {BFAD1DFA-E07E-4062-98FB-54AC88B5EA9D}
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59} = {CCE57025-2696-4882-A2CA-DEB5F8413740}
+		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420} = {DC0A904F-65DE-46AF-AA71-CF63E2803A64}
 	EndGlobalSection
 EndGlobal

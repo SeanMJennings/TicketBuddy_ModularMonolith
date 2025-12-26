@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Application.Events.IntegrationMessageConsumers;
 using BDD;
 using Controllers.Events;
 using Controllers.Events.Requests;
@@ -13,6 +12,7 @@ using Infrastructure.Events.Configuration;
 using MassTransit;
 using Messages.Events;
 using Messages.Tickets;
+using Messaging.Events;
 using NSubstitute;
 using Testing;
 using Testing.Containers;

@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Application.Events;
+using Application.Events.Commands;
 using BDD;
 using Domain.Events.Entities;
 using NetArchTest.Rules;
@@ -10,7 +10,7 @@ namespace Testing.Architecture.Events.Modules;
 internal partial class ModuleSpecs : Specification
 {
     private static Assembly DomainAssembly => typeof(Event).Assembly;
-    private static Assembly ApplicationAssembly => EventsIntegrationMessaging.Assembly;
+    private static Assembly ApplicationAssembly => typeof(EventCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Events.Persistence.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Events.EventController).Assembly;
     private TestResult testResult = null!;

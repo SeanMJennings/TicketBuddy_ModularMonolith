@@ -9,7 +9,7 @@ public static class Messaging
 {
     public static void AddTicketsConsumers(this IBusRegistrationConfigurator x)
     {
-        var ticketsIntegrationMessagingAssembly = TicketsIntegrationMessaging.Assembly;
+        var ticketsIntegrationMessagingAssembly = TicketsMessaging.Assembly;
         x.AddConsumers(ticketsIntegrationMessagingAssembly);
         x.AddConsumer<UserRegisteredConsumer, UserRegisteredConsumerDefinition>();
     }

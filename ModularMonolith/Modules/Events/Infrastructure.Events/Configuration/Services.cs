@@ -1,4 +1,5 @@
 ﻿using Application.Events.Commands;
+using Application.Events.MessageHandlers;
 using Application.Events.Queries;
 using Domain.Events.Contracts;
 using Domain.Events.Services;
@@ -13,6 +14,7 @@ public static class Services
     {
         services.AddScoped<IEventsUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistEvents, EventRepository>()
+            .AddScoped<EventSoldOutHandler>()
             .AddScoped<EventsValidator>()
             .AddScoped<EventCommands>()
             .AddScoped<EventQueries>();

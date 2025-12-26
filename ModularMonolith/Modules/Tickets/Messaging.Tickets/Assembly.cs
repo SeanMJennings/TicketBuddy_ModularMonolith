@@ -2,7 +2,7 @@
 
 namespace Messaging.Tickets;
 
-public static class TicketsIntegrationMessaging
+public static class TicketsMessaging
 {
-    public static Assembly Assembly => typeof(TicketsIntegrationMessaging).Assembly;
+    public static Assembly Assembly => typeof(TicketsMessaging).Assembly;
 }

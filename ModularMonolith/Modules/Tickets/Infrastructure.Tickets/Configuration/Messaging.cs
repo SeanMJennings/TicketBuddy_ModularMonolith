@@ -1,6 +1,6 @@
-﻿using Application.Tickets;
-using Application.Tickets.IntegrationMessageConsumers;
-using MassTransit;
+﻿using MassTransit;
+using Messaging.Tickets;
+using Messaging.Tickets.Consumers;
 
 namespace Infrastructure.Tickets.Configuration;
 

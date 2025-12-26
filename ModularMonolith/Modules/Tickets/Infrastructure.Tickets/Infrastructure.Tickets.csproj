@@ -14,6 +14,7 @@
       <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
       <ProjectReference Include="..\..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />
+      <ProjectReference Include="..\Messaging.Tickets\Messaging.Tickets.csproj" />
     </ItemGroup>
 
 </Project>

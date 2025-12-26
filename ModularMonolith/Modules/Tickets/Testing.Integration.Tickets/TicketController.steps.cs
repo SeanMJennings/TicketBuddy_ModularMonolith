@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using Application.Tickets.IntegrationMessageConsumers;
+using Application.Tickets.MessageHandlers;
 using BDD;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
@@ -11,6 +11,7 @@ using Integration.Keycloak.Users.Messaging;
 using Integration.Tickets.Messaging.Messages;
 using MassTransit;
 using MassTransit.Testing;
+using Messaging.Tickets.Consumers;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
@@ -37,7 +38,6 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private const decimal price = 25.00m;
     private const decimal new_price = 26.00m;
     private const string name = "wibble";
-    private const string another_full_name = "Johnny Smith";
     private const string email = "john.smith@gmail.com";
     private const string another_email = "johnny.smith@gmail.com";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
@@ -333,7 +333,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         var reservationKey = $"event:{event_id}:ticket:{ticket_ids.Take(1).First()}:reservation";
         var ttl = db.KeyTimeToLive(reservationKey);
         ttl.HasValue.ShouldBeTrue();
-        ttl!.Value.TotalMinutes.ShouldBeLessThanOrEqualTo(15);
+        ttl.Value.TotalMinutes.ShouldBeLessThanOrEqualTo(15);
         ttl.Value.TotalMinutes.ShouldBeGreaterThan(14);
         var keyValue = db.StringGet(reservationKey);
         keyValue.HasValue.ShouldBeTrue();

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Application.Tickets;
+using Application.Tickets.Commands;
 using BDD;
 using Domain.Tickets.Entities;
 using NetArchTest.Rules;
@@ -10,7 +11,7 @@ namespace Testing.Architecture.Tickets.Modules;
 internal partial class ModuleSpecs : Specification
 {
     private static Assembly DomainAssembly => typeof(Event).Assembly;
-    private static Assembly ApplicationAssembly => TicketsIntegrationMessaging.Assembly;
+    private static Assembly ApplicationAssembly => typeof(TicketCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Commands.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Tickets.TicketController).Assembly;
     private TestResult testResult = null!;

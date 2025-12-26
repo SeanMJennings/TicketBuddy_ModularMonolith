@@ -1,24 +1,14 @@
-﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
-using Domain.Tickets.ValueObjects;
+﻿using Application.Tickets.MessageHandlers;
 using Integration.Keycloak.Users.Messaging;
 using MassTransit;
 
-namespace Application.Tickets.IntegrationMessageConsumers;
+namespace Messaging.Tickets.Consumers;
 
-public class UserRegisteredConsumer(IPersistUsers userRepository, ITicketsUnitOfWork unitOfWork) : IConsumer<UserRegistered>
+public class UserRegisteredConsumer(UserRegisteredHandler handler) : IConsumer<UserRegistered>
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {
-        var user = new User(
-            context.Message.userId,
-            new Name($"{context.Message.details["first_name"]} {context.Message.details["last_name"]}"),
-            new Email(context.Message.details["email"])
-        );
-        
-        await userRepository.Save(user);
-        await unitOfWork.Commit(context.CancellationToken);
+        await handler.Handle(context.Message);
     }
 }
 

@@ -15,9 +15,6 @@
 
     <ItemGroup>
       <PackageReference Include="Common.JsonSerialization" />
-      <PackageReference Include="MassTransit"/>
-      <PackageReference Include="MassTransit.RabbitMQ" />
-      <PackageReference Include="Observability.Logging" />
     </ItemGroup>
 
 </Project>

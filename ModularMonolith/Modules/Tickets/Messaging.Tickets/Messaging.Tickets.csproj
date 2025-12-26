@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Events\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
+        <ProjectReference Include="..\..\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
+        <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit"/>
+        <PackageReference Include="MassTransit.RabbitMQ" />
+    </ItemGroup>
+
+</Project>

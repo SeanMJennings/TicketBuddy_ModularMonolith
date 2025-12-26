@@ -43,7 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Dataseeder", "LocalHos
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tickets", "Tickets", "{CCE57025-2696-4882-A2CA-DEB5F8413740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Events.Messaging", "Modules\Events\Integration.Events.Messaging\Integration.Events.Messaging.csproj", "{192B9F0A-835C-4A68-8E88-961C2CFE89AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages.Events", "Modules\Events\Messages.Events\Messages.Events.csproj", "{192B9F0A-835C-4A68-8E88-961C2CFE89AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Tickets", "Modules\Tickets\Domain.Tickets\Domain.Tickets.csproj", "{C8359FB9-A3B5-4119-8B6B-42185E23A9B8}"
 EndProject
@@ -73,7 +73,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "CommonLib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit.Tickets", "Modules\Tickets\Testing.Unit.Tickets\Testing.Unit.Tickets.csproj", "{1933DB28-9DFC-4057-B7AF-FD88B84893A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tickets.Messaging", "Modules\Tickets\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj", "{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages.Tickets", "Modules\Tickets\Messages.Tickets\Messages.Tickets.csproj", "{E4FFC9B9-552F-46CB-A848-9E8B88EAC72C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{15959AC3-E3EF-44FF-8373-16AFC8F59D86}"
 	ProjectSection(SolutionItems) = preProject

@@ -1,6 +1,6 @@
 using Domain.ValueObjects;
 
-namespace Integration.Events.Messaging;
+namespace Messages.Events;
 
 public record EventUpserted
 {

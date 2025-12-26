@@ -1,5 +1,6 @@
 ﻿using Domain.Events.Contracts;
 using MassTransit;
+using Messages.Events;
 using Microsoft.EntityFrameworkCore;
 using Event = Domain.Events.Entities.Event;
 
@@ -10,7 +11,7 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
     public async Task Add(Event theEvent)
     {
         eventDbContext.Add(theEvent);
-        await publishEndpoint.Publish(new Integration.Events.Messaging.EventUpserted
+        await publishEndpoint.Publish(new EventUpserted
         {
             Id = theEvent.Id, 
             EventName = theEvent.EventName,
@@ -24,7 +25,7 @@ public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint pub
     public async Task Update(Event @event)
     {
         eventDbContext.Update(@event);
-        await publishEndpoint.Publish(new Integration.Events.Messaging.EventUpserted
+        await publishEndpoint.Publish(new EventUpserted
         {
             Id = @event.Id, 
             EventName = @event.EventName,

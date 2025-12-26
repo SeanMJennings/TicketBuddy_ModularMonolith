@@ -11,7 +11,7 @@
         <ProjectReference Include="..\Application.Events\Application.Events.csproj" />
         <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
         <ProjectReference Include="..\..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />
-        <ProjectReference Include="..\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
+        <ProjectReference Include="..\Messages.Events\Messages.Events.csproj" />
     </ItemGroup>
     
 </Project>

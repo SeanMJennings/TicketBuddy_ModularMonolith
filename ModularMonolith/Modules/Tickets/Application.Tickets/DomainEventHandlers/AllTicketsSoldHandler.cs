@@ -1,7 +1,7 @@
 using Domain.DomainEvents;
 using Domain.Tickets.DomainEvents;
-using Integration.Tickets.Messaging.Messages;
 using MassTransit;
+using Messages.Tickets;
 
 namespace Application.Tickets.DomainEventHandlers;
 

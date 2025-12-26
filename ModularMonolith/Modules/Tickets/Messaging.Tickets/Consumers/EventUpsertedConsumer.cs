@@ -1,6 +1,6 @@
 using Application.Tickets.MessageHandlers;
 using MassTransit;
-using EventUpserted = Integration.Events.Messaging.EventUpserted;
+using EventUpserted = Messages.Events.EventUpserted;
 
 namespace Messaging.Tickets.Consumers
 {

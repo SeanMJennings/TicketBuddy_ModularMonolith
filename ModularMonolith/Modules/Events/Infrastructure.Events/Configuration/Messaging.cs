@@ -15,7 +15,7 @@ public static class Messaging
     {
         cfg.ReceiveEndpoint("events-queue", e =>
         {
-            e.Bind<Integration.Tickets.Messaging.Messages.EventSoldOut>();
+            e.Bind<Messages.Tickets.EventSoldOut>();
         });
     }
 }

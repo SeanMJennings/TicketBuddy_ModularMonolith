@@ -13,7 +13,7 @@
         <ProjectReference Include="..\..\..\Database\Migrations\Migrations.csproj" />
         <ProjectReference Include="..\Controllers.Tickets\Controllers.Tickets.csproj" />
         <ProjectReference Include="..\Infrastructure.Tickets\Infrastructure.Tickets.csproj" />
-        <ProjectReference Include="..\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj" />
+        <ProjectReference Include="..\Messages.Tickets\Messages.Tickets.csproj" />
     </ItemGroup>
 
     <ItemGroup>

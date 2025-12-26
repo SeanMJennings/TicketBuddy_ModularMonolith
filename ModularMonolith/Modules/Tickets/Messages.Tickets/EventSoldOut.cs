@@ -1,4 +1,4 @@
-namespace Integration.Tickets.Messaging.Messages;
+namespace Messages.Tickets;
 
 public record EventSoldOut
 {

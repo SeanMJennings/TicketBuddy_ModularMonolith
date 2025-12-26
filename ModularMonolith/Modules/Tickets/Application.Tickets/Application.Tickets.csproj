@@ -8,8 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
-      <ProjectReference Include="..\..\Events\Integration.Events.Messaging\Integration.Events.Messaging.csproj" />
-      <ProjectReference Include="..\..\Tickets\Integration.Tickets.Messaging\Integration.Tickets.Messaging.csproj" />
+      <ProjectReference Include="..\..\Events\Messages.Events\Messages.Events.csproj" />
+      <ProjectReference Include="..\Messages.Tickets\Messages.Tickets.csproj" />
       <ProjectReference Include="..\..\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
     </ItemGroup>
 

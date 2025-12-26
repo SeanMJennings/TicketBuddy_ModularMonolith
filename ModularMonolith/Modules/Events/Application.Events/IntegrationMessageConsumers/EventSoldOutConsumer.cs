@@ -1,8 +1,8 @@
 ﻿﻿using Domain.Events.Contracts;
-using Integration.Tickets.Messaging.Messages;
-using MassTransit;
+ using MassTransit;
+ using Messages.Tickets;
 
-namespace Application.Events.IntegrationMessageConsumers
+ namespace Application.Events.IntegrationMessageConsumers
 {
     public class EventSoldOutConsumer(IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork) : IConsumer<EventSoldOut>
     {

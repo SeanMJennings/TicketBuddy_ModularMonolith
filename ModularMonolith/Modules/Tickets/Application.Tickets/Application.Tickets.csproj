@@ -18,7 +18,6 @@
       <PackageReference Include="MassTransit"/>
       <PackageReference Include="MassTransit.RabbitMQ" />
       <PackageReference Include="Observability.Logging" />
-      <PackageReference Include="StackExchange.Redis"/>
     </ItemGroup>
 
 </Project>

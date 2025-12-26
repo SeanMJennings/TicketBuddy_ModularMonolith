@@ -1,12 +1,10 @@
 ﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
-using StackExchange.Redis;
 
 namespace Application.Tickets.Queries;
 
 public class TicketQueries(
     IQueryTickets ticketQuerist,
-    IConnectionMultiplexer connectionMultiplexer)
+    IPersistTicketReservationCache ticketReservationCache)
 {
     public async Task<IList<Domain.Tickets.Queries.Ticket>> GetTickets(Guid eventId)
     {
@@ -20,15 +18,15 @@ public class TicketQueries(
         return await ticketQuerist.GetTicketsForUser(userId);
     }
     
-    private static string GetReservationKey(Guid eventId, Guid ticketId) => $"event:{eventId}:ticket:{ticketId}:reservation";
-    
     private async Task MarkTicketsWithReservationStatus(Guid id, IList<Domain.Tickets.Queries.Ticket> tickets)
     {
-        var db = connectionMultiplexer.GetDatabase();
+        var ticketReservationStatuses = await ticketReservationCache.GetTicketsReservationStatusForEvent(id, tickets.Select(t => t.Id).ToList());
         foreach (var ticket in tickets)
         {
-            var value = await db.StringGetAsync(GetReservationKey(id, ticket.Id));
-            if (value.HasValue) ticket.MarkTicketAsReserved();
+            if (ticketReservationStatuses.TryGetValue(ticket.Id, out _))
+            {
+                ticket.MarkTicketAsReserved();
+            }
         }
     }
 }

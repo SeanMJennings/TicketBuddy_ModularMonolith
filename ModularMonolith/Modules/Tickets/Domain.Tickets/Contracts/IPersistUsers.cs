@@ -1,6 +1,6 @@
 ﻿using Domain.Tickets.Entities;
 
-namespace Application.Tickets.Contracts;
+namespace Domain.Tickets.Contracts;
 
 public interface IPersistUsers
 {

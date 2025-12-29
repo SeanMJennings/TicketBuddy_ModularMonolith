@@ -10,7 +10,7 @@
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
       <ProjectReference Include="..\..\Events\Messages.Events\Messages.Events.csproj" />
       <ProjectReference Include="..\Messages.Tickets\Messages.Tickets.csproj" />
-      <ProjectReference Include="..\..\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
+      <ProjectReference Include="..\..\Keycloak.Users\Messages.Keycloak.Users\Messages.Keycloak.Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>

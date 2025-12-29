@@ -3,30 +3,44 @@
 internal partial class ModuleSpecs
 {
     [Test]
-    public void domain_layer_should_not_reference_application_layer()
+    public void domain_project_should_only_reference_system_and_common_domain()
     {
-        When(checking_the_domain_layer_for_application_layer_references);
-        Then(there_should_be_no_references_to_application_layer);
+        When(checking_the_domain_project_dependencies);
+        Then(it_should_only_have_dependencies_on_system_and_common_domain);
     }
 
     [Test]
-    public void application_layer_should_not_reference_infrastructure_layer()
+    public void application_project_should_only_reference_domain_and_messages()
     {
-        Given(checking_the_application_layer_for_infrastructure_layer_references);
-        Then(there_should_be_no_references_to_infrastructure_layer);
-    }
-    
-    [Test]
-    public void infrastructure_layer_should_not_reference_controller_layer()
-    {
-        Given(checking_the_infrastructure_layer_for_controller_layer_references);
-        Then(there_should_be_no_references_to_controller_layer);
+        When(checking_the_application_project_dependencies);
+        Then(it_should_only_have_dependencies_on_domain_tickets_and_messages);
     }
 
     [Test]
-    public void domain_layer_should_only_reference_integration_project_from_another_module()
+    public void infrastructure_project_should_only_reference_application_and_common_infrastructure()
     {
-        Given(checking_the_domain_layer_for_references_to_other_modules);
-        Then(there_should_be_no_references_to_other_modules_except_integration_projects);
+        When(checking_the_infrastructure_project_dependencies);
+        Then(it_should_only_have_dependencies_on_application_and_common_infrastructure);
+    }
+
+    [Test]
+    public void controllers_project_should_only_reference_application_and_domain()
+    {
+        When(checking_the_controllers_project_dependencies);
+        Then(it_should_only_have_dependencies_on_application_and_domain);
+    }
+
+    [Test]
+    public void messaging_project_should_only_reference_application_and_messages()
+    {
+        When(checking_the_messaging_project_dependencies);
+        Then(it_should_only_have_dependencies_on_application_and_messages);
+    }
+
+    [Test]
+    public void messages_project_should_not_reference_any_project()
+    {
+        When(checking_the_messages_project_dependencies);
+        Then(it_should_have_no_project_dependencies);
     }
 }

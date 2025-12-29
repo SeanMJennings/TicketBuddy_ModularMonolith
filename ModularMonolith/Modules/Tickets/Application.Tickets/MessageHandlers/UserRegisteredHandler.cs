@@ -1,8 +1,7 @@
 ﻿using Domain.Tickets.Contracts;
 using Domain.Tickets.Entities;
 using Domain.Tickets.ValueObjects;
-using Integration.Keycloak.Users.Messaging;
-using MassTransit;
+using Messaging.Keycloak.Users;
 
 namespace Application.Tickets.MessageHandlers;
 

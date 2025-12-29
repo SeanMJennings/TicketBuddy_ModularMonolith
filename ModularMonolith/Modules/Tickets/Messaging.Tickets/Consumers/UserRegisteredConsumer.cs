@@ -1,6 +1,6 @@
 ﻿using Application.Tickets.MessageHandlers;
-using Integration.Keycloak.Users.Messaging;
 using MassTransit;
+using Messaging.Keycloak.Users;
 
 namespace Messaging.Tickets.Consumers;
 

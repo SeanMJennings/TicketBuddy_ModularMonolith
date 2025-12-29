@@ -8,12 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc"/>
-        <PackageReference Include="StackExchange.Redis"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Keycloak.Users\Domain.Keycloak\Domain.Keycloak.csproj" />
-      <ProjectReference Include="..\..\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" />
       <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
     </ItemGroup>
 

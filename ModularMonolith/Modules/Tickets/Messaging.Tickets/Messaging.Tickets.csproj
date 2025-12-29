@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Events\Messages.Events\Messages.Events.csproj" />
-        <ProjectReference Include="..\..\Keycloak.Users\Integration.Keycloak.Users.Messaging\Integration.Keycloak.Users.Messaging.csproj" />
+        <ProjectReference Include="..\..\Keycloak.Users\Messages.Keycloak.Users\Messages.Keycloak.Users.csproj" />
         <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
     </ItemGroup>
 

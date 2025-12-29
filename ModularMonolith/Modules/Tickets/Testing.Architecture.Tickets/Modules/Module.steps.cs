@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
-using Application.Tickets;
 using Application.Tickets.Commands;
 using BDD;
 using Domain.Tickets.Entities;
-using NetArchTest.Rules;
 
 namespace Testing.Architecture.Tickets.Modules;
 
@@ -14,69 +12,104 @@ internal partial class ModuleSpecs : Specification
     private static Assembly ApplicationAssembly => typeof(TicketCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Commands.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Tickets.TicketController).Assembly;
-    private TestResult testResult = null!;
-    private AssemblyName[] assemblyNames = [];
+    private static Assembly MessagingAssembly => typeof(Messaging.Tickets.TicketsMessaging).Assembly;
+    private static Assembly MessagesAssembly => typeof(Messages.Tickets.EventSoldOut).Assembly;
+    
+    private string[] projectDependencies = [];
     
     protected override void before_each()
     {
         base.before_each();
-        testResult = null!;
-        assemblyNames = [];
+        projectDependencies = [];
     }
     
-    private void checking_the_domain_layer_for_application_layer_references()
+    private static string[] GetProjectDependencies(Assembly assembly)
     {
-        testResult = Types.InAssembly(DomainAssembly)
-            .Should()
-            .NotHaveDependencyOn(ApplicationAssembly.GetName().Name)
-            .GetResult();
-    }
-
-    private void checking_the_application_layer_for_infrastructure_layer_references()
-    {
-        testResult = Types.InAssembly(ApplicationAssembly)
-            .Should()
-            .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
-            .GetResult();
-    }    
-    
-    private void checking_the_infrastructure_layer_for_controller_layer_references()
-    {
-        testResult = Types.InAssembly(InfrastructureAssembly)
-            .Should()
-            .NotHaveDependencyOn(ControllerAssembly.GetName().Name)
-            .GetResult();
-    }
-
-    private void checking_the_domain_layer_for_references_to_other_modules()
-    {
-        assemblyNames = DomainAssembly.GetReferencedAssemblies();
-    }
-
-    private void there_should_be_no_references_to_infrastructure_layer()
-    {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
-    }
-
-    private void there_should_be_no_references_to_application_layer()
-    {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
-    }
-
-    private void there_should_be_no_references_to_controller_layer()
-    {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
-    }
-
-    private void there_should_be_no_references_to_other_modules_except_integration_projects()
-    {
-        Assert.That(assemblyNames
-            .Where(a => 
-                a.Name is not null 
-                && !a.Name.Contains("Tickets") 
-                && !a.Name.Contains("System")
-                && a.Name != "Domain")
+        var knownProjectPrefixes = new[] { "Domain", "Application", "Infrastructure", "Controllers", "Messaging", "Messages" };
+        
+        return assembly.GetReferencedAssemblies()
+            .Where(a => a.Name is not null && knownProjectPrefixes.Any(prefix => a.Name.StartsWith(prefix)))
             .Select(a => a.Name!)
-            .ToArray(), Is.Null.Or.Empty);
+            .ToArray();
+    }
+
+    private void checking_the_domain_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(DomainAssembly);
+    }
+
+    private void checking_the_application_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(ApplicationAssembly);
+    }
+
+    private void checking_the_infrastructure_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(InfrastructureAssembly);
+    }
+
+    private void checking_the_controllers_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(ControllerAssembly);
+    }
+
+    private void checking_the_messaging_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(MessagingAssembly);
+    }
+
+    private void checking_the_messages_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(MessagesAssembly);
+    }
+
+    private void it_should_only_have_dependencies_on_system_and_common_domain()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo(["Domain"]));
+    }
+
+    private void it_should_only_have_dependencies_on_domain_tickets_and_messages()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Domain",
+            "Domain.Tickets",
+            "Messages.Tickets",
+            "Messages.Events",
+            "Messages.Keycloak.Users"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_common_infrastructure()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application.Tickets",
+            "Domain",
+            "Domain.Tickets",
+            "Infrastructure",
+            "Messages.Events",
+            "Messaging.Tickets"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_domain()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application.Tickets",
+            "Domain.Tickets"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_messages()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application.Tickets",
+            "Messages.Events",
+            "Messages.Keycloak.Users"
+        ]));
+    }
+
+    private void it_should_have_no_project_dependencies()
+    {
+        Assert.That(projectDependencies, Is.Empty);
     }
 }

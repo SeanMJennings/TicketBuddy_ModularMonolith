@@ -3,6 +3,7 @@ using System.Security.Claims;
 using BDD;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
+using Controllers.Tickets.Ticket;
 using Infrastructure.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
@@ -25,7 +26,10 @@ namespace Integration;
 
 public partial class TicketControllerSpecs : TruncateDbSpecification
 {
-    private TicketController ticketController = null!;
+    private GetTicketsForEventEndpoint getTicketsForEventEndpoint = null!;
+    private GetTicketsForUserEndpoint getTicketsForUserEndpoint = null!;
+    private PurchaseTicketsEndpoint purchaseTicketsEndpoint = null!;
+    private ReserveTicketsEndpoint reserveTicketsEndpoint = null!;
     private EventUpsertedConsumer _eventUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
@@ -73,12 +77,18 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()
-            .AddScoped<TicketController>()
+            .AddScoped<GetTicketsForEventEndpoint>()
+            .AddScoped<GetTicketsForUserEndpoint>()
+            .AddScoped<PurchaseTicketsEndpoint>()
+            .AddScoped<ReserveTicketsEndpoint>()
             .BuildServiceProvider();
         
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
         testHarness.Start().Await();
-        ticketController = serviceProvider.GetRequiredService<TicketController>();
+        getTicketsForEventEndpoint = serviceProvider.GetRequiredService<GetTicketsForEventEndpoint>();
+        getTicketsForUserEndpoint = serviceProvider.GetRequiredService<GetTicketsForUserEndpoint>();
+        purchaseTicketsEndpoint = serviceProvider.GetRequiredService<PurchaseTicketsEndpoint>();
+        reserveTicketsEndpoint = serviceProvider.GetRequiredService<ReserveTicketsEndpoint>();
         AddUserClaimToControllerContext(user_id);
         cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         _eventUpsertedConsumer = serviceProvider.GetRequiredService<EventUpsertedConsumer>();
@@ -89,7 +99,19 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private void AddUserClaimToControllerContext(Guid userId)
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", userId.ToString())], "TestAuth"));
-        ticketController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        getTicketsForEventEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        {
+            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+        };
+        getTicketsForUserEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        {
+            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+        };
+        purchaseTicketsEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        {
+            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+        };
+        reserveTicketsEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
         {
             HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
         };
@@ -161,14 +183,14 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task requesting_the_tickets()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
 
     private async Task purchasing_two_tickets()
     {
         var payload = new TicketPurchasePayload(ticket_ids.Take(2).ToArray());
-        await ticketController.PurchaseTickets(event_id, payload);
+        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
 
     private async Task two_tickets_are_purchased()
@@ -192,7 +214,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(user_id);
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
-        await ticketController.ReserveTickets(event_id, payload);
+        await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
     }
 
     private async Task the_user_extends_their_reservation()
@@ -206,7 +228,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
         try
         {
-            await ticketController.ReserveTickets(event_id, payload);
+            await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
         }
         catch (ValidationException ex)
         {
@@ -225,7 +247,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         var payload = new TicketPurchasePayload(ticket_ids.Take(1).ToArray());
         try
         {
-            await ticketController.PurchaseTickets(event_id, payload);
+            await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
         }
         catch (ValidationException ex)
         {
@@ -239,7 +261,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         var payload = new TicketPurchasePayload([Guid.NewGuid(), Guid.NewGuid()]);
         try
         {
-            await ticketController.PurchaseTickets(event_id, payload);
+            await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
         }
         catch (Exception ex)
         {
@@ -265,7 +287,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task the_tickets_are_released()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         tickets = tickets.OrderBy(t => t.SeatNumber).ToList();
         var counter = 1;
@@ -280,7 +302,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task the_tickets_are_purchased()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         foreach (var ticket in tickets.Where(t => ticket_ids.Take(2).Contains(t.Id)).ToList())
         {
@@ -300,7 +322,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task the_ticket_prices_are_updated()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         foreach (var ticket in tickets.Where(t => !ticket_ids.Take(2).Contains(t.Id)).ToList())
         {
@@ -311,7 +333,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private async Task purchased_tickets_are_not_updated()
     {
         AddUserClaimToControllerContext(user_id);
-        var tickets = await ticketController.GetTicketsForUser();
+        var tickets = await getTicketsForUserEndpoint.GetTicketsForUser();
         tickets.Count.ShouldBe(2);
         foreach (var ticket in tickets)
         {
@@ -321,7 +343,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task the_ticket_is_reserved()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         var reservedTicket = tickets.Single(t => t.Id == ticket_ids.Take(1).First());
         reservedTicket.Reserved.ShouldBeTrue();
@@ -354,12 +376,12 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(user_id);
         var payload = new TicketPurchasePayload(ticket_ids);
-        await ticketController.PurchaseTickets(event_id, payload);
+        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
     
     private async Task event_sold_out_integration_event_is_published()
     {
-        var tickets = await ticketController.GetTickets(event_id);
+        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         tickets.All(t => t.Purchased).ShouldBeTrue();
         

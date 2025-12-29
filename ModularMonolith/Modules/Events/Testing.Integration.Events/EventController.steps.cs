@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BDD;
-using Controllers.Events;
+using Controllers.Events.Event;
 using Controllers.Events.Requests;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
@@ -22,7 +22,10 @@ namespace Integration;
 
 public partial class EventControllerSpecs : TruncateDbSpecification
 {
-    private EventController eventController = null!;
+    private CreateEventEndpoint createEventEndpoint = null!;
+    private GetEventByIdEndpoint getEventByIdEndpoint = null!;
+    private GetEventsEndpoint getEventsEndpoint = null!;
+    private UpdateEventEndpoint updateEventEndpoint = null!;
     private EventSoldOutConsumer eventSoldOutConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private EventPayload eventPayload = null!;
@@ -75,12 +78,18 @@ public partial class EventControllerSpecs : TruncateDbSpecification
                 x.AddEventsConsumers();
             })
             .AddSingleton(new Dictionary<Type, Type>())
-            .AddScoped<EventController>()
+            .AddScoped<CreateEventEndpoint>()
+            .AddScoped<GetEventByIdEndpoint>()
+            .AddScoped<GetEventsEndpoint>()
+            .AddScoped<UpdateEventEndpoint>()
             .BuildServiceProvider();
         
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
         testHarness.Start().Await();
-        eventController = serviceProvider.GetRequiredService<EventController>();
+        createEventEndpoint = serviceProvider.GetRequiredService<CreateEventEndpoint>();
+        getEventByIdEndpoint = serviceProvider.GetRequiredService<GetEventByIdEndpoint>();
+        getEventsEndpoint = serviceProvider.GetRequiredService<GetEventsEndpoint>();
+        updateEventEndpoint = serviceProvider.GetRequiredService<UpdateEventEndpoint>();
         eventSoldOutConsumer = serviceProvider.GetRequiredService<EventSoldOutConsumer>();
         return Task.CompletedTask;
     }
@@ -154,15 +163,15 @@ public partial class EventControllerSpecs : TruncateDbSpecification
 
     private async Task creating_the_event()
     {
-        var response = await eventController.CreateEvent(eventPayload);
-        returned_id = Guid.Parse(response.Value!.ToString()!);
+        var response = await createEventEndpoint.CreateEvent(eventPayload);
+        returned_id = (Guid)response.Value!;
     }    
     
     private async Task creating_the_event_that_will_fail()
     {
         try
         {
-            await eventController.CreateEvent(eventPayload);
+            await createEventEndpoint.CreateEvent(eventPayload);
         }
         catch (ValidationException e)
         {
@@ -172,26 +181,26 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     
     private async Task creating_another_event()
     {
-        var response = await eventController.CreateEvent(eventPayload);
-        another_id = Guid.Parse(response.Value!.ToString()!);
+        var response = await createEventEndpoint.CreateEvent(eventPayload);
+        another_id = (Guid)response.Value!;
     }
     
     private async Task creating_third_event()
     {
-        var response = await eventController.CreateEvent(eventPayload);
-        third_id = Guid.Parse(response.Value!.ToString()!);
+        var response = await createEventEndpoint.CreateEvent(eventPayload);
+        third_id = (Guid)response.Value!;
     }
     
     private async Task updating_the_event()
     {
-        await eventController.UpdateEvent(returned_id, updateEventPayload);
+        await updateEventEndpoint.UpdateEvent(returned_id, updateEventPayload);
     }
     
     private async Task updating_the_event_that_will_fail()
     {
         try
         {
-            await eventController.UpdateEvent(returned_id, updateEventPayload);
+            await updateEventEndpoint.UpdateEvent(returned_id, updateEventPayload);
         }
         catch (ValidationException e)
         {
@@ -244,17 +253,17 @@ public partial class EventControllerSpecs : TruncateDbSpecification
 
     private async Task requesting_the_event()
     {
-        theEvent = (await eventController.GetEvent(returned_id)).Value!;
+        theEvent = (await getEventByIdEndpoint.GetEvent(returned_id)).Value!;
     }
     
     private async Task requesting_the_updated_event()
     {
-        theEvent = (await eventController.GetEvent(returned_id)).Value!;
+        theEvent = (await getEventByIdEndpoint.GetEvent(returned_id)).Value!;
     }
     
     private async Task listing_the_events()
     {
-        theEvents = (await eventController.GetEvents()).ToList();
+        theEvents = (await getEventsEndpoint.GetEvents()).ToList();
     }
 
     private void the_event_is_created()

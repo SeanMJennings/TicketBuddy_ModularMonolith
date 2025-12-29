@@ -11,7 +11,7 @@ internal partial class ModuleSpecs : Specification
     private static Assembly DomainAssembly => typeof(Event).Assembly;
     private static Assembly ApplicationAssembly => typeof(CreateEvent).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Events.Event.EventRepository).Assembly;
-    private static Assembly ControllerAssembly => typeof(Controllers.Events.EventController).Assembly;
+    private static Assembly ControllerAssembly => typeof(Controllers.Events.Event.GetEventsEndpoint).Assembly;
     private static Assembly MessagingAssembly => typeof(Messaging.Events.EventsMessaging).Assembly;
     private static Assembly MessagesAssembly => typeof(Messages.Events.EventUpserted).Assembly;
     

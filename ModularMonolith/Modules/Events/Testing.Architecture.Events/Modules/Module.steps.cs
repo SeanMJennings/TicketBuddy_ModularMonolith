@@ -2,7 +2,6 @@
 using Application.Events.Commands;
 using BDD;
 using Domain.Events.Entities;
-using NetArchTest.Rules;
 
 namespace Testing.Architecture.Events.Modules;
 
@@ -13,50 +12,106 @@ internal partial class ModuleSpecs : Specification
     private static Assembly ApplicationAssembly => typeof(EventCommands).Assembly;
     private static Assembly InfrastructureAssembly => typeof(Infrastructure.Events.Persistence.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Events.EventController).Assembly;
-    private TestResult testResult = null!;
+    private static Assembly MessagingAssembly => typeof(Messaging.Events.EventsMessaging).Assembly;
+    private static Assembly MessagesAssembly => typeof(Messages.Events.EventUpserted).Assembly;
+    
+    private string[] projectDependencies = [];
     
     protected override void before_each()
     {
         base.before_each();
-        testResult = null!;
+        projectDependencies = [];
     }
     
-    private void checking_the_domain_layer_for_application_layer_references()
+    private static string[] GetProjectDependencies(Assembly assembly)
     {
-        testResult = Types.InAssembly(DomainAssembly)
-            .Should()
-            .NotHaveDependencyOn(ApplicationAssembly.GetName().Name)
-            .GetResult();
+        var knownProjectPrefixes = new[] { "Domain", "Application", "Infrastructure", "Controllers", "Messaging", "Messages" };
+        
+        return assembly.GetReferencedAssemblies()
+            .Where(a => a.Name is not null && knownProjectPrefixes.Any(prefix => a.Name.StartsWith(prefix)))
+            .Select(a => a.Name!)
+            .ToArray();
     }
 
-    private void checking_the_application_layer_for_infrastructure_layer_references()
+    private void checking_the_domain_project_dependencies()
     {
-        testResult = Types.InAssembly(ApplicationAssembly)
-            .Should()
-            .NotHaveDependencyOn(InfrastructureAssembly.GetName().Name)
-            .GetResult();
-    }    
-    
-    private void checking_the_infrastructure_layer_for_controller_layer_references()
-    {
-        testResult = Types.InAssembly(InfrastructureAssembly)
-            .Should()
-            .NotHaveDependencyOn(ControllerAssembly.GetName().Name)
-            .GetResult();
+        projectDependencies = GetProjectDependencies(DomainAssembly);
     }
 
-    private void there_should_be_no_references_to_infrastructure_layer()
+    private void checking_the_application_project_dependencies()
     {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
+        projectDependencies = GetProjectDependencies(ApplicationAssembly);
     }
 
-    private void there_should_be_no_references_to_application_layer()
+    private void checking_the_infrastructure_project_dependencies()
     {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
+        projectDependencies = GetProjectDependencies(InfrastructureAssembly);
     }
 
-    private void there_should_be_no_references_to_controller_layer()
+    private void checking_the_controllers_project_dependencies()
     {
-        Assert.That(testResult.FailingTypes, Is.Null.Or.Empty);
+        projectDependencies = GetProjectDependencies(ControllerAssembly);
+    }
+
+    private void checking_the_messaging_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(MessagingAssembly);
+    }
+
+    private void checking_the_messages_project_dependencies()
+    {
+        projectDependencies = GetProjectDependencies(MessagesAssembly);
+    }
+
+    private void it_should_only_have_dependencies_on_system_and_common_domain()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo(["Domain"]));
+    }
+
+    private void it_should_only_have_dependencies_on_domain_and_messages()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Domain",
+            "Domain.Events",
+            "Messages.Tickets"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_common_infrastructure()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application",
+            "Application.Events",
+            "Domain",
+            "Domain.Events",
+            "Infrastructure",
+            "Messages.Events",
+            "Messages.Tickets",
+            "Messaging.Events"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_domain()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application.Events",
+            "Domain.Events",
+            "Domain"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_application_and_messages()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Application.Events",
+            "Messages.Tickets"
+        ]));
+    }
+
+    private void it_should_only_have_dependencies_on_domain()
+    {
+        Assert.That(projectDependencies, Is.EquivalentTo([
+            "Domain"
+        ]));
     }
 }

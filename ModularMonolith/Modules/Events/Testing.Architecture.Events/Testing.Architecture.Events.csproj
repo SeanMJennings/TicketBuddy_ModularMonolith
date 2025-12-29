@@ -34,6 +34,8 @@
       <ProjectReference Include="..\Controllers.Events\Controllers.Events.csproj" />
       <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
       <ProjectReference Include="..\Infrastructure.Events\Infrastructure.Events.csproj" />
+      <ProjectReference Include="..\Messaging.Events\Messaging.Events.csproj" />
+      <ProjectReference Include="..\Messages.Events\Messages.Events.csproj" />
     </ItemGroup>
 
 </Project>

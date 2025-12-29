@@ -9,4 +9,3 @@ public interface IPersistTickets
     Task AddRange(IEnumerable<Ticket> tickets);
     Task UpdateRange(IEnumerable<Ticket> tickets);
 }
-

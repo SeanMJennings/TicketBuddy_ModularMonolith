@@ -1,4 +1,6 @@
-﻿using Infrastructure.DomainEventsDispatching;
+﻿using Application;
+using Infrastructure.DomainEventsDispatching;
+using Infrastructure.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Configuration;
@@ -9,6 +11,7 @@ public static class Services
     {
         services.AddScoped<DomainEventsDispatcher>();
         services.AddScoped<DomainEventsMapper>();
+        services.AddScoped<IPublishMessages, PublishMessages>();
         return services;
     }
 }

@@ -68,11 +68,12 @@ internal partial class ModuleSpecs : Specification
         Assert.That(projectDependencies, Is.EquivalentTo(["Domain"]));
     }
 
-    private void it_should_only_have_dependencies_on_domain_tickets_and_messages()
+    private void it_should_only_have_dependencies_on_common_application_domain_tickets_and_messages()
     {
         Assert.That(projectDependencies, Is.EquivalentTo([
             "Domain",
             "Domain.Tickets",
+            "Application",
             "Messages.Tickets",
             "Messages.Events",
             "Messages.Keycloak.Users"

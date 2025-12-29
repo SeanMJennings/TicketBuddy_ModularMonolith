@@ -4,11 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Messages.Events</RootNamespace>
+        <RootNamespace>Application</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
-    </ItemGroup>
 
 </Project>

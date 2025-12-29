@@ -1,12 +1,12 @@
-﻿using Domain.Events.Contracts;
-using MassTransit;
+﻿using Application;
+using Domain.Events.Contracts;
 using Messages.Events;
 using Microsoft.EntityFrameworkCore;
 using Event = Domain.Events.Entities.Event;
 
 namespace Infrastructure.Events.Persistence;
 
-public class EventRepository(EventDbContext eventDbContext, IPublishEndpoint publishEndpoint) : IPersistEvents
+public class EventRepository(EventDbContext eventDbContext, IPublishMessages publishEndpoint) : IPersistEvents
 {
     public async Task Add(Event theEvent)
     {

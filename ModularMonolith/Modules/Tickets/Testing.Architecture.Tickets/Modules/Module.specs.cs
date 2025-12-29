@@ -10,10 +10,10 @@ internal partial class ModuleSpecs
     }
 
     [Test]
-    public void application_project_should_only_reference_domain_and_messages()
+    public void application_project_should_only_reference_common_application_domain_and_messages()
     {
         When(checking_the_application_project_dependencies);
-        Then(it_should_only_have_dependencies_on_domain_tickets_and_messages);
+        Then(it_should_only_have_dependencies_on_common_application_domain_tickets_and_messages);
     }
 
     [Test]

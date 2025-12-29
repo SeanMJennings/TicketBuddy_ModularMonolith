@@ -1,11 +1,10 @@
 using Domain.DomainEvents;
 using Domain.Tickets.DomainEvents;
-using MassTransit;
 using Messages.Tickets;
 
 namespace Application.Tickets.DomainEventHandlers;
 
-public class AllTicketsSoldHandler(IPublishEndpoint publishEndpoint) : HandleDomainEvents<AllTicketsSold>
+public class AllTicketsSoldHandler(IPublishMessages publish) : HandleDomainEvents<AllTicketsSold>
 {
     protected override async Task Handle(AllTicketsSold message)
     {
@@ -14,6 +13,6 @@ public class AllTicketsSoldHandler(IPublishEndpoint publishEndpoint) : HandleDom
             EventId = message.EventId
         };
         
-        await publishEndpoint.Publish(integrationEvent);
+        await publish.Publish(integrationEvent);
     }
 }

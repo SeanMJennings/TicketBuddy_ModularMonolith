@@ -1,0 +1,10 @@
+﻿<Project>
+  <!-- Add coverlet.collector to all test projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('Testing'))">
+    <PackageReference Include="coverlet.collector">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
+

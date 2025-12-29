@@ -1,6 +1,6 @@
-﻿using Domain.Tickets.DomainEvents;
+﻿using Domain.Tickets.Event;
 
-namespace Domain.Tickets.DomainEventHandlers;
+namespace Domain.Tickets.Core;
 
 public static class DomainEventsToHandlersMap
 {

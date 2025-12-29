@@ -1,6 +1,5 @@
-﻿using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
-using Domain.Tickets.ValueObjects;
+﻿using Domain.Tickets.Core;
+using Domain.Tickets.User;
 using Messaging.Keycloak.Users;
 
 namespace Application.Tickets.MessageHandlers;
@@ -15,7 +14,7 @@ public class UserRegisteredHandler(IPersistUsers userRepository, ITicketsUnitOfW
             new Email(message.details["email"])
         );
         
-        await userRepository.Save(user);
+        await userRepository.Upsert(user);
         await unitOfWork.Commit();
     }
 }

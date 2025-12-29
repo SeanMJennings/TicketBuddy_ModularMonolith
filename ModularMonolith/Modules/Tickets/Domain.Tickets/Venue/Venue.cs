@@ -1,4 +1,4 @@
-﻿namespace Domain.Tickets.Entities;
+﻿namespace Domain.Tickets.Venue;
 
 public class Venue(Domain.ValueObjects.Venue id, string name, uint capacity)
 {

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Event;
+using Domain.Tickets.Venue;
 using Microsoft.EntityFrameworkCore;
-using Event = Domain.Tickets.Entities.Event;
+using Event = Domain.Tickets.Event.Event;
 
 namespace Infrastructure.Tickets.Commands;
 

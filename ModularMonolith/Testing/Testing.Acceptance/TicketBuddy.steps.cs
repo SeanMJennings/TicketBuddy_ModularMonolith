@@ -5,7 +5,7 @@ using System.Text;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
-using Domain.Tickets.Queries;
+using Domain.Tickets.Ticket;
 using Domain.ValueObjects;
 using Keycloak.Client;
 using Keycloak.Requests;
@@ -178,7 +178,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         var response = await client.GetAsync(EventTickets(event_id));
         response_code = response.StatusCode;
         content = response.Content;
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await content.ReadAsStringAsync());
+        var tickets = JsonSerialization.Deserialize<IList<TicketQuery>>(await content.ReadAsStringAsync());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
     
@@ -200,7 +200,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         response_code.ShouldBe(HttpStatusCode.NoContent);
         var response = await client.GetAsync(EventTickets(event_id));
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var tickets = JsonSerialization.Deserialize<IList<Ticket>>(await response.Content.ReadAsStringAsync());
+        var tickets = JsonSerialization.Deserialize<IList<TicketQuery>>(await response.Content.ReadAsStringAsync());
         tickets.Count.ShouldBe(15);
         foreach (var ticket in tickets.Where(t => ticket_ids.Take(2).Contains(t.Id)).ToList())
         {

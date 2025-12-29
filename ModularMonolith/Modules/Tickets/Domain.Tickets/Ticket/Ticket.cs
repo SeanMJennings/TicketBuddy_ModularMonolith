@@ -2,20 +2,13 @@
 using Domain.Entities;
 using Domain.ValueObjects;
 
-namespace Domain.Tickets.Entities;
+namespace Domain.Tickets.Ticket;
 
-public class Ticket : Entity, IAmAnAggregateRoot
+public class Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : Entity(id), IAmAnAggregateRoot
 {
-    public Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : base(id)
-    {
-        EventId = eventId;
-        Price = price;
-        SeatNumber = seatNumber;
-    }
-    
-    public Guid EventId { get; private set; }
-    public Money Price { get; private set; }
-    public uint SeatNumber { get; private set; }
+    public Guid EventId { get; private set; } = eventId;
+    public Money Price { get; private set; } = price;
+    public uint SeatNumber { get; private set; } = seatNumber;
     public Guid? UserId { get; private set; }
     public DateTimeOffset? PurchasedAt { get; private set; }
     

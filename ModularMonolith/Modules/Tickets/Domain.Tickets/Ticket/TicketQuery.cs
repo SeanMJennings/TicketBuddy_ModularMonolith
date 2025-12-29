@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Tickets.Queries;
+namespace Domain.Tickets.Ticket;
 
-public class Ticket(Guid id, Guid eventId, decimal price, int seatNumber, bool purchased)
+public class TicketQuery(Guid id, Guid eventId, decimal price, int seatNumber, bool purchased)
 {
     public Guid Id { get; private set; } = id;
     public Guid EventId { get; private set; } = eventId;

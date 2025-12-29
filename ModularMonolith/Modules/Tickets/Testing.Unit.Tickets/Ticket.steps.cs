@@ -1,18 +1,18 @@
 ﻿using BDD;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Ticket;
 using Domain.ValueObjects;
 using Shouldly;
 
 namespace Unit;
 
-public partial class TicketSpecs : Specification
+public partial class TicketQuerySpecs : Specification
 {
     private Guid ticketId;
     private Guid eventId;
     private Money price;
     private uint seatNumber;
     private Guid userId;
-    private Ticket theTicket = null!;
+    private Ticket _theTicketQuery = null!;
 
     protected override void before_each()
     {
@@ -22,7 +22,7 @@ public partial class TicketSpecs : Specification
         price = 25m;
         seatNumber = 1;
         userId = Guid.NewGuid();
-        theTicket = null!;
+        _theTicketQuery = null!;
     }
 
     private void valid_ticket_inputs()
@@ -42,52 +42,52 @@ public partial class TicketSpecs : Specification
     private void a_purchased_ticket()
     {
         a_valid_ticket();
-        theTicket.Purchase(Guid.NewGuid());
-        theTicket.ClearDomainEvents();
+        _theTicketQuery.Purchase(Guid.NewGuid());
+        _theTicketQuery.ClearDomainEvents();
     }
 
     private void creating_a_ticket()
     {
-        theTicket = new Ticket(ticketId, eventId, price, seatNumber);
+        _theTicketQuery = new Ticket(ticketId, eventId, price, seatNumber);
     }
 
     private void purchasing_the_ticket()
     {
-        theTicket.Purchase(userId);
+        _theTicketQuery.Purchase(userId);
     }
 
     private void updating_the_ticket_price()
     {
-        theTicket.UpdatePrice(30m);
+        _theTicketQuery.UpdatePrice(30m);
     }
 
     private void the_ticket_is_created()
     {
-        theTicket.ShouldNotBeNull();
-        theTicket.Id.ShouldBe(ticketId);
-        theTicket.EventId.ShouldBe(eventId);
-        theTicket.Price.ShouldBe(price);
-        theTicket.SeatNumber.ShouldBe(seatNumber);
-        theTicket.IsAvailable.ShouldBeTrue();
-        theTicket.UserId.ShouldBeNull();
-        theTicket.PurchasedAt.ShouldBeNull();
+        _theTicketQuery.ShouldNotBeNull();
+        _theTicketQuery.Id.ShouldBe(ticketId);
+        _theTicketQuery.EventId.ShouldBe(eventId);
+        _theTicketQuery.Price.ShouldBe(price);
+        _theTicketQuery.SeatNumber.ShouldBe(seatNumber);
+        _theTicketQuery.IsAvailable.ShouldBeTrue();
+        _theTicketQuery.UserId.ShouldBeNull();
+        _theTicketQuery.PurchasedAt.ShouldBeNull();
     }
 
     private void the_ticket_is_purchased()
     {
-        theTicket.UserId.ShouldBe(userId);
-        theTicket.PurchasedAt.ShouldNotBeNull();
-        theTicket.IsAvailable.ShouldBeFalse();
+        _theTicketQuery.UserId.ShouldBe(userId);
+        _theTicketQuery.PurchasedAt.ShouldNotBeNull();
+        _theTicketQuery.IsAvailable.ShouldBeFalse();
     }
 
     private void the_ticket_price_is_updated()
     {
-        theTicket.Price.ShouldBe((Money)30m);
+        _theTicketQuery.Price.ShouldBe((Money)30m);
     }
 
     private void the_ticket_price_is_not_updated()
     {
-        theTicket.Price.ShouldBe(price);
+        _theTicketQuery.Price.ShouldBe(price);
     }
 }
 

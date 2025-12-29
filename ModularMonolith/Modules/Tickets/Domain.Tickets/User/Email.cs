@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using Domain.ValueObjects;
 
-namespace Domain.Tickets.ValueObjects;
+namespace Domain.Tickets.User;
 
 [JsonConverter(typeof(EmailConverter))]
 public readonly struct Email : IEquatable<Email>

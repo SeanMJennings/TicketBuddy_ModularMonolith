@@ -1,5 +1,4 @@
-﻿using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
+﻿using Domain.Tickets.Ticket;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tickets.Commands;
@@ -34,7 +33,7 @@ public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
             .CountAsync();
     }
 
-    public async Task SaveRange(IEnumerable<Ticket> tickets)
+    public async Task AddRange(IEnumerable<Ticket> tickets)
     {
         await ticketDbContext.Tickets.AddRangeAsync(tickets);
     }

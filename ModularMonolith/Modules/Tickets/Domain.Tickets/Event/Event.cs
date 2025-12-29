@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Domain.Entities;
-using Domain.Tickets.DomainEvents;
+using Domain.Tickets.Ticket;
 using Domain.ValueObjects;
 
-namespace Domain.Tickets.Entities;
+namespace Domain.Tickets.Event;
 
 public class Event : Entity, IAmAnAggregateRoot
 {

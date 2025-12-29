@@ -1,6 +1,4 @@
-﻿using Domain.Tickets.Entities;
-
-namespace Domain.Tickets.Contracts;
+﻿namespace Domain.Tickets.Ticket;
 
 public interface IPersistTickets
 {
@@ -8,7 +6,7 @@ public interface IPersistTickets
     Task<IReadOnlyList<Ticket>> GetByEventId(Guid eventId);
     Task<int> GetAvailableCountByEventId(Guid eventId);
     Task<int> GetTotalCountByEventId(Guid eventId);
-    Task SaveRange(IEnumerable<Ticket> tickets);
+    Task AddRange(IEnumerable<Ticket> tickets);
     Task UpdateRange(IEnumerable<Ticket> tickets);
 }
 

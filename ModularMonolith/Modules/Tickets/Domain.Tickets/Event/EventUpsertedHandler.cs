@@ -1,9 +1,8 @@
 ﻿using Domain.DomainEvents;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.DomainEvents;
-using Domain.Tickets.Services;
+using Domain.Tickets.Core;
+using Domain.Tickets.Ticket;
 
-namespace Domain.Tickets.DomainEventHandlers;
+namespace Domain.Tickets.Event;
 
 public class EventUpsertedHandler(IPersistEvents eventsRepository, IPersistTickets ticketsRepository, ITicketsUnitOfWork unitOfWork) : HandleDomainEvents<EventUpserted>
 {

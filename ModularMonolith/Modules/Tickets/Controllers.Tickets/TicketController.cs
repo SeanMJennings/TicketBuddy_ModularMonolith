@@ -1,7 +1,7 @@
 ﻿using Application.Tickets.Commands;
 using Application.Tickets.Queries;
 using Controllers.Tickets.Requests;
-using Domain.Tickets.Queries;
+using Domain.Tickets.Ticket;
 using Keycloak.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +16,7 @@ public class TicketController(
     : ControllerBase
 {
     [HttpGet(Routes.Tickets)]
-    public async Task<IList<Ticket>> GetTickets([FromRoute] Guid id)
+    public async Task<IList<TicketQuery>> GetTickets([FromRoute] Guid id)
     {
         return await ticketQueries.GetTickets(id);
     }
@@ -30,7 +30,7 @@ public class TicketController(
     }
 
     [HttpGet(Routes.TicketsPurchased)]
-    public async Task<IList<Ticket>> GetTicketsForUser()
+    public async Task<IList<TicketQuery>> GetTicketsForUser()
     {
         var userId = User.GetUserId();
         return await ticketQueries.GetTicketsForUser(userId);

@@ -2,7 +2,7 @@
 
 namespace Unit;
 
-public partial class TicketSpecs
+public partial class TicketQuerySpecs
 {
     [Test]
     public void can_create_a_ticket()

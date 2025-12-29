@@ -1,6 +1,7 @@
 ﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Services;
+using Domain.Tickets.Core;
+using Domain.Tickets.Event;
+using Domain.Tickets.Ticket;
 
 namespace Application.Tickets.Commands;
 

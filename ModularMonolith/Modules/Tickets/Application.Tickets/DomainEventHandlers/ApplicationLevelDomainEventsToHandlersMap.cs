@@ -1,4 +1,4 @@
-﻿using Domain.Tickets.DomainEvents;
+﻿using Domain.Tickets.Ticket;
 
 namespace Application.Tickets.DomainEventHandlers;
 

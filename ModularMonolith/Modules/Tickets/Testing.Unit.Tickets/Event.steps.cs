@@ -1,8 +1,8 @@
 using BDD;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Event;
 using Domain.ValueObjects;
 using Shouldly;
-using Venue = Domain.Tickets.Entities.Venue;
+using Venue = Domain.Tickets.Venue.Venue;
 
 namespace Unit;
 

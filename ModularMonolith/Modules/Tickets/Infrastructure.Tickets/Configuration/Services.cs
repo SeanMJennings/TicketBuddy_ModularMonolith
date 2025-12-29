@@ -3,11 +3,13 @@ using Application.Tickets.Contracts;
 using Application.Tickets.DomainEventHandlers;
 using Application.Tickets.MessageHandlers;
 using Application.Tickets.Queries;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.DomainEventHandlers;
+using Domain.Tickets.Core;
+using Domain.Tickets.Event;
+using Domain.Tickets.Ticket;
+using Domain.Tickets.User;
 using Infrastructure.Tickets.Commands;
 using Microsoft.Extensions.DependencyInjection;
-using EventUpsertedHandler = Domain.Tickets.DomainEventHandlers.EventUpsertedHandler;
+using EventUpsertedHandler = Domain.Tickets.Event.EventUpsertedHandler;
 
 namespace Infrastructure.Tickets.Configuration;
 
@@ -27,7 +29,10 @@ public static class Services
             .AddScoped<TicketQueries>()
             .AddScoped<AllTicketsSoldHandler>()
             .AddScoped<EventUpsertedHandler>()
-            .AddSingleton(ApplicationLevelDomainEventsToHandlersMap.Map.Concat(DomainEventsToHandlersMap.Map).ToDictionary(kv => kv.Key, kv => kv.Value));
+            .AddSingleton(
+                ApplicationLevelDomainEventsToHandlersMap.Map
+                    .Concat(DomainEventsToHandlersMap.Map)
+                    .ToDictionary(kv => kv.Key, kv => kv.Value));
         return services;
     }
 }

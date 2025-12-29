@@ -1,12 +1,10 @@
-﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
+﻿using Domain.Tickets.User;
 
 namespace Infrastructure.Tickets.Commands;
 
 public class UserRepository(TicketDbContext ticketDbContext) : IPersistUsers
 {
-    public async Task Save(User theUser)
+    public async Task Upsert(User theUser)
     {
         var existingUser = await Get(theUser.Id);
         if (existingUser is not null)

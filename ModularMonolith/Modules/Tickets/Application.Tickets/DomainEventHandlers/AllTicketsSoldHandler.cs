@@ -1,5 +1,5 @@
 using Domain.DomainEvents;
-using Domain.Tickets.DomainEvents;
+using Domain.Tickets.Ticket;
 using Messages.Tickets;
 
 namespace Application.Tickets.DomainEventHandlers;

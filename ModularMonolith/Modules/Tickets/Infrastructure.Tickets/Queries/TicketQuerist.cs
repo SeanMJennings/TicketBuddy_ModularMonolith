@@ -1,15 +1,14 @@
 ﻿using Application.Tickets.Contracts;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Queries;
+using Domain.Tickets.Ticket;
 using Infrastructure.Queries;
 
 namespace Infrastructure.Tickets.Queries;
 
 public class TicketQuerist(Database database) : IQueryTickets
 {
-    public async Task<IList<Ticket>> GetTicketsForEvent(Guid eventId)
+    public async Task<IList<TicketQuery>> GetTicketsForEvent(Guid eventId)
     {
-        return (await database.Query<Ticket>("""
+        return (await database.Query<TicketQuery>("""
                                               SELECT "Id", "EventId", "Price", "SeatNumber", ("PurchasedAt" IS NOT NULL) AS "Purchased"
                                               FROM "Ticket"."Tickets"
                                               WHERE "EventId" = @EventId
@@ -17,9 +16,9 @@ public class TicketQuerist(Database database) : IQueryTickets
     }
     
         
-    public async Task<IList<Ticket>> GetTicketsForUser(Guid userId)
+    public async Task<IList<TicketQuery>> GetTicketsForUser(Guid userId)
     {
-        return (await database.Query<Ticket>("""
+        return (await database.Query<TicketQuery>("""
                                               SELECT "Id", "EventId", "Price", "SeatNumber", ("PurchasedAt" IS NOT NULL) AS "Purchased"
                                               FROM "Ticket"."Tickets"
                                               WHERE "UserId" = @UserId

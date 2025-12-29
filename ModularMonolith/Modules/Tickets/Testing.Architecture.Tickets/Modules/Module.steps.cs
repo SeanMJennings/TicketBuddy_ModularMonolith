@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Application.Tickets.Commands;
 using BDD;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Event;
 
 namespace Testing.Architecture.Tickets.Modules;
 

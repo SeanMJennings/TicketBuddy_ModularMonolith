@@ -2,6 +2,7 @@
 using System.Text;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
+using Domain.Tickets.Ticket;
 using Domain.ValueObjects;
 using Keycloak.Domain;
 using Keycloak.Requests;
@@ -118,7 +119,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         var response = await client.GetAsync(EventTickets(event_id));
         response_code = response.StatusCode;
         content = response.Content;
-        var tickets = JsonSerialization.Deserialize<IList<Domain.Tickets.Queries.Ticket>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
+        var tickets = JsonSerialization.Deserialize<IList<TicketQuery>>(content.ReadAsStringAsync().GetAwaiter().GetResult());
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }    
     

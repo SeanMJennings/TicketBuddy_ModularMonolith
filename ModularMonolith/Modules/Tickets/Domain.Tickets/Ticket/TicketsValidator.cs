@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Event;
 
-namespace Domain.Tickets.Services;
+namespace Domain.Tickets.Ticket;
 
 public static class TicketsValidator
 {
-    public static async Task<Event> CheckEventExists(Guid eventId, IPersistEvents eventRepository)
+    public static async Task<Event.Event> CheckEventExists(Guid eventId, IPersistEvents eventRepository)
     {
         var existingEvent = await eventRepository.GetById(eventId);
         return existingEvent ?? throw new ValidationException($"Event with id {eventId} not found");

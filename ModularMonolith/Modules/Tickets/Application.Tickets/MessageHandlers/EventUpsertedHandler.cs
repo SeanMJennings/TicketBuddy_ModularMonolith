@@ -1,5 +1,6 @@
-using Domain.Tickets.Contracts;
-using Event = Domain.Tickets.Entities.Event;
+using Domain.Tickets.Core;
+using Domain.Tickets.Event;
+using Event = Domain.Tickets.Event.Event;
 using EventUpserted = Messages.Events.EventUpserted;
 
 namespace Application.Tickets.MessageHandlers

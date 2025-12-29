@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Contracts;
 
-namespace Domain.Tickets.Services;
+namespace Domain.Tickets.Ticket;
 
 public static class TicketsPurchaser
 {

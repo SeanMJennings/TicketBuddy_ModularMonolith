@@ -2,7 +2,7 @@
 using BDD;
 using Domain.DomainEvents;
 using Domain.Entities;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Event;
 using NetArchTest.Rules;
 
 namespace Testing.Architecture.Tickets.Domain;

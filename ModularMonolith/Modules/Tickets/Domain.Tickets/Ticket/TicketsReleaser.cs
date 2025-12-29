@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Contracts;
-using Domain.Tickets.Entities;
+using Domain.Tickets.Core;
 using Domain.ValueObjects;
 
-namespace Domain.Tickets.Services;
+namespace Domain.Tickets.Ticket;
 
 public static class TicketsReleaser
 {
@@ -23,7 +22,7 @@ public static class TicketsReleaser
             tickets.Add(ticket);
         }
 
-        await ticketRepository.SaveRange(tickets);
+        await ticketRepository.AddRange(tickets);
         await unitOfWork.Commit();
     }
 }

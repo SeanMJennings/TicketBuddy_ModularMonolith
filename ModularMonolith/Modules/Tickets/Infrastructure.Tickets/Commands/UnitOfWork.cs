@@ -1,4 +1,4 @@
-﻿using Domain.Tickets.Contracts;
+﻿using Domain.Tickets.Core;
 
 namespace Infrastructure.Tickets.Commands;
 

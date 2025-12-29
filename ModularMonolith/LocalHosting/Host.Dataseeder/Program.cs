@@ -106,7 +106,7 @@ public static class Program
         }
     }
     
-    private static async Task RecreateKeycloakUserRegisteredEventFromKeycloak(Guid user_id, string first_name, string last_name, string email)
+    private static async Task RecreateKeycloakUserRegisteredEventFromKeycloak(Guid userId, string firstName, string lastName, string email)
     {
         var rabbitMqFactory = new ConnectionFactory
         {
@@ -116,11 +116,11 @@ public static class Program
         await using var channel = await rabbitMqConnection.CreateChannelAsync();
         var details = new Dictionary<string, string>
         {
-            { "first_name", first_name },
-            { "last_name", last_name },
+            { "first_name", firstName },
+            { "last_name", lastName },
             { "email", email }
         };
-        var message = JsonSerialization.Serialize(new UserRegistered(user_id, details));
+        var message = JsonSerialization.Serialize(new UserRegistered(userId, details));
         var body = Encoding.UTF8.GetBytes(message);
         var properties = new BasicProperties
         {

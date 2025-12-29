@@ -1,7 +1,7 @@
 ﻿using MassTransit;
 using Messaging.Events;
 
-namespace Infrastructure.Events.Configuration;
+namespace Infrastructure.Events.Core.Configuration;
 
 public static class Messaging
 {

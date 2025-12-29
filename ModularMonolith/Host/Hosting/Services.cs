@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Configuration;
-using Infrastructure.Events.Configuration;
+using Infrastructure.Events.Core.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 

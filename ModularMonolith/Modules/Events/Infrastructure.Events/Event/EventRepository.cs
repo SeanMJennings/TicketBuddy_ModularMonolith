@@ -49,4 +49,3 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
             .ToListAsync();
     }
 }
-

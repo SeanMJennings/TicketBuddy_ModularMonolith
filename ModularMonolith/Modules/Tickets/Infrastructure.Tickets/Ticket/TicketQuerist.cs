@@ -1,6 +1,4 @@
-﻿using Application.Tickets.Ticket;
-using Application.Tickets.Ticket.GetTicketsForUser;
-using Domain.Tickets.Ticket;
+﻿using Domain.Tickets.Ticket;
 using Infrastructure.Queries;
 
 namespace Infrastructure.Tickets.Ticket;

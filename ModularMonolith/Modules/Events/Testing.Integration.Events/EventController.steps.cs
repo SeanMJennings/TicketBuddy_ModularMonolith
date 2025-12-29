@@ -8,7 +8,7 @@ using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Testcontainers.PostgreSql;
-using Infrastructure.Events.Configuration;
+using Infrastructure.Events.Core.Configuration;
 using MassTransit;
 using Messages.Events;
 using Messages.Tickets;

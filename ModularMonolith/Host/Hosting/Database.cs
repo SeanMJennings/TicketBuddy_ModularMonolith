@@ -1,4 +1,4 @@
-﻿using Infrastructure.Events.Configuration;
+﻿using Infrastructure.Events.Core.Configuration;
 using Infrastructure.Tickets.Configuration;
 
 namespace Api.Hosting;

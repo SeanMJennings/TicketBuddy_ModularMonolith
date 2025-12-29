@@ -1,8 +1,7 @@
-﻿using Infrastructure.Events.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Events.Configuration;
+namespace Infrastructure.Events.Core.Configuration;
 
 public static class Database
 {

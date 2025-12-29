@@ -17,4 +17,3 @@ public class CreateEvent(EventsValidator eventsValidator, IPersistEvents eventRe
         return eventId;
     }
 }
-

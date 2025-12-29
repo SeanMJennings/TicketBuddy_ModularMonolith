@@ -1,4 +1,4 @@
-﻿using Domain.Events.Contracts;
+﻿using Domain.Events;
 
 namespace Infrastructure.Events.Core;
 
@@ -9,4 +9,3 @@ public class UnitOfWork(EventDbContext eventDbContext) : IEventsUnitOfWork
         await eventDbContext.Commit(cancellationToken);
     }
 }
-

@@ -1,6 +1,6 @@
-using Application.Events.Event;
+using Application.Events;
 using Controllers.Events.Requests;
-using Domain.Events.Entities;
+using Domain.Events;
 using Keycloak.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

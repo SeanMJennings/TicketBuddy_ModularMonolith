@@ -1,4 +1,4 @@
-﻿using Application.Events.Event;
+﻿using Application.Events;
 using MassTransit;
 using Messages.Tickets;
 

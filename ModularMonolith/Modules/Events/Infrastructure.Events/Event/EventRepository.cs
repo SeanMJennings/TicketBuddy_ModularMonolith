@@ -1,5 +1,5 @@
 ﻿using Application;
-using Domain.Events.Contracts;
+using Domain.Events;
 using Infrastructure.Events.Core;
 using Messages.Events;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ namespace Infrastructure.Events.Event;
 
 public class EventRepository(EventDbContext eventDbContext, IPublishMessages publishEndpoint) : IPersistEvents
 {
-    public async Task Add(Domain.Events.Entities.Event theEvent)
+    public async Task Add(Domain.Events.Event theEvent)
     {
         eventDbContext.Add(theEvent);
         await publishEndpoint.Publish(new EventUpserted
@@ -22,7 +22,7 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
         });
     }
 
-    public async Task Update(Domain.Events.Entities.Event @event)
+    public async Task Update(Domain.Events.Event @event)
     {
         eventDbContext.Update(@event);
         await publishEndpoint.Publish(new EventUpserted
@@ -36,12 +36,12 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
         });
     }
 
-    public async Task<Domain.Events.Entities.Event?> Get(Guid id)
+    public async Task<Domain.Events.Event?> Get(Guid id)
     {
         return await eventDbContext.Events.FindAsync(id);
     }
 
-    public async Task<IList<Domain.Events.Entities.Event>> GetAll()
+    public async Task<IList<Domain.Events.Event>> GetAll()
     {
         return await eventDbContext.Events
             .Where(e => e.StartDate > DateTimeOffset.UtcNow)

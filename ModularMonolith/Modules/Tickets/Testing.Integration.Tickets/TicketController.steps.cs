@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using Application.Tickets.MessageHandlers;
 using BDD;
 using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Infrastructure.Configuration;
 using Infrastructure.Tickets.Configuration;
+using Infrastructure.Tickets.Core.Configuration;
 using MassTransit;
 using MassTransit.Testing;
 using Messages.Events;

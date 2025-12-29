@@ -8,7 +8,7 @@ namespace Infrastructure.Events.Core;
 public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
     : UnitOfWorkDbContext<EventDbContext>(options, domainEventsDispatcher)
 {
-    public DbSet<Domain.Events.Entities.Event> Events => Set<Domain.Events.Entities.Event>();
+    public DbSet<Domain.Events.Event> Events => Set<Domain.Events.Event>();
     
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -19,10 +19,9 @@ public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEven
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Domain.Events.Entities.Event>().HasKey(e => e.Id);
-        modelBuilder.Entity<Domain.Events.Entities.Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
-        modelBuilder.Entity<Domain.Events.Entities.Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
-        modelBuilder.Entity<Domain.Events.Entities.Event>().ToTable("Events","Event", e => e.ExcludeFromMigrations());
+        modelBuilder.Entity<Domain.Events.Event>().HasKey(e => e.Id);
+        modelBuilder.Entity<Domain.Events.Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
+        modelBuilder.Entity<Domain.Events.Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
+        modelBuilder.Entity<Domain.Events.Event>().ToTable("Events","Event", e => e.ExcludeFromMigrations());
     }
 }
-

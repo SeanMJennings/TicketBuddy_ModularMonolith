@@ -13,7 +13,7 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
         return (ticketDbContext.Venues.FirstOrDefaultAsync(v => v.Id == venue) ?? throw new ValidationException($"Venue {venue} does not exist"))!;
     }
 
-    public async Task Save(Domain.Tickets.Event.Event theEvent)
+    public async Task Upsert(Domain.Tickets.Event.Event theEvent)
     {
         var @event = await GetById(theEvent.Id);
         

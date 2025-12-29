@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Configuration;
 using Infrastructure.Events.Configuration;
 using Infrastructure.Tickets.Configuration;
+using Infrastructure.Tickets.Core.Configuration;
 
 namespace Api.Hosting;
 

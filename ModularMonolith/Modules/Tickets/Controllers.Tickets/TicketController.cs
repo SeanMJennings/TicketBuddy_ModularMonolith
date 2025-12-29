@@ -1,4 +1,8 @@
 ﻿using Application.Tickets.Ticket;
+using Application.Tickets.Ticket.GetTicketsForEvent;
+using Application.Tickets.Ticket.GetTicketsForUser;
+using Application.Tickets.Ticket.PurchaseTickets;
+using Application.Tickets.Ticket.ReserveTickets;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Ticket;
 using Keycloak.Domain;

@@ -3,7 +3,7 @@ using BDD;
 using Domain;
 using Domain.DomainEvents;
 using Domain.Entities;
-using Domain.Events.Entities;
+using Domain.Events;
 using NetArchTest.Rules;
 
 namespace Testing.Architecture.Events.Domain;

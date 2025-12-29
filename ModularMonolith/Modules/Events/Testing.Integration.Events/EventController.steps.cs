@@ -16,7 +16,7 @@ using Messaging.Events;
 using NSubstitute;
 using Testing;
 using Testing.Containers;
-using Event = Domain.Events.Entities.Event;
+using Event = Domain.Events.Event;
 
 namespace Integration;
 

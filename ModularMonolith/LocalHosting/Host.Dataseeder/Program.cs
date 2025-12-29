@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
-using Domain.Events.Entities;
+using Domain.Events;
 using Domain.ValueObjects;
 using Keycloak.Client;
 using Keycloak.Requests;

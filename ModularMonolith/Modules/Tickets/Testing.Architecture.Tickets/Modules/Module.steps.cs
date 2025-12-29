@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
-using Application.Tickets.Commands;
+using Application.Tickets.Ticket;
+using Application.Tickets.Ticket.PurchaseTickets;
 using BDD;
 using Domain.Tickets.Event;
 
@@ -9,8 +10,8 @@ namespace Testing.Architecture.Tickets.Modules;
 internal partial class ModuleSpecs : Specification
 {
     private static Assembly DomainAssembly => typeof(Event).Assembly;
-    private static Assembly ApplicationAssembly => typeof(TicketCommands).Assembly;
-    private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Commands.EventRepository).Assembly;
+    private static Assembly ApplicationAssembly => typeof(PurchaseTickets).Assembly;
+    private static Assembly InfrastructureAssembly => typeof(Infrastructure.Tickets.Event.EventRepository).Assembly;
     private static Assembly ControllerAssembly => typeof(Controllers.Tickets.TicketController).Assembly;
     private static Assembly MessagingAssembly => typeof(Messaging.Tickets.TicketsMessaging).Assembly;
     private static Assembly MessagesAssembly => typeof(Messages.Tickets.EventSoldOut).Assembly;

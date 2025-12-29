@@ -1,5 +1,5 @@
 ﻿using BDD;
-using Domain.Events.Entities;
+using Domain.Events;
 using Domain.ValueObjects;
 using Shouldly;
 

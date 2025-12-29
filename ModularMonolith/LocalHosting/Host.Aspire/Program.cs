@@ -19,10 +19,14 @@ var rabbitmq = builder
     .AddRabbitMQ("Messaging",
         userName: rabbitUserParam,
         password: rabbitPasswordParam)
-    .WithImage("masstransit/rabbitmq")
+    .WithImage("rabbitmq")
     .WithDataVolume("TicketBuddy.Monolith.RabbitMQ")
-    .WithHttpEndpoint(port: 5672, targetPort: 5672)
-    .WithHttpsEndpoint(port: 15672, targetPort: 15672)
+    .WithEndpoint("tcp", endpoint =>
+    {
+        endpoint.Port = 5672;
+        endpoint.TargetPort = 5672;
+    })
+    .WithHttpEndpoint(port: 15672, targetPort: 15672, name: "management")
     .WithLifetime(ContainerLifetime.Persistent);
 
 var redis = builder

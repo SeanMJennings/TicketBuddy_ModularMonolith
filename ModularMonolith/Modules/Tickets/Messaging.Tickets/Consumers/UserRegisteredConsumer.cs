@@ -1,14 +1,14 @@
-﻿using Application.Tickets.MessageHandlers;
+﻿using Application.Tickets.User;
 using MassTransit;
 using Messaging.Keycloak.Users;
 
 namespace Messaging.Tickets.Consumers;
 
-public class UserRegisteredConsumer(UserRegisteredHandler handler) : IConsumer<UserRegistered>
+public class UserRegisteredConsumer(SyncUser syncUser) : IConsumer<UserRegistered>
 {
     public async Task Consume(ConsumeContext<UserRegistered> context)
     {
-        await handler.Handle(context.Message);
+        await syncUser.Execute(context.Message);
     }
 }
 

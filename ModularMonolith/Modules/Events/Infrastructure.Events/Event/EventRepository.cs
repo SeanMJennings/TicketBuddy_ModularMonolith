@@ -1,10 +1,10 @@
 ﻿using Application;
 using Domain.Events.Contracts;
+using Infrastructure.Events.Core;
 using Messages.Events;
 using Microsoft.EntityFrameworkCore;
-using Event = Domain.Events.Entities.Event;
 
-namespace Infrastructure.Events.Persistence;
+namespace Infrastructure.Events.Event;
 
 public class EventRepository(EventDbContext eventDbContext, IPublishMessages publishEndpoint) : IPersistEvents
 {
@@ -49,3 +49,4 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
             .ToListAsync();
     }
 }
+

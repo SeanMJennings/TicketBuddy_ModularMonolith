@@ -1,4 +1,4 @@
-﻿using Infrastructure.Tickets.Commands;
+﻿using Infrastructure.Tickets.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TheDatabase = Infrastructure.Queries.Database;

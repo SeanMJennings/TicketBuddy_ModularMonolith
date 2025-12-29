@@ -1,6 +1,7 @@
 ﻿using Domain.Tickets.User;
+using Infrastructure.Tickets.Core;
 
-namespace Infrastructure.Tickets.Commands;
+namespace Infrastructure.Tickets.User;
 
 public class UserRepository(TicketDbContext ticketDbContext) : IPersistUsers
 {
@@ -24,3 +25,4 @@ public class UserRepository(TicketDbContext ticketDbContext) : IPersistUsers
         return await ticketDbContext.Users.FindAsync(id);
     }
 }
+

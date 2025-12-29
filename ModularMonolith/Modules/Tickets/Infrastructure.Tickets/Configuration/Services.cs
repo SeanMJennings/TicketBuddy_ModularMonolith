@@ -1,13 +1,10 @@
-﻿using Application.Tickets.Commands;
-using Application.Tickets.Contracts;
-using Application.Tickets.DomainEventHandlers;
-using Application.Tickets.MessageHandlers;
-using Application.Tickets.Queries;
+﻿using Application.Tickets.Event;
+using Application.Tickets.Ticket;
+using Application.Tickets.User;
 using Domain.Tickets.Core;
 using Domain.Tickets.Event;
 using Domain.Tickets.Ticket;
 using Domain.Tickets.User;
-using Infrastructure.Tickets.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using EventUpsertedHandler = Domain.Tickets.Event.EventUpsertedHandler;
 
@@ -17,20 +14,28 @@ public static class Services
 {
     public static IServiceCollection ConfigureTicketsServices(this IServiceCollection services)
     {
-        services.AddScoped<IPersistEvents, EventRepository>()
-            .AddScoped<IPersistTickets, TicketRepository>()
-            .AddScoped<IPersistTicketReservationCache, TicketReservationCacheRepository>()
-            .AddScoped<IPersistUsers, UserRepository>()
-            .AddScoped<ITicketsUnitOfWork, UnitOfWork>()
-            .AddScoped<IQueryTickets, Queries.TicketQuerist>()
-            .AddScoped<Application.Tickets.MessageHandlers.EventUpsertedHandler>()
-            .AddScoped<UserRegisteredHandler>()
-            .AddScoped<TicketCommands>()
-            .AddScoped<TicketQueries>()
-            .AddScoped<AllTicketsSoldHandler>()
+        services
+            // Core
+            .AddScoped<ITicketsUnitOfWork, Core.UnitOfWork>()
+            // Event slice
+            .AddScoped<IPersistEvents, Event.EventRepository>()
+            .AddScoped<SyncEvent>()
             .AddScoped<EventUpsertedHandler>()
+            // Ticket slice
+            .AddScoped<IPersistTickets, Ticket.TicketRepository>()
+            .AddScoped<IPersistTicketReservationCache, Ticket.TicketReservationCacheRepository>()
+            .AddScoped<IQueryTickets, Ticket.TicketQuerist>()
+            .AddScoped<IQueryTicketReservationStatus, Ticket.TicketReservationCacheRepository>()
+            .AddScoped<PurchaseTickets>()
+            .AddScoped<ReserveTickets>()
+            .AddScoped<GetTicketsForEvent>()
+            .AddScoped<GetTicketsForUser>()
+            .AddScoped<AllTicketsSoldHandler>()
+            // User slice
+            .AddScoped<IPersistUsers, User.UserRepository>()
+            .AddScoped<SyncUser>()
             .AddSingleton(
-                ApplicationLevelDomainEventsToHandlersMap.Map
+                TicketDomainEventsToHandlersMap.Map
                     .Concat(DomainEventsToHandlersMap.Map)
                     .ToDictionary(kv => kv.Key, kv => kv.Value));
         return services;

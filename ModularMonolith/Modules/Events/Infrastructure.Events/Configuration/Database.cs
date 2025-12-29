@@ -1,4 +1,4 @@
-﻿using Infrastructure.Events.Persistence;
+﻿using Infrastructure.Events.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

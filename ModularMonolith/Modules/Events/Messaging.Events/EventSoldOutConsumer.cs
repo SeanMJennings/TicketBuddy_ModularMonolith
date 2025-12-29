@@ -1,14 +1,14 @@
-﻿using Application.Events.MessageHandlers;
+﻿using Application.Events.Event;
 using MassTransit;
 using Messages.Tickets;
 
 namespace Messaging.Events
 {
-    public class EventSoldOutConsumer(EventSoldOutHandler handler) : IConsumer<EventSoldOut>
+    public class EventSoldOutConsumer(MarkEventAsSoldOut markEventAsSoldOut) : IConsumer<EventSoldOut>
     {
         public async Task Consume(ConsumeContext<EventSoldOut> context)
         {
-            await handler.Handle(context.Message);
+            await markEventAsSoldOut.Execute(context.Message);
         }
     }
 }

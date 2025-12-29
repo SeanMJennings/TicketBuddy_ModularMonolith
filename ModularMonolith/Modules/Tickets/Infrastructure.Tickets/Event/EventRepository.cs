@@ -1,9 +1,10 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Domain.Tickets.Event;
 using Domain.Tickets.Venue;
+using Infrastructure.Tickets.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Tickets.Commands;
+namespace Infrastructure.Tickets.Event;
 
 public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
 {
@@ -46,3 +47,4 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 }
+

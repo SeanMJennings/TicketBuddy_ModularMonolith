@@ -5,14 +5,14 @@ namespace Infrastructure.Tickets.Commands;
 
 public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
 {
-    public async Task<IReadOnlyList<Ticket>> GetByIds(Guid[] ids)
+    public async Task<IReadOnlyList<Domain.Tickets.Ticket.Ticket>> GetByIds(Guid[] ids)
     {
         return await ticketDbContext.Tickets
             .Where(t => ids.Contains(t.Id))
             .ToListAsync();
     }
 
-    public async Task<IReadOnlyList<Ticket>> GetByEventId(Guid eventId)
+    public async Task<IReadOnlyList<Domain.Tickets.Ticket.Ticket>> GetByEventId(Guid eventId)
     {
         return await ticketDbContext.Tickets
             .Where(t => t.EventId == eventId)
@@ -33,12 +33,12 @@ public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
             .CountAsync();
     }
 
-    public async Task AddRange(IEnumerable<Ticket> tickets)
+    public async Task AddRange(IEnumerable<Domain.Tickets.Ticket.Ticket> tickets)
     {
         await ticketDbContext.Tickets.AddRangeAsync(tickets);
     }
 
-    public Task UpdateRange(IEnumerable<Ticket> tickets)
+    public Task UpdateRange(IEnumerable<Domain.Tickets.Ticket.Ticket> tickets)
     {
         foreach (var ticket in tickets)
         {

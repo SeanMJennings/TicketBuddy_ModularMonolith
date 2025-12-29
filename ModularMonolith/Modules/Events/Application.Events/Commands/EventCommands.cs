@@ -1,5 +1,4 @@
 ﻿using Domain.Events.Contracts;
-using Domain.Events.Entities;
 using Domain.Events.Services;
 using Domain.ValueObjects;
 
@@ -11,7 +10,7 @@ public class EventCommands(EventsValidator eventsValidator, IPersistEvents event
     {
         var eventId = Guid.NewGuid();
         EventsValidator.ValidateDate(startDate);
-        var theEvent = new Event(eventId, eventName, startDate, endDate, Venue.FirstDirectArenaLeeds, price);
+        var theEvent = new Domain.Events.Entities.Event(eventId, eventName, startDate, endDate, Venue.FirstDirectArenaLeeds, price);
         
         await eventsValidator.CheckIfVenueAlreadyBooked(theEvent);
         await eventRepository.Add(theEvent);

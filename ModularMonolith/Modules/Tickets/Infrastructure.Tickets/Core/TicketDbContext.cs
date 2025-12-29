@@ -5,7 +5,7 @@ using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 using Venue = Domain.Tickets.Venue.Venue;
 
-namespace Infrastructure.Tickets.Commands;
+namespace Infrastructure.Tickets.Core;
 
 public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
     : UnitOfWorkDbContext<TicketDbContext>(options, domainEventsDispatcher)
@@ -49,3 +49,4 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Domain.Tickets.User.User>().ToTable("Users",DefaultSchema, u => u.ExcludeFromMigrations());
     }
 }
+

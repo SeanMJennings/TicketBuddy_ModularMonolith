@@ -3,7 +3,7 @@ using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Events.Persistence;
+namespace Infrastructure.Events.Core;
 
 public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
     : UnitOfWorkDbContext<EventDbContext>(options, domainEventsDispatcher)
@@ -25,3 +25,4 @@ public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEven
         modelBuilder.Entity<Domain.Events.Entities.Event>().ToTable("Events","Event", e => e.ExcludeFromMigrations());
     }
 }
+

@@ -1,5 +1,4 @@
-using Application.Events.Commands;
-using Application.Events.Queries;
+using Application.Events.Event;
 using Controllers.Events.Requests;
 using Domain.Events.Entities;
 using Keycloak.Domain;
@@ -9,18 +8,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Events;
 
 [ApiController]
-public class EventController(EventCommands eventCommands, EventQueries eventQueries) : ControllerBase
+public class EventController(
+    CreateEvent createEvent,
+    UpdateEvent updateEvent,
+    GetEvents getEvents,
+    GetEventById getEventById) : ControllerBase
 {
     [HttpGet(Routes.Events)]
     public async Task<IList<Event>> GetEvents()
     {
-        return await eventQueries.GetEvents();
+        return await getEvents.Execute();
     }    
     
     [HttpGet(Routes.TheEvent)]
     public async Task<ActionResult<Event>> GetEvent(Guid id)
     {
-        var @event = await eventQueries.GetEventById(id);
+        var @event = await getEventById.Execute(id);
         if (@event is null) return NotFound();
         return @event;
     }    
@@ -29,7 +32,7 @@ public class EventController(EventCommands eventCommands, EventQueries eventQuer
     [HttpPost(Routes.Events)]
     public async Task<CreatedResult> CreateEvent([FromBody] EventPayload payload)
     {
-        var eventId = await eventCommands.CreateEvent(payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
+        var eventId = await createEvent.Execute(payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
         return Created($"/{Routes.Events}/{eventId}", eventId);
     }
 
@@ -37,7 +40,7 @@ public class EventController(EventCommands eventCommands, EventQueries eventQuer
     [HttpPut(Routes.TheEvent)]
     public async Task<ActionResult> UpdateEvent(Guid id, [FromBody] UpdateEventPayload payload)
     {
-        await eventCommands.UpdateEvent(id, payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
+        await updateEvent.Execute(id, payload.EventName, payload.StartDate, payload.EndDate, payload.Price);
         return NoContent();
     }
 }

@@ -1,9 +1,6 @@
-﻿using Application.Events.Commands;
-using Application.Events.MessageHandlers;
-using Application.Events.Queries;
+﻿using Application.Events.Event;
 using Domain.Events.Contracts;
 using Domain.Events.Services;
-using Infrastructure.Events.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Events.Configuration;
@@ -12,12 +9,17 @@ public static class Services
 {
     public static IServiceCollection ConfigureEventsServices(this IServiceCollection services)
     {
-        services.AddScoped<IEventsUnitOfWork, UnitOfWork>()
-            .AddScoped<IPersistEvents, EventRepository>()
-            .AddScoped<EventSoldOutHandler>()
+        services
+            // Core
+            .AddScoped<IEventsUnitOfWork, Core.UnitOfWork>()
+            // Event slice
+            .AddScoped<IPersistEvents, Event.EventRepository>()
             .AddScoped<EventsValidator>()
-            .AddScoped<EventCommands>()
-            .AddScoped<EventQueries>();
+            .AddScoped<CreateEvent>()
+            .AddScoped<UpdateEvent>()
+            .AddScoped<GetEvents>()
+            .AddScoped<GetEventById>()
+            .AddScoped<MarkEventAsSoldOut>();
         return services;
     }
 }

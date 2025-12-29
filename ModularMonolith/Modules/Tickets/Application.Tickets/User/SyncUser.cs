@@ -2,11 +2,11 @@
 using Domain.Tickets.User;
 using Messaging.Keycloak.Users;
 
-namespace Application.Tickets.MessageHandlers;
+namespace Application.Tickets.User;
 
-public class UserRegisteredHandler(IPersistUsers userRepository, ITicketsUnitOfWork unitOfWork)
+public class SyncUser(IPersistUsers userRepository, ITicketsUnitOfWork unitOfWork)
 {
-    public async Task Handle(UserRegistered message)
+    public async Task Execute(UserRegistered message)
     {
         var user = new Domain.Tickets.User.User(
             message.userId,
@@ -18,3 +18,4 @@ public class UserRegisteredHandler(IPersistUsers userRepository, ITicketsUnitOfW
         await unitOfWork.Commit();
     }
 }
+

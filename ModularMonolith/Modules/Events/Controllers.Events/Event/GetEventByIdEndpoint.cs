@@ -14,4 +14,3 @@ public class GetEventByIdEndpoint(GetEventById getEventById) : ControllerBase
         return @event;
     }
 }
-

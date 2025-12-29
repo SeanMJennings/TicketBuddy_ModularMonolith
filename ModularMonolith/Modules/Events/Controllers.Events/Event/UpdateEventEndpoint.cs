@@ -18,4 +18,3 @@ public class UpdateEventEndpoint(UpdateEvent updateEvent) : ControllerBase
         return NoContent();
     }
 }
-

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-namespace Keycloak.Client;
+namespace Keycloak;
 
 public static class KeycloakClient
 {

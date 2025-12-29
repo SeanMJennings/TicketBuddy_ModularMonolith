@@ -18,4 +18,3 @@ public class ReserveTicketsEndpoint(ReserveTickets reserveTickets) : ControllerB
         return NoContent();
     }
 }
-

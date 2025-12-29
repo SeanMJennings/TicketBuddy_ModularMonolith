@@ -5,7 +5,7 @@ using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Events;
 using Domain.ValueObjects;
-using Keycloak.Client;
+using Keycloak;
 using Keycloak.Requests;
 using Messaging.Keycloak.Users;
 using Microsoft.Extensions.DependencyInjection;

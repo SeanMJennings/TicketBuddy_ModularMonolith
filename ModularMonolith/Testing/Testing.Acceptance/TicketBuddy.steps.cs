@@ -7,7 +7,7 @@ using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Ticket;
 using Domain.ValueObjects;
-using Keycloak.Client;
+using Keycloak;
 using Keycloak.Requests;
 using Messaging.Keycloak.Users;
 using RabbitMQ.Client;

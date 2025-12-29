@@ -18,4 +18,3 @@ public class PurchaseTicketsEndpoint(PurchaseTickets purchaseTickets) : Controll
         return NoContent();
     }
 }
-

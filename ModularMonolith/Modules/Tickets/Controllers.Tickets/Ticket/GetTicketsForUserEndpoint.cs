@@ -17,4 +17,3 @@ public class GetTicketsForUserEndpoint(GetTicketsForUser getTicketsForUser) : Co
         return await getTicketsForUser.Execute(userId);
     }
 }
-

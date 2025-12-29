@@ -16,4 +16,3 @@ public class GetTicketsForEventEndpoint(GetTicketsForEvent getTicketsForEvent) :
         return await getTicketsForEvent.Execute(id);
     }
 }
-

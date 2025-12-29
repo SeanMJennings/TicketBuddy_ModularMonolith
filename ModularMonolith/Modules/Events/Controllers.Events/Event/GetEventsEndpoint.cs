@@ -1,5 +1,4 @@
 ﻿using Application.Events;
-using Domain.Events;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Events.Event;
@@ -13,4 +12,3 @@ public class GetEventsEndpoint(GetEvents getEvents) : ControllerBase
         return await getEvents.Execute();
     }
 }
-

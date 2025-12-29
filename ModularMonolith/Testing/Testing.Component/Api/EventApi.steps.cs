@@ -6,7 +6,6 @@ using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.Events;
 using Domain.ValueObjects;
-using Keycloak.Client;
 using Keycloak.Domain;
 using Keycloak.Requests;
 using MassTransit.Testing;

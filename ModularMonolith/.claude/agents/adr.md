@@ -337,11 +337,7 @@ A: "This is a significant infrastructure decision. Let me use the adr agent to h
 
 # ADR-001: Email Provider Selection
 
-**Status**: Accepted
-
 **Date**: 2025-11-01
-
-**Decision Makers**: Engineering team
 
 **Tags**: infrastructure, email, third-party-service
 
@@ -458,11 +454,7 @@ A: "That's a foundational architectural decision. Let me use the adr agent to do
 
 # ADR-002: Monorepo Structure with pnpm Workspaces
 
-**Status**: Accepted
-
 **Date**: 2025-11-02
-
-**Decision Makers**: Engineering lead, team consensus
 
 **Tags**: architecture, monorepo, tooling
 
@@ -628,11 +620,7 @@ A: "That's a significant architectural decision that should have been documented
 
 # ADR-003: Database Selection - PostgreSQL
 
-**Status**: Accepted (Retroactive)
-
 **Date**: 2025-11-05 (Decision made: 2025-10-15)
-
-**Decision Makers**: Engineering team
 
 **Tags**: database, infrastructure, retroactive
 
@@ -729,11 +717,7 @@ We chose **PostgreSQL** as the primary database.
 
 # ADR-007: Caching Strategy with Redis
 
-**Status**: Accepted
-
 **Date**: 2025-12-01
-
-**Decision Makers**: Engineering team
 
 **Tags**: caching, redis, performance
 

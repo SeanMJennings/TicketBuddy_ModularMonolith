@@ -131,10 +131,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}"
-	ProjectSection(SolutionItems) = preProject
-		Documents\modular-monolith-architecture.md = Documents\modular-monolith-architecture.md
-		Documents\testing-section.md = Documents\testing-section.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit", "Testing\Testing.Unit\Testing.Unit.csproj", "{E31EB214-C955-47F0-96D7-71E283558949}"
 EndProject
@@ -147,6 +143,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Events", "Modules\Events\Messaging.Events\Messaging.Events.csproj", "{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "CommonLibraries\Application\Application.csproj", "{4EF45CD6-5A50-4213-9C84-5496DADC8B5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ADRs", "ADRs", "{F7EF14DA-9247-4D62-ADD5-4FF32B146AC8}"
+	ProjectSection(SolutionItems) = preProject
+		Documents\ADRs\001-initial-architecture.md = Documents\ADRs\001-initial-architecture.md
+		Documents\ADRs\002-initial-testing.md = Documents\ADRs\002-initial-testing.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -336,5 +338,6 @@ Global
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59} = {CCE57025-2696-4882-A2CA-DEB5F8413740}
 		{F308D4B9-A2D9-453A-AEB2-55B8AB5DA420} = {DC0A904F-65DE-46AF-AA71-CF63E2803A64}
 		{4EF45CD6-5A50-4213-9C84-5496DADC8B5B} = {B27BEC3F-9630-4040-83C5-60B309ADC70A}
+		{F7EF14DA-9247-4D62-ADD5-4FF32B146AC8} = {2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Domain.Entities;
 using Domain.ValueObjects;
@@ -7,7 +7,7 @@ namespace Domain.Events;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Venue venue, Money price) : base(id)
+    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
@@ -20,7 +20,7 @@ public class Event : Entity, IAmAnAggregateRoot
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
-    public Venue Venue { get; private set; }
+    public Domain.ValueObjects.Venue Venue { get; private set; }
     public Money Price { get; private set; }
     
     [JsonInclude]

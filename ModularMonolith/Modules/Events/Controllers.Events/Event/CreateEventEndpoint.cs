@@ -14,7 +14,7 @@ public class CreateEventEndpoint(CreateEvent createEvent) : ControllerBase
     [HttpPost(Routes.Events)]
     public async Task<CreatedResult> CreateEvent([FromBody] EventPayload payload)
     {
-        var eventId = await createEvent.Execute(payload.EventName, payload.StartDate, payload.EndDate, new Money(payload.Price));
+        var eventId = await createEvent.Execute(payload.EventName, payload.StartDate, payload.EndDate, payload.Venue, new Money(payload.Price));
         return Created($"/{Routes.Events}/{eventId}", eventId);
     }
 }

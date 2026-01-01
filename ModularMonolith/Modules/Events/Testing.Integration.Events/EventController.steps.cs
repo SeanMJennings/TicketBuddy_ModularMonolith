@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BDD;
-using Controllers.Events.Event;
+using Controllers.Events;
 using Controllers.Events.Requests;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;

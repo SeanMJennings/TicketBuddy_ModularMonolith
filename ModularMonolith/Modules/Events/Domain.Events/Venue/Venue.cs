@@ -7,6 +7,13 @@ public class Venue : Entity, IAmAnAggregateRoot
     private const uint MinCapacity = 1;
     private const uint MaxCapacity = 50;
 
+    private Venue() : base(Guid.Empty)
+    {
+        Name = null!;
+        Address = default;
+        Capacity = 0;
+    }
+
     public Venue(Guid id, VenueName name, Address address, uint capacity) : base(id)
     {
         Validation.BasedOn(errors =>

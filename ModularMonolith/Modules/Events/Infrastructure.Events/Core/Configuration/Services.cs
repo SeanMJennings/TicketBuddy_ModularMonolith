@@ -1,5 +1,7 @@
 ﻿using Application.Events;
+using Application.Events.Venue;
 using Domain.Events;
+using Domain.Events.Venue;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Events.Core.Configuration;
@@ -16,7 +18,11 @@ public static class Services
             .AddScoped<UpdateEvent>()
             .AddScoped<GetEvents>()
             .AddScoped<GetEventById>()
-            .AddScoped<MarkEventAsSoldOut>();
+            .AddScoped<MarkEventAsSoldOut>()
+            .AddScoped<IPersistVenues, Venue.VenueRepository>()
+            .AddScoped<VenuesValidator>()
+            .AddScoped<CreateVenue>()
+            .AddScoped<GetVenueById>();
         return services;
     }
 }

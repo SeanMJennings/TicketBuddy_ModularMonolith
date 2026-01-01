@@ -1,7 +1,8 @@
 ﻿using Application.Events;
+using Application.Events;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers.Events.Event;
+namespace Controllers.Events;
 
 [ApiController]
 public class GetEventsEndpoint(GetEvents getEvents) : ControllerBase

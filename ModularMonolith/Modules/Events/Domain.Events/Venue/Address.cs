@@ -4,6 +4,13 @@ namespace Domain.Events.Venue;
 
 public readonly struct Address : IEquatable<Address>
 {
+    private Address(string street, string city, string postcode, bool skipValidation)
+    {
+        Street = street;
+        City = city;
+        Postcode = postcode;
+    }
+
     public Address(string street, string city, string postcode)
     {
         Validation.BasedOn(errors =>

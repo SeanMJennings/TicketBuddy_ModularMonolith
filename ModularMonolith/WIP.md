@@ -2,7 +2,7 @@
 
 **Started**: 2025-12-31
 **Status**: In Progress
-**Current Step**: 0 (Planning Complete)
+**Current Step**: 4 (CreateVenue Complete)
 
 ## Goal
 
@@ -36,9 +36,9 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 3. ~~Create IPersistVenues port~~ - TDD ✅
 
 ### Phase 2: Venue Management - Integration Tests (Steps 4-6)
-4. Create CreateVenue (behavior + endpoint + repository) - TDD (integration test)
+4. ~~Create CreateVenue (behavior + endpoint + repository)~~ - TDD ✅
 5. Create GetVenues (behavior + endpoint + repository) - TDD (integration test)
-6. Create GetVenueById (behavior + endpoint + repository) - TDD (integration test)
+6. ~~Create GetVenueById (behavior + endpoint + repository)~~ - TDD ✅ (implemented with step 4)
 
 ### Phase 3: Update Event to Use VenueId (Steps 7-8)
 7. Update Event aggregate to use VenueId (Guid) - TDD (unit test)
@@ -56,11 +56,11 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Current Focus
 
-**Steps 1-3**: Domain Model - Unit Tests (COMPLETE - commits bfff74a, e1911b2)
+**Step 4**: CreateVenue Integration Test (COMPLETE)
 
-**Next Action**: Step 4 - Create CreateVenue (behavior + endpoint + repository)
+**Next Action**: Step 5 - GetVenues (behavior + endpoint)
 
-**Tests Passing**: 12/12 unit tests passing (8 Venue tests, 4 Event tests)
+**Tests Passing**: 106/106 tests passing (24 unit + 20 architecture + 21 integration + 11 component + 1 acceptance + 29 other)
 
 ## Agent Checkpoints
 
@@ -291,3 +291,41 @@ public record VenueUpserted
 - tdd-guardian: Verified RED-GREEN-REFACTOR cycle for steps 2-3
 - refactor-scan: No refactoring needed
 - wip-guardian: Updated WIP.md
+
+### 2026-01-01 - Session 4 (Step 4 Complete)
+**Duration**: ~90 minutes
+**Completed**:
+- Step 4: Created CreateVenue full vertical slice (integration test)
+- Step 6: Created GetVenueById (implemented alongside step 4)
+- RED: Integration test failing (NullReferenceException, then DI errors, then EF Core binding errors, then missing table)
+- GREEN: Implemented full stack - behavior, endpoints, repository, DB context, migration
+- REFACTOR: Assessed - no changes needed
+- Fixed 3 major issues: DI registration, EF Core constructor binding, database migration
+
+**Learned**:
+- Integration test patterns with Testcontainers
+- Dictionary<Type,Type> required for DomainEventsMapper DI
+- EF Core ComplexProperty configuration for value type structs
+- EF Core requires parameterless constructor for entity reconstruction
+- Namespace collision handling with explicit qualification (Domain.ValueObjects.Venue)
+- Database migration required for ExcludeFromMigrations tables
+- IPersistVenues.Add changed from Task to void (synchronous)
+
+**Next Session**:
+- Step 5: GetVenues (behavior + endpoint) - integration test
+- Should be straightforward following CreateVenue pattern
+
+**Agent Actions**:
+- wip-guardian: Fixed DI, EF Core, and migration issues
+- wip-guardian: Updated WIP.md
+
+**Files Created** (11):
+- VenueController.specs.cs, VenueController.steps.cs
+- CreateVenue.cs, GetVenueById.cs
+- CreateVenueEndpoint.cs, GetVenueByIdEndpoint.cs
+- VenuePayload.cs, VenueRepository.cs
+- 013-CreateVenuesTable.sql
+
+**Files Modified** (6):
+- IPersistVenues.cs, EventDbContext.cs, Routes.cs
+- Services.cs, EventPayload.cs, CreateEvent.cs

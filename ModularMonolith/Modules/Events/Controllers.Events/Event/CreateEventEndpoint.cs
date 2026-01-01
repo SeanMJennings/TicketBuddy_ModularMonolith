@@ -5,7 +5,7 @@ using Keycloak.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controllers.Events.Event;
+namespace Controllers.Events;
 
 [ApiController]
 [Authorize(Roles = Roles.Admin)]

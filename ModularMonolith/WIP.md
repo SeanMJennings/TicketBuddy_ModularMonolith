@@ -30,10 +30,10 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Overall Plan
 
-### Phase 1: Domain Model - Unit Tests (Steps 1-3)
-1. Create Venue aggregate test (tests Venue + Address + VenueName together) - TDD
-2. Create VenuesValidator domain service - TDD
-3. Create IPersistVenues port - TDD
+### Phase 1: Domain Model - Unit Tests (Steps 1-3) ✅
+1. ~~Create Venue aggregate test (tests Venue + Address + VenueName together)~~ - TDD ✅
+2. ~~Create VenuesValidator domain service~~ - TDD ✅
+3. ~~Create IPersistVenues port~~ - TDD ✅
 
 ### Phase 2: Venue Management - Integration Tests (Steps 4-6)
 4. Create CreateVenue (behavior + endpoint + repository) - TDD (integration test)
@@ -56,19 +56,19 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Current Focus
 
-**Step 1**: Create Venue aggregate test (COMPLETE - commit bfff74a)
+**Steps 1-3**: Domain Model - Unit Tests (COMPLETE - commits bfff74a, e1911b2)
 
-**Next Action**: Step 2 - Create VenuesValidator domain service
+**Next Action**: Step 4 - Create CreateVenue (behavior + endpoint + repository)
 
-**Tests Passing**: 7/7 Venue unit tests passing
+**Tests Passing**: 12/12 unit tests passing (8 Venue tests, 4 Event tests)
 
 ## Agent Checkpoints
 
-- [x] tdd-guardian: Step 1 verified (RED-GREEN-REFACTOR followed)
-- [ ] tdd-guardian: Verify TDD for remaining steps (13 more)
+- [x] tdd-guardian: Steps 1-3 verified (RED-GREEN-REFACTOR followed)
+- [ ] tdd-guardian: Verify TDD for remaining steps (11 more)
 - [ ] refactor-scan: After each TDD session + at end of feature
 - [ ] adr: If needed for architectural decision
-- [ ] learn: Document patterns (Address VO, cross-module messaging)
+- [ ] learn: Document patterns (AsyncSpecification, Address VO, cross-module messaging)
 - [ ] docs-guardian: Update README when complete
 
 ## Architectural Decisions
@@ -263,5 +263,31 @@ public record VenueUpserted
 
 **Agent Actions**:
 - tdd-guardian: Verified RED-GREEN-REFACTOR cycle
+- refactor-scan: No refactoring needed
+- wip-guardian: Updated WIP.md
+
+### 2026-01-01 - Session 3 (Steps 2-3 Complete)
+**Duration**: ~45 minutes
+**Completed**:
+- Step 2: Created VenuesValidator domain service
+- Step 3: Created IPersistVenues port
+- RED: Test for address uniqueness validation (compilation errors, then logic failure)
+- GREEN: Implemented VenuesValidator.CheckAddressUniqueness and IPersistVenues.GetAll
+- REFACTOR: Assessed - no changes needed
+- Committed: e1911b2
+
+**Learned**:
+- AsyncSpecification pattern for async tests
+- await When(Validating(async_method)) pattern for async validation tests
+- before_each() must return Task when inheriting AsyncSpecification
+- Testing async domain services with mocks
+
+**Next Session**:
+- Step 4: CreateVenue (behavior + endpoint + repository) - integration test
+- Will need to set up testcontainers for database
+- VenueRepository will implement IPersistVenues
+
+**Agent Actions**:
+- tdd-guardian: Verified RED-GREEN-REFACTOR cycle for steps 2-3
 - refactor-scan: No refactoring needed
 - wip-guardian: Updated WIP.md

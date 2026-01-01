@@ -11,10 +11,8 @@ public class Venue : Entity, IAmAnAggregateRoot
     {
         Validation.BasedOn(errors =>
         {
-            if (capacity < MinCapacity)
-                errors.Add("Capacity must be at least 1");
-            if (capacity > MaxCapacity)
-                errors.Add("Capacity cannot exceed 50 seats");
+            if (capacity < MinCapacity) errors.Add("Capacity must be at least 1");
+            if (capacity > MaxCapacity) errors.Add("Capacity cannot exceed 50 seats");
         });
 
         Name = name;

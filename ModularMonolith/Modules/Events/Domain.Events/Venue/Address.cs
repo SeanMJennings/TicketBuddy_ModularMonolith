@@ -12,12 +12,9 @@ public readonly struct Address : IEquatable<Address>
     {
         Validation.BasedOn(errors =>
         {
-            if (string.IsNullOrWhiteSpace(street))
-                errors.Add("Street is required");
-            if (string.IsNullOrWhiteSpace(city))
-                errors.Add("City is required");
-            if (!IsValidUkPostcode(postcode))
-                errors.Add("Invalid UK postcode format");
+            if (string.IsNullOrWhiteSpace(street)) errors.Add("Street is required");
+            if (string.IsNullOrWhiteSpace(city)) errors.Add("City is required");
+            if (!IsValidUkPostcode(postcode)) errors.Add("Invalid UK postcode format");
         });
 
         _street = street;
@@ -33,7 +30,7 @@ public readonly struct Address : IEquatable<Address>
     {
         if (string.IsNullOrWhiteSpace(postcode)) return false;
 
-        var pattern = @"^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$";
+        const string pattern = @"^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$";
         return Regex.IsMatch(
             postcode.ToUpperInvariant(),
             pattern,

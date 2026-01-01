@@ -4,14 +4,9 @@ using Domain.ValueObjects;
 namespace Domain.Events.Venue;
 
 [JsonConverter(typeof(VenueNameConverter))]
-public readonly struct VenueName : IEquatable<VenueName>
+public readonly struct VenueName(string name) : IEquatable<VenueName>
 {
-    private readonly StringValueObject<VenueName> _value;
-
-    public VenueName(string name)
-    {
-        _value = new StringValueObject<VenueName>(name);
-    }
+    private readonly StringValueObject<VenueName> _value = new(name);
 
     public override string ToString() => _value.ToString();
     public override bool Equals(object? obj) => obj is VenueName other && _value.Equals(other._value);

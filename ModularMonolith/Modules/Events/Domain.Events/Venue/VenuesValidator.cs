@@ -9,9 +9,6 @@ public class VenuesValidator(IPersistVenues venueRepository)
         var venues = await venueRepository.GetAll();
         var existingVenue = venues.FirstOrDefault(v => v.Address.Equals(address));
         
-        if (existingVenue is not null)
-        {
-            throw new ValidationException("A venue already exists at this address");
-        }
+        if (existingVenue is not null) throw new ValidationException("A venue already exists at this address");
     }
 }

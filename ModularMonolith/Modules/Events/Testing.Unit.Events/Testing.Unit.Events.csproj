@@ -23,6 +23,9 @@
         <Compile Update="Event.steps.cs">
             <DependentUpon>Event.specs.cs</DependentUpon>
         </Compile>
+        <Compile Update="Venue.steps.cs">
+          <DependentUpon>Venue.specs.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

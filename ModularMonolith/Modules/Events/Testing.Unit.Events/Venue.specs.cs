@@ -101,4 +101,13 @@ public partial class VenueSpecs
         When(Validating(creating_a_venue));
         Then(Informs("Capacity cannot exceed 50 seats"));
     }
+
+    [Test]
+    public async Task cannot_create_venue_with_duplicate_address()
+    {
+            Given(valid_inputs);
+            And(an_existing_venue_at_the_same_address);
+        await When(Validating(validating_address_uniqueness));
+            Then(Informs("A venue already exists at this address"));
+    }
 }

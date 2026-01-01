@@ -1,10 +1,11 @@
 using BDD;
 using Domain.Events.Venue;
+using Moq;
 using Shouldly;
 
 namespace Unit;
 
-public partial class VenueSpecs : Specification
+public partial class VenueSpecs : AsyncSpecification
 {
     private Guid id;
     private string venueName = null!;
@@ -13,6 +14,8 @@ public partial class VenueSpecs : Specification
     private string postcode = null!;
     private uint capacity;
     private Venue venue = null!;
+    private Mock<IPersistVenues> venueRepository = null!;
+    private VenuesValidator validator = null!;
 
     private const string valid_venue_name = "The O2 Arena";
     private const string valid_street = "Peninsula Square";
@@ -20,9 +23,8 @@ public partial class VenueSpecs : Specification
     private const string valid_postcode = "SE10 0DX";
     private const uint valid_capacity = 20;
 
-    protected override void before_each()
+    protected override Task before_each()
     {
-        base.before_each();
         id = Guid.NewGuid();
         venueName = null!;
         street = null!;
@@ -30,6 +32,9 @@ public partial class VenueSpecs : Specification
         postcode = null!;
         capacity = 0;
         venue = null!;
+        venueRepository = new Mock<IPersistVenues>();
+        validator = new VenuesValidator(venueRepository.Object);
+        return Task.CompletedTask;
     }
 
     private void valid_inputs()
@@ -100,5 +105,22 @@ public partial class VenueSpecs : Specification
         venue.Address.City.ShouldBe(valid_city);
         venue.Address.Postcode.ShouldBe(valid_postcode.ToUpperInvariant());
         venue.Capacity.ShouldBe(valid_capacity);
+    }
+
+    private void an_existing_venue_at_the_same_address()
+    {
+        var existingVenue = new Venue(
+            Guid.NewGuid(),
+            new VenueName("Different Venue Name"),
+            new Address(valid_street, valid_city, valid_postcode),
+            30
+        );
+        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([existingVenue]);
+    }
+
+    private async Task validating_address_uniqueness()
+    {
+        var address = new Address(street, city, postcode);
+        await validator.CheckAddressUniqueness(address);
     }
 }

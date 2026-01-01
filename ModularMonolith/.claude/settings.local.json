@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(cat:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(dotnet build:*)",
+      "Bash(Select-String -Pattern \"\\(Test run|Passed!|Failed!|Total tests:|Starting test\\)\" -Context 0,1)"
     ],
     "deny": [],
     "ask": []

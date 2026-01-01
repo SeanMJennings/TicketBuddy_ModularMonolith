@@ -2,7 +2,7 @@
 
 **Started**: 2025-12-31
 **Status**: In Progress
-**Current Step**: 4 (CreateVenue Complete)
+**Current Step**: 5 (GetVenues Complete)
 
 ## Goal
 
@@ -35,9 +35,9 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 2. ~~Create VenuesValidator domain service~~ - TDD ✅
 3. ~~Create IPersistVenues port~~ - TDD ✅
 
-### Phase 2: Venue Management - Integration Tests (Steps 4-6)
+### Phase 2: Venue Management - Integration Tests (Steps 4-6) ✅
 4. ~~Create CreateVenue (behavior + endpoint + repository)~~ - TDD ✅
-5. Create GetVenues (behavior + endpoint + repository) - TDD (integration test)
+5. ~~Create GetVenues (behavior + endpoint + repository)~~ - TDD ✅
 6. ~~Create GetVenueById (behavior + endpoint + repository)~~ - TDD ✅ (implemented with step 4)
 
 ### Phase 3: Update Event to Use VenueId (Steps 7-8)
@@ -56,11 +56,11 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Current Focus
 
-**Step 4**: CreateVenue Integration Test (COMPLETE)
+**Phase 2 Complete**: Venue Management Endpoints (COMPLETE)
 
-**Next Action**: Step 5 - GetVenues (behavior + endpoint)
+**Next Action**: Step 7 - Update Event aggregate to use VenueId
 
-**Tests Passing**: 106/106 tests passing (24 unit + 20 architecture + 21 integration + 11 component + 1 acceptance + 29 other)
+**Tests Passing**: 107/107 tests passing (24 unit + 20 architecture + 22 integration + 11 component + 1 acceptance + 29 other)
 
 ## Agent Checkpoints
 
@@ -329,3 +329,35 @@ public record VenueUpserted
 **Files Modified** (6):
 - IPersistVenues.cs, EventDbContext.cs, Routes.cs
 - Services.cs, EventPayload.cs, CreateEvent.cs
+
+### 2026-01-01 - Session 5 (Step 5 Complete)
+**Duration**: ~20 minutes
+**Completed**:
+- Step 5: Created GetVenues endpoint (integration test)
+- RED: Test failing (compilation error - GetVenuesEndpoint doesn't exist)
+- GREEN: Implemented GetVenues behavior and endpoint
+- REFACTOR: Assessed - no changes needed
+- Phase 2 complete: All venue management endpoints implemented
+
+**Learned**:
+- Simple endpoint implementation following established patterns
+- Test data setup patterns for multiple entities
+- Repository.GetAll() already existed from domain model setup
+- Integration tests build on previous infrastructure
+
+**Next Session**:
+- Step 7: Update Event aggregate to use VenueId (Guid) instead of Venue enum
+- Will need unit tests for Event aggregate changes
+- Breaking change to Event domain model
+
+**Agent Actions**:
+- None required - straightforward implementation
+
+**Files Created** (2):
+- GetVenues.cs
+- GetVenuesEndpoint.cs
+
+**Files Modified** (3):
+- VenueController.specs.cs (added can_list_venues test)
+- VenueController.steps.cs (added test steps)
+- Services.cs (registered GetVenues)

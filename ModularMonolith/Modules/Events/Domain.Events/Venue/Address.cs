@@ -4,10 +4,6 @@ namespace Domain.Events.Venue;
 
 public readonly struct Address : IEquatable<Address>
 {
-    private readonly string _street;
-    private readonly string _city;
-    private readonly string _postcode;
-
     public Address(string street, string city, string postcode)
     {
         Validation.BasedOn(errors =>
@@ -17,14 +13,16 @@ public readonly struct Address : IEquatable<Address>
             if (!IsValidUkPostcode(postcode)) errors.Add("Invalid UK postcode format");
         });
 
-        _street = street;
-        _city = city;
-        _postcode = postcode.ToUpperInvariant();
+        Street = street;
+        City = city;
+        Postcode = postcode.ToUpperInvariant();
     }
 
-    public string Street => _street;
-    public string City => _city;
-    public string Postcode => _postcode;
+    public string Street { get; }
+
+    public string City { get; }
+
+    public string Postcode { get; }
 
     private static bool IsValidUkPostcode(string postcode)
     {
@@ -39,19 +37,19 @@ public readonly struct Address : IEquatable<Address>
     }
 
     public bool Equals(Address other) =>
-        string.Equals(_street, other._street, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(_city, other._city, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(_postcode, other._postcode, StringComparison.OrdinalIgnoreCase);
+        string.Equals(Street, other.Street, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(City, other.City, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(Postcode, other.Postcode, StringComparison.OrdinalIgnoreCase);
 
     public override bool Equals(object? obj) => obj is Address other && Equals(other);
 
     public override int GetHashCode() => HashCode.Combine(
-        _street?.ToUpperInvariant(),
-        _city?.ToUpperInvariant(),
-        _postcode?.ToUpperInvariant());
+        Street?.ToUpperInvariant(),
+        City?.ToUpperInvariant(),
+        Postcode?.ToUpperInvariant());
 
     public static bool operator ==(Address left, Address right) => left.Equals(right);
     public static bool operator !=(Address left, Address right) => !left.Equals(right);
 
-    public override string ToString() => $"{_street}, {_city}, {_postcode}";
+    public override string ToString() => $"{Street}, {City}, {Postcode}";
 }

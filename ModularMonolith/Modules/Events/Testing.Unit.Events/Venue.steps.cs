@@ -56,30 +56,6 @@ public partial class VenueSpecs : AsyncSpecification
         venueName = string.Empty;
     }
 
-    private void a_null_street()
-    {
-        street = null!;
-    }
-
-    private void an_empty_street()
-    {
-        street = string.Empty;
-    }
-
-    private void a_null_city()
-    {
-        city = null!;
-    }
-
-    private void an_empty_city()
-    {
-        city = string.Empty;
-    }
-
-    private void an_invalid_postcode()
-    {
-        postcode = "INVALID";
-    }
 
     private void zero_capacity()
     {

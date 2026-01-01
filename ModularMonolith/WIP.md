@@ -56,16 +56,17 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Current Focus
 
-**Step 0**: Planning (COMPLETE)
+**Step 1**: Create Venue aggregate test (COMPLETE - commit bfff74a)
 
-**Next Action**: Step 1 - Write failing test for Venue creation
+**Next Action**: Step 2 - Create VenuesValidator domain service
 
-**Tests Passing**: N/A (no changes yet)
+**Tests Passing**: 7/7 Venue unit tests passing
 
 ## Agent Checkpoints
 
-- [ ] tdd-guardian: Verify TDD for each step (14 steps)
-- [ ] refactor-scan: After each GREEN
+- [x] tdd-guardian: Step 1 verified (RED-GREEN-REFACTOR followed)
+- [ ] tdd-guardian: Verify TDD for remaining steps (13 more)
+- [ ] refactor-scan: After each TDD session + at end of feature
 - [ ] adr: If needed for architectural decision
 - [ ] learn: Document patterns (Address VO, cross-module messaging)
 - [ ] docs-guardian: Update README when complete
@@ -233,10 +234,34 @@ public record VenueUpserted
 - Capacity: 1-50 seats
 
 **Next Session**:
-- Step 1: Create Venue.specs.cs and Venue.steps.cs
-- Write failing test for Venue creation
-- Implement Venue + Address + VenueName
-- Follow RED-GREEN-REFACTOR
+- Step 2: Create VenuesValidator domain service
+- Step 3: Create IPersistVenues port
 
 **Agent Actions**:
 - wip-guardian: Created WIP.md
+
+### 2025-12-31 - Session 2 (Step 1 Complete)
+**Duration**: ~30 minutes
+**Completed**:
+- Step 1: Created Venue aggregate with Address and VenueName value objects
+- RED: 7 failing unit tests (compilation errors)
+- GREEN: Implemented Address, VenueName, Venue
+- REFACTOR: Assessed - no changes needed
+- Fixed namespace conflict with existing Venue enum
+- Committed: bfff74a
+
+**Learned**:
+- Commit messages should be one-liners (no multi-paragraph format)
+- Do not include "Generated with Claude Code" in commits
+- readonly struct pattern for value objects works well
+- UK postcode regex: ^[A-Z]{1,2}[0-9]{1,2}[A-Z]?\s?[0-9][A-Z]{2}$
+- Namespace conflicts resolved with fully qualified names
+
+**Next Session**:
+- Step 2: VenuesValidator (address uniqueness check)
+- Step 3: IPersistVenues port
+
+**Agent Actions**:
+- tdd-guardian: Verified RED-GREEN-REFACTOR cycle
+- refactor-scan: No refactoring needed
+- wip-guardian: Updated WIP.md

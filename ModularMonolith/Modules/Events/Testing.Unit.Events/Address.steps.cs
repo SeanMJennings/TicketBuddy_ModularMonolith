@@ -173,7 +173,7 @@ public partial class AddressSpecs : Specification
     private void string_contains_street_city_and_postcode()
     {
         stringResult!.ShouldContain(valid_street);
-        stringResult.ShouldContain(valid_city);
-        stringResult.ShouldContain(valid_postcode.ToUpperInvariant());
+        stringResult!.ShouldContain(valid_city);
+        stringResult!.ShouldContain(valid_postcode.ToUpperInvariant());
     }
 }

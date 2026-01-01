@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Modules\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" />
+    <ProjectReference Include="..\..\Modules\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" IsAspireProjectResource="false"/>
     <ProjectReference Include="..\..\Host\Host.csproj" />
     <ProjectReference Include="..\Host.Dataseeder\Host.Dataseeder.csproj" />
     <ProjectReference Include="..\..\Database\Host.Migrations\Host.Migrations.csproj" />

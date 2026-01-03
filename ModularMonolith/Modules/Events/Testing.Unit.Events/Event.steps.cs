@@ -8,6 +8,7 @@ namespace Unit;
 public partial class EventSpecs : Specification
 {
     private Guid id;
+    private Guid venueId;
     private string name = null!;
     private DateTimeOffset start_date = DateTimeOffset.UtcNow.AddDays(1);
     private DateTimeOffset end_date = DateTimeOffset.UtcNow.AddDays(1).AddHours(2);
@@ -21,6 +22,7 @@ public partial class EventSpecs : Specification
     {
         base.before_each();
         id = Guid.NewGuid();
+        venueId = Guid.NewGuid();
         name = null!;
         user = null!;
         start_date = DateTimeOffset.UtcNow.AddDays(1);
@@ -62,16 +64,16 @@ public partial class EventSpecs : Specification
     
     private void creating_an_event()
     {
-        user = new Event(id, name, start_date, end_date, Venue.FirstDirectArenaLeeds, price);
-    }    
-    
+        user = new Event(id, name, start_date, end_date, venueId, price);
+    }
+
     private void the_event_is_created()
     {
         user.Id.ShouldBe(id);
         user.EventName.ToString().ShouldBe(valid_name);
         user.StartDate.ShouldBe(start_date);
         user.EndDate.ShouldBe(end_date);
-        user.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        user.VenueId.ShouldBe(venueId);
         user.Price.ShouldBe(new Money(10m));
     }
 }

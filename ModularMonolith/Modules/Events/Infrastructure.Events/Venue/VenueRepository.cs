@@ -1,14 +1,22 @@
+using Application;
 using Domain.Events.Venue;
 using Infrastructure.Events.Core;
+using Messages.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Events.Venue;
 
-public class VenueRepository(EventDbContext eventDbContext) : IPersistVenues
+public class VenueRepository(EventDbContext eventDbContext, IPublishMessages publishEndpoint) : IPersistVenues
 {
-    public void Add(Domain.Events.Venue.Venue venue)
+    public async Task Add(Domain.Events.Venue.Venue venue)
     {
         eventDbContext.Add(venue);
+        await publishEndpoint.Publish(new VenueUpserted
+        {
+            Id = venue.Id,
+            Name = venue.Name,
+            Capacity = venue.Capacity
+        });
     }
 
     public async Task<Domain.Events.Venue.Venue?> GetById(Guid id)

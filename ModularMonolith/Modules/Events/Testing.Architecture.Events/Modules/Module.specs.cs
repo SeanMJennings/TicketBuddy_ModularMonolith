@@ -38,9 +38,9 @@ internal partial class ModuleSpecs
     }
 
     [Test]
-    public void messages_project_should_only_reference_domain()
+    public void messages_project_should_have_no_dependencies()
     {
         When(checking_the_messages_project_dependencies);
-        Then(it_should_only_have_dependencies_on_domain);
+        Then(it_should_have_no_dependencies);
     }
 }

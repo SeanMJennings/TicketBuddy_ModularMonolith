@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using BDD;
-using Controllers.Tickets;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
 using Infrastructure.Configuration;
@@ -20,7 +19,6 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using Testing;
 using Testing.Containers;
-using Venue = Domain.ValueObjects.Venue;
 
 namespace Integration;
 
@@ -31,6 +29,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private PurchaseTicketsEndpoint purchaseTicketsEndpoint = null!;
     private ReserveTicketsEndpoint reserveTicketsEndpoint = null!;
     private EventUpsertedConsumer _eventUpsertedConsumer = null!;
+    private VenueUpsertedConsumer _venueUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private StackExchange.Redis.IConnectionMultiplexer cache = null!;
@@ -92,6 +91,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         AddUserClaimToControllerContext(user_id);
         cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
         _eventUpsertedConsumer = serviceProvider.GetRequiredService<EventUpsertedConsumer>();
+        _venueUpsertedConsumer = serviceProvider.GetRequiredService<VenueUpsertedConsumer>();
         userRegisteredConsumer = serviceProvider.GetRequiredService<UserRegisteredConsumer>();
         return Task.CompletedTask;
     }
@@ -139,18 +139,28 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task an_event_exists()
     {
-        // would prefer to use the test harness here but haven't got it working yet
-        var mockContext = Substitute.For<ConsumeContext<EventUpserted>>();
-        mockContext.Message.Returns(new EventUpserted
+        var venueId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+
+        var venueContext = Substitute.For<ConsumeContext<VenueUpserted>>();
+        venueContext.Message.Returns(new VenueUpserted
+        {
+            Id = venueId,
+            Name = "Test Venue",
+            Capacity = 17
+        });
+        await _venueUpsertedConsumer.Consume(venueContext);
+
+        var eventContext = Substitute.For<ConsumeContext<EventUpserted>>();
+        eventContext.Message.Returns(new EventUpserted
         {
             Id = event_id,
             EventName = name,
             StartDate = event_start_date,
             EndDate = event_end_date,
-            Venue = Venue.EmiratesOldTraffordManchester,
+            VenueId = venueId,
             Price = price
         });
-        await _eventUpsertedConsumer.Consume(mockContext);
+        await _eventUpsertedConsumer.Consume(eventContext);
     }
 
     private async Task a_user_exists()
@@ -279,7 +289,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             EventName = name,
             StartDate = event_start_date,
             EndDate = event_end_date,
-            Venue = Venue.EmiratesOldTraffordManchester,
+            VenueId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
             Price = new_price
         });
         await _eventUpsertedConsumer.Consume(mockContext);

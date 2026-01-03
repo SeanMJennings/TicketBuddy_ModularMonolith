@@ -7,19 +7,19 @@ namespace Domain.Tickets.Event;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    internal Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price) : base(id)
+    internal Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Guid venueId, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
         StartDate = startDate;
         EndDate = endDate;
-        Venue = venue;
+        VenueId = venueId;
         Price = price;
     }
     
-    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price)
+    public static Event Create(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Guid venueId, Money price)
     {
-        var newEvent = new Event(id, eventName, startDate, endDate, venue, price);
+        var newEvent = new Event(id, eventName, startDate, endDate, venueId, price);
         newEvent.RaiseEventUpsertedDomainEvent();
         return newEvent;
     }
@@ -28,7 +28,7 @@ public class Event : Entity, IAmAnAggregateRoot
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
     public Money Price { get; private set; }
-    public Domain.ValueObjects.Venue Venue { get; private set; }
+    public Guid VenueId { get; private set; }
     
     public void UpdateName(EventName eventName) => EventName = eventName;
     
@@ -40,11 +40,11 @@ public class Event : Entity, IAmAnAggregateRoot
         EndDate = endDate;
     }
     
-    public void UpdateVenue(Domain.ValueObjects.Venue venue) => Venue = venue;
+    public void UpdateVenue(Guid venueId) => VenueId = venueId;
     
     public void UpdatePrice(Money price) => Price = price;
     
     public void MarkAsSoldOut() => AddDomainEvent(new AllTicketsSold(Id));
 
-    private void RaiseEventUpsertedDomainEvent() => AddDomainEvent(new EventUpserted(Id, Price, Venue));
+    private void RaiseEventUpsertedDomainEvent() => AddDomainEvent(new EventUpserted(Id, Price, VenueId));
 }

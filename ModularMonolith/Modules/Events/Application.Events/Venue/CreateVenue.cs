@@ -11,7 +11,7 @@ public class CreateVenue(VenuesValidator venuesValidator, IPersistVenues venueRe
         var venue = new Domain.Events.Venue.Venue(venueId, name, address, capacity);
 
         await venuesValidator.CheckAddressUniqueness(address);
-        venueRepository.Add(venue);
+        await venueRepository.Add(venue);
         await unitOfWork.Commit();
         return venueId;
     }

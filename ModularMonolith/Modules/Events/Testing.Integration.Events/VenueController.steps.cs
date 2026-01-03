@@ -1,8 +1,11 @@
+using BDD;
 using Controllers.Events.Requests;
 using Controllers.Events.Venue;
 using Domain.Events.Venue;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using MassTransit;
+using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Testcontainers.PostgreSql;
@@ -39,6 +42,7 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
     private const string thirdPostcode = "B1 1AA";
     private const uint thirdCapacity = 40;
     private static PostgreSqlContainer database = null!;
+    private ITestHarness testHarness = null!;
 
     protected override async Task before_all()
     {
@@ -47,9 +51,9 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
         database.Migrate();
     }
 
-    protected override Task before_each()
+    protected override async Task before_each()
     {
-        base.before_each();
+        await base.before_each();
         returned_id = Guid.Empty;
         another_id = Guid.Empty;
         third_id = Guid.Empty;
@@ -61,17 +65,21 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureEventsServices()
             .ConfigureEventsDatabase(database.GetConnectionString())
+            .AddMassTransitTestHarness(x =>
+            {
+                x.AddEventsConsumers();
+            })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateVenueEndpoint>()
             .AddScoped<GetVenueByIdEndpoint>()
             .AddScoped<GetVenuesEndpoint>()
             .BuildServiceProvider();
 
+        testHarness = serviceProvider.GetRequiredService<ITestHarness>();
+        await testHarness.Start();
         createVenueEndpoint = serviceProvider.GetRequiredService<CreateVenueEndpoint>();
         getVenueByIdEndpoint = serviceProvider.GetRequiredService<GetVenueByIdEndpoint>();
         getVenuesEndpoint = serviceProvider.GetRequiredService<GetVenuesEndpoint>();
-
-        return Task.CompletedTask;
     }
 
     protected override async Task after_each()

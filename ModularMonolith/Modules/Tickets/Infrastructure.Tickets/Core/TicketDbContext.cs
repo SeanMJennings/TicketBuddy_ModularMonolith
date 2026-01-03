@@ -3,17 +3,16 @@ using Domain.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
-using Venue = Domain.Tickets.Venue.Venue;
 
 namespace Infrastructure.Tickets.Core;
 
-public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEventsDispatcher domainEventsDispatcher) 
+public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEventsDispatcher domainEventsDispatcher)
     : UnitOfWorkDbContext<TicketDbContext>(options, domainEventsDispatcher)
 {
     private const string DefaultSchema = "Ticket";
     public DbSet<Domain.Tickets.Event.Event> Events => Set<Domain.Tickets.Event.Event>();
     public DbSet<Domain.Tickets.Ticket.Ticket> Tickets => Set<Domain.Tickets.Ticket.Ticket>();
-    public DbSet<Venue> Venues => Set<Venue>();
+    public DbSet<Domain.Tickets.Venue.Venue> Venues => Set<Domain.Tickets.Venue.Venue>();
     public DbSet<Domain.Tickets.User.User> Users => Set<Domain.Tickets.User.User>();
     
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -28,7 +27,7 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Domain.Tickets.Event.Event>().HasKey(e => e.Id);
         modelBuilder.Entity<Domain.Tickets.Event.Event>().Property(e => e.EventName).HasConversion(name => name.ToString(), name => new EventName(name));
         modelBuilder.Entity<Domain.Tickets.Event.Event>().Property(e => e.Price).HasConversion(amount => (decimal)amount, amount => new Money(amount));
-        modelBuilder.Entity<Domain.Tickets.Event.Event>().Property(e => e.Venue).HasColumnName("Venue");
+        modelBuilder.Entity<Domain.Tickets.Event.Event>().Property(e => e.VenueId).HasColumnName("Venue");
         modelBuilder.Entity<Domain.Tickets.Event.Event>().ToTable("Events",DefaultSchema, e => e.ExcludeFromMigrations());
         
         modelBuilder.Entity<Domain.Tickets.Ticket.Ticket>().HasKey(t => t.Id);
@@ -40,8 +39,8 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Domain.Tickets.Ticket.Ticket>().HasIndex(t => t.EventId);
         modelBuilder.Entity<Domain.Tickets.Ticket.Ticket>().ToTable("Tickets",DefaultSchema, t => t.ExcludeFromMigrations());
         
-        modelBuilder.Entity<Venue>().HasKey(v => v.Id);
-        modelBuilder.Entity<Venue>().ToTable("EventVenues",DefaultSchema, v => v.ExcludeFromMigrations());
+        modelBuilder.Entity<Domain.Tickets.Venue.Venue>().HasKey(v => v.Id);
+        modelBuilder.Entity<Domain.Tickets.Venue.Venue>().ToTable("EventVenues",DefaultSchema, v => v.ExcludeFromMigrations());
         
         modelBuilder.Entity<Domain.Tickets.User.User>().HasKey(u => u.Id);
         modelBuilder.Entity<Domain.Tickets.User.User>().Property(u => u.FullName).HasConversion(name => name.ToString(), name => new Name(name));
@@ -49,4 +48,3 @@ public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEv
         modelBuilder.Entity<Domain.Tickets.User.User>().ToTable("Users",DefaultSchema, u => u.ExcludeFromMigrations());
     }
 }
-

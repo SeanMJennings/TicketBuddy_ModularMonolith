@@ -6,7 +6,6 @@ using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Ticket;
-using Domain.ValueObjects;
 using Keycloak;
 using Keycloak.Requests;
 using Messaging.Keycloak.Users;
@@ -29,6 +28,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     private string keycloakAdminJwt = null!;
     private string keycloakCustomerJwt = null!;
 
+    private Guid venue1Id;
     private Guid event_id;
     private readonly Guid user_id = Guid.NewGuid();
     private HttpStatusCode response_code;
@@ -130,10 +130,17 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         response_code.ShouldBe(HttpStatusCode.Created);
     }
     
+    private async Task a_venue_exists()
+    {
+        var venue1Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 15));
+        venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
+    }
+    
     private async Task an_event_exists()
     {
         var theContent = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(first_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
+            JsonSerialization.Serialize(new EventPayload(first_name, event_start_date, event_end_date, venue1Id, price)),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(Routes.Events, theContent);

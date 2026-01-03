@@ -2,6 +2,7 @@
 using BDD;
 using Controllers.Events;
 using Controllers.Events.Requests;
+using Controllers.Events.Venue;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using MassTransit.Testing;
@@ -26,6 +27,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private GetEventByIdEndpoint getEventByIdEndpoint = null!;
     private GetEventsEndpoint getEventsEndpoint = null!;
     private UpdateEventEndpoint updateEventEndpoint = null!;
+    private CreateVenueEndpoint createVenueEndpoint = null!;
     private EventSoldOutConsumer eventSoldOutConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private EventPayload eventPayload = null!;
@@ -34,6 +36,9 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private Event theEvent = null!;
     private List<Event> theEvents = [];
 
+    private Guid venue1Id;
+    private Guid venue2Id;
+    private Guid venue3Id;
     private Guid returned_id;
     private Guid another_id;
     private Guid third_id;
@@ -56,9 +61,9 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         database.Migrate();
     }
     
-    protected override Task before_each()
+    protected override async Task before_each()
     {
-        base.before_each();
+        await base.before_each();
         returned_id = Guid.Empty;
         another_id = Guid.Empty;
         third_id = Guid.Empty;
@@ -82,16 +87,19 @@ public partial class EventControllerSpecs : TruncateDbSpecification
             .AddScoped<GetEventByIdEndpoint>()
             .AddScoped<GetEventsEndpoint>()
             .AddScoped<UpdateEventEndpoint>()
+            .AddScoped<CreateVenueEndpoint>()
             .BuildServiceProvider();
         
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
-        testHarness.Start().Await();
+        await testHarness.Start();
         createEventEndpoint = serviceProvider.GetRequiredService<CreateEventEndpoint>();
         getEventByIdEndpoint = serviceProvider.GetRequiredService<GetEventByIdEndpoint>();
         getEventsEndpoint = serviceProvider.GetRequiredService<GetEventsEndpoint>();
         updateEventEndpoint = serviceProvider.GetRequiredService<UpdateEventEndpoint>();
+        createVenueEndpoint = serviceProvider.GetRequiredService<CreateVenueEndpoint>();
         eventSoldOutConsumer = serviceProvider.GetRequiredService<EventSoldOutConsumer>();
-        return Task.CompletedTask;
+
+        await SeedVenues();
     }
 
     protected override async Task after_each()
@@ -106,24 +114,34 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         await database.DisposeAsync();
     }
 
+    private async Task SeedVenues()
+    {
+        var venue1 = await createVenueEndpoint.CreateVenue(new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 50));
+        venue1Id = (Guid)venue1.Value!;
+        var venue2 = await createVenueEndpoint.CreateVenue(new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 45));
+        venue2Id = (Guid)venue2.Value!;
+        var venue3 = await createVenueEndpoint.CreateVenue(new VenuePayload("Principality Stadium", "Westgate Street", "Cardiff", "CF10 1NS", 40));
+        venue3Id = (Guid)venue3.Value!;
+    }
+
     private void a_request_to_create_an_event()
     {
-        create_content(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
+        create_content(name, event_start_date, event_end_date, venue1Id, price);
     }
 
     private void a_request_to_create_an_event_imminently()
     {
-        create_content(name, DateTimeOffset.UtcNow.AddSeconds(1), DateTimeOffset.UtcNow.AddSeconds(2), Venue.FirstDirectArenaLeeds, price);
+        create_content(name, DateTimeOffset.UtcNow.AddSeconds(1), DateTimeOffset.UtcNow.AddSeconds(2), venue1Id, price);
     }
-    
+
     private void a_request_to_create_an_event_with_a_date_in_the_past()
     {
-        create_content(name, past_event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
+        create_content(name, past_event_start_date, event_end_date, venue1Id, price);
     }
 
     private void a_request_to_create_an_event_with_the_same_venue_and_time()
     {
-        create_content(new_name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, new_price);
+        create_content(new_name, event_start_date, event_end_date, venue1Id, new_price);
     }
     
     private void a_request_to_update_the_event_with_a_date_in_the_past()
@@ -131,9 +149,9 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         create_update_content(new_name, past_event_start_date, event_end_date, new_price);
     }
 
-    private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
+    private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Guid venueId, decimal thePrice)
     {
-        eventPayload = new EventPayload(the_name, the_event_date, the_event_end_date, venue, thePrice);
+        eventPayload = new EventPayload(the_name, the_event_date, the_event_end_date, venueId, thePrice);
     }    
     
     private void create_update_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, decimal thePrice)
@@ -143,12 +161,12 @@ public partial class EventControllerSpecs : TruncateDbSpecification
 
     private void a_request_to_create_another_event()
     {
-        create_content(new_name, event_start_date.AddDays(1), event_end_date.AddDays(1), Venue.EmiratesOldTraffordManchester, new_price);
+        create_content(new_name, event_start_date.AddDays(1), event_end_date.AddDays(1), venue2Id, new_price);
     }
 
     private void a_request_to_create_third_event()
     {
-        create_content("third event", event_start_date.AddDays(-1), event_end_date.AddDays(-1), Venue.PrincipalityStadiumCardiff, 34.56m);
+        create_content("third event", event_start_date.AddDays(-1), event_end_date.AddDays(-1), venue3Id, 34.56m);
     }
     
     private void a_request_to_update_the_event()
@@ -247,7 +265,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
 
     private async Task another_event_at_same_venue_exists()
     {
-        create_content(new_name, new_event_start_date, new_event_end_date, Venue.FirstDirectArenaLeeds, new_price);
+        create_content(new_name, new_event_start_date, new_event_end_date, venue1Id, new_price);
         await creating_another_event();
     }
 
@@ -272,7 +290,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         theEvent.EventName.ToString().ShouldBe(name);
         (theEvent.StartDate.ToUniversalTime() - event_start_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         (theEvent.EndDate.ToUniversalTime() - event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
-        theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        theEvent.VenueId.ShouldBe(venue1Id);
         theEvent.Price.ShouldBe(price);
     }
     
@@ -297,7 +315,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         theEvent.EventName.ToString().ShouldBe(new_name);
         (theEvent.StartDate.ToUniversalTime() - new_event_start_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         (theEvent.EndDate.ToUniversalTime() - new_event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
-        theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        theEvent.VenueId.ShouldBe(venue1Id);
         theEvent.Price.ShouldBe(new_price);
     }    
     
@@ -327,12 +345,12 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private void an_integration_event_is_published()
     {
         testHarness.Published.Select<EventUpserted>()
-            .Any(e => 
-                e.Context.Message.Id == returned_id && 
+            .Any(e =>
+                e.Context.Message.Id == returned_id &&
                 e.Context.Message.EventName == name &&
                 e.Context.Message.StartDate == event_start_date &&
                 e.Context.Message.EndDate == event_end_date &&
-                e.Context.Message.Venue == Venue.FirstDirectArenaLeeds &&
+                e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == price
                 ).ShouldBeTrue("Event was not published to the bus");
     }
@@ -340,12 +358,12 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private void an_another_integration_event_is_published()
     {
         testHarness.Published.Select<EventUpserted>()
-            .Any(e => 
-                e.Context.Message.Id == returned_id && 
+            .Any(e =>
+                e.Context.Message.Id == returned_id &&
                 e.Context.Message.EventName == new_name &&
                 e.Context.Message.StartDate == new_event_start_date &&
                 e.Context.Message.EndDate == new_event_end_date &&
-                e.Context.Message.Venue == Venue.FirstDirectArenaLeeds &&
+                e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == new_price
                 ).ShouldBeTrue("Event was not published to the bus");
     }

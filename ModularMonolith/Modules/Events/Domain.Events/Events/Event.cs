@@ -7,20 +7,20 @@ namespace Domain.Events;
 
 public class Event : Entity, IAmAnAggregateRoot
 {
-    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Domain.ValueObjects.Venue venue, Money price) : base(id)
+    public Event(Guid id, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Guid venueId, Money price) : base(id)
     {
         if (endDate < startDate) throw new ValidationException("End date cannot be before start date");
         EventName = eventName;
         StartDate = startDate;
         EndDate = endDate;
-        Venue = venue;
+        VenueId = venueId;
         Price = price;
     }
-    
+
     public EventName EventName { get; private set; }
     public DateTimeOffset StartDate { get; private set; }
     public DateTimeOffset EndDate { get; private set; }
-    public Domain.ValueObjects.Venue Venue { get; private set; }
+    public Guid VenueId { get; private set; }
     public Money Price { get; private set; }
     
     [JsonInclude]

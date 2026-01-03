@@ -4,7 +4,6 @@ using System.Text;
 using Controllers.Events.Requests;
 using Dataseeder.Hosting;
 using Domain.Events;
-using Domain.ValueObjects;
 using Keycloak;
 using Keycloak.Requests;
 using Messaging.Keycloak.Users;
@@ -134,16 +133,16 @@ public static class Program
     {
         var eventData = new[]
         {
-            (Name: "Summer Rock Festival", StartDate: DateTime.Now.AddDays(30), EndDate: DateTime.Now.AddDays(30).AddHours(1), Venue: Venue.O2ArenaLondon, Price: 50m),
-            (Name: "Classical Symphony", StartDate: DateTime.Now.AddDays(45), EndDate: DateTime.Now.AddDays(45).AddHours(1),Venue: Venue.RoyalAlbertHallLondon, Price: 75m),
-            (Name: "International Football Match", StartDate: DateTime.Now.AddDays(60), EndDate: DateTime.Now.AddDays(60).AddHours(1),Venue: Venue.WembleyStadiumLondon, Price: 100m),
-            (Name: "Comedy Night Special", StartDate: DateTime.Now.AddDays(15), EndDate: DateTime.Now.AddDays(15).AddHours(1),Venue: Venue.ManchesterArena, Price: 30m),
-            (Name: "Tech Conference", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), Venue: Venue.PrincipalityStadiumCardiff, Price: 200m),
-            (Name: "Jazz Evening", StartDate: DateTime.Now.AddDays(20), EndDate: DateTime.Now.AddDays(20).AddHours(1), Venue: Venue.O2ArenaLondon, Price: 60m),
-            (Name: "Pop Concert", StartDate: DateTime.Now.AddDays(25), EndDate: DateTime.Now.AddDays(25).AddHours(1), Venue: Venue.RoyalAlbertHallLondon, Price: 80m),
-            (Name: "Basketball Championship", StartDate: DateTime.Now.AddDays(35), EndDate: DateTime.Now.AddDays(35).AddHours(1), Venue: Venue.WembleyStadiumLondon, Price: 120m),
-            (Name: "Theater Play", StartDate: DateTime.Now.AddDays(40), EndDate: DateTime.Now.AddDays(40).AddHours(1), Venue: Venue.ManchesterArena, Price: 45m),
-            (Name: "Business Summit", StartDate: DateTime.Now.AddDays(70), EndDate: DateTime.Now.AddDays(70).AddHours(1), Venue: Venue.PrincipalityStadiumCardiff, Price: 250m)
+            (Name: "Summer Rock Festival", StartDate: DateTime.Now.AddDays(30), EndDate: DateTime.Now.AddDays(30).AddHours(1), VenueId: Guid.Parse("44444444-4444-4444-4444-444444444444"), Price: 50m),
+            (Name: "Classical Symphony", StartDate: DateTime.Now.AddDays(45), EndDate: DateTime.Now.AddDays(45).AddHours(1), VenueId: Guid.Parse("55555555-5555-5555-5555-555555555555"), Price: 75m),
+            (Name: "International Football Match", StartDate: DateTime.Now.AddDays(60), EndDate: DateTime.Now.AddDays(60).AddHours(1), VenueId: Guid.Parse("66666666-6666-6666-6666-666666666666"), Price: 100m),
+            (Name: "Comedy Night Special", StartDate: DateTime.Now.AddDays(15), EndDate: DateTime.Now.AddDays(15).AddHours(1), VenueId: Guid.Parse("77777777-7777-7777-7777-777777777777"), Price: 30m),
+            (Name: "Tech Conference", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), VenueId: Guid.Parse("88888888-8888-8888-8888-888888888888"), Price: 200m),
+            (Name: "Jazz Evening", StartDate: DateTime.Now.AddDays(20), EndDate: DateTime.Now.AddDays(20).AddHours(1), VenueId: Guid.Parse("44444444-4444-4444-4444-444444444444"), Price: 60m),
+            (Name: "Pop Concert", StartDate: DateTime.Now.AddDays(25), EndDate: DateTime.Now.AddDays(25).AddHours(1), VenueId: Guid.Parse("55555555-5555-5555-5555-555555555555"), Price: 80m),
+            (Name: "Basketball Championship", StartDate: DateTime.Now.AddDays(35), EndDate: DateTime.Now.AddDays(35).AddHours(1), VenueId: Guid.Parse("66666666-6666-6666-6666-666666666666"), Price: 120m),
+            (Name: "Theater Play", StartDate: DateTime.Now.AddDays(40), EndDate: DateTime.Now.AddDays(40).AddHours(1), VenueId: Guid.Parse("77777777-7777-7777-7777-777777777777"), Price: 45m),
+            (Name: "Business Summit", StartDate: DateTime.Now.AddDays(70), EndDate: DateTime.Now.AddDays(70).AddHours(1), VenueId: Guid.Parse("88888888-8888-8888-8888-888888888888"), Price: 250m)
         };
 
         foreach (var eventInfo in eventData)
@@ -152,7 +151,7 @@ public static class Program
                 eventInfo.Name,
                 eventInfo.StartDate,
                 eventInfo.EndDate,
-                eventInfo.Venue,
+                eventInfo.VenueId,
                 eventInfo.Price
             );
 

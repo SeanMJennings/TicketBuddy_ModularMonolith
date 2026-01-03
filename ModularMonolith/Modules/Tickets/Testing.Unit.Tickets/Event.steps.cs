@@ -2,7 +2,6 @@ using BDD;
 using Domain.Tickets.Event;
 using Domain.ValueObjects;
 using Shouldly;
-using Venue = Domain.Tickets.Venue.Venue;
 
 namespace Unit;
 
@@ -12,7 +11,7 @@ public partial class EventSpecs : Specification
     private string name = null!;
     private DateTimeOffset start_date;
     private DateTimeOffset end_date;
-    private Domain.ValueObjects.Venue venue = Domain.ValueObjects.Venue.FirstDirectArenaLeeds;
+    private Guid venueId;
     private Money price;
     private Event theEvent = null!;
     private Money updatedPrice;
@@ -26,7 +25,7 @@ public partial class EventSpecs : Specification
         base.before_each();
         id = Guid.NewGuid();
         name = null!;
-        venue = Domain.ValueObjects.Venue.EmiratesOldTraffordManchester;
+        venueId = Guid.Parse("22222222-2222-2222-2222-222222222222");
         price = 25m;
         updatedPrice = 30m;
         start_date = DateTimeOffset.UtcNow.AddDays(1);
@@ -84,7 +83,7 @@ public partial class EventSpecs : Specification
     private void creating_an_event()
     {
         var eventName = new EventName(name);
-        theEvent = Event.Create(id, eventName, start_date, end_date, venue, price);
+        theEvent = Event.Create(id, eventName, start_date, end_date, venueId, price);
     }
     
     private void updating_event_name()
@@ -104,7 +103,7 @@ public partial class EventSpecs : Specification
     
     private void updating_event_venue()
     {
-        theEvent.UpdateVenue(Domain.ValueObjects.Venue.FirstDirectArenaLeeds);
+        theEvent.UpdateVenue(Guid.Parse("11111111-1111-1111-1111-111111111111"));
     }
     
     private void the_event_is_created()
@@ -114,7 +113,7 @@ public partial class EventSpecs : Specification
         theEvent.EventName.ToString().ShouldBe(valid_name);
         theEvent.StartDate.ShouldBe(start_date);
         theEvent.EndDate.ShouldBe(end_date);
-        theEvent.Venue.ShouldBeEquivalentTo(venue);
+        theEvent.VenueId.ShouldBe(venueId);
         theEvent.Price.ShouldBe(price);
     }
     
@@ -136,6 +135,6 @@ public partial class EventSpecs : Specification
     
     private void event_venue_is_updated()
     {
-        theEvent.Venue.ShouldBeEquivalentTo(Domain.ValueObjects.Venue.FirstDirectArenaLeeds);
+        theEvent.VenueId.ShouldBe(Guid.Parse("11111111-1111-1111-1111-111111111111"));
     }
 }

@@ -13,11 +13,11 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
         eventDbContext.Add(theEvent);
         await publishEndpoint.Publish(new EventUpserted
         {
-            Id = theEvent.Id, 
+            Id = theEvent.Id,
             EventName = theEvent.EventName,
             StartDate = theEvent.StartDate,
             EndDate = theEvent.EndDate,
-            Venue = theEvent.Venue,
+            VenueId = theEvent.VenueId,
             Price = theEvent.Price
         });
     }
@@ -27,11 +27,11 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
         eventDbContext.Update(@event);
         await publishEndpoint.Publish(new EventUpserted
         {
-            Id = @event.Id, 
+            Id = @event.Id,
             EventName = @event.EventName,
             StartDate = @event.StartDate,
             EndDate = @event.EndDate,
-            Venue = @event.Venue,
+            VenueId = @event.VenueId,
             Price = @event.Price
         });
     }

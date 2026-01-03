@@ -1,11 +1,10 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
-using Controllers.Tickets;
+using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Ticket;
-using Domain.ValueObjects;
 using Keycloak.Domain;
-using Keycloak.Requests;
 using MassTransit.Testing;
 using Messages.Events;
 using Messaging.Keycloak.Users;
@@ -15,6 +14,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using Testing;
 using Testing.Containers;
+using Routes = Controllers.Tickets.Routes;
 
 namespace Component.Api;
 
@@ -24,6 +24,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private HttpClient client = null!;
     private HttpContent content = null!;
 
+    private Guid venue1Id;
     private Guid event_id = Guid.NewGuid();
     private Guid user_id = Guid.NewGuid();
     private const decimal price = 25.00m;
@@ -64,6 +65,19 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         client.DefaultRequestHeaders.Add(UserHeaders.UserId, user_id.ToString());
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
         await testHarness.Start();
+        await SeedVenues();
+    }
+
+    private async Task SeedVenues()
+    {
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Admin));
+        var venue1Response = await client.PostAsJsonAsync(Controllers.Events.Routes.Venues, new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 17));
+        venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
+        client.DefaultRequestHeaders.Add(UserHeaders.UserId, user_id.ToString());
     }
 
     protected override async Task after_each()
@@ -96,7 +110,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             EventName = name,
             StartDate = event_start_date,
             EndDate = event_end_date,
-            Venue = Venue.EmiratesOldTraffordManchester,
+            VenueId = venue1Id,
             Price = price
         });
         await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id);
@@ -166,7 +180,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
             EventName = name,
             StartDate = event_start_date,
             EndDate = event_end_date,
-            Venue = Venue.EmiratesOldTraffordManchester,
+            VenueId = venue1Id,
             Price = new_price
         });
         await testHarness.Consumed.Any<EventUpserted>(x => x.Context.Message.Id == event_id && x.Context.Message.Price == new_price);

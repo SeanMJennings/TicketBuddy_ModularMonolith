@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Domain.Tickets.Event;
-using Domain.Tickets.Venue;
+﻿using Domain.Tickets.Event;
 using Infrastructure.Tickets.Core;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +6,6 @@ namespace Infrastructure.Tickets.Event;
 
 public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
 {
-    public Task<Venue> GetByVenueId(Domain.ValueObjects.Venue venue)
-    {
-        return (ticketDbContext.Venues.FirstOrDefaultAsync(v => v.Id == venue) ?? throw new ValidationException($"Venue {venue} does not exist"))!;
-    }
-
     public async Task Upsert(Domain.Tickets.Event.Event theEvent)
     {
         var @event = await GetById(theEvent.Id);
@@ -35,7 +28,7 @@ public class EventRepository(TicketDbContext ticketDbContext) : IPersistEvents
     {
         @event.UpdateName(theEvent.EventName);
         @event.UpdateDates(theEvent.StartDate, theEvent.EndDate);
-        @event.UpdateVenue(theEvent.Venue);
+        @event.UpdateVenue(theEvent.VenueId);
         @event.UpdatePrice(theEvent.Price);
         @event.TransferDomainEventsFrom(theEvent);
         ticketDbContext.Update(@event);

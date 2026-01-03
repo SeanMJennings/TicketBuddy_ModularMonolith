@@ -1,13 +1,10 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
 using System.Text;
-using BDD;
 using Common.Environment;
 using Controllers.Events;
 using Controllers.Events.Requests;
-using Domain.ValueObjects;
 using Keycloak.Domain;
-using Keycloak.Requests;
-using Migrations;
 using NUnit.Framework;
 using Shouldly;
 using Testcontainers.PostgreSql;
@@ -25,6 +22,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     private HttpClient client = null!;
     private HttpStatusCode response_code;
     private HttpContent response_content = null!;
+    private Guid venue1Id;
     private static PostgreSqlContainer database = null!;
     private static RabbitMqContainer rabbit = null!;
     private static RedisContainer redis = null!;
@@ -47,14 +45,21 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         database.Migrate();
     }
     
-    protected override Task before_each()
+    protected override async Task before_each()
     {
-        base.before_each();
+        await base.before_each();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString(), rabbit.GetConnectionString());
         client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Admin));
         response_content = null!;
-        return Task.CompletedTask;
+        await SeedVenues();
+    }
+
+    private async Task SeedVenues()
+    {
+        var venue1Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 50));
+        venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
     }
 
     protected override async Task after_each()
@@ -87,7 +92,7 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     private async Task ensureMassTransitIsAwakeAndWillPassHealthCheck()
     {
         var theContent = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price)),
+            JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, venue1Id, price)),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(Routes.Events, theContent);

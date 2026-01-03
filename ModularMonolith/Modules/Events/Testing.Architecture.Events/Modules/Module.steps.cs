@@ -108,10 +108,8 @@ internal partial class ModuleSpecs : Specification
         ]));
     }
 
-    private void it_should_only_have_dependencies_on_domain()
+    private void it_should_have_no_dependencies()
     {
-        Assert.That(projectDependencies, Is.EquivalentTo([
-            "Domain"
-        ]));
+        Assert.That(projectDependencies, Is.EquivalentTo(Array.Empty<string>()));
     }
 }

@@ -19,6 +19,7 @@ public static class Messaging
         cfg.ReceiveEndpoint("tickets-queue", e =>
         {
             e.Bind<EventUpserted>();
+            e.Bind<VenueUpserted>();
         });
     }
 }

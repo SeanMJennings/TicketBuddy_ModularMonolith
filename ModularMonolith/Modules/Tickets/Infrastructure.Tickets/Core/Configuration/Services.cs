@@ -6,10 +6,12 @@ using Application.Tickets.Ticket.GetTicketsForUser;
 using Application.Tickets.Ticket.PurchaseTickets;
 using Application.Tickets.Ticket.ReserveTickets;
 using Application.Tickets.User;
+using Application.Tickets.Venue;
 using Domain.Tickets.Core;
 using Domain.Tickets.Event;
 using Domain.Tickets.Ticket;
 using Domain.Tickets.User;
+using Domain.Tickets.Venue;
 using Microsoft.Extensions.DependencyInjection;
 using EventUpsertedHandler = Domain.Tickets.Event.EventUpsertedHandler;
 
@@ -24,6 +26,8 @@ public static class Services
             .AddScoped<IPersistEvents, Event.EventRepository>()
             .AddScoped<UpsertEvent>()
             .AddScoped<EventUpsertedHandler>()
+            .AddScoped<IPersistVenues, Venue.VenueRepository>()
+            .AddScoped<UpsertVenue>()
             .AddScoped<IPersistTickets, Ticket.TicketRepository>()
             .AddScoped<IQueryTickets, Ticket.TicketQuerist>()
             .AddScoped<IQueryTicketReservations, Ticket.TicketReservationCacheRepository>()

@@ -11,7 +11,7 @@ public class UpsertEvent(
     public async Task Execute(EventUpserted message)
     {
         await eventRepository.Upsert(Domain.Tickets.Event.Event.Create(message.Id, message.EventName,
-            message.StartDate, message.EndDate, message.Venue, message.Price));
+            message.StartDate, message.EndDate, message.VenueId, message.Price));
         await unitOfWork.Commit();
     }
 }

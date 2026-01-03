@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events;
@@ -7,14 +6,10 @@ using Controllers.Events.Requests;
 using Domain.Events;
 using Domain.ValueObjects;
 using Keycloak.Domain;
-using Keycloak.Requests;
 using MassTransit.Testing;
 using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
-using Migrations;
-using RabbitMQ.Client;
 using Shouldly;
-using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testing;
@@ -28,6 +23,9 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private HttpClient client = null!;
     private HttpContent content = null!;
 
+    private Guid venue1Id;
+    private Guid venue2Id;
+    private Guid venue3Id;
     private Guid returned_id;
     private Guid another_id;
     private Guid third_id;
@@ -63,6 +61,22 @@ public partial class EventApiSpecs : TruncateDbSpecification
         testHarness = factory.Services.GetRequiredService<ITestHarness>();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Admin));
         await testHarness.Start();
+        await SeedVenues();
+    }
+
+    private async Task SeedVenues()
+    {
+        var venue1Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 50));
+        venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
+
+        var venue2Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 45));
+        venue2Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue2Id = JsonSerialization.Deserialize<Guid>(await venue2Response.Content.ReadAsStringAsync());
+
+        var venue3Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("Principality Stadium", "Westgate Street", "Cardiff", "CF10 1NS", 40));
+        venue3Response.StatusCode.ShouldBe(HttpStatusCode.Created);
+        venue3Id = JsonSerialization.Deserialize<Guid>(await venue3Response.Content.ReadAsStringAsync());
     }
 
     protected override async Task after_each()
@@ -83,7 +97,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
 
     private void a_request_to_create_an_event()
     {
-        create_content(name, event_start_date, event_end_date, Venue.FirstDirectArenaLeeds, price);
+        create_content(name, event_start_date, event_end_date, venue1Id, price);
     }    
     
     private void a_request_to_create_an_event_as_a_non_admin_user()
@@ -93,10 +107,10 @@ public partial class EventApiSpecs : TruncateDbSpecification
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
     }    
 
-    private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Venue venue, decimal thePrice)
+    private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Guid venueId, decimal thePrice)
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(the_name, the_event_date, the_event_end_date, venue, thePrice)),
+            JsonSerialization.Serialize(new EventPayload(the_name, the_event_date, the_event_end_date, venueId, thePrice)),
             Encoding.UTF8,
             application_json);
     }    
@@ -111,12 +125,12 @@ public partial class EventApiSpecs : TruncateDbSpecification
 
     private void a_request_to_create_another_event()
     {
-        create_content(new_name, event_start_date.AddDays(1), event_end_date.AddDays(1), Venue.EmiratesOldTraffordManchester, new_price);
+        create_content(new_name, event_start_date.AddDays(1), event_end_date.AddDays(1), venue2Id, new_price);
     }
 
     private void a_request_to_create_third_event()
     {
-        create_content("third event", event_start_date.AddDays(-1), event_end_date.AddDays(-1), Venue.PrincipalityStadiumCardiff, 34.56m);
+        create_content("third event", event_start_date.AddDays(-1), event_end_date.AddDays(-1), venue3Id, 34.56m);
     }
     
     private void a_request_to_update_the_event()
@@ -218,7 +232,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvent.EventName.ToString().ShouldBe(name);
         (theEvent.StartDate.ToUniversalTime() - event_start_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         (theEvent.EndDate.ToUniversalTime() - event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
-        theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        theEvent.VenueId.ShouldBe(venue1Id);
         theEvent.Price.ShouldBe(price);
     }
 
@@ -235,7 +249,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theEvent.EventName.ToString().ShouldBe(new_name);
         (theEvent.StartDate.ToUniversalTime() - new_event_start_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         (theEvent.EndDate.ToUniversalTime() - new_event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
-        theEvent.Venue.ShouldBe(Venue.FirstDirectArenaLeeds);
+        theEvent.VenueId.ShouldBe(venue1Id);
         theEvent.Price.ShouldBe(new_price);
     }   
     
@@ -268,7 +282,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
                 e.Context.Message.EventName == name &&
                 e.Context.Message.StartDate == event_start_date &&
                 e.Context.Message.EndDate == event_end_date &&
-                e.Context.Message.Venue == Venue.FirstDirectArenaLeeds &&
+                e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == price
                 ).ShouldBeTrue("Event was not published to the bus");
     }
@@ -281,7 +295,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
                 e.Context.Message.EventName == new_name &&
                 e.Context.Message.StartDate == new_event_start_date &&
                 e.Context.Message.EndDate == new_event_end_date &&
-                e.Context.Message.Venue == Venue.FirstDirectArenaLeeds &&
+                e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == new_price
                 ).ShouldBeTrue("Event was not published to the bus");
     }

@@ -1,8 +1,8 @@
 # WIP: Venue Aggregate in Events Module
 
 **Started**: 2025-12-31
-**Status**: In Progress
-**Current Step**: 5 (GetVenues Complete)
+**Status**: Complete
+**Current Step**: 11 (Cross-Module Communication Complete)
 
 ## Goal
 
@@ -40,14 +40,14 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 5. ~~Create GetVenues (behavior + endpoint + repository)~~ - TDD ✅
 6. ~~Create GetVenueById (behavior + endpoint + repository)~~ - TDD ✅ (implemented with step 4)
 
-### Phase 3: Update Event to Use VenueId (Steps 7-8)
-7. Update Event aggregate to use VenueId (Guid) - TDD (unit test)
-8. Update CreateEvent (behavior + endpoint) - TDD (integration test)
+### Phase 3: Update Event to Use VenueId (Steps 7-8) ✅
+7. ~~Update Event aggregate to use VenueId (Guid)~~ - TDD ✅
+8. ~~Update CreateEvent (behavior + endpoint)~~ - TDD ✅
 
-### Phase 4: Cross-Module Communication (Steps 9-11)
-9. Create VenueUpserted message - TDD
-10. Publish VenueUpserted when venue created - TDD (integration test)
-11. Tickets: VenueUpsertedConsumer + UpsertVenue - TDD (integration test)
+### Phase 4: Cross-Module Communication (Steps 9-11) ✅
+9. ~~Create VenueUpserted message~~ - TDD ✅
+10. ~~Publish VenueUpserted when venue created~~ - TDD ✅
+11. ~~Tickets: VenueUpsertedConsumer + UpsertVenue~~ - TDD ✅
 
 ### Phase 5: Migration & Cleanup (Steps 12-14)
 12. Create database migration for Venues table
@@ -56,11 +56,11 @@ Transform Venue from a hardcoded enum (`Domain.ValueObjects.Venue`) into a prope
 
 ## Current Focus
 
-**Phase 2 Complete**: Venue Management Endpoints (COMPLETE)
+**Phase 4 Complete**: Cross-Module Communication (COMPLETE)
 
-**Next Action**: Step 7 - Update Event aggregate to use VenueId
+**Next Action**: Steps 12-14 - Migration & Cleanup (Optional)
 
-**Tests Passing**: 107/107 tests passing (24 unit + 20 architecture + 22 integration + 11 component + 1 acceptance + 29 other)
+**Tests Passing**: 105/105 tests passing (all test suites green)
 
 ## Agent Checkpoints
 
@@ -361,3 +361,110 @@ public record VenueUpserted
 - VenueController.specs.cs (added can_list_venues test)
 - VenueController.steps.cs (added test steps)
 - Services.cs (registered GetVenues)
+
+### 2026-01-03 - Session 6 (Steps 7-11 Complete - Cross-Module Communication)
+**Duration**: ~90 minutes
+**Completed**:
+- Step 7: Updated Event aggregate to use VenueId (Guid) instead of Venue enum
+- Step 8: Updated CreateEvent behavior and endpoint
+- Step 9: Created VenueUpserted message
+- Step 10: Published VenueUpserted when venue created
+- Step 11: Implemented VenueUpsertedConsumer and UpsertVenue in Tickets module
+- Fixed 21 failing tests across Integration, Component, and Acceptance suites
+- Phases 3-4 complete: Cross-module communication working
+- Committed: 29aba8c
+
+**Critical Learning - Commitable Increments**:
+❌ **ANTI-PATTERN**: Implementing multiple phases without ensuring all tests pass creates uncommitable state
+✅ **CORRECT PATTERN**: Each commit must leave codebase in fully working state (all tests passing, code compiles)
+
+**What Happened**:
+- Initial work completed phases 3-4 (steps 7-11) but left 21 tests failing
+- Events module tests were passing, but Tickets module tests were broken
+- Component and Acceptance tests were broken
+- Could not commit because tests were failing and code wasn't in working state
+
+**Why This Happened**:
+- Cross-module changes have cascading effects on dependent modules
+- Fixing one module (Events) doesn't guarantee dependent modules (Tickets) work
+- Test data inconsistencies (capacity mismatches, hardcoded GUIDs) weren't caught until running full suite
+- Breaking changes to domain model (Venue enum → VenueId Guid) ripple through all layers
+
+**Root Causes of Test Failures**:
+1. **Entity Tracking Conflict** (Tickets VenueRepository.Upsert)
+   - Problem: EF Core tracking entity from GetById, then trying to Update same entity
+   - Fix: Use AsNoTracking() in existence check query
+   - Lesson: Be explicit about tracking vs non-tracking queries
+
+2. **Test Data Capacity Mismatches** (Integration/Component/Acceptance tests)
+   - Problem: Tests expected 17 tickets but venues created with different capacities (10, 45, 50)
+   - Fix: Aligned all venue capacities to match expected ticket counts
+   - Lesson: Test data setup must be consistent across all test suites
+
+3. **Guid.Empty Validation Error** (Events Venue parameterless constructor)
+   - Problem: Parameterless constructor passed Guid.Empty to Entity base, which validates IDs cannot be empty
+   - Fix: Changed to Guid.NewGuid() (EF Core overwrites this during materialization)
+   - Lesson: EF Core parameterless constructors must satisfy domain validation even though values are replaced
+
+4. **Hardcoded Venue IDs** (Component EventApi tests)
+   - Problem: Tests used hardcoded GUIDs instead of dynamically created venue IDs from setup
+   - Fix: Use actual venue IDs from test data creation
+   - Lesson: Never hardcode IDs in tests when test setup creates entities dynamically
+
+**How to Prevent This**:
+1. **Run Full Test Suite Before Commit**: Not just module under change, ALL tests
+2. **Test Across Module Boundaries**: When making cross-module changes, verify both sides
+3. **Check All Test Tiers**: Unit, Integration, Component, Acceptance - don't assume higher tiers work
+4. **Smaller Commits**: Consider committing after each phase if tests can pass
+5. **Test Data Factories**: Centralize test data creation to avoid inconsistencies
+
+**Recommended Workflow for Cross-Module Changes**:
+```
+1. Plan phases/steps (good for organizing work)
+2. Implement phase/step
+3. Run FULL test suite (not just changed module)
+4. If tests fail in other modules:
+   a. Fix failures immediately (don't defer)
+   b. This is part of the same commit, not a separate fix
+5. Only commit when ALL tests pass
+6. Repeat for next phase/step
+```
+
+**TDD with Cross-Module Changes**:
+- RED: Write test in primary module (Events) - test fails
+- GREEN: Implement in primary module until ALL tests pass (not just the module under change)
+  - If dependent modules fail (Tickets, Component, Acceptance), you're not GREEN yet
+  - Fix dependent module failures as part of getting to GREEN
+  - GREEN means the entire test suite passes, not just one module
+- REFACTOR: Assess improvements across all affected modules
+- COMMIT: Only when truly GREEN (all modules, all test tiers)
+
+**Key Insight**:
+Breaking work into phases is valuable for PLANNING and UNDERSTANDING, but not necessarily for COMMITTING. A commit must be atomic and leave the system in a working state. Sometimes one commit spans multiple planned phases if they cannot be separated without breaking tests.
+
+**Next Session**:
+- Steps 12-14 optional: Migration script, seed data, remove old enum
+- Feature is functionally complete and working
+- Cleanup steps can be separate commits
+
+**Agent Actions**:
+- wip-guardian: Picked up WIP and fixed all 21 failing tests
+- wip-guardian: Updated WIP.md with critical learnings
+
+**Files Created** (6):
+- VenueUpserted.cs (Messages.Events)
+- VenueUpsertedConsumer.cs (Messaging.Tickets)
+- UpsertVenue.cs (Application.Tickets)
+- IPersistVenues.cs (Domain.Tickets)
+- VenueRepository.cs (Infrastructure.Tickets)
+- 014-ConvertVenueColumnsToUuid.sql
+
+**Files Modified** (37):
+- Event aggregate, EventUpserted message, CreateEvent, EventPayload
+- VenueRepository (Events) - publish VenueUpserted
+- IPersistVenues (Events) - Add returns Task
+- Venue entity - parameterless constructor fix
+- EventDbContext - VenueId column mapping
+- All test files across Events, Tickets, Component, Acceptance suites
+- DI configuration for VenueUpsertedConsumer
+- Dataseeder - use venue GUIDs instead of enum

@@ -1,7 +1,9 @@
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace Domain.Events.Venue;
 
+[JsonConverter(typeof(AddressConverter))]
 public readonly struct Address : IEquatable<Address>
 {
     public Address(string street, string city, string postcode)

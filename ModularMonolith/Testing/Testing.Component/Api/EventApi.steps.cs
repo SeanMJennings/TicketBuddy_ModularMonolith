@@ -30,6 +30,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private Guid returned_id;
     private Guid another_id;
     private Guid third_id;
+    private Guid returned_venue_id;
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
     private const string name = "wibble";
@@ -291,13 +292,120 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private void an_another_integration_event_is_published()
     {
         testHarness.Published.Select<EventUpserted>()
-            .Any(e => 
-                e.Context.Message.Id == returned_id && 
+            .Any(e =>
+                e.Context.Message.Id == returned_id &&
                 e.Context.Message.EventName == new_name &&
                 e.Context.Message.StartDate == new_event_start_date &&
                 e.Context.Message.EndDate == new_event_end_date &&
                 e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == new_price
                 ).ShouldBeTrue("Event was not published to the bus");
+    }
+
+    private void a_request_to_create_a_venue()
+    {
+        create_venue_content(new VenuePayload("Royal Albert Hall", "Kensington Gore", "London", "SW7 2AP", 30));
+    }
+
+    private void a_request_to_create_a_venue_as_a_non_admin_user()
+    {
+        a_request_to_create_a_venue();
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
+    }
+
+    private void create_venue_content(VenuePayload payload)
+    {
+        content = new StringContent(
+            JsonSerialization.Serialize(payload),
+            Encoding.UTF8,
+            application_json);
+    }
+
+    private async Task creating_the_venue()
+    {
+        var response = await client.PostAsync(Routes.Venues, content);
+        response_code = response.StatusCode;
+        content = response.Content;
+        response_code.ShouldBe(HttpStatusCode.Created);
+        returned_venue_id = JsonSerialization.Deserialize<Guid>(await content.ReadAsStringAsync());
+    }
+
+    private async Task creating_the_venue_that_should_fail()
+    {
+        var response = await client.PostAsync(Routes.Venues, content);
+        response_code = response.StatusCode;
+    }
+
+    private Task a_venue_exists()
+    {
+        returned_venue_id = venue1Id;
+        return Task.CompletedTask;
+    }
+
+    private async Task requesting_the_venue()
+    {
+        var response = await client.GetAsync(Routes.Venues + $"/{returned_venue_id}");
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
+
+    private async Task requesting_the_venue_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        var response = await client.GetAsync(Routes.Venues + $"/{returned_venue_id}");
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
+
+    private async Task listing_the_venues_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        var response = await client.GetAsync(Routes.Venues);
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
+
+    private async Task the_venue_is_created()
+    {
+        var theVenue = JsonSerialization.Deserialize<Domain.Events.Venue.Venue>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theVenue.Id.ShouldBe(returned_venue_id);
+        theVenue.Name.ToString().ShouldBe("Royal Albert Hall");
+        theVenue.Address.Street.ShouldBe("Kensington Gore");
+        theVenue.Address.City.ShouldBe("London");
+        theVenue.Address.Postcode.ShouldBe("SW7 2AP");
+        theVenue.Capacity.ShouldBe((uint)30);
+    }
+
+    private void the_venue_creation_is_forbidden()
+    {
+        response_code.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    private async Task the_venues_are_returned()
+    {
+        var theVenues = JsonSerialization.Deserialize<IReadOnlyList<Domain.Events.Venue.Venue>>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theVenues.Count.ShouldBeGreaterThanOrEqualTo(3);
+        theVenues.Any(v => v.Id == venue1Id).ShouldBeTrue();
+    }
+
+    private async Task the_venue_is_returned()
+    {
+        var theVenue = JsonSerialization.Deserialize<Domain.Events.Venue.Venue>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theVenue.Id.ShouldBe(returned_venue_id);
+        theVenue.Name.ToString().ShouldBe(VenueTestData.FirstDirectArena.Name);
+    }
+
+    private void a_venue_integration_event_is_published()
+    {
+        testHarness.Published.Select<VenueUpserted>()
+            .Any(v =>
+                v.Context.Message.Id == returned_venue_id &&
+                v.Context.Message.Name == "Royal Albert Hall" &&
+                v.Context.Message.Capacity == 30
+                ).ShouldBeTrue("VenueUpserted was not published to the bus");
     }
 }

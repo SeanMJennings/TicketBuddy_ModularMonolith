@@ -7,7 +7,8 @@
       "Bash(Select-String -Pattern \"\\(Test run|Passed!|Failed!|Total tests:|Starting test\\)\" -Context 0,1)",
       "Bash(git grep:*)",
       "Bash(git ls-tree:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

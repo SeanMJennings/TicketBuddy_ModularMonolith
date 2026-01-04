@@ -12,11 +12,4 @@ public static class VenueTestData
 
     public static readonly VenuePayload PrincipalityStadium =
         new("Principality Stadium", "Westgate Street", "Cardiff", "CF10 1NS", 40);
-
-    public static IEnumerable<VenuePayload> StandardVenues()
-    {
-        yield return FirstDirectArena;
-        yield return OldTrafford;
-        yield return PrincipalityStadium;
-    }
 }

@@ -54,8 +54,53 @@ public partial class VenueSpecs
     public async Task cannot_create_venue_with_duplicate_address()
     {
               Given(valid_inputs);
-              And(an_existing_venue_at_the_same_address); 
+              And(an_existing_venue_at_the_same_address);
         await When(Validating(validating_address_uniqueness));
               Then(Informs("A venue already exists at this address"));
+    }
+
+    [Test]
+    public void can_update_venue_name()
+    {
+        Given(a_venue_exists);
+        And(a_new_venue_name);
+        When(updating_the_venue_name);
+        Then(the_venue_name_is_updated);
+    }
+
+    [Test]
+    public void can_update_venue_address()
+    {
+        Given(a_venue_exists);
+        And(a_new_address);
+        When(updating_the_venue_address);
+        Then(the_venue_address_is_updated);
+    }
+
+    [Test]
+    public void can_update_venue_capacity()
+    {
+        Given(a_venue_exists);
+        And(a_new_capacity);
+        When(updating_the_venue_capacity);
+        Then(the_venue_capacity_is_updated);
+    }
+
+    [Test]
+    public void cannot_update_capacity_to_zero()
+    {
+        Given(a_venue_exists);
+        And(zero_capacity);
+        When(Validating(updating_the_venue_capacity));
+        Then(Informs("Capacity must be at least 1"));
+    }
+
+    [Test]
+    public void cannot_update_capacity_above_50()
+    {
+        Given(a_venue_exists);
+        And(capacity_of_51);
+        When(Validating(updating_the_venue_capacity));
+        Then(Informs("Capacity cannot exceed 50 seats"));
     }
 }

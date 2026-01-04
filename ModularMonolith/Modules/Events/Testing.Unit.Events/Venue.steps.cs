@@ -99,4 +99,67 @@ public partial class VenueSpecs : AsyncSpecification
         var address = new Address(street, city, postcode);
         await validator.CheckAddressUniqueness(address);
     }
+
+    // Update tests
+    private const string updated_venue_name = "Updated Arena";
+    private const string updated_street = "New Street";
+    private const string updated_city = "Manchester";
+    private const string updated_postcode = "M1 1AA";
+    private const uint updated_capacity = 35;
+
+    private void a_venue_exists()
+    {
+        valid_inputs();
+        creating_a_venue();
+    }
+
+    private void a_new_venue_name()
+    {
+        venueName = updated_venue_name;
+    }
+
+    private void a_new_address()
+    {
+        street = updated_street;
+        city = updated_city;
+        postcode = updated_postcode;
+    }
+
+    private void a_new_capacity()
+    {
+        capacity = updated_capacity;
+    }
+
+    private void updating_the_venue_name()
+    {
+        venue.UpdateName(new VenueName(venueName));
+    }
+
+    private void updating_the_venue_address()
+    {
+        var address = new Address(street, city, postcode);
+        venue.UpdateAddress(address);
+    }
+
+    private void updating_the_venue_capacity()
+    {
+        venue.UpdateCapacity(capacity);
+    }
+
+    private void the_venue_name_is_updated()
+    {
+        venue.Name.ToString().ShouldBe(updated_venue_name);
+    }
+
+    private void the_venue_address_is_updated()
+    {
+        venue.Address.Street.ShouldBe(updated_street);
+        venue.Address.City.ShouldBe(updated_city);
+        venue.Address.Postcode.ShouldBe(updated_postcode.ToUpperInvariant());
+    }
+
+    private void the_venue_capacity_is_updated()
+    {
+        venue.Capacity.ShouldBe(updated_capacity);
+    }
 }

@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-04
 **Status**: In Progress
-**Current Step**: 3 of 13
+**Current Step**: 4 of 13
 
 ## Goal
 
@@ -37,25 +37,26 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Current Focus
 
-**Step 3**: Add CheckAddressUniqueness with exclusion logic (Domain layer)
+**Step 4**: Implement UpdateVenue use case (Application layer)
 
 **Status**: Not started
-**Tests Passing**: 117/117
-**Last Commit**: feat: add CheckVenueExists validator method
+**Tests Passing**: 119/119
+**Last Commit**: feat: add address exclusion to uniqueness check
 
 **Plan for this step:**
-1. Write unit test for address uniqueness when updating with same address (RED)
-2. Write unit test for address uniqueness when updating with conflicting address (RED)
-3. Modify CheckAddressUniqueness to accept optional excludeVenueId parameter (GREEN)
+1. Read UpdateEvent.cs to understand the pattern
+2. Write unit test for UpdateVenue use case (RED)
+3. Create UpdateVenue.cs with use case implementation (GREEN)
 4. Invoke refactor-scan to assess improvements (REFACTOR)
-5. Commit with message: "feat: add address exclusion to uniqueness check"
+5. Commit with message: "feat: implement UpdateVenue use case"
 
 **Expected Changes:**
-- File: `Modules\Events\Domain.Events\Venue\VenuesValidator.cs`
-  - Modify `CheckAddressUniqueness(Address address)` to `CheckAddressUniqueness(Address address, Guid? excludeVenueId = null)`
-  - Filter out venue with excludeVenueId from uniqueness check
-- File: `Modules\Events\Testing.Unit.Events\Venue.specs.cs`
-  - Add tests for address uniqueness with exclusion
+- File: `Modules\Events\Application.Events\Venue\UpdateVenue.cs` (CREATE)
+  - Implement use case orchestrating validation and persistence
+  - Call VenuesValidator.CheckVenueExists()
+  - Call VenuesValidator.CheckAddressUniqueness() with exclusion
+  - Call venue update methods (UpdateName, UpdateAddress, UpdateCapacity)
+  - Call repository Update method
 
 ## Completed Steps
 
@@ -75,6 +76,14 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 - Tests: 117/117 passing
 - Commit:
   - feat: add CheckVenueExists validator method
+
+**Step 3**: Add CheckAddressUniqueness with exclusion logic ✓
+- Modified CheckAddressUniqueness to accept optional excludeVenueId parameter
+- Filters out excluded venue from uniqueness check using LINQ Where clause
+- Added 2 unit tests (can keep same address, cannot use another venue's address)
+- Tests: 119/119 passing
+- Commit:
+  - feat: add address exclusion to uniqueness check
 
 ## Agent Checkpoints
 
@@ -244,18 +253,24 @@ Each step follows strict RED-GREEN-REFACTOR:
 ## Session Log
 
 ### 2026-01-04 - Session 1
-**Duration**: ~60 minutes
+**Duration**: ~90 minutes
 **Completed**:
 - WIP document created
-- Step 1: Add Update methods to Venue aggregate
-  - Added 5 unit tests for UpdateName, UpdateAddress, UpdateCapacity (including validation)
-  - Implemented update methods on Venue aggregate
-  - Refactored capacity validation to private method
-  - All 116 tests passing
-  - 2 commits made
-- Step 2: Add CheckVenueExists to VenuesValidator
-  - Added CheckVenueExists(Guid venueId) method
-  - Added 1 unit test (happy path)
-  - All 117 tests passing
-  - 1 commit made
-**Next**: Step 3 - Add CheckAddressUniqueness with exclusion logic
+- **Phase 1 (Domain Layer) - COMPLETE**
+  - Step 1: Add Update methods to Venue aggregate
+    - Added 5 unit tests for UpdateName, UpdateAddress, UpdateCapacity (including validation)
+    - Implemented update methods on Venue aggregate
+    - Refactored capacity validation to private method
+    - All 116 tests passing
+    - 2 commits made
+  - Step 2: Add CheckVenueExists to VenuesValidator
+    - Added CheckVenueExists(Guid venueId) method
+    - Added 1 unit test (happy path)
+    - All 117 tests passing
+    - 1 commit made
+  - Step 3: Add CheckAddressUniqueness with exclusion logic
+    - Modified CheckAddressUniqueness to support optional excludeVenueId
+    - Added 2 unit tests for exclusion scenarios
+    - All 119 tests passing
+    - 1 commit made
+**Next**: Step 4 - Implement UpdateVenue use case (Application layer)

@@ -29,6 +29,125 @@ Before allowing any commit, verify:
 - ✅ Refactoring assessment completed (if tests green)
 - ✅ All tests pass
 
+## Cross-Module Changes - Commitable Increments
+
+**CRITICAL PATTERN**: When changes span multiple modules or bounded contexts, a commit must leave the ENTIRE system in a working state, not just the module being changed.
+
+### The Problem
+
+Breaking work into phases is valuable for PLANNING and UNDERSTANDING, but not necessarily for COMMITTING. When implementing cross-module changes:
+
+- Completing one module (e.g., Events) doesn't mean the work is committable
+- Dependent modules (e.g., Tickets) may fail when the first module changes
+- Higher test tiers (Component, Acceptance) may fail even when Unit and Integration tests pass
+- A commit must be atomic and leave the entire system working
+
+### What "GREEN" Really Means
+
+In TDD, GREEN means **all tests in the entire system pass**, not just:
+- The module you're actively changing
+- The new tests you just wrote
+- Unit and Integration tests (Component and Acceptance must also pass)
+
+```csharp
+// RED-GREEN-REFACTOR with cross-module changes:
+
+// ❌ WRONG - Not truly GREEN
+// Events module: all tests passing ✓
+// Tickets module: 15 tests failing ✗
+// Component tests: 4 tests failing ✗
+// Acceptance tests: 2 tests failing ✗
+// → This is NOT GREEN, cannot commit
+
+// ✅ CORRECT - Truly GREEN
+// Events module: all tests passing ✓
+// Tickets module: all tests passing ✓
+// Component tests: all tests passing ✓
+// Acceptance tests: all tests passing ✓
+// → NOW you're GREEN, safe to commit
+```
+
+### Common Causes of Cross-Module Test Failures
+
+1. **Entity Tracking Conflicts** (EF Core)
+   - Problem: Query with tracking, then try to update same entity
+   - Solution: Use `.AsNoTracking()` for existence checks before updates
+
+2. **Test Data Inconsistencies**
+   - Problem: Different test suites create entities with different properties
+   - Solution: Use shared test data factories, align capacities/counts across suites
+
+3. **Hardcoded Values**
+   - Problem: Tests use hardcoded GUIDs instead of dynamic test data
+   - Solution: Always use IDs from test setup, never hardcode entity references
+
+4. **Domain Validation in Infrastructure**
+   - Problem: EF Core parameterless constructors fail domain validation
+   - Solution: Satisfy validation even though EF Core overwrites values
+
+### Recommended Workflow for Cross-Module Changes
+
+```bash
+# 1. Plan phases/steps (good for organizing work)
+# 2. Implement phase/step in primary module
+# 3. Run FULL test suite (ALL modules, ALL test tiers)
+dotnet test  # Not just the module you changed!
+
+# 4. If tests fail in other modules/tiers:
+#    a. Fix failures immediately (don't defer)
+#    b. This is part of the same commit, not a separate fix
+#    c. Dependent module failures = you're not GREEN yet
+
+# 5. Only commit when ALL tests pass
+git commit -m "feat: implement cross-module venue synchronization"
+
+# 6. Repeat for next phase/step
+```
+
+### Example: Venue Aggregate Implementation
+
+```csharp
+// PHASE 1: Events module implements Venue aggregate
+// - Unit tests: ✓ passing
+// - Integration tests: ✓ passing
+// → Can commit? NO - haven't checked dependent modules yet
+
+// PHASE 2: Events module publishes VenueUpserted
+// - Events tests: ✓ passing
+// - Tickets tests: ✗ 15 failing (VenueRepository tracking issues)
+// - Component tests: ✗ 4 failing (capacity mismatches)
+// - Acceptance tests: ✗ 2 failing (hardcoded GUIDs)
+// → Fix ALL these failures before committing
+
+// After fixing dependent module failures:
+// - Events tests: ✓ passing
+// - Tickets tests: ✓ passing (AsNoTracking added)
+// - Component tests: ✓ passing (capacity aligned)
+// - Acceptance tests: ✓ passing (dynamic IDs used)
+// → NOW can commit (all 107 tests passing)
+```
+
+### Key Insights
+
+**Planning vs Committing:**
+- Phases are for PLANNING work (organize thinking)
+- Commits are for WORKING state (entire system functional)
+- Sometimes one commit spans multiple planned phases
+- This is correct - atomic commits are more important than matching plan structure
+
+**Definition of GREEN:**
+- GREEN = entire test suite passes
+- Not just: module under change
+- Not just: new tests
+- Not just: lower test tiers (Unit, Integration)
+- ALL tests, ALL modules, ALL tiers
+
+**Time Saved by Following This:**
+- Avoids uncommitable state (can't save work)
+- Prevents "fix the tests" commits (breaks TDD narrative)
+- Catches integration issues immediately (not later)
+- Maintains continuous working state (can deploy anytime)
+
 ## Verifying TDD Compliance Retrospectively
 
 To verify that code was developed test-first, examine git history:

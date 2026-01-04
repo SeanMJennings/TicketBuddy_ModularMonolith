@@ -112,4 +112,24 @@ public partial class VenueSpecs
         await When(checking_venue_exists);
               Then(the_venue_is_returned);
     }
+
+    [Test]
+    public async Task can_update_venue_keeping_same_address()
+    {
+              Given(a_venue_exists);
+              And(the_venue_is_in_the_repository);
+              And(excluding_the_current_venue_from_uniqueness_check);
+        await When(validating_address_uniqueness);
+    }
+
+    [Test]
+    public async Task cannot_update_venue_to_another_venues_address()
+    {
+              Given(a_venue_exists);
+              And(another_venue_at_different_address);
+              And(excluding_the_current_venue_from_uniqueness_check);
+              And(updating_to_the_other_venues_address);
+        await When(Validating(validating_address_uniqueness));
+              Then(Informs("A venue already exists at this address"));
+    }
 }

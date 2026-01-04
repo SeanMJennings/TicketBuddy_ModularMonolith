@@ -34,6 +34,8 @@ public partial class VenueSpecs : AsyncSpecification
         venue = null!;
         venueRepository = new Mock<IPersistVenues>();
         validator = new VenuesValidator(venueRepository.Object);
+        excludeVenueId = null;
+        otherVenue = null;
         return Task.CompletedTask;
     }
 
@@ -97,7 +99,7 @@ public partial class VenueSpecs : AsyncSpecification
     private async Task validating_address_uniqueness()
     {
         var address = new Address(street, city, postcode);
-        await validator.CheckAddressUniqueness(address);
+        await validator.CheckAddressUniqueness(address, excludeVenueId);
     }
 
     // Update tests
@@ -179,5 +181,37 @@ public partial class VenueSpecs : AsyncSpecification
     {
         retrievedVenue.ShouldNotBeNull();
         retrievedVenue.Id.ShouldBe(id);
+    }
+
+    // Address uniqueness with exclusion tests
+    private Guid? excludeVenueId = null;
+    private Venue? otherVenue = null;
+
+    private void the_venue_is_in_the_repository()
+    {
+        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([venue]);
+    }
+
+    private void excluding_the_current_venue_from_uniqueness_check()
+    {
+        excludeVenueId = id;
+    }
+
+    private void another_venue_at_different_address()
+    {
+        otherVenue = new Venue(
+            Guid.NewGuid(),
+            new VenueName("Different Venue"),
+            new Address("Different Street", "Different City", "M1 1AA"),
+            30
+        );
+        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([venue, otherVenue]);
+    }
+
+    private void updating_to_the_other_venues_address()
+    {
+        street = otherVenue!.Address.Street;
+        city = otherVenue.Address.City;
+        postcode = otherVenue.Address.Postcode;
     }
 }

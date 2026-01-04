@@ -10,10 +10,12 @@ public class VenuesValidator(IPersistVenues venueRepository)
         return existingVenue ?? throw new ValidationException($"Venue with id {venueId} not found");
     }
 
-    public async Task CheckAddressUniqueness(Address address)
+    public async Task CheckAddressUniqueness(Address address, Guid? excludeVenueId = null)
     {
         var venues = await venueRepository.GetAll();
-        var existingVenue = venues.FirstOrDefault(v => v.Address.Equals(address));
+        var existingVenue = venues
+            .Where(v => excludeVenueId == null || v.Id != excludeVenueId)
+            .FirstOrDefault(v => v.Address.Equals(address));
 
         if (existingVenue is not null) throw new ValidationException("A venue already exists at this address");
     }

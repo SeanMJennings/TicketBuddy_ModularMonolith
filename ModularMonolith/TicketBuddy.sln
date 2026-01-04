@@ -148,6 +148,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ADRs", "ADRs", "{F7EF14DA-9
 	ProjectSection(SolutionItems) = preProject
 		Documents\ADRs\001-initial-architecture.md = Documents\ADRs\001-initial-architecture.md
 		Documents\ADRs\002-initial-testing.md = Documents\ADRs\002-initial-testing.md
+		Documents\ADRs\003-vertical-slicing-within-horizontal-layers.md = Documents\ADRs\003-vertical-slicing-within-horizontal-layers.md
+		Documents\ADRs\004-cross-module-data-minimization.md = Documents\ADRs\004-cross-module-data-minimization.md
 	EndProjectSection
 EndProject
 Global

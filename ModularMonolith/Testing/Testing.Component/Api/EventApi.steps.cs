@@ -108,18 +108,18 @@ public partial class EventApiSpecs : TruncateDbSpecification
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
     }    
 
-    private void create_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, Guid venueId, decimal thePrice)
+    private void create_content(string theName, DateTimeOffset theEventDate, DateTimeOffset theEventEndDate, Guid venueId, decimal thePrice)
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new EventPayload(the_name, the_event_date, the_event_end_date, venueId, thePrice)),
+            JsonSerialization.Serialize(new EventPayload(theName, theEventDate, theEventEndDate, venueId, thePrice)),
             Encoding.UTF8,
             application_json);
     }    
     
-    private void create_update_content(string the_name, DateTimeOffset the_event_date, DateTimeOffset the_event_end_date, decimal thePrice)
+    private void create_update_content(string theName, DateTimeOffset theEventDate, DateTimeOffset theEventEndDate, decimal thePrice)
     {
         content = new StringContent(
-            JsonSerialization.Serialize(new UpdateEventPayload(the_name, the_event_date, the_event_end_date, thePrice)),
+            JsonSerialization.Serialize(new UpdateEventPayload(theName, theEventDate, theEventEndDate, thePrice)),
             Encoding.UTF8,
             application_json);
     }

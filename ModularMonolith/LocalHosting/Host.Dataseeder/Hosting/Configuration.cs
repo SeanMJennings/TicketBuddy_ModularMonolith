@@ -3,9 +3,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Dataseeder.Hosting;
 
-public static class Configuration
+internal static class Configuration
 {
-    public static IConfigurationRoot Build()
+    internal static IConfigurationRoot Build()
     {
         var environment = CommonEnvironmentExtensions.GetEnvironment();
         

@@ -4,35 +4,35 @@ namespace Dataseeder.Hosting;
 
 internal class Settings
 {
-    private static IConfiguration Configuration = null!;
+    private static IConfiguration _configuration = null!;
     internal ApiSettings Api => new();
     internal KeycloakSettings Keycloak => new();
     internal RabbitMqSettings RabbitMq => new();
    
     internal Settings(IConfiguration theConfiguration)
     {
-        Configuration = theConfiguration;
+        _configuration = theConfiguration;
     }
     
     internal class ApiSettings
     {
-        public Uri BaseUrl => new(Configuration.GetRequired("ApiSettings:BaseUrl"));
+        internal Uri BaseUrl => new(_configuration.GetRequired("ApiSettings:BaseUrl"));
     }
     
     internal class KeycloakSettings
     {
-        public Uri BaseUrl => new(Configuration.GetRequired("KeycloakSettings:BaseUrl"));
-        public string AdminCliClientId => Configuration.GetRequired("KeycloakSettings:AdminCliClientId");
-        public string TicketBuddyApiClientId => Configuration.GetRequired("KeycloakSettings:TicketBuddyApiClientId");
-        public string AdminUsername => Configuration.GetRequired("KeycloakSettings:Username");
-        public string AdminPassword => Configuration.GetRequired("KeycloakSettings:Password");
-        public string MasterRealm => Configuration.GetRequired("KeycloakSettings:MasterRealm");
-        public string TicketBuddyRealm => Configuration.GetRequired("KeycloakSettings:TicketBuddyRealm");
+        internal Uri BaseUrl => new(_configuration.GetRequired("KeycloakSettings:BaseUrl"));
+        internal string AdminCliClientId => _configuration.GetRequired("KeycloakSettings:AdminCliClientId");
+        internal string TicketBuddyApiClientId => _configuration.GetRequired("KeycloakSettings:TicketBuddyApiClientId");
+        internal string AdminUsername => _configuration.GetRequired("KeycloakSettings:Username");
+        internal string AdminPassword => _configuration.GetRequired("KeycloakSettings:Password");
+        internal string MasterRealm => _configuration.GetRequired("KeycloakSettings:MasterRealm");
+        internal string TicketBuddyRealm => _configuration.GetRequired("KeycloakSettings:TicketBuddyRealm");
     }
     
     internal class RabbitMqSettings
     {
-        internal Uri ConnectionString => new(Configuration.GetRequired("ConnectionStrings:Messaging"));
+        internal Uri ConnectionString => new(_configuration.GetRequired("ConnectionStrings:Messaging"));
     }
 }
 

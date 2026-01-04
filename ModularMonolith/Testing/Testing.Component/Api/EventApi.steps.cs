@@ -140,7 +140,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         create_update_content(new_name, new_event_start_date, new_event_end_date, new_price);
     }
     
-    private void an_admin_user_exists() {}
+    private static void an_admin_user_exists() {}
 
     private async Task creating_the_event()
     {
@@ -337,10 +337,9 @@ public partial class EventApiSpecs : TruncateDbSpecification
         response_code = response.StatusCode;
     }
 
-    private Task a_venue_exists()
+    private void a_venue_exists()
     {
         returned_venue_id = venue1Id;
-        return Task.CompletedTask;
     }
 
     private async Task requesting_the_venue()

@@ -51,15 +51,8 @@ internal class KeycloakEventPublisher(Settings settings) : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_channel != null)
-        {
-            await _channel.CloseAsync();
-        }
-
-        if (_connection != null)
-        {
-            await _connection.CloseAsync();
-        }
+        if (_channel != null) await _channel.CloseAsync();
+        if (_connection != null) await _connection.CloseAsync();
     }
 }
 

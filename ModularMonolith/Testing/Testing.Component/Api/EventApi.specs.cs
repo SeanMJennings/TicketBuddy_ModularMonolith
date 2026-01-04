@@ -80,7 +80,7 @@ public partial class EventApiSpecs
     public async Task an_anonymous_user_can_view_venues()
     {
               Given(an_admin_user_exists);
-        await And(a_venue_exists);
+              And(a_venue_exists);
         await When(listing_the_venues_as_an_anonymous_user);
         await Then(the_venues_are_returned);
     }
@@ -89,7 +89,7 @@ public partial class EventApiSpecs
     public async Task an_anonymous_user_can_view_venue_by_id()
     {
               Given(an_admin_user_exists);
-        await And(a_venue_exists);
+              And(a_venue_exists);
         await When(requesting_the_venue_as_an_anonymous_user);
         await Then(the_venue_is_returned);
     }

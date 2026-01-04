@@ -103,4 +103,13 @@ public partial class VenueSpecs
         When(Validating(updating_the_venue_capacity));
         Then(Informs("Capacity cannot exceed 50 seats"));
     }
+
+    [Test]
+    public async Task can_check_venue_exists()
+    {
+              Given(a_venue_exists);
+              And(the_venue_is_persisted);
+        await When(checking_venue_exists);
+              Then(the_venue_is_returned);
+    }
 }

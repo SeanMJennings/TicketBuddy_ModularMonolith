@@ -162,4 +162,22 @@ public partial class VenueSpecs : AsyncSpecification
     {
         venue.Capacity.ShouldBe(updated_capacity);
     }
+
+    private Venue? retrievedVenue;
+
+    private void the_venue_is_persisted()
+    {
+        venueRepository.Setup(x => x.GetById(id)).ReturnsAsync(venue);
+    }
+
+    private async Task checking_venue_exists()
+    {
+        retrievedVenue = await validator.CheckVenueExists(id);
+    }
+
+    private void the_venue_is_returned()
+    {
+        retrievedVenue.ShouldNotBeNull();
+        retrievedVenue.Id.ShouldBe(id);
+    }
 }

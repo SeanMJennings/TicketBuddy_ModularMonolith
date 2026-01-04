@@ -11,6 +11,17 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
     public async Task Add(Domain.Events.Event theEvent)
     {
         eventDbContext.Add(theEvent);
+        await PublishEventUpserted(theEvent);
+    }
+
+    public async Task Update(Domain.Events.Event @event)
+    {
+        eventDbContext.Update(@event);
+        await PublishEventUpserted(@event);
+    }
+
+    private async Task PublishEventUpserted(Domain.Events.Event theEvent)
+    {
         await publishEndpoint.Publish(new EventUpserted
         {
             Id = theEvent.Id,
@@ -19,20 +30,6 @@ public class EventRepository(EventDbContext eventDbContext, IPublishMessages pub
             EndDate = theEvent.EndDate,
             VenueId = theEvent.VenueId,
             Price = theEvent.Price
-        });
-    }
-
-    public async Task Update(Domain.Events.Event @event)
-    {
-        eventDbContext.Update(@event);
-        await publishEndpoint.Publish(new EventUpserted
-        {
-            Id = @event.Id,
-            EventName = @event.EventName,
-            StartDate = @event.StartDate,
-            EndDate = @event.EndDate,
-            VenueId = @event.VenueId,
-            Price = @event.Price
         });
     }
 

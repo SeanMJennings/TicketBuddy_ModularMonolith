@@ -28,4 +28,15 @@ public class VenueRepository(EventDbContext eventDbContext, IPublishMessages pub
     {
         return await eventDbContext.Venues.ToListAsync();
     }
+
+    public async Task Update(Domain.Events.Venue.Venue venue)
+    {
+        eventDbContext.Update(venue);
+        await publishEndpoint.Publish(new VenueUpserted
+        {
+            Id = venue.Id,
+            Name = venue.Name,
+            Capacity = venue.Capacity
+        });
+    }
 }

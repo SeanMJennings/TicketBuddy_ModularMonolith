@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-04
 **Status**: In Progress
-**Current Step**: 2 of 13
+**Current Step**: 3 of 13
 
 ## Goal
 
@@ -37,24 +37,25 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Current Focus
 
-**Step 2**: Add CheckVenueExists to VenuesValidator (Domain layer)
+**Step 3**: Add CheckAddressUniqueness with exclusion logic (Domain layer)
 
 **Status**: Not started
-**Tests Passing**: 116/116
-**Last Commit**: feat: add update methods to venue aggregate
+**Tests Passing**: 117/117
+**Last Commit**: feat: add CheckVenueExists validator method
 
 **Plan for this step:**
-1. Write unit test for CheckVenueExists when venue exists (RED)
-2. Write unit test for CheckVenueExists when venue not found (RED)
-3. Implement CheckVenueExists method in VenuesValidator (GREEN)
+1. Write unit test for address uniqueness when updating with same address (RED)
+2. Write unit test for address uniqueness when updating with conflicting address (RED)
+3. Modify CheckAddressUniqueness to accept optional excludeVenueId parameter (GREEN)
 4. Invoke refactor-scan to assess improvements (REFACTOR)
-5. Commit with message: "feat: add venue existence check to validator"
+5. Commit with message: "feat: add address exclusion to uniqueness check"
 
 **Expected Changes:**
 - File: `Modules\Events\Domain.Events\Venue\VenuesValidator.cs`
-  - Add `CheckVenueExists(Guid venueId)` method that retrieves venue or throws
-- File: `Modules\Events\Testing.Unit.Events\VenuesValidator.steps.cs`
-  - Add test steps for venue existence checks
+  - Modify `CheckAddressUniqueness(Address address)` to `CheckAddressUniqueness(Address address, Guid? excludeVenueId = null)`
+  - Filter out venue with excludeVenueId from uniqueness check
+- File: `Modules\Events\Testing.Unit.Events\Venue.specs.cs`
+  - Add tests for address uniqueness with exclusion
 
 ## Completed Steps
 
@@ -66,6 +67,14 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 - Commits:
   - refactor: extract capacity validation to private method
   - feat: add update methods to venue aggregate
+
+**Step 2**: Add CheckVenueExists to VenuesValidator ✓
+- Added CheckVenueExists(Guid venueId) method to VenuesValidator
+- Retrieves venue by ID or throws ValidationException if not found
+- Added 1 unit test (happy path only, error case tested at integration level)
+- Tests: 117/117 passing
+- Commit:
+  - feat: add CheckVenueExists validator method
 
 ## Agent Checkpoints
 
@@ -83,11 +92,11 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Next Steps
 
-1. Write unit test for VenuesValidator.CheckVenueExists() when venue exists (RED)
-2. Write unit test for VenuesValidator.CheckVenueExists() when venue not found (RED)
-3. Implement CheckVenueExists method (GREEN)
+1. Write unit test for CheckAddressUniqueness with same address (allowed when excluding current venue)
+2. Write unit test for CheckAddressUniqueness with conflicting address (should throw even with exclusion)
+3. Modify CheckAddressUniqueness to support optional excludeVenueId parameter
 4. Assess refactoring opportunities
-5. Begin Step 3: Add CheckAddressUniqueness with exclusion logic
+5. Begin Step 4: Implement UpdateVenue use case
 
 ## Blockers
 
@@ -235,7 +244,7 @@ Each step follows strict RED-GREEN-REFACTOR:
 ## Session Log
 
 ### 2026-01-04 - Session 1
-**Duration**: ~30 minutes
+**Duration**: ~60 minutes
 **Completed**:
 - WIP document created
 - Step 1: Add Update methods to Venue aggregate
@@ -244,4 +253,9 @@ Each step follows strict RED-GREEN-REFACTOR:
   - Refactored capacity validation to private method
   - All 116 tests passing
   - 2 commits made
-**Next**: Step 2 - Add CheckVenueExists to VenuesValidator
+- Step 2: Add CheckVenueExists to VenuesValidator
+  - Added CheckVenueExists(Guid venueId) method
+  - Added 1 unit test (happy path)
+  - All 117 tests passing
+  - 1 commit made
+**Next**: Step 3 - Add CheckAddressUniqueness with exclusion logic

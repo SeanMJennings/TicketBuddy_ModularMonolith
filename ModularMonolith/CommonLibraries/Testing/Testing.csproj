@@ -25,6 +25,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\..\Database\Migrations\Migrations.csproj" />
+      <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
     </ItemGroup>
 
     <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">

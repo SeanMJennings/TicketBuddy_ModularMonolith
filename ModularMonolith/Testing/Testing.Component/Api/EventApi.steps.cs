@@ -14,6 +14,7 @@ using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
+using Testing.TestData;
 
 namespace Component.Api;
 
@@ -66,15 +67,15 @@ public partial class EventApiSpecs : TruncateDbSpecification
 
     private async Task SeedVenues()
     {
-        var venue1Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 50));
+        var venue1Response = await client.PostAsJsonAsync(Routes.Venues, VenueTestData.FirstDirectArena);
         venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
         venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
 
-        var venue2Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 45));
+        var venue2Response = await client.PostAsJsonAsync(Routes.Venues, VenueTestData.OldTrafford);
         venue2Response.StatusCode.ShouldBe(HttpStatusCode.Created);
         venue2Id = JsonSerialization.Deserialize<Guid>(await venue2Response.Content.ReadAsStringAsync());
 
-        var venue3Response = await client.PostAsJsonAsync(Routes.Venues, new VenuePayload("Principality Stadium", "Westgate Street", "Cardiff", "CF10 1NS", 40));
+        var venue3Response = await client.PostAsJsonAsync(Routes.Venues, VenueTestData.PrincipalityStadium);
         venue3Response.StatusCode.ShouldBe(HttpStatusCode.Created);
         venue3Id = JsonSerialization.Deserialize<Guid>(await venue3Response.Content.ReadAsStringAsync());
     }

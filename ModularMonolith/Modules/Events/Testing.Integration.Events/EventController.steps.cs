@@ -17,6 +17,7 @@ using Messaging.Events;
 using NSubstitute;
 using Testing;
 using Testing.Containers;
+using Testing.TestData;
 using Event = Domain.Events.Event;
 
 namespace Integration;
@@ -116,11 +117,11 @@ public partial class EventControllerSpecs : TruncateDbSpecification
 
     private async Task SeedVenues()
     {
-        var venue1 = await createVenueEndpoint.CreateVenue(new VenuePayload("First Direct Arena", "Arena Way", "Leeds", "LS2 8BY", 50));
+        var venue1 = await createVenueEndpoint.CreateVenue(VenueTestData.FirstDirectArena);
         venue1Id = (Guid)venue1.Value!;
-        var venue2 = await createVenueEndpoint.CreateVenue(new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 45));
+        var venue2 = await createVenueEndpoint.CreateVenue(VenueTestData.OldTrafford);
         venue2Id = (Guid)venue2.Value!;
-        var venue3 = await createVenueEndpoint.CreateVenue(new VenuePayload("Principality Stadium", "Westgate Street", "Cardiff", "CF10 1NS", 40));
+        var venue3 = await createVenueEndpoint.CreateVenue(VenueTestData.PrincipalityStadium);
         venue3Id = (Guid)venue3.Value!;
     }
 

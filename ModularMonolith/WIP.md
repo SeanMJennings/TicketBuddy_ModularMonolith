@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-04
 **Status**: In Progress
-**Current Step**: 6 of 13
+**Current Step**: 7 of 13
 
 ## Goal
 
@@ -37,27 +37,27 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Current Focus
 
-**Step 6**: Create UpdateVenueEndpoint (Controller layer)
+**Steps 7-9**: Integration tests for UpdateVenue (Integration layer)
 
 **Status**: Not started
 **Tests Passing**: 119/119
-**Last Commit**: feat: implement UpdateVenue use case and repository method
+**Last Commit**: feat: add UpdateVenue endpoint
 
-**Plan for this step:**
-1. Read UpdateEventEndpoint.cs to understand the pattern
-2. Create UpdateVenuePayload request record
-3. Create UpdateVenueEndpoint with PUT /venues/{id}
-4. Build and verify compilation
-5. Commit with message: "feat: add UpdateVenue endpoint"
+**Plan for these steps:**
+1. Read existing EventController integration tests for update pattern
+2. Add test: can_update_venue (Step 7)
+3. Add test: cannot_update_venue_to_duplicate_address (Step 8)
+4. Add test: venue_upserted_message_published_on_update (Step 9)
+5. Add corresponding test step implementations
+6. Run tests to verify GREEN
+7. Commit with message: "test: add integration tests for venue update"
 
 **Expected Changes:**
-- File: `Modules\Events\Controllers.Events\Venue\UpdateVenueEndpoint.cs` (CREATE)
-  - PUT endpoint at /venues/{id}
-  - Admin-only authorization
-  - Call UpdateVenue use case
-  - Return NoContent on success
-- File: `Modules\Events\Controllers.Events\Requests\UpdateVenuePayload.cs` (CREATE)
-  - Request payload with Name, Street, City, Postcode, Capacity
+- File: `Modules\Events\Testing.Integration.Events\VenueController.specs.cs`
+  - Add 3 new test specifications for update scenarios
+- File: `Modules\Events\Testing.Integration.Events\VenueController.steps.cs`
+  - Add test step implementations for update operations
+  - Add message verification steps
 
 ## Completed Steps
 
@@ -99,6 +99,15 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 - Tests: 119/119 passing
 - Commit (combined 4-5):
   - feat: implement UpdateVenue use case and repository method
+
+**Step 6**: Create UpdateVenueEndpoint ✓
+- Created UpdateVenuePayload request record
+- Created UpdateVenueEndpoint with PUT /venues/{id}
+- Admin-only authorization via [Authorize(Roles = Roles.Admin)]
+- Returns NoContent on success
+- Tests: 119/119 passing
+- Commit:
+  - feat: add UpdateVenue endpoint
 
 ## Agent Checkpoints
 

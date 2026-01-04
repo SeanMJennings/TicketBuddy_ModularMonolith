@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-04
 **Status**: In Progress
-**Current Step**: 4 of 13
+**Current Step**: 6 of 13
 
 ## Goal
 
@@ -37,26 +37,27 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Current Focus
 
-**Step 4**: Implement UpdateVenue use case (Application layer)
+**Step 6**: Create UpdateVenueEndpoint (Controller layer)
 
 **Status**: Not started
 **Tests Passing**: 119/119
-**Last Commit**: feat: add address exclusion to uniqueness check
+**Last Commit**: feat: implement UpdateVenue use case and repository method
 
 **Plan for this step:**
-1. Read UpdateEvent.cs to understand the pattern
-2. Write unit test for UpdateVenue use case (RED)
-3. Create UpdateVenue.cs with use case implementation (GREEN)
-4. Invoke refactor-scan to assess improvements (REFACTOR)
-5. Commit with message: "feat: implement UpdateVenue use case"
+1. Read UpdateEventEndpoint.cs to understand the pattern
+2. Create UpdateVenuePayload request record
+3. Create UpdateVenueEndpoint with PUT /venues/{id}
+4. Build and verify compilation
+5. Commit with message: "feat: add UpdateVenue endpoint"
 
 **Expected Changes:**
-- File: `Modules\Events\Application.Events\Venue\UpdateVenue.cs` (CREATE)
-  - Implement use case orchestrating validation and persistence
-  - Call VenuesValidator.CheckVenueExists()
-  - Call VenuesValidator.CheckAddressUniqueness() with exclusion
-  - Call venue update methods (UpdateName, UpdateAddress, UpdateCapacity)
-  - Call repository Update method
+- File: `Modules\Events\Controllers.Events\Venue\UpdateVenueEndpoint.cs` (CREATE)
+  - PUT endpoint at /venues/{id}
+  - Admin-only authorization
+  - Call UpdateVenue use case
+  - Return NoContent on success
+- File: `Modules\Events\Controllers.Events\Requests\UpdateVenuePayload.cs` (CREATE)
+  - Request payload with Name, Street, City, Postcode, Capacity
 
 ## Completed Steps
 
@@ -84,6 +85,20 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 - Tests: 119/119 passing
 - Commit:
   - feat: add address exclusion to uniqueness check
+
+**Step 4**: Implement UpdateVenue use case ✓
+- Created UpdateVenue.cs orchestrating validation and persistence
+- Calls CheckVenueExists, applies updates, validates address uniqueness, persists
+- Follows UpdateEvent pattern with dependency injection
+- Tests: 119/119 passing
+
+**Step 5**: Add Update method to repository ✓
+- Added Update(Venue venue) signature to IPersistVenues interface
+- Implemented Update method in VenueRepository
+- Publishes VenueUpserted message on update (Id, Name, Capacity)
+- Tests: 119/119 passing
+- Commit (combined 4-5):
+  - feat: implement UpdateVenue use case and repository method
 
 ## Agent Checkpoints
 

@@ -9,7 +9,9 @@
       "Bash(git ls-tree:*)",
       "Bash(find:*)",
       "Bash(dir:*)",
-      "Bash(Select-String -Pattern \"Failed\" -Context 5,10)"
+      "Bash(Select-String -Pattern \"Failed\" -Context 5,10)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

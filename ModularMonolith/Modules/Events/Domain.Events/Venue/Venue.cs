@@ -38,7 +38,7 @@ public class Venue : Entity, IAmAnAggregateRoot
         Capacity = capacity;
     }
 
-    private void ValidateCapacity(uint capacity)
+    private static void ValidateCapacity(uint capacity)
     {
         Validation.BasedOn(errors =>
         {

@@ -22,6 +22,7 @@ public static class Services
             .AddScoped<IPersistVenues, Venue.VenueRepository>()
             .AddScoped<VenuesValidator>()
             .AddScoped<CreateVenue>()
+            .AddScoped<UpdateVenue>()
             .AddScoped<GetVenueById>()
             .AddScoped<GetVenues>();
         return services;

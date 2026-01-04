@@ -19,6 +19,7 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
     private CreateVenueEndpoint createVenueEndpoint = null!;
     private GetVenueByIdEndpoint getVenueByIdEndpoint = null!;
     private GetVenuesEndpoint getVenuesEndpoint = null!;
+    private UpdateVenueEndpoint updateVenueEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
     private VenuePayload venuePayload = null!;
     private Guid returned_id;
@@ -73,6 +74,7 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
             .AddScoped<CreateVenueEndpoint>()
             .AddScoped<GetVenueByIdEndpoint>()
             .AddScoped<GetVenuesEndpoint>()
+            .AddScoped<UpdateVenueEndpoint>()
             .BuildServiceProvider();
 
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
@@ -80,6 +82,7 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
         createVenueEndpoint = serviceProvider.GetRequiredService<CreateVenueEndpoint>();
         getVenueByIdEndpoint = serviceProvider.GetRequiredService<GetVenueByIdEndpoint>();
         getVenuesEndpoint = serviceProvider.GetRequiredService<GetVenuesEndpoint>();
+        updateVenueEndpoint = serviceProvider.GetRequiredService<UpdateVenueEndpoint>();
     }
 
     protected override async Task after_each()
@@ -170,5 +173,63 @@ public partial class VenueControllerSpecs : TruncateDbSpecification
         theVenues.Single(v => v.Id == returned_id).Name.ToString().ShouldBe(venueName);
         theVenues.Single(v => v.Id == another_id).Name.ToString().ShouldBe(secondVenueName);
         theVenues.Single(v => v.Id == third_id).Name.ToString().ShouldBe(thirdVenueName);
+    }
+
+    // Update tests
+    private UpdateVenuePayload updateVenuePayload = null!;
+    private const string updatedVenueName = "The Apollo Updated";
+    private const string updatedStreet = "999 Updated Street";
+    private const string updatedCity = "Leeds";
+    private const string updatedPostcode = "LS1 1AA";
+    private const uint updatedCapacity = 35;
+
+    private void a_request_to_update_the_venue()
+    {
+        updateVenuePayload = new UpdateVenuePayload(
+            new VenueName(updatedVenueName),
+            updatedStreet,
+            updatedCity,
+            updatedPostcode,
+            updatedCapacity);
+    }
+
+    private async Task updating_the_venue()
+    {
+        await updateVenueEndpoint.UpdateVenue(returned_id, updateVenuePayload);
+    }
+
+    private async Task requesting_the_updated_venue()
+    {
+        theVenue = (await getVenueByIdEndpoint.GetVenue(returned_id)).Value!;
+    }
+
+    private void the_venue_is_updated()
+    {
+        theVenue.Id.ShouldBe(returned_id);
+        theVenue.Name.ToString().ShouldBe(updatedVenueName);
+        theVenue.Address.Street.ShouldBe(updatedStreet);
+        theVenue.Address.City.ShouldBe(updatedCity);
+        theVenue.Address.Postcode.ShouldBe(updatedPostcode.ToUpperInvariant());
+        theVenue.Capacity.ShouldBe(updatedCapacity);
+    }
+
+    private void a_request_to_update_venue_to_duplicate_address()
+    {
+        updateVenuePayload = new UpdateVenuePayload(
+            new VenueName(updatedVenueName),
+            secondStreet,
+            secondCity,
+            secondPostcode,
+            updatedCapacity);
+    }
+
+    private void a_venue_upserted_message_is_published()
+    {
+        testHarness.Published.Select<Messages.Events.VenueUpserted>()
+            .Any(e =>
+                e.Context.Message.Id == returned_id &&
+                e.Context.Message.Name == new VenueName(updatedVenueName) &&
+                e.Context.Message.Capacity == updatedCapacity)
+            .ShouldBeTrue();
     }
 }

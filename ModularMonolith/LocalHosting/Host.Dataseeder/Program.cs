@@ -42,7 +42,7 @@ public static class Program
             _settings.Keycloak.AdminPassword);
         
         if (await GetUsersCount(keycloakApiHttpClient) <= 1) await CreateCustomerUsers(keycloakApiHttpClient);
-        
+
         if (await GetEventsCount(apiHttpClient) == 0)
         {
             var keycloakJwt = await KeycloakClient.GetToken(
@@ -52,7 +52,9 @@ public static class Program
                 _settings.Keycloak.AdminUsername,
                 _settings.Keycloak.AdminPassword);
             apiHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakJwt);
-            await CreateFutureEvents(apiHttpClient);
+
+            var venueIds = await CreateExampleVenues(apiHttpClient);
+            await CreateFutureEvents(apiHttpClient, venueIds);
         }
     }
     
@@ -105,6 +107,39 @@ public static class Program
         }
     }
     
+    private static async Task<Dictionary<string, Guid>> CreateExampleVenues(HttpClient client)
+    {
+        var venueData = new[]
+        {
+            (Key: "FirstDirectArena", Name: "First Direct Arena", Street: "Arena Way", City: "Leeds", Postcode: "LS2 8BY", Capacity: 50u),
+            (Key: "OldTrafford", Name: "Old Trafford", Street: "Sir Matt Busby Way", City: "Manchester", Postcode: "M16 0RA", Capacity: 45u),
+            (Key: "PrincipalityStadium", Name: "Principality Stadium", Street: "Westgate Street", City: "Cardiff", Postcode: "CF10 1NS", Capacity: 40u),
+            (Key: "RoyalAlbertHall", Name: "Royal Albert Hall", Street: "Kensington Gore", City: "London", Postcode: "SW7 2AP", Capacity: 35u),
+            (Key: "O2Arena", Name: "The O2 Arena", Street: "Peninsula Square", City: "London", Postcode: "SE10 0DX", Capacity: 50u)
+        };
+
+        var venueIds = new Dictionary<string, Guid>();
+
+        foreach (var venue in venueData)
+        {
+            var payload = new VenuePayload(
+                venue.Name,
+                venue.Street,
+                venue.City,
+                venue.Postcode,
+                venue.Capacity
+            );
+
+            var response = await client.PostAsJsonAsync(EventRoutes.Venues, payload);
+            response.EnsureSuccessStatusCode();
+
+            var venueId = await response.Content.ReadFromJsonAsync<Guid>();
+            venueIds[venue.Key] = venueId;
+        }
+
+        return venueIds;
+    }
+
     private static async Task RecreateKeycloakUserRegisteredEventFromKeycloak(Guid userId, string firstName, string lastName, string email)
     {
         var rabbitMqFactory = new ConnectionFactory
@@ -129,20 +164,20 @@ public static class Program
         await rabbitMqConnection.CloseAsync();
     }
 
-    private static async Task CreateFutureEvents(HttpClient client)
+    private static async Task CreateFutureEvents(HttpClient client, Dictionary<string, Guid> venueIds)
     {
         var eventData = new[]
         {
-            (Name: "Summer Rock Festival", StartDate: DateTime.Now.AddDays(30), EndDate: DateTime.Now.AddDays(30).AddHours(1), VenueId: Guid.Parse("44444444-4444-4444-4444-444444444444"), Price: 50m),
-            (Name: "Classical Symphony", StartDate: DateTime.Now.AddDays(45), EndDate: DateTime.Now.AddDays(45).AddHours(1), VenueId: Guid.Parse("55555555-5555-5555-5555-555555555555"), Price: 75m),
-            (Name: "International Football Match", StartDate: DateTime.Now.AddDays(60), EndDate: DateTime.Now.AddDays(60).AddHours(1), VenueId: Guid.Parse("66666666-6666-6666-6666-666666666666"), Price: 100m),
-            (Name: "Comedy Night Special", StartDate: DateTime.Now.AddDays(15), EndDate: DateTime.Now.AddDays(15).AddHours(1), VenueId: Guid.Parse("77777777-7777-7777-7777-777777777777"), Price: 30m),
-            (Name: "Tech Conference", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), VenueId: Guid.Parse("88888888-8888-8888-8888-888888888888"), Price: 200m),
-            (Name: "Jazz Evening", StartDate: DateTime.Now.AddDays(20), EndDate: DateTime.Now.AddDays(20).AddHours(1), VenueId: Guid.Parse("44444444-4444-4444-4444-444444444444"), Price: 60m),
-            (Name: "Pop Concert", StartDate: DateTime.Now.AddDays(25), EndDate: DateTime.Now.AddDays(25).AddHours(1), VenueId: Guid.Parse("55555555-5555-5555-5555-555555555555"), Price: 80m),
-            (Name: "Basketball Championship", StartDate: DateTime.Now.AddDays(35), EndDate: DateTime.Now.AddDays(35).AddHours(1), VenueId: Guid.Parse("66666666-6666-6666-6666-666666666666"), Price: 120m),
-            (Name: "Theater Play", StartDate: DateTime.Now.AddDays(40), EndDate: DateTime.Now.AddDays(40).AddHours(1), VenueId: Guid.Parse("77777777-7777-7777-7777-777777777777"), Price: 45m),
-            (Name: "Business Summit", StartDate: DateTime.Now.AddDays(70), EndDate: DateTime.Now.AddDays(70).AddHours(1), VenueId: Guid.Parse("88888888-8888-8888-8888-888888888888"), Price: 250m)
+            (Name: "Summer Rock Festival", StartDate: DateTime.Now.AddDays(30), EndDate: DateTime.Now.AddDays(30).AddHours(1), VenueKey: "FirstDirectArena", Price: 50m),
+            (Name: "Classical Symphony", StartDate: DateTime.Now.AddDays(45), EndDate: DateTime.Now.AddDays(45).AddHours(1), VenueKey: "RoyalAlbertHall", Price: 75m),
+            (Name: "International Football Match", StartDate: DateTime.Now.AddDays(60), EndDate: DateTime.Now.AddDays(60).AddHours(1), VenueKey: "OldTrafford", Price: 100m),
+            (Name: "Comedy Night Special", StartDate: DateTime.Now.AddDays(15), EndDate: DateTime.Now.AddDays(15).AddHours(1), VenueKey: "O2Arena", Price: 30m),
+            (Name: "Tech Conference", StartDate: DateTime.Now.AddDays(90), EndDate: DateTime.Now.AddDays(90).AddHours(1), VenueKey: "PrincipalityStadium", Price: 200m),
+            (Name: "Jazz Evening", StartDate: DateTime.Now.AddDays(20), EndDate: DateTime.Now.AddDays(20).AddHours(1), VenueKey: "FirstDirectArena", Price: 60m),
+            (Name: "Pop Concert", StartDate: DateTime.Now.AddDays(25), EndDate: DateTime.Now.AddDays(25).AddHours(1), VenueKey: "RoyalAlbertHall", Price: 80m),
+            (Name: "Basketball Championship", StartDate: DateTime.Now.AddDays(35), EndDate: DateTime.Now.AddDays(35).AddHours(1), VenueKey: "OldTrafford", Price: 120m),
+            (Name: "Theater Play", StartDate: DateTime.Now.AddDays(40), EndDate: DateTime.Now.AddDays(40).AddHours(1), VenueKey: "O2Arena", Price: 45m),
+            (Name: "Business Summit", StartDate: DateTime.Now.AddDays(70), EndDate: DateTime.Now.AddDays(70).AddHours(1), VenueKey: "PrincipalityStadium", Price: 250m)
         };
 
         foreach (var eventInfo in eventData)
@@ -151,7 +186,7 @@ public static class Program
                 eventInfo.Name,
                 eventInfo.StartDate,
                 eventInfo.EndDate,
-                eventInfo.VenueId,
+                venueIds[eventInfo.VenueKey],
                 eventInfo.Price
             );
 

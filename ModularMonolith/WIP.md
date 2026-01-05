@@ -3,7 +3,7 @@
 **Started**: 2026-01-04
 **Completed**: 2026-01-05
 **Status**: ✅ COMPLETE
-**Final Test Count**: 125/125 passing
+**Final Test Count**: 124/124 passing
 
 ## Goal
 
@@ -52,7 +52,8 @@ All 13 steps completed successfully across 6 phases:
 - Address uniqueness validation with exclusion logic working
 - Cross-module synchronization to Tickets module verified
 - All test tiers passing (Unit, Integration, Component, Architecture, Acceptance)
-- Total: 125 tests passing, 0 failures
+- Proper test tier separation maintained (component tests focus on HTTP API/auth)
+- Total: 124 tests passing, 0 failures
 
 ## Completed Steps
 
@@ -115,13 +116,13 @@ All 13 steps completed successfully across 6 phases:
 
 **Steps 10-12**: Component tests for UpdateVenue ✓
 - Added can_update_venue component test (HTTP API update)
-- Added cannot_update_venue_to_duplicate_address component test (validation via API)
-- Added venue_update_syncs_to_tickets_module component test (cross-module sync verification)
-- Fixed compilation errors in test step implementations
-- Used scoped service provider to access Tickets module's IPersistVenues
-- Tests: 125/125 passing (+3 component tests)
-- Commit:
+- Added a_non_admin_cannot_update_venue component test (authorization)
+- Fixed architectural boundaries: moved business validation and messaging tests to integration tier
+- Component tests now focus on HTTP API behavior and authorization (not business logic)
+- Tests: 124/124 passing (11 venue component tests)
+- Commits:
   - test: add component tests for venue update
+  - refactor: fix component test architectural boundaries
 
 ## Agent Checkpoints
 
@@ -320,8 +321,12 @@ Each step follows strict RED-GREEN-REFACTOR:
   - All 122 tests passing
 - **Phase 5 (Component Tests) - COMPLETE** (Steps 10-12)
   - Step 10-12: Component tests for UpdateVenue
-    - Added 3 component tests for venue update via HTTP API
+    - Added component tests for venue update via HTTP API
     - Fixed compilation errors (StringContent wrapper, scoped service provider)
-    - All 125 tests passing (+3 component tests)
-    - 1 commit made
-**Status**: Steps 1-12 complete, ready for Step 13 (final verification)
+    - Corrected architectural boundaries (removed business validation/messaging from component tests)
+    - Added authorization test (non-admin cannot update)
+    - All 124 tests passing (11 venue component tests)
+    - 2 commits made
+- **Phase 6 (Completion) - COMPLETE** (Step 13)
+  - Final verification and architectural correction completed
+**Status**: All 13 steps complete, feature ready for use

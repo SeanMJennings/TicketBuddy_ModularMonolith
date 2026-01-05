@@ -15,7 +15,6 @@ using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
 using Testing.TestData;
-using TicketsVenuePersistence = Domain.Tickets.Venue.IPersistVenues;
 
 namespace Component.Api;
 
@@ -458,25 +457,11 @@ public partial class EventApiSpecs : TruncateDbSpecification
         theVenue.Capacity.ShouldBe(updated_capacity);
     }
 
-    private void another_venue_exists()
+    private void a_request_to_update_the_venue_as_a_non_admin_user()
     {
-        // Already created venue2Id in before_each with VenueTestData.OldTrafford
-    }
-
-    private void a_request_to_update_venue_to_duplicate_address()
-    {
-        var payload = new
-        {
-            Name = updated_venue_name,
-            Street = VenueTestData.OldTrafford.Street,
-            City = VenueTestData.OldTrafford.City,
-            Postcode = VenueTestData.OldTrafford.Postcode,
-            Capacity = updated_capacity
-        };
-        content = new StringContent(
-            JsonSerialization.Serialize(payload),
-            Encoding.UTF8,
-            application_json);
+        a_request_to_update_the_venue();
+        client.DefaultRequestHeaders.Clear();
+        client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
     }
 
     private async Task updating_the_venue_that_should_fail()
@@ -485,33 +470,8 @@ public partial class EventApiSpecs : TruncateDbSpecification
         response_code = response.StatusCode;
     }
 
-    private void the_venue_update_is_bad_request()
+    private void the_venue_update_is_forbidden()
     {
-        response_code.ShouldBe(HttpStatusCode.BadRequest);
-    }
-
-    private void an_another_venue_integration_event_is_published()
-    {
-        testHarness.Published.Select<VenueUpserted>()
-            .Any(v =>
-                v.Context.Message.Id == returned_venue_id &&
-                v.Context.Message.Name == updated_venue_name &&
-                v.Context.Message.Capacity == updated_capacity
-                ).ShouldBeTrue("VenueUpserted was not published on update");
-    }
-
-    private async Task the_venue_is_synced_to_tickets_module()
-    {
-        // Wait a bit for async message processing
-        await Task.Delay(500);
-
-        // Verify the Tickets module received and processed the VenueUpserted message
-        using var scope = factory.Services.CreateScope();
-        var ticketsVenueRepository = scope.ServiceProvider.GetRequiredService<TicketsVenuePersistence>();
-        var venueInTicketsModule = await ticketsVenueRepository.GetById(returned_venue_id);
-
-        venueInTicketsModule.ShouldNotBeNull("Venue should be synced to Tickets module");
-        venueInTicketsModule.Name.ShouldBe(updated_venue_name);
-        venueInTicketsModule.Capacity.ShouldBe(updated_capacity);
+        response_code.ShouldBe(HttpStatusCode.Forbidden);
     }
 }

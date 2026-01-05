@@ -15,6 +15,7 @@ using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
 using Testing.TestData;
+using TicketsVenuePersistence = Domain.Tickets.Venue.IPersistVenues;
 
 namespace Component.Api;
 
@@ -406,5 +407,111 @@ public partial class EventApiSpecs : TruncateDbSpecification
                 v.Context.Message.Name == "Royal Albert Hall" &&
                 v.Context.Message.Capacity == 30
                 ).ShouldBeTrue("VenueUpserted was not published to the bus");
+    }
+
+    // Update venue tests
+    private const string updated_venue_name = "Royal Albert Hall - Renovated";
+    private const string updated_street = "123 Updated Street";
+    private const string updated_city = "Manchester";
+    private const string updated_postcode = "M1 1AA";
+    private const uint updated_capacity = 40;
+
+    private void a_request_to_update_the_venue()
+    {
+        var payload = new
+        {
+            Name = updated_venue_name,
+            Street = updated_street,
+            City = updated_city,
+            Postcode = updated_postcode,
+            Capacity = updated_capacity
+        };
+        content = new StringContent(
+            JsonSerialization.Serialize(payload),
+            Encoding.UTF8,
+            application_json);
+    }
+
+    private async Task updating_the_venue()
+    {
+        var response = await client.PutAsync($"{Routes.Venues}/{returned_venue_id}", content);
+        response_code = response.StatusCode;
+        response_code.ShouldBe(HttpStatusCode.NoContent);
+    }
+
+    private async Task requesting_the_updated_venue()
+    {
+        var response = await client.GetAsync($"{Routes.Venues}/{returned_venue_id}");
+        response_code = response.StatusCode;
+        content = response.Content;
+    }
+
+    private async Task the_venue_is_updated()
+    {
+        var theVenue = JsonSerialization.Deserialize<Domain.Events.Venue.Venue>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        theVenue.Id.ShouldBe(returned_venue_id);
+        theVenue.Name.ToString().ShouldBe(updated_venue_name);
+        theVenue.Address.Street.ShouldBe(updated_street);
+        theVenue.Address.City.ShouldBe(updated_city);
+        theVenue.Address.Postcode.ShouldBe(updated_postcode.ToUpperInvariant());
+        theVenue.Capacity.ShouldBe(updated_capacity);
+    }
+
+    private void another_venue_exists()
+    {
+        // Already created venue2Id in before_each with VenueTestData.OldTrafford
+    }
+
+    private void a_request_to_update_venue_to_duplicate_address()
+    {
+        var payload = new
+        {
+            Name = updated_venue_name,
+            Street = VenueTestData.OldTrafford.Street,
+            City = VenueTestData.OldTrafford.City,
+            Postcode = VenueTestData.OldTrafford.Postcode,
+            Capacity = updated_capacity
+        };
+        content = new StringContent(
+            JsonSerialization.Serialize(payload),
+            Encoding.UTF8,
+            application_json);
+    }
+
+    private async Task updating_the_venue_that_should_fail()
+    {
+        var response = await client.PutAsync($"{Routes.Venues}/{returned_venue_id}", content);
+        response_code = response.StatusCode;
+    }
+
+    private void the_venue_update_is_bad_request()
+    {
+        response_code.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    private void an_another_venue_integration_event_is_published()
+    {
+        testHarness.Published.Select<VenueUpserted>()
+            .Any(v =>
+                v.Context.Message.Id == returned_venue_id &&
+                v.Context.Message.Name == updated_venue_name &&
+                v.Context.Message.Capacity == updated_capacity
+                ).ShouldBeTrue("VenueUpserted was not published on update");
+    }
+
+    private async Task the_venue_is_synced_to_tickets_module()
+    {
+        // Wait a bit for async message processing
+        await Task.Delay(500);
+
+        // Verify the Tickets module received and processed the VenueUpserted message
+        using var scope = factory.Services.CreateScope();
+        var ticketsVenueRepository = scope.ServiceProvider.GetRequiredService<TicketsVenuePersistence>();
+        var venueInTicketsModule = await ticketsVenueRepository.GetById(returned_venue_id);
+
+        venueInTicketsModule.ShouldNotBeNull("Venue should be synced to Tickets module");
+        venueInTicketsModule.Name.ShouldBe(updated_venue_name);
+        venueInTicketsModule.Capacity.ShouldBe(updated_capacity);
     }
 }

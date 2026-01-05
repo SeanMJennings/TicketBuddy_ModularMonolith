@@ -93,4 +93,37 @@ public partial class EventApiSpecs
         await When(requesting_the_venue_as_an_anonymous_user);
         await Then(the_venue_is_returned);
     }
+
+    [Test]
+    public async Task can_update_venue()
+    {
+              Given(an_admin_user_exists);
+              And(a_venue_exists);
+              And(a_request_to_update_the_venue);
+        await When(updating_the_venue);
+        await And(requesting_the_updated_venue);
+        await Then(the_venue_is_updated);
+              And(an_another_venue_integration_event_is_published);
+    }
+
+    [Test]
+    public async Task cannot_update_venue_to_duplicate_address()
+    {
+              Given(an_admin_user_exists);
+              And(a_venue_exists);
+              And(another_venue_exists);
+              And(a_request_to_update_venue_to_duplicate_address);
+        await When(updating_the_venue_that_should_fail);
+              Then(the_venue_update_is_bad_request);
+    }
+
+    [Test]
+    public async Task venue_update_syncs_to_tickets_module()
+    {
+              Given(an_admin_user_exists);
+              And(a_venue_exists);
+              And(a_request_to_update_the_venue);
+        await When(updating_the_venue);
+        await Then(the_venue_is_synced_to_tickets_module);
+    }
 }

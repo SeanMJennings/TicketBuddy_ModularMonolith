@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace TicketBuddy.AppHost;
+namespace TicketBuddy.AppHost.Applications;
 
 public static class UserInterface
 {

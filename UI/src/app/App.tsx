@@ -4,6 +4,7 @@ import {ToastContainer} from "react-toastify";
 import {Header} from "../components/Header.tsx";
 import {MainContainer} from "../components/MainContainer.styles.tsx";
 import {EventsManagement} from "../views/EventsManagement.tsx";
+import {VenuesManagement} from "../views/VenuesManagement.tsx";
 import {NotFound} from "../components/NotFound.tsx";
 import {Tickets} from "../views/Tickets.tsx";
 import {TicketPurchase} from "../views/TicketPurchase.tsx";
@@ -35,6 +36,11 @@ export const AppRoutes = () => (
         <Route path="/events-management/*" element={
             <ProtectedRoute requiredUserType={UserType.Administrator}>
                 <EventsManagement />
+            </ProtectedRoute>
+        } />
+        <Route path="/venues-management/*" element={
+            <ProtectedRoute requiredUserType={UserType.Administrator}>
+                <VenuesManagement />
             </ProtectedRoute>
         } />
         <Route path="/tickets/:eventId" element={

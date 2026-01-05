@@ -30,7 +30,12 @@ export const Header = () => {
             <Container>
                 {user &&
                     <>
-                        {user.UserType === UserType.Administrator && <EventsManagementLink to="/events-management">Events Management</EventsManagementLink>}
+                        {user.UserType === UserType.Administrator && (
+                            <>
+                                <EventsManagementLink to="/events-management">Events Management</EventsManagementLink>
+                                <EventsManagementLink to="/venues-management">Venues Management</EventsManagementLink>
+                            </>
+                        )}
                         <UserIconContainer onClick={onUserIconClick} data-testid="user-icon">
                             <UserIcon />
                         </UserIconContainer>

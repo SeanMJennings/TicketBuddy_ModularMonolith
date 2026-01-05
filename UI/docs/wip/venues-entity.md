@@ -55,10 +55,10 @@ Replace the hardcoded `Venue` enum with a full API-backed entity system. Venues 
 
 ## Current Focus
 
-**Phase 1 Complete**: Domain & API Layer done
+**Phase 2 Complete**: Venues Management UI done
 
-**Status**: Phase 2 ready to begin
-**Tests Passing**: 66/66
+**Status**: Phase 3 ready to begin (Update Event Domain)
+**Tests Passing**: 73/73
 **Last PR**: N/A
 
 ## Agent Checkpoints
@@ -72,10 +72,10 @@ Replace the hardcoded `Venue` enum with a full API-backed entity system. Venues 
 
 ## Next Steps
 
-1. Start Phase 2, Step 6: Create VenuesManagement component skeleton
-2. Implement venue list display
-3. Implement create/update venue forms
-4. Add admin routing and navigation
+1. Phase 3: Update Event domain to use venueId instead of Venue enum
+2. Update EventPayload to use venueId
+3. Update event API client to send/receive venueId
+4. Create VenueDisplay component for showing venue details
 
 ## Blockers
 
@@ -151,10 +151,24 @@ PUT    /venues/{id}   - Update venue (admin only)
 
 **Files Created**:
 - `src/domain/venue.ts` - Venue domain types with Zod schemas
-- `src/domain/unit_specs/venue.spec.ts` - 5 tests
+- `src/domain/unit_specs/venue.spec.ts` - 8 tests
 - `src/api/venues.api.ts` - Venue API client
 - `src/api/unit_specs/venues.api.spec.ts` - 5 tests
 
+**Phase 2 Completed**:
+- Created VenuesManagement component with TDD
+  - List venues display
+  - Create venue form
+  - Update venue form
+- Added admin routing (`/venues-management/*`)
+- Added "Venues Management" link to admin header
+- Created test infrastructure:
+  - `src/views/VenuesManagement.tsx` - Main component
+  - `src/views/narrow_integration_specs/VenuesManagement.spec.ts` - 4 tests
+  - `src/views/narrow_integration_specs/VenuesManagement.steps.ts` - Test steps
+  - `src/views/narrow_integration_specs/VenuesManagement.page.tsx` - Page object
+- All 73 tests passing
+
 **Next Session**:
-- Begin Phase 2: Venues Management UI
-- Create VenuesManagement component with TDD
+- Begin Phase 3: Update Event Domain to use venueId
+- Create VenueDisplay component

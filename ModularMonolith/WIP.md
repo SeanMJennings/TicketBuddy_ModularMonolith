@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-04
 **Status**: In Progress
-**Current Step**: 7 of 13
+**Current Step**: 10 of 13
 
 ## Goal
 
@@ -37,27 +37,27 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 
 ## Current Focus
 
-**Steps 7-9**: Integration tests for UpdateVenue (Integration layer)
+**Steps 10-12**: Component tests for UpdateVenue (Component layer)
 
 **Status**: Not started
-**Tests Passing**: 119/119
-**Last Commit**: feat: add UpdateVenue endpoint
+**Tests Passing**: 122/122
+**Last Commit**: test: add integration tests for venue update
 
 **Plan for these steps:**
-1. Read existing EventController integration tests for update pattern
-2. Add test: can_update_venue (Step 7)
-3. Add test: cannot_update_venue_to_duplicate_address (Step 8)
-4. Add test: venue_upserted_message_published_on_update (Step 9)
+1. Read existing EventApi component tests for update pattern
+2. Add test: can_update_venue (Step 10)
+3. Add test: cannot_update_venue_to_duplicate_address (Step 11)
+4. Add test: verify_cross_module_sync_on_update (Step 12)
 5. Add corresponding test step implementations
 6. Run tests to verify GREEN
-7. Commit with message: "test: add integration tests for venue update"
+7. Commit with message: "test: add component tests for venue update"
 
 **Expected Changes:**
-- File: `Modules\Events\Testing.Integration.Events\VenueController.specs.cs`
-  - Add 3 new test specifications for update scenarios
-- File: `Modules\Events\Testing.Integration.Events\VenueController.steps.cs`
-  - Add test step implementations for update operations
-  - Add message verification steps
+- File: `Testing\Testing.Component\Api\EventApi.specs.cs`
+  - Add 3 new component test specifications
+- File: `Testing\Testing.Component\Api\EventApi.steps.cs`
+  - Add test step implementations for update via HTTP
+  - Add cross-module sync verification steps
 
 ## Completed Steps
 
@@ -108,6 +108,15 @@ Implement UpdateVenue endpoint (PUT /venues/{id}) for the Events module, followi
 - Tests: 119/119 passing
 - Commit:
   - feat: add UpdateVenue endpoint
+
+**Steps 7-9**: Integration tests for UpdateVenue ✓
+- Added can_update_venue test (successful update)
+- Added cannot_update_venue_to_duplicate_address test (validation)
+- Added venue_upserted_message_published_on_update test (messaging)
+- Registered UpdateVenue use case in Services.cs
+- Tests: 122/122 passing (+3 integration tests)
+- Commit:
+  - test: add integration tests for venue update
 
 ## Agent Checkpoints
 

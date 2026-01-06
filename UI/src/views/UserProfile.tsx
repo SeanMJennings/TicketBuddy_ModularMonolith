@@ -30,6 +30,7 @@ import {
 } from './UserProfile.styles';
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
+import {VenueDisplay} from "../components/VenueDisplay";
 
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -108,12 +109,9 @@ export const UserProfile = () => {
         return eventA.StartDate.valueOf() - eventB.StartDate.valueOf();
     };
 
-    const getEventVenueName = (eventId: string): string => {
+    const getEventVenueId = (eventId: string): string => {
         const event = events.find(e => e.Id === eventId);
-        if (!event) return '';
-
-        const venue = venues.find(v => v.id === event.VenueId);
-        return venue ? venue.name : 'Unknown Venue';
+        return event?.VenueId ?? '';
     };
 
     const compareTicketsByEventDateThenSeatNumber = (ticketA: Ticket, ticketB: Ticket): number => {
@@ -198,7 +196,7 @@ export const UserProfile = () => {
                                 <TicketMeta>
                                     <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
                                     <TicketDetail>{getEventDate(ticket.EventId)}</TicketDetail>
-                                    <TicketDetail>{getEventVenueName(ticket.EventId)}</TicketDetail>
+                                    <TicketDetail><VenueDisplay venues={venues} venueId={getEventVenueId(ticket.EventId)} /></TicketDetail>
                                 </TicketMeta>
                             </TicketCard>
                         ))}

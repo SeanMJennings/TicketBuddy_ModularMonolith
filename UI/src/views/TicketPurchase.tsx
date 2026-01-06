@@ -27,6 +27,7 @@ import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import { useAuth } from 'react-oidc-context';
+import { VenueDisplay } from '../components/VenueDisplay';
 
 interface LocationState {
   selectedTickets: Ticket[];
@@ -50,11 +51,6 @@ export const TicketPurchase = () => {
   useEffect(() => {
     getVenues().then(setVenues).catch(() => {});
   }, []);
-
-  const getVenueName = (venueId: string): string => {
-    const venue = venues.find(v => v.id === venueId);
-    return venue ? venue.name : 'Unknown Venue';
-  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -137,7 +133,7 @@ export const TicketPurchase = () => {
             <EventDetails>
               <EventName>{event.EventName}</EventName>
               <EventDate>{formatDate(event.StartDate.toString())} - {formatDate(event.EndDate.toString())}</EventDate>
-              <EventVenue>Venue: {getVenueName(event.VenueId)}</EventVenue>
+              <EventVenue>Venue: <VenueDisplay venues={venues} venueId={event.VenueId} /></EventVenue>
             </EventDetails>
 
             <TicketsList>

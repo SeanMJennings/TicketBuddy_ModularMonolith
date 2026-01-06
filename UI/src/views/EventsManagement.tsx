@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {EventItem, EventList, PageTitle, PageContainer, ActionBar, Container} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 import { useAuth } from 'react-oidc-context';
+import {VenueDisplay} from "../components/VenueDisplay.tsx";
 
 type EventFormData = {
     eventName: string;
@@ -69,11 +70,6 @@ export const ListEvents = () => {
             });
     },[]);
 
-    const getVenueName = (venueId: string): string => {
-        const venue = venues.find(v => v.id === venueId);
-        return venue ? venue.name : 'Unknown Venue';
-    };
-
     return (
         <>
             <PageContainer>
@@ -94,7 +90,7 @@ export const ListEvents = () => {
                                 <EventContent>
                                     <h2>{event.EventName}</h2>
                                     <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
-                                    <p>Venue: {getVenueName(event.VenueId)}</p>
+                                    <p>Venue: <VenueDisplay venues={venues} venueId={event.VenueId} /></p>
                                 </EventContent>
                                 <EventActions>
                                     <Link to={`edit/${event.Id}`}>

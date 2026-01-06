@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser, isALoggedInCustomer} from "../oidc/key-cloak-user.extensions.ts";
+import {VenueDisplay} from "../components/VenueDisplay.tsx";
 
 export const Home = () => {
     const [events, setEvents] = useState<Event[]>([]);
@@ -31,11 +32,6 @@ export const Home = () => {
             });
     },[]);
 
-    const getVenueName = (venueId: string): string => {
-        const venue = venues.find(v => v.id === venueId);
-        return venue ? venue.name : 'Unknown Venue';
-    };
-
     const handleFindTickets = (eventId: string) => {
         navigate(`/tickets/${eventId}`);
     };
@@ -52,7 +48,7 @@ export const Home = () => {
                             <div>
                                 <h2>{event.EventName}</h2>
                                 <p>{event.StartDate.format('MMMM Do YYYY, h:mm A')} to {event.EndDate.format('MMMM Do YYYY, h:mm A')}</p>
-                                <p>Venue: {getVenueName(event.VenueId)}</p>
+                                <p>Venue: <VenueDisplay venues={venues} venueId={event.VenueId} /></p>
                                 {isALoggedInCustomer(user) && (event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>))}
                             </div>
                         </EventItem>

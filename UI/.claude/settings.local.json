@@ -5,7 +5,8 @@
       "Bash(npm install:*)",
       "Bash(npm test:*)",
       "Bash(git check-ignore:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

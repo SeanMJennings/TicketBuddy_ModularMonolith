@@ -1,4 +1,4 @@
-﻿import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     AddIcon,
     BackIcon,
@@ -10,8 +10,10 @@ import {
     Label,
     Select,
 } from './EventsManagement.styles.tsx';
-import {ConvertVenueToString, type Event, Venue} from '../domain/event.ts';
+import {type Event} from '../domain/event.ts';
+import {type Venue} from '../domain/venue.ts';
 import {getEventById, getEvents, postEvent, putEvent,} from "../api/events.api.ts";
+import {getVenues} from "../api/venues.api.ts";
 import moment from 'moment'
 import {Link, Outlet, Route, Routes, useNavigate, useParams} from "react-router-dom";
 import {Button} from "../components/Button.styles.tsx";
@@ -25,7 +27,7 @@ type EventFormData = {
     eventName: string;
     startDateTime: string;
     endDateTime: string;
-    venue: Venue;
+    venueId: string;
     price: number;
 };
 
@@ -33,7 +35,7 @@ const initialFormData: EventFormData = {
     eventName: '',
     startDateTime: '',
     endDateTime: '',
-    venue: Venue.O2ArenaLondon,
+    venueId: '',
     price: 0,
 };
 
@@ -52,16 +54,25 @@ export const EventsManagement = () => {
 
 export const ListEvents = () => {
     const [events, setEvents] = useState<Event[]>([]);
+    const [venues, setVenues] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getEvents().then(data => {
-            setEvents(data);
-            setLoading(false);
-        }).catch(() => {
-            setLoading(false);
-        });
+        Promise.all([getEvents(), getVenues()])
+            .then(([eventsData, venuesData]) => {
+                setEvents(eventsData);
+                setVenues(venuesData);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     },[]);
+
+    const getVenueName = (venueId: string): string => {
+        const venue = venues.find(v => v.id === venueId);
+        return venue ? venue.name : 'Unknown Venue';
+    };
 
     return (
         <>
@@ -83,7 +94,7 @@ export const ListEvents = () => {
                                 <EventContent>
                                     <h2>{event.EventName}</h2>
                                     <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
-                                    <p>Venue: {ConvertVenueToString(event.Venue)}</p>
+                                    <p>Venue: {getVenueName(event.VenueId)}</p>
                                 </EventContent>
                                 <EventActions>
                                     <Link to={`edit/${event.Id}`}>
@@ -107,6 +118,7 @@ interface EventFormProps {
 
 export const EventForm = ({ mode }: EventFormProps) => {
     const [formData, setFormData] = useState<EventFormData>(initialFormData);
+    const [venues, setVenues] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -114,26 +126,26 @@ export const EventForm = ({ mode }: EventFormProps) => {
     const auth = useAuth();
 
     useEffect(() => {
+        getVenues().then(setVenues).catch(() => {});
+    }, []);
+
+    useEffect(() => {
         if (isEditMode && id) {
             setLoading(true);
-            const fetchEventDetails = async () => {
-                getEventById(id).then(event => {
+            getEventById(id).then(event => {
                 setFormData({
                     eventName: event.EventName,
                     startDateTime: moment(event.StartDate).format('YYYY-MM-DDTHH:mm'),
                     endDateTime: moment(event.EndDate).format('YYYY-MM-DDTHH:mm'),
-                    venue: event.Venue,
+                    venueId: event.VenueId,
                     price: event.Price,
                 });
                 setLoading(false);
-                }).catch(() => {
-                    toast.error('Failed to fetch event details');
-                    setLoading(false);
-                    navigate('/events-management');
-                });
-            };
-
-            fetchEventDetails();
+            }).catch(() => {
+                toast.error('Failed to fetch event details');
+                setLoading(false);
+                navigate('/events-management');
+            });
         }
     }, [id, isEditMode, navigate]);
 
@@ -157,7 +169,7 @@ export const EventForm = ({ mode }: EventFormProps) => {
 
             const apiCall = isEditMode && id
                 ? putEvent(id, eventData, auth.user?.access_token ?? '')
-                : postEvent({ ...eventData, Venue: formData.venue }, auth.user?.access_token ?? '');
+                : postEvent({ ...eventData, VenueId: formData.venueId }, auth.user?.access_token ?? '');
 
             apiCall.then(() => {
                 setFormData(initialFormData);
@@ -175,7 +187,7 @@ export const EventForm = ({ mode }: EventFormProps) => {
     };
 
     const isFormValid = () => {
-        return formData.eventName && formData.startDateTime && formData.endDateTime && formData.venue;
+        return formData.eventName && formData.startDateTime && formData.endDateTime && formData.venueId;
     };
 
     return (
@@ -230,17 +242,18 @@ export const EventForm = ({ mode }: EventFormProps) => {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label htmlFor="venue">Venue</Label>
+                        <Label htmlFor="venueId">Venue</Label>
                         <Select
-                            id="venue"
-                            name="venue"
-                            value={formData.venue}
-                            onChange={(e) => setFormData({ ...formData, venue: e.target.value as Venue })}
+                            id="venueId"
+                            name="venueId"
+                            value={formData.venueId}
+                            onChange={(e) => setFormData({ ...formData, venueId: e.target.value })}
                             disabled={isEditMode}
                         >
-                            {Object.values(Venue).map((venue) => (
-                                <option key={venue} value={venue}>
-                                    {ConvertVenueToString(venue)}
+                            <option value="">Select a venue</option>
+                            {venues.map((venue) => (
+                                <option key={venue.id} value={venue.id}>
+                                    {venue.name}
                                 </option>
                             ))}
                         </Select>

@@ -1,4 +1,4 @@
-import {type Event, Venue} from '../domain/event';
+import type {Event} from '../domain/event';
 import {type OidcUser, type User, UserType} from "../domain/user.ts";
 import moment from "moment";
 import type {Ticket} from "../domain/ticket.ts";
@@ -14,7 +14,7 @@ export const Events : Event[] = [
         EventName: "Concert at O2 Arena",
         StartDate: moment(new Date().setDate(new Date().getDate() + 1)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 1 + 2)),
-        Venue: Venue.EmiratesOldTraffordManchester,
+        VenueId: "v1-uuid-0000-0000-000000000001",
         Price: 50.00,
         IsSoldOut: false
     },
@@ -23,7 +23,7 @@ export const Events : Event[] = [
         EventName: "Football Match at Wembley Stadium",
         StartDate: moment(new Date().setDate(new Date().getDate() + 2)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 2 + 3)),
-        Venue: Venue.WembleyStadiumLondon,
+        VenueId: "v2-uuid-0000-0000-000000000002",
         Price: 75.00,
         IsSoldOut: true
     },
@@ -32,7 +32,7 @@ export const Events : Event[] = [
         EventName: "Basketball Game at Manchester Arena",
         StartDate: moment(new Date().setDate(new Date().getDate() + 3)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 3 + 1)),
-        Venue: Venue.ManchesterArena,
+        VenueId: "v2-uuid-0000-0000-000000000002",
         Price: 60.00,
         IsSoldOut: false
     },
@@ -41,7 +41,7 @@ export const Events : Event[] = [
         EventName: "Concert at Utilita Arena Birmingham",
         StartDate: moment(new Date().setDate(new Date().getDate() + 4)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 4 + 1)),
-        Venue: Venue.UtilitaArenaBirmingham,
+        VenueId: "v3-uuid-0000-0000-000000000003",
         Price: 55.00,
         IsSoldOut: false
     },
@@ -50,7 +50,7 @@ export const Events : Event[] = [
         EventName: "Theatre Show at SSE Hydro Glasgow",
         StartDate: moment(new Date().setDate(new Date().getDate() + 5)),
         EndDate: moment(new Date().setDate(new Date().getDate() + 5 + 1)),
-        Venue: Venue.UtilitaArenaBirmingham,
+        VenueId: "v1-uuid-0000-0000-000000000001",
         Price: 65.00,
         IsSoldOut: false
     }

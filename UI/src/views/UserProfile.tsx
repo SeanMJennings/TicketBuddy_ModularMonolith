@@ -2,8 +2,10 @@
 import {Link} from 'react-router-dom';
 import {getTicketsForUser} from '../api/tickets.api';
 import {getEvents} from '../api/events.api';
+import {getVenues} from '../api/venues.api';
 import {type Ticket} from '../domain/ticket';
-import {type Event, ConvertVenueToString} from '../domain/event';
+import {type Event} from '../domain/event';
+import {type Venue} from '../domain/venue';
 import {Container, PageTitle, ActionBar} from './Common.styles';
 import {ContentLoading} from '../components/LoadingContainers.styles';
 import {Button} from '../components/Button.styles';
@@ -32,6 +34,7 @@ import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [events, setEvents] = useState<Event[]>([]);
+    const [venues, setVenues] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(true);
 
     const auth = useAuth();
@@ -45,11 +48,13 @@ export const UserProfile = () => {
 
         Promise.all([
             getTicketsForUser(auth.user?.access_token),
-            getEvents()
+            getEvents(),
+            getVenues()
         ])
-            .then(([ticketsData, eventsData]) => {
+            .then(([ticketsData, eventsData, venuesData]) => {
                 setTickets(ticketsData);
                 setEvents(eventsData);
+                setVenues(venuesData);
                 setLoading(false);
             })
             .catch(() => {
@@ -107,7 +112,8 @@ export const UserProfile = () => {
         const event = events.find(e => e.Id === eventId);
         if (!event) return '';
 
-        return ConvertVenueToString(event.Venue);
+        const venue = venues.find(v => v.id === event.VenueId);
+        return venue ? venue.name : 'Unknown Venue';
     };
 
     const compareTicketsByEventDateThenSeatNumber = (ticketA: Ticket, ticketB: Ticket): number => {

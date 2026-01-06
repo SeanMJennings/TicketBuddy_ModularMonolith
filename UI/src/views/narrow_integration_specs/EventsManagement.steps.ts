@@ -18,20 +18,21 @@ import {
     updateEventFormIsRendered,
     venueFieldIsDisabled
 } from "./EventsManagement.page.tsx";
-import { Venue } from "../../domain/event.ts";
 import {waitUntil} from "../../testing/utilities.ts";
-import {Events} from "../../testing/data.ts";
+import {Events, Venues} from "../../testing/data.ts";
 
 const mockServer = MockServer.New();
 let wait_for_post: () => boolean;
 let wait_for_put: () => boolean;
 let wait_for_get_events: () => boolean;
 let wait_for_get_event: () => boolean;
+let wait_for_get_venues: () => boolean;
 
 beforeEach(() => {
     mockServer.reset();
     wait_for_get_events = mockServer.get("/events", Events);
     wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, Events[0]);
+    wait_for_get_venues = mockServer.get("/venues", Venues);
     wait_for_post = mockServer.post("/events", {});
     wait_for_put = mockServer.put(`/events/${Events[0].Id}`, {});
     mockServer.start();
@@ -63,6 +64,7 @@ export async function should_render_event_creation_form() {
 
 export async function should_allow_user_to_create_new_event() {
     renderEventsManagement();
+    await waitUntil(wait_for_get_venues);
     await clickAddEventIcon();
     expect(createEventFormIsRendered()).toBeTruthy();
 
@@ -75,13 +77,13 @@ export async function should_allow_user_to_create_new_event() {
     const endEventDate = new Date(startEventDate);
     endEventDate.setDate(endEventDate.getDate() + 2);
     const endEventDateStringWithTime = endEventDate.toISOString().split("T")[0] + "T13:13";
-    const eventVenue = Venue.O2ArenaLondon;
+    const eventVenueId = Venues[0].id;
 
     await fillEventForm({
         eventName: eventName,
         startDate: startEventDateStringWithTime,
         endDate: endEventDateStringWithTime,
-        venue: eventVenue,
+        venueId: eventVenueId,
         Price: 45.00
     });
     await clickSubmitEventButtonToAddEvent();
@@ -91,7 +93,7 @@ export async function should_allow_user_to_create_new_event() {
         EventName: eventName,
         StartDate: startEventDate.toISOString().split("T")[0] + "T12:12:00" + ".000Z",
         EndDate: endEventDate.toISOString().split("T")[0] + "T13:13:00" + ".000Z",
-        Venue: eventVenue,
+        VenueId: eventVenueId,
         Price: "45"
     });
 }
@@ -99,6 +101,7 @@ export async function should_allow_user_to_create_new_event() {
 export async function should_navigate_back_to_events_list_when_back_button_is_clicked() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
     await clickAddEventIcon();
 
     expect(createEventFormIsRendered()).toBeTruthy();
@@ -106,6 +109,7 @@ export async function should_navigate_back_to_events_list_when_back_button_is_cl
 
     mockServer.reset();
     wait_for_get_events = mockServer.get("/events", Events);
+    wait_for_get_venues = mockServer.get("/venues", Venues);
     mockServer.start();
 
     await clickBackButton();
@@ -121,6 +125,7 @@ export async function should_navigate_back_to_events_list_when_back_button_is_cl
 export async function should_allow_user_to_edit_existing_event() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
 
     const eventToEdit = Events[0];
     expect(editButtonExistsForEvent(eventToEdit.EventName)).toBeTruthy();
@@ -141,7 +146,7 @@ export async function should_allow_user_to_edit_existing_event() {
         eventName: updatedEventName,
         startDate: startEventDateStringWithTime,
         endDate: endEventDateStringWithTime,
-        venue: eventToEdit.Venue,
+        venueId: eventToEdit.VenueId,
         Price: 50
     });
 
@@ -163,6 +168,7 @@ export async function should_allow_user_to_edit_existing_event() {
 export async function should_show_error_toast_when_event_update_fails() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
 
     const eventToEdit = Events[0];
     expect(editButtonExistsForEvent(eventToEdit.EventName)).toBeTruthy();
@@ -175,6 +181,7 @@ export async function should_show_error_toast_when_event_update_fails() {
         Message: "The request could not be correctly validated.",
         Errors: ["End date cannot be before start date"]
     };
+    wait_for_get_venues = mockServer.get("/venues", Venues);
     wait_for_put = mockServer.put(`/events/${eventToEdit.Id}`, errorResponse, 422);
     mockServer.start();
 
@@ -191,7 +198,7 @@ export async function should_show_error_toast_when_event_update_fails() {
         eventName: "Updated Event Name",
         startDate: startDateString,
         endDate: endDateString,
-        venue: eventToEdit.Venue,
+        venueId: eventToEdit.VenueId,
         Price: eventToEdit.Price
     });
 
@@ -204,6 +211,7 @@ export async function should_show_error_toast_when_event_update_fails() {
 export async function should_show_error_toast_when_event_creation_fails() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
 
     await clickAddEventIcon();
     expect(createEventFormIsRendered()).toBeTruthy();
@@ -213,6 +221,7 @@ export async function should_show_error_toast_when_event_creation_fails() {
         Message: "The request could not be correctly validated.",
         Errors: ["End date cannot be before start date"]
     };
+    wait_for_get_venues = mockServer.get("/venues", Venues);
     wait_for_post = mockServer.post("/events", errorResponse, 422, 400);
     mockServer.start();
 
@@ -229,7 +238,7 @@ export async function should_show_error_toast_when_event_creation_fails() {
         eventName: "Invalid Event",
         startDate: startDateString,
         endDate: endDateString,
-        venue: Venue.O2ArenaLondon,
+        venueId: Venues[0].id,
         Price: 30
     });
 
@@ -242,6 +251,7 @@ export async function should_show_error_toast_when_event_creation_fails() {
 export async function should_not_allow_venue_change_when_editing_event() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
 
     const eventToEdit = Events[0];
     expect(editButtonExistsForEvent(eventToEdit.EventName)).toBeTruthy();
@@ -265,7 +275,7 @@ export async function should_not_allow_venue_change_when_editing_event() {
         eventName: updatedEventName,
         startDate: startEventDateStringWithTime,
         endDate: endEventDateStringWithTime,
-        venue: eventToEdit.Venue,
+        venueId: eventToEdit.VenueId,
         Price: 50
     });
 

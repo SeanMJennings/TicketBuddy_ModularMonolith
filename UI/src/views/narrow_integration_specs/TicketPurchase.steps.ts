@@ -13,7 +13,7 @@ import {
 } from "./TicketPurchase.page.tsx";
 import { MockServer } from "../../testing/mock-server.ts";
 import { waitUntil } from "../../testing/utilities.ts";
-import {Events, OidcUsers, TicketsForFirstEvent} from "../../testing/data.ts";
+import {Events, OidcUsers, TicketsForFirstEvent, Venues} from "../../testing/data.ts";
 import { vi } from "vitest";
 import React from "react";
 
@@ -45,6 +45,7 @@ let wait_for_post_purchase: () => boolean;
 
 beforeEach(() => {
   mockServer.reset();
+  mockServer.get("venues", Venues);
   wait_for_post_purchase = mockServer.post(`/events/${event.Id}/tickets/purchase`, {});
   mockServer.start();
 });

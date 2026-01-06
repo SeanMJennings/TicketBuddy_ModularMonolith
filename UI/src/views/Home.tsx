@@ -1,6 +1,8 @@
 ﻿import {useEffect, useState} from "react";
 import {getEvents} from "../api/events.api";
-import {ConvertVenueToString, type Event} from "../domain/event";
+import {type Event} from "../domain/event";
+import {type Venue} from "../domain/venue";
+import {getVenues} from "../api/venues.api";
 import {Container, EventItem, EventList, PageTitle} from "./Common.styles.tsx";
 import {Button} from "../components/Button.styles.tsx";
 import {useNavigate} from "react-router-dom";
@@ -10,6 +12,7 @@ import {convertToTicketBuddyUser, isALoggedInCustomer} from "../oidc/key-cloak-u
 
 export const Home = () => {
     const [events, setEvents] = useState<Event[]>([]);
+    const [venues, setVenues] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -17,13 +20,21 @@ export const Home = () => {
     const user = convertToTicketBuddyUser(auth.user);
 
     useEffect(() => {
-        getEvents().then(data => {
-            setEvents(data);
-            setLoading(false);
-        }).catch(() => {
-            setLoading(false);
-        });
+        Promise.all([getEvents(), getVenues()])
+            .then(([eventsData, venuesData]) => {
+                setEvents(eventsData);
+                setVenues(venuesData);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
     },[]);
+
+    const getVenueName = (venueId: string): string => {
+        const venue = venues.find(v => v.id === venueId);
+        return venue ? venue.name : 'Unknown Venue';
+    };
 
     const handleFindTickets = (eventId: string) => {
         navigate(`/tickets/${eventId}`);
@@ -41,7 +52,7 @@ export const Home = () => {
                             <div>
                                 <h2>{event.EventName}</h2>
                                 <p>{event.StartDate.format('MMMM Do YYYY, h:mm A')} to {event.EndDate.format('MMMM Do YYYY, h:mm A')}</p>
-                                <p>Venue: {ConvertVenueToString(event.Venue)}</p>
+                                <p>Venue: {getVenueName(event.VenueId)}</p>
                                 {isALoggedInCustomer(user) && (event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>))}
                             </div>
                         </EventItem>

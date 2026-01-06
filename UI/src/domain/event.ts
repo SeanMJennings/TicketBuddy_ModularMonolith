@@ -5,7 +5,7 @@ export interface Event {
     EventName: string;
     StartDate: Moment;
     EndDate: Moment;
-    Venue : Venue;
+    VenueId: string;
     Price: number;
     IsSoldOut: boolean;
 }
@@ -14,7 +14,7 @@ export interface EventPayload {
     EventName: string;
     StartDate: Moment;
     EndDate: Moment;
-    Venue : Venue;
+    VenueId: string;
     Price: number
 }
 

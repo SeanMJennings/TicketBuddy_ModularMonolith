@@ -1,10 +1,12 @@
-﻿import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Button } from '../components/Button.styles';
 import { BackIcon } from './EventsManagement.styles';
 import { type Ticket } from '../domain/ticket';
-import {ConvertVenueToString, type Event} from '../domain/event';
+import { type Event } from '../domain/event';
+import { type Venue } from '../domain/venue';
+import { getVenues } from '../api/venues.api';
 import {
     PurchaseTitle,
     PurchaseSummary,
@@ -37,12 +39,22 @@ export const TicketPurchase = () => {
   const navigate = useNavigate();
   const [purchasing, setPurchasing] = useState(false);
   const [purchaseComplete, setPurchaseComplete] = useState(false);
+  const [venues, setVenues] = useState<Venue[]>([]);
 
   const auth = useAuth();
   const user = convertToTicketBuddyUser(auth.user);
 
   const state = location.state as LocationState;
   const { selectedTickets, event } = state || { selectedTickets: [], event: null };
+
+  useEffect(() => {
+    getVenues().then(setVenues).catch(() => {});
+  }, []);
+
+  const getVenueName = (venueId: string): string => {
+    const venue = venues.find(v => v.id === venueId);
+    return venue ? venue.name : 'Unknown Venue';
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -125,7 +137,7 @@ export const TicketPurchase = () => {
             <EventDetails>
               <EventName>{event.EventName}</EventName>
               <EventDate>{formatDate(event.StartDate.toString())} - {formatDate(event.EndDate.toString())}</EventDate>
-              <EventVenue>Venue: {ConvertVenueToString(event.Venue)}</EventVenue>
+              <EventVenue>Venue: {getVenueName(event.VenueId)}</EventVenue>
             </EventDetails>
 
             <TicketsList>

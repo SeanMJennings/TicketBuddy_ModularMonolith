@@ -1,7 +1,7 @@
 ﻿import {vi} from 'vitest';
 import {MockServer} from "../../testing/mock-server.ts";
 import {afterEach, beforeEach} from "vitest";
-import {AnOidcCustomerUser, Events} from "../../testing/data.ts";
+import {AnOidcCustomerUser, Events, Venues} from "../../testing/data.ts";
 import {
     clickFindTicketsButton,
     eventExists, findTicketsButtonExists,
@@ -51,6 +51,7 @@ beforeEach(() => {
     user = AnOidcCustomerUser;
     mockServer.reset();
     wait_for_get_events = mockServer.get("events", Events)
+    mockServer.get("venues", Venues);
     mockServer.start();
 });
 

@@ -13,8 +13,8 @@ import {
     getStatsCards,
 } from "./UserProfile.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
-import {Events, OidcUsers, Users} from "../../testing/data.ts";
-import {ConvertVenueToString, type Event} from "../../domain/event.ts"
+import {Events, OidcUsers, Users, Venues} from "../../testing/data.ts";
+import {type Event} from "../../domain/event.ts"
 import moment from "moment/moment";
 
 vi.resetModules();
@@ -57,6 +57,7 @@ beforeEach(() => {
     mockServer.reset();
     wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', []);
+    mockServer.get('venues', Venues);
     mockServer.start();
 });
 
@@ -120,6 +121,7 @@ export async function should_display_user_stats_when_tickets_exist() {
 export async function should_not_display_stats_when_no_tickets() {
     mockServer.reset();
     mockServer.get('events', []);
+    mockServer.get('venues', Venues);
     wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, []);
     mockServer.start();
 
@@ -133,6 +135,7 @@ export async function should_not_display_stats_when_no_tickets() {
 export async function should_display_event_names_in_tickets() {
     mockServer.reset();
     mockServer.get('events', []);
+    mockServer.get('venues', Venues);
     wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', Events);
     mockServer.start();
@@ -152,6 +155,7 @@ export async function should_display_event_date_and_venue_in_tickets() {
     mockServer.get('events', []);
     wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTickets);
     mockServer.get('events', Events);
+    mockServer.get('venues', Venues);
     mockServer.start();
 
     renderUserProfile();
@@ -169,11 +173,16 @@ export async function should_display_event_date_and_venue_in_tickets() {
         return startDate.format('DD MMM YYYY');
     };
 
+    const getVenueName = (venueId: string): string => {
+        const venue = Venues.find(v => v.id === venueId);
+        return venue ? venue.name : 'Unknown Venue';
+    };
+
     expect(ticketsList[0]).toContain(getEventDate(Events[0]));
-    expect(ticketsList[0]).toContain(ConvertVenueToString(Events[0].Venue));
+    expect(ticketsList[0]).toContain(getVenueName(Events[0].VenueId));
 
     expect(ticketsList[1]).toContain(getEventDate(Events[1]));
-    expect(ticketsList[1]).toContain(ConvertVenueToString(Events[1].Venue));
+    expect(ticketsList[1]).toContain(getVenueName(Events[1].VenueId));
 }
 
 export async function should_order_tickets_by_event_date_then_seat_number() {
@@ -214,7 +223,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
             EventName: "Tomorrow Concert",
             StartDate: "2024-12-06T19:00:00",
             EndDate: "2024-12-06T22:00:00",
-            Venue: 0,
+            VenueId: Venues[0].id,
             Price: 50
         },
         {
@@ -222,7 +231,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
             EventName: "Future Concert",
             StartDate: "2024-12-20T20:00:00",
             EndDate: "2024-12-20T23:00:00",
-            Venue: 1,
+            VenueId: Venues[1].id,
             Price: 75
         }
     ];
@@ -231,6 +240,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
     mockServer.get('events', []);
     wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, userTicketsUnordered);
     mockServer.get('events', events);
+    mockServer.get('venues', Venues);
     mockServer.start();
 
     renderUserProfile();

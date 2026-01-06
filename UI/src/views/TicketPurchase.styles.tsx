@@ -40,7 +40,8 @@ export const TicketItem = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--gray-100);
 `;
 
 export const TotalSection = styled.div`
@@ -50,6 +51,7 @@ export const TotalSection = styled.div`
   font-size: 1.2rem;
   margin-top: 1.5rem;
   padding-top: 1rem;
+  color: var(--gray-100);
 `;
 
 export const ActionBar = styled.div`

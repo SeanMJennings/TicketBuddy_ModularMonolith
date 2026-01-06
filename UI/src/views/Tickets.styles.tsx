@@ -55,13 +55,13 @@ export const Seat = styled.div<{ isbooked: string; isselected: string }>`
 
 export const ScreenArea = styled.div`
   height: 30px;
-  background-color: #ddd;
+  background-color: rgba(255, 255, 255, 0.1);
   margin-bottom: 2rem;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--gray-300);
   font-size: 0.8rem;
   letter-spacing: 1px;
 `;
@@ -70,6 +70,7 @@ export const PriceInfo = styled.div`
   text-align: center;
   margin: 1rem 0;
   font-weight: bold;
+  color: var(--gray-100);
 `;
 
 export const Legend = styled.div`
@@ -83,6 +84,7 @@ export const LegendItem = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
+  color: var(--gray-100);
 `;
 
 export const LegendColor = styled.div<{ color: string }>`
@@ -97,6 +99,7 @@ export const SelectionInfo = styled.div`
   margin: 1.5rem 0;
   padding: 1rem;
   border-radius: 5px;
+  color: var(--gray-100);
 `;
 
 export const CenteredButtonContainer = styled.div`

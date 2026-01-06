@@ -68,7 +68,7 @@ export const UserName = styled.h2`
 export const UserEmail = styled.p`
     font-size: 16px;
     margin: 0;
-    opacity: 0.8;
+    color: var(--gray-300);
 `;
 
 export const SectionTitle = styled.h3`
@@ -176,7 +176,8 @@ export const TicketDetail = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
-    
+    color: var(--gray-100);
+
     &::before {
         content: '•';
         color: rgba(16, 185, 129, 0.6);
@@ -186,22 +187,23 @@ export const TicketDetail = styled.div`
 
 export const EmptyState = styled.div`
     text-align: center;
-    
+    color: var(--gray-100);
+
     .emoji {
         font-size: 48px;
         margin-bottom: 16px;
         display: block;
     }
-    
+
     h4 {
         margin: 0 0 8px 0;
         font-size: 20px;
         font-weight: 600;
     }
-    
+
     p {
         margin: 0;
-        opacity: 0.8;
+        color: var(--gray-300);
         font-size: 16px;
     }
 `;
@@ -234,6 +236,6 @@ export const StatCard = styled.div`
     .stat-label {
         font-size: 14px;
         margin: 0;
-        opacity: 0.8;
+        color: var(--gray-300);
     }
 `;

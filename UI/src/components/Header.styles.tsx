@@ -107,7 +107,8 @@ export const UserIconContainer = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all var(--transition-normal);
     position: relative;
-    
+    color: var(--gray-100);
+
     &:hover {
         background: rgba(14, 165, 233, 0.1);
         border-color: var(--primary-500);
@@ -115,7 +116,7 @@ export const UserIconContainer = styled.div`
         box-shadow: var(--shadow-md);
         color: var(--primary-300);
     }
-    
+
     &:active {
         transform: translateY(0);
     }

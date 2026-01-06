@@ -7,25 +7,25 @@ import { VenueSchema, type VenuePayload } from "../../domain/venue";
 const mockServer = MockServer.New();
 
 const validVenueResponse = {
-    id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-    name: "The Grand Theater",
-    address: {
-        street: "123 Main Street",
-        city: "London",
-        postCode: "SW1A 1AA"
+    Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+    Name: "The Grand Theater",
+    Address: {
+        Street: "123 Main Street",
+        City: "London",
+        Postcode: "SW1A 1AA"
     },
-    capacity: 25
+    Capacity: 25
 };
 
 const anotherVenueResponse = {
-    id: "4f2504e0-4f89-11d3-9a0c-0305e82c3302",
-    name: "The Royal Hall",
-    address: {
-        street: "456 High Street",
-        city: "Manchester",
-        postCode: "M1 1AA"
+    Id: "4f2504e0-4f89-11d3-9a0c-0305e82c3302",
+    Name: "The Royal Hall",
+    Address: {
+        Street: "456 High Street",
+        City: "Manchester",
+        Postcode: "M1 1AA"
     },
-    capacity: 40
+    Capacity: 40
 };
 
 beforeEach(() => {
@@ -42,8 +42,8 @@ describe("Venues API", () => {
 
             await waitUntil(wasCalled);
             expect(venues).toHaveLength(2);
-            expect(venues[0].name).toBe("The Grand Theater");
-            expect(venues[1].name).toBe("The Royal Hall");
+            expect(venues[0].Name).toBe("The Grand Theater");
+            expect(venues[1].Name).toBe("The Royal Hall");
         });
 
         it("should return validated venue objects", async () => {
@@ -63,22 +63,20 @@ describe("Venues API", () => {
 
             const venue = await getVenueById(venueId);
 
-            expect(venue.id).toBe(venueId);
-            expect(venue.name).toBe("The Grand Theater");
-            expect(venue.address.city).toBe("London");
+            expect(venue.Id).toBe(venueId);
+            expect(venue.Name).toBe("The Grand Theater");
+            expect(venue.Address.City).toBe("London");
         });
     });
 
     describe("createVenue", () => {
         it("should create a new venue", async () => {
             const payload: VenuePayload = {
-                name: "New Venue",
-                address: {
-                    street: "789 New Street",
-                    city: "Birmingham",
-                    postCode: "B1 1AA"
-                },
-                capacity: 50
+                Name: "New Venue",
+                Street: "789 New Street",
+                City: "Birmingham",
+                Postcode: "B1 1AA",
+                Capacity: 50
             };
             const jwt = "admin-token";
             const wasCalled = mockServer.post("/venues", undefined, 201);
@@ -94,13 +92,11 @@ describe("Venues API", () => {
         it("should update an existing venue", async () => {
             const venueId = "3f2504e0-4f89-11d3-9a0c-0305e82c3301";
             const payload: VenuePayload = {
-                name: "Updated Venue",
-                address: {
-                    street: "123 Main Street",
-                    city: "London",
-                    postCode: "SW1A 1AA"
-                },
-                capacity: 30
+                Name: "Updated Venue",
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA",
+                Capacity: 30
             };
             const jwt = "admin-token";
             const wasCalled = mockServer.put(`/venues/${venueId}`, {});

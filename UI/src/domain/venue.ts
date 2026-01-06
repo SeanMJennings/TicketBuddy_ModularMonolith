@@ -1,19 +1,24 @@
 import { z } from "zod";
 
 const AddressSchema = z.object({
-    street: z.string(),
-    city: z.string(),
-    postCode: z.string()
+    Street: z.string(),
+    City: z.string(),
+    Postcode: z.string()
 });
 
 export const VenuePayloadSchema = z.object({
-    name: z.string(),
-    address: AddressSchema,
-    capacity: z.number().int().min(1).max(50)
+    Name: z.string(),
+    Street: z.string(),
+    City: z.string(),
+    Postcode: z.string(),
+    Capacity: z.number().int().min(1).max(50)
 });
 
-export const VenueSchema = VenuePayloadSchema.extend({
-    id: z.string()
+export const VenueSchema = z.object({
+    Id: z.string(),
+    Name: z.string(),
+    Address: AddressSchema,
+    Capacity: z.number().int().min(1).max(50)
 });
 
 export type Address = z.infer<typeof AddressSchema>;

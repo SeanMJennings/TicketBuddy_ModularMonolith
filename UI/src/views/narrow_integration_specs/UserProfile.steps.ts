@@ -174,8 +174,8 @@ export async function should_display_event_date_and_venue_in_tickets() {
     };
 
     const getVenueName = (venueId: string): string => {
-        const venue = Venues.find(v => v.id === venueId);
-        return venue ? venue.name : 'Unknown Venue';
+        const venue = Venues.find(v => v.Id === venueId);
+        return venue ? venue.Name : 'Unknown Venue';
     };
 
     expect(ticketsList[0]).toContain(getEventDate(Events[0]));

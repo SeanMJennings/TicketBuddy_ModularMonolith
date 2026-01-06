@@ -77,7 +77,7 @@ export async function should_allow_user_to_create_new_event() {
     const endEventDate = new Date(startEventDate);
     endEventDate.setDate(endEventDate.getDate() + 2);
     const endEventDateStringWithTime = endEventDate.toISOString().split("T")[0] + "T13:13";
-    const eventVenueId = Venues[0].id;
+    const eventVenueId = Venues[0].Id;
 
     await fillEventForm({
         eventName: eventName,
@@ -238,7 +238,7 @@ export async function should_show_error_toast_when_event_creation_fails() {
         eventName: "Invalid Event",
         startDate: startDateString,
         endDate: endDateString,
-        venueId: Venues[0].id,
+        venueId: Venues[0].Id,
         Price: 30
     });
 

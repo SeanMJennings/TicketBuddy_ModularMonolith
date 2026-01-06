@@ -27,9 +27,9 @@ let wait_for_get_venue: () => boolean;
 beforeEach(() => {
     mockServer.reset();
     wait_for_get_venues = mockServer.get("/venues", Venues);
-    wait_for_get_venue = mockServer.get(`/venues/${Venues[0].id}`, Venues[0]);
+    wait_for_get_venue = mockServer.get(`/venues/${Venues[0].Id}`, Venues[0]);
     wait_for_post = mockServer.post("/venues", {});
-    wait_for_put = mockServer.put(`/venues/${Venues[0].id}`, {});
+    wait_for_put = mockServer.put(`/venues/${Venues[0].Id}`, {});
     mockServer.start();
 });
 
@@ -41,7 +41,7 @@ export async function should_display_list_of_venues() {
     renderVenuesManagement();
     await waitUntil(wait_for_get_venues);
     for (const venue of Venues) {
-        expect(venueExists(venue.name)).toBeTruthy();
+        expect(venueExists(venue.Name)).toBeTruthy();
     }
 }
 
@@ -65,13 +65,11 @@ export async function should_allow_user_to_create_new_venue() {
 
     const data = mockServer.content;
     expect(data).toEqual({
-        name: newVenue.name,
-        address: {
-            street: newVenue.street,
-            city: newVenue.city,
-            postCode: newVenue.postCode
-        },
-        capacity: 30
+        Name: newVenue.name,
+        Street: newVenue.street,
+        City: newVenue.city,
+        Postcode: newVenue.postCode,
+        Capacity: 30
     });
 }
 
@@ -93,7 +91,7 @@ export async function should_navigate_back_to_venues_list_when_back_button_is_cl
     await waitUntil(wait_for_get_venues);
 
     for (const venue of Venues) {
-        expect(venueExists(venue.name)).toBeTruthy();
+        expect(venueExists(venue.Name)).toBeTruthy();
     }
 }
 
@@ -102,18 +100,18 @@ export async function should_allow_user_to_edit_existing_venue() {
     await waitUntil(wait_for_get_venues);
 
     const venueToEdit = Venues[0];
-    expect(editButtonExistsForVenue(venueToEdit.name)).toBeTruthy();
+    expect(editButtonExistsForVenue(venueToEdit.Name)).toBeTruthy();
 
-    await clickEditButtonForVenue(venueToEdit.name);
+    await clickEditButtonForVenue(venueToEdit.Name);
     await waitUntil(wait_for_get_venue);
 
     expect(updateVenueFormIsRendered()).toBeTruthy();
 
     const updatedVenue = {
-        name: `${venueToEdit.name} - Updated`,
-        street: venueToEdit.address.street,
-        city: venueToEdit.address.city,
-        postCode: venueToEdit.address.postCode,
+        name: `${venueToEdit.Name} - Updated`,
+        street: venueToEdit.Address.Street,
+        city: venueToEdit.Address.City,
+        postCode: venueToEdit.Address.Postcode,
         capacity: 35
     };
 
@@ -123,13 +121,11 @@ export async function should_allow_user_to_edit_existing_venue() {
 
     const data = mockServer.content;
     expect(data).toEqual({
-        name: updatedVenue.name,
-        address: {
-            street: updatedVenue.street,
-            city: updatedVenue.city,
-            postCode: updatedVenue.postCode
-        },
-        capacity: 35
+        Name: updatedVenue.name,
+        Street: updatedVenue.street,
+        City: updatedVenue.city,
+        Postcode: updatedVenue.postCode,
+        Capacity: 35
     });
 
     await waitUntil(() => !updateVenueFormIsRendered());

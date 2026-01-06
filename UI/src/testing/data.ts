@@ -211,33 +211,33 @@ export const TicketBoughtForFirstEvent: Ticket[] = [
 
 export const Venues: VenueEntity[] = [
     {
-        id: "v1-uuid-0000-0000-000000000001",
-        name: "The Grand Theater",
-        address: {
-            street: "123 Main Street",
-            city: "London",
-            postCode: "SW1A 1AA"
+        Id: "v1-uuid-0000-0000-000000000001",
+        Name: "The Grand Theater",
+        Address: {
+            Street: "123 Main Street",
+            City: "London",
+            Postcode: "SW1A 1AA"
         },
-        capacity: 25
+        Capacity: 25
     },
     {
-        id: "v2-uuid-0000-0000-000000000002",
-        name: "Manchester Arena",
-        address: {
-            street: "21 Arena Way",
-            city: "Manchester",
-            postCode: "M3 1AR"
+        Id: "v2-uuid-0000-0000-000000000002",
+        Name: "Manchester Arena",
+        Address: {
+            Street: "21 Arena Way",
+            City: "Manchester",
+            Postcode: "M3 1AR"
         },
-        capacity: 50
+        Capacity: 50
     },
     {
-        id: "v3-uuid-0000-0000-000000000003",
-        name: "The Small Room",
-        address: {
-            street: "1 Tiny Lane",
-            city: "London",
-            postCode: "HA9 0WS"
+        Id: "v3-uuid-0000-0000-000000000003",
+        Name: "The Small Room",
+        Address: {
+            Street: "1 Tiny Lane",
+            City: "London",
+            Postcode: "HA9 0WS"
         },
-        capacity: 10
+        Capacity: 10
     }
 ]

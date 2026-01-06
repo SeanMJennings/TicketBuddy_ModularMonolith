@@ -81,15 +81,15 @@ export const ListVenues = () => {
                         {venues.map((venue, index) => (
                             <EventItem key={index} className="venue-item">
                                 <EventContent>
-                                    <h2>{venue.name}</h2>
+                                    <h2>{venue.Name}</h2>
                                     <p>
-                                        {venue.address.street}, {venue.address.city}, {venue.address.postCode}
+                                        {venue.Address.Street}, {venue.Address.City}, {venue.Address.Postcode}
                                     </p>
-                                    <p>Capacity: {venue.capacity}</p>
+                                    <p>Capacity: {venue.Capacity}</p>
                                 </EventContent>
                                 <EventActions>
-                                    <Link to={`edit/${venue.id}`}>
-                                        <Button data-testid={`edit-venue-${venue.name}`}>Edit Venue</Button>
+                                    <Link to={`edit/${venue.Id}`}>
+                                        <Button data-testid={`edit-venue-${venue.Name}`}>Edit Venue</Button>
                                     </Link>
                                 </EventActions>
                             </EventItem>
@@ -119,11 +119,11 @@ export const VenueForm = ({ mode }: VenueFormProps) => {
             getVenueById(id)
                 .then((venue) => {
                     setFormData({
-                        name: venue.name,
-                        street: venue.address.street,
-                        city: venue.address.city,
-                        postCode: venue.address.postCode,
-                        capacity: venue.capacity,
+                        name: venue.Name,
+                        street: venue.Address.Street,
+                        city: venue.Address.City,
+                        postCode: venue.Address.Postcode,
+                        capacity: venue.Capacity,
                     });
                     setLoading(false);
                 })
@@ -147,13 +147,11 @@ export const VenueForm = ({ mode }: VenueFormProps) => {
         e.preventDefault();
         if (isFormValid()) {
             const venuePayload: VenuePayload = {
-                name: formData.name,
-                address: {
-                    street: formData.street,
-                    city: formData.city,
-                    postCode: formData.postCode,
-                },
-                capacity: Number(formData.capacity),
+                Name: formData.name,
+                Street: formData.street,
+                City: formData.city,
+                Postcode: formData.postCode,
+                Capacity: Number(formData.capacity),
             };
 
             const apiCall =

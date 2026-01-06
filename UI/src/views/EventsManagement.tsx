@@ -248,8 +248,8 @@ export const EventForm = ({ mode }: EventFormProps) => {
                         >
                             <option value="">Select a venue</option>
                             {venues.map((venue) => (
-                                <option key={venue.id} value={venue.id}>
-                                    {venue.name}
+                                <option key={venue.Id} value={venue.Id}>
+                                    {venue.Name}
                                 </option>
                             ))}
                         </Select>

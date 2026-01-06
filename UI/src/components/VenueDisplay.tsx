@@ -6,8 +6,8 @@ type VenueDisplayProps = {
 };
 
 export const VenueDisplay = ({ venues, venueId }: VenueDisplayProps) => {
-    const venue = venues.find(v => v.id === venueId);
-    const venueName = venue ? venue.name : "Unknown Venue";
+    const venue = venues.find(v => v.Id === venueId);
+    const venueName = venue ? venue.Name : "Unknown Venue";
 
     return <span>{venueName}</span>;
 };

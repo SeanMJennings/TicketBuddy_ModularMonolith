@@ -4,33 +4,33 @@ import { VenueSchema, VenuePayloadSchema } from "../venue";
 describe("Venue Schema", () => {
     it("should parse a valid venue object", () => {
         const validVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater",
+            Address: {
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA"
             },
-            capacity: 25
+            Capacity: 25
         };
 
         const result = VenueSchema.safeParse(validVenue);
 
         expect(result.success).toBe(true);
         if (result.success) {
-            expect(result.data.id).toBe(validVenue.id);
-            expect(result.data.name).toBe(validVenue.name);
-            expect(result.data.address.street).toBe(validVenue.address.street);
-            expect(result.data.address.city).toBe(validVenue.address.city);
-            expect(result.data.address.postCode).toBe(validVenue.address.postCode);
-            expect(result.data.capacity).toBe(validVenue.capacity);
+            expect(result.data.Id).toBe(validVenue.Id);
+            expect(result.data.Name).toBe(validVenue.Name);
+            expect(result.data.Address.Street).toBe(validVenue.Address.Street);
+            expect(result.data.Address.City).toBe(validVenue.Address.City);
+            expect(result.data.Address.Postcode).toBe(validVenue.Address.Postcode);
+            expect(result.data.Capacity).toBe(validVenue.Capacity);
         }
     });
 
     it("should reject venue with missing required fields", () => {
         const invalidVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater"
         };
 
         const result = VenueSchema.safeParse(invalidVenue);
@@ -40,14 +40,14 @@ describe("Venue Schema", () => {
 
     it("should reject venue with negative capacity", () => {
         const invalidVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater",
+            Address: {
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA"
             },
-            capacity: -5
+            Capacity: -5
         };
 
         const result = VenueSchema.safeParse(invalidVenue);
@@ -57,14 +57,14 @@ describe("Venue Schema", () => {
 
     it("should reject venue with capacity above 50", () => {
         const invalidVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater",
+            Address: {
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA"
             },
-            capacity: 51
+            Capacity: 51
         };
 
         const result = VenueSchema.safeParse(invalidVenue);
@@ -74,14 +74,14 @@ describe("Venue Schema", () => {
 
     it("should accept venue with capacity of exactly 50", () => {
         const validVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater",
+            Address: {
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA"
             },
-            capacity: 50
+            Capacity: 50
         };
 
         const result = VenueSchema.safeParse(validVenue);
@@ -91,14 +91,14 @@ describe("Venue Schema", () => {
 
     it("should accept venue with capacity of exactly 1", () => {
         const validVenue = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "Small Venue",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "Small Venue",
+            Address: {
+                Street: "123 Main Street",
+                City: "London",
+                Postcode: "SW1A 1AA"
             },
-            capacity: 1
+            Capacity: 1
         };
 
         const result = VenueSchema.safeParse(validVenue);
@@ -110,35 +110,31 @@ describe("Venue Schema", () => {
 describe("VenuePayload Schema", () => {
     it("should parse a valid venue payload without id", () => {
         const validPayload = {
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
-            },
-            capacity: 25
+            Name: "The Grand Theater",
+            Street: "123 Main Street",
+            City: "London",
+            Postcode: "SW1A 1AA",
+            Capacity: 25
         };
 
         const result = VenuePayloadSchema.safeParse(validPayload);
 
         expect(result.success).toBe(true);
         if (result.success) {
-            expect(result.data.name).toBe(validPayload.name);
-            expect(result.data.address.street).toBe(validPayload.address.street);
-            expect(result.data.capacity).toBe(validPayload.capacity);
+            expect(result.data.Name).toBe(validPayload.Name);
+            expect(result.data.Street).toBe(validPayload.Street);
+            expect(result.data.Capacity).toBe(validPayload.Capacity);
         }
     });
 
     it("should reject payload that includes an id field", () => {
         const payloadWithId = {
-            id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
-            name: "The Grand Theater",
-            address: {
-                street: "123 Main Street",
-                city: "London",
-                postCode: "SW1A 1AA"
-            },
-            capacity: 25
+            Id: "3f2504e0-4f89-11d3-9a0c-0305e82c3301",
+            Name: "The Grand Theater",
+            Street: "123 Main Street",
+            City: "London",
+            Postcode: "SW1A 1AA",
+            Capacity: 25
         };
 
         const result = VenuePayloadSchema.strict().safeParse(payloadWithId);

@@ -55,6 +55,7 @@ beforeEach(() => {
     signInWasCalled = false;
     signOutWasCalled = false;
     mockServer.get("events", []);
+    mockServer.get("venues", []);
     mockServer.get(`tickets/users/me`, []);
     mockServer.start();
 });

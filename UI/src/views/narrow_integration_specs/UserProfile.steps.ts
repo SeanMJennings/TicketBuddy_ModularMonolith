@@ -223,7 +223,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
             EventName: "Tomorrow Concert",
             StartDate: "2024-12-06T19:00:00",
             EndDate: "2024-12-06T22:00:00",
-            VenueId: Venues[0].id,
+            VenueId: Venues[0].Id,
             Price: 50
         },
         {
@@ -231,7 +231,7 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
             EventName: "Future Concert",
             StartDate: "2024-12-20T20:00:00",
             EndDate: "2024-12-20T23:00:00",
-            VenueId: Venues[1].id,
+            VenueId: Venues[1].Id,
             Price: 75
         }
     ];

@@ -1,4 +1,4 @@
-# Ticket Buddy
+# TicketBuddy
 A simple ticket booking platform for events.
 
 ## Modular Monolith

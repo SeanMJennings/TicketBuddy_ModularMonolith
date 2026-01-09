@@ -60,7 +60,7 @@ The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/opt
 
 ## Observability
 
-Ticket Buddy uses OpenTelemetry to provide comprehensive observability across all services. 
+TicketBuddy uses OpenTelemetry to provide comprehensive observability across all services. 
 The modular telemetry data is visualized in the Aspire dashboard.
 
 ![Observability Architecture](./Documents/Observability.png)

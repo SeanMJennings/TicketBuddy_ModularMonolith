@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -9,7 +9,7 @@
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <NoWarn>RS1036;RS2008;RS1041</NoWarn>
-        <RootNamespace>Architecture.Events</RootNamespace>
+        <RootNamespace>Architecture.Tickets</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,27 +1,27 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Architecture.ProjectDependencies;
 using Microsoft.CodeAnalysis;
 
-namespace Architecture.Events.ProjectDependencies.Rules;
+namespace Architecture.Tickets.ProjectDependencies.Rules;
 
 internal sealed class InfrastructureLayerRule : LayerRuleBase
 {
     public override DiagnosticDescriptor Descriptor { get; } = new(
-        id: "ARCH_EVENT_004",
+        id: "ARCH_TICKETS_004",
         title: "Invalid Infrastructure layer reference",
-        messageFormat: "{0} cannot reference {1}. Infrastructure layer may only reference Application.Events, shared Infrastructure, Messaging.Events, and Messages projects.",
+        messageFormat: "{0} cannot reference {1}. Infrastructure layer may only reference Application.Tickets, shared Infrastructure/Domain, Messaging.Tickets, and Messages projects.",
         category: "Architecture",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    protected override string TargetAssembly => KnownAssemblies.InfrastructureEvents;
+    protected override string TargetAssembly => KnownAssemblies.InfrastructureTickets;
     protected override bool AllowMessagesProjects => true;
-    
+
     protected override IEnumerable<string> AllowedDirectReferences =>
     [
-        KnownAssemblies.ApplicationEvents,
-        KnownAssemblies.DomainEvents,
-        KnownAssemblies.MessagingEvents,
+        KnownAssemblies.ApplicationTickets,
+        KnownAssemblies.DomainTickets,
+        KnownAssemblies.MessagingTickets,
         KnownAssemblies.SharedInfrastructure,
         KnownAssemblies.SharedApplication,
         KnownAssemblies.SharedDomain

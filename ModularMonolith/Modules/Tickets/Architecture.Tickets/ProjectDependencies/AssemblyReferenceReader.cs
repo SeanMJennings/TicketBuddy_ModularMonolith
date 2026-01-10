@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using SharedReader = Architecture.ProjectDependencies.AssemblyReferenceReader;
 
-namespace Architecture.Events.ProjectDependencies;
+namespace Architecture.Tickets.ProjectDependencies;
 
 internal static class AssemblyReferenceReader
 {

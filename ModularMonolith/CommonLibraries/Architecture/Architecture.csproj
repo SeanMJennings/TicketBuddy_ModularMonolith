@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -9,7 +9,7 @@
         <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <NoWarn>RS1036;RS2008;RS1041</NoWarn>
-        <RootNamespace>Architecture.Events</RootNamespace>
+        <RootNamespace>Architecture</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,11 +19,6 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    </ItemGroup>
-
-    <!-- Include shared analyzer infrastructure as linked source files -->
-    <ItemGroup>
-      <Compile Include="..\..\..\CommonLibraries\Architecture\ProjectDependencies\*.cs" Link="ProjectDependencies\Shared\%(Filename)%(Extension)" />
     </ItemGroup>
 
 </Project>

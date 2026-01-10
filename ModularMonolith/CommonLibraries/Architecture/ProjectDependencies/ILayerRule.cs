@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Architecture.Events.ProjectDependencies.Rules;
+namespace Architecture.ProjectDependencies;
 
-internal interface ILayerRule
+public interface ILayerRule
 {
     DiagnosticDescriptor Descriptor { get; }
     bool AppliesTo(string assemblyName);

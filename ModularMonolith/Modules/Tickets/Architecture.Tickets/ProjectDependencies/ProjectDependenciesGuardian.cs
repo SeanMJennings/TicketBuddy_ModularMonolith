@@ -1,11 +1,11 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Linq;
-using Architecture.Events.ProjectDependencies.Rules;
 using Architecture.ProjectDependencies;
+using Architecture.Tickets.ProjectDependencies.Rules;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Architecture.Events.ProjectDependencies;
+namespace Architecture.Tickets.ProjectDependencies;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ProjectDependenciesGuardian : DiagnosticAnalyzer

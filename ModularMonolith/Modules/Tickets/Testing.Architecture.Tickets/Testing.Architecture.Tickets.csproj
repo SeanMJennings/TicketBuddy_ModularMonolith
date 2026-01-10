@@ -24,18 +24,10 @@
       <Compile Update="Domain\Domain.steps.cs">
         <DependentUpon>Domain.specs.cs</DependentUpon>
       </Compile>
-      <Compile Update="Modules\Module.steps.cs">
-        <DependentUpon>Module.specs.cs</DependentUpon>
-      </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
-      <ProjectReference Include="..\Controllers.Tickets\Controllers.Tickets.csproj" />
       <ProjectReference Include="..\Domain.Tickets\Domain.Tickets.csproj" />
-      <ProjectReference Include="..\Infrastructure.Tickets\Infrastructure.Tickets.csproj" />
-      <ProjectReference Include="..\Messaging.Tickets\Messaging.Tickets.csproj" />
-      <ProjectReference Include="..\Messages.Tickets\Messages.Tickets.csproj" />
     </ItemGroup>
 
 </Project>

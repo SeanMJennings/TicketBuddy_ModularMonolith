@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Architecture.ProjectDependencies;
 using Microsoft.CodeAnalysis;
 
 namespace Architecture.Events.ProjectDependencies.Rules;
@@ -6,7 +7,7 @@ namespace Architecture.Events.ProjectDependencies.Rules;
 internal sealed class MessagesLayerRule : LayerRuleBase
 {
     public override DiagnosticDescriptor Descriptor { get; } = new(
-        id: "ARCH005",
+        id: "ARCH_EVENT_005",
         title: "Invalid Messages layer reference",
         messageFormat: "{0} cannot reference {1}. Messages layer may only reference Domain.Events and shared Domain.",
         category: "Architecture",

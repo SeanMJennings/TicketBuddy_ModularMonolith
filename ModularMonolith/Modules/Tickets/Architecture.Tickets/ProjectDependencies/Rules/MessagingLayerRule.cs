@@ -1,26 +1,26 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Architecture.ProjectDependencies;
 using Microsoft.CodeAnalysis;
 
-namespace Architecture.Events.ProjectDependencies.Rules;
+namespace Architecture.Tickets.ProjectDependencies.Rules;
 
 internal sealed class MessagingLayerRule : LayerRuleBase
 {
     public override DiagnosticDescriptor Descriptor { get; } = new(
-        id: "ARCH_EVENT_006",
+        id: "ARCH_TICKETS_006",
         title: "Invalid Messaging layer reference",
-        messageFormat: "{0} cannot reference {1}. Messaging layer may only reference Application.Events, shared Application/Domain, and Messages projects.",
+        messageFormat: "{0} cannot reference {1}. Messaging layer may only reference Application.Tickets and Messages projects.",
         category: "Architecture",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    protected override string TargetAssembly => KnownAssemblies.MessagingEvents;
+    protected override string TargetAssembly => KnownAssemblies.MessagingTickets;
     protected override bool AllowMessagesProjects => true;
-    
+
     protected override IEnumerable<string> AllowedDirectReferences =>
     [
-        KnownAssemblies.ApplicationEvents,
-        KnownAssemblies.DomainEvents,
+        KnownAssemblies.ApplicationTickets,
+        KnownAssemblies.DomainTickets,
         KnownAssemblies.SharedApplication,
         KnownAssemblies.SharedDomain
     ];

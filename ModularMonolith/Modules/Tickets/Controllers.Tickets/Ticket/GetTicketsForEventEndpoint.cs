@@ -1,6 +1,6 @@
-﻿using Application.Tickets.Ticket.GetTicketsForEvent;
+﻿﻿using Application.Tickets.Ticket.GetTicketsForEvent;
 using Domain.Tickets.Ticket;
-using Keycloak.Domain;
+using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

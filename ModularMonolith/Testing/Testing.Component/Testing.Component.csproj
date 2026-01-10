@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Modules\Keycloak.Users\Domain.Keycloak\Domain.Keycloak.csproj" />
       <ProjectReference Include="..\..\Modules\Keycloak.Users\Infrastructure.Keycloak\Infrastructure.Keycloak.csproj" />
       <ProjectReference Include="..\..\CommonLibraries\Testing\Testing.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />

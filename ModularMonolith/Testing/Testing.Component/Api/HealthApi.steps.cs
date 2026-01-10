@@ -1,10 +1,10 @@
-﻿using System.Net;
+﻿﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Common.Environment;
 using Controllers.Events;
 using Controllers.Events.Requests;
-using Keycloak.Domain;
+using Application;
 using NUnit.Framework;
 using Shouldly;
 using Testcontainers.PostgreSql;

@@ -1,6 +1,6 @@
-﻿using Application.Tickets.Ticket.PurchaseTickets;
+﻿﻿using Application.Tickets.Ticket.PurchaseTickets;
 using Controllers.Tickets.Requests;
-using Keycloak.Domain;
+using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

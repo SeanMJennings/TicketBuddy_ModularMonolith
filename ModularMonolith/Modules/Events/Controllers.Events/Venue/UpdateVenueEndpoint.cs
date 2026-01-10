@@ -1,7 +1,7 @@
 using Application.Events.Venue;
 using Controllers.Events.Requests;
 using Domain.Events.Venue;
-using Keycloak.Domain;
+using Application;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

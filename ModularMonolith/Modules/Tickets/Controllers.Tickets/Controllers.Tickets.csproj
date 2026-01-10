@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
@@ -11,7 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Keycloak.Users\Domain.Keycloak\Domain.Keycloak.csproj" />
       <ProjectReference Include="..\Application.Tickets\Application.Tickets.csproj" />
     </ItemGroup>
 

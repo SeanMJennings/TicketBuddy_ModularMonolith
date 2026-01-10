@@ -1,10 +1,10 @@
-﻿using System.Net;
+﻿﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events.Requests;
 using Controllers.Tickets.Requests;
 using Domain.Tickets.Ticket;
-using Keycloak.Domain;
+using Application;
 using MassTransit.Testing;
 using Messages.Events;
 using Messaging.Keycloak.Users;

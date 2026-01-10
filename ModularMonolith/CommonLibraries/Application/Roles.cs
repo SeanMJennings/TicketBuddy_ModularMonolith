@@ -1,4 +1,4 @@
-﻿namespace Keycloak.Domain;
+﻿namespace Application;
 
 public static class Roles
 {

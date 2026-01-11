@@ -6,7 +6,8 @@
       "Bash(npm test:*)",
       "Bash(git check-ignore:*)",
       "Bash(git add:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)"
     ]
   }
 }

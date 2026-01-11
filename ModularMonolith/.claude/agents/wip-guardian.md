@@ -189,6 +189,44 @@ The `wip-guardian` actively enforces:
 - Commit after each refactoring
 - Document commits in session log
 
+### 2.1 Commit Message Standards
+
+**CRITICAL: Follow these commit message rules strictly.**
+
+**Format**: Short one-liner, conventional commit style, no fluff.
+
+**Rules:**
+1. **NO emojis** - Never use emojis in commit messages
+2. **NO AI attribution** - Never mention Claude, AI, Copilot, or any assistant in messages
+3. **One line only** - Keep it concise
+4. **Conventional commits** - Use `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`
+5. **Imperative mood** - "add validation" not "added validation"
+
+**Good examples:**
+```
+feat: add payment amount validation
+test: add negative amount test case
+fix: handle null response from API
+refactor: extract validation logic to service
+docs: update API documentation
+chore: update dependencies
+```
+
+**Bad examples:**
+```
+🎉 feat: add amazing new feature          # NO emojis
+feat: add validation (via Claude)         # NO AI attribution
+Added the payment validation feature      # Use imperative mood
+feat: add payment validation for negative amounts and also upper limits and refactor  # Too long
+```
+
+**Multi-step commits follow the pattern:**
+```
+test: add failing test for negative amounts
+feat: implement negative amount validation
+refactor: simplify validation conditionals
+```
+
 **Example enforcement:**
 
 ```markdown
@@ -196,7 +234,7 @@ The `wip-guardian` actively enforces:
 
 **Step 3**: Add validation for payment amounts
 
-**Status**: ⚠️ In Progress - Tests failing
+**Status**: In Progress - Tests failing
 
 **Action Required**:
 - Cannot mark this step complete until tests pass
@@ -204,8 +242,8 @@ The `wip-guardian` actively enforces:
 - Use tdd-guardian to verify RED-GREEN-REFACTOR compliance
 
 **Commits This Step:**
-- feat(test): add test for negative amounts (RED) ✅
-- feat: implement negative amount validation (GREEN) ✅
+- test: add test for negative amounts (RED)
+- feat: implement negative amount validation (GREEN)
 - Pending: refactor validation logic (REFACTOR)
 ```
 

@@ -75,6 +75,27 @@ For comprehensive code style guidelines including:
 
 See @~/.claude/docs/code-style.md
 
+## C# Conventions
+
+**Core principle**: Modern, concise C# with minimal ceremony. Enforced via `.editorconfig`.
+
+**Quick reference:**
+- Primary constructors preferred
+- Collection expressions: `[]` not `new List<T>()`
+- Target-typed `new()` when type is apparent
+- File-scoped namespaces
+- `readonly record struct` for domain events
+- `readonly struct` for value objects
+- `record` for DTOs/payloads
+- Prefer `private`/`internal` over `public`
+- Omit redundant `public` on interface members
+- Expression-bodied members for one-liners
+- One-liner `if` without braces
+- Pattern matching: `is null` not `== null`
+- No trailing newline at end of file
+
+See @~/.claude/docs/csharp-conventions.md
+
 ## Development Workflow
 
 **Core principle**: RED-GREEN-REFACTOR. TDD is the fundamental practice.

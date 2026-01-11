@@ -127,6 +127,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5
 		.claude\docs\ddd-summary.md = .claude\docs\ddd-summary.md
 		.claude\docs\testing.md = .claude\docs\testing.md
 		.claude\docs\workflow.md = .claude\docs\workflow.md
+		.claude\docs\csharp-conventions.md = .claude\docs\csharp-conventions.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}"

@@ -20,7 +20,7 @@ The `wip-guardian` agent maintains a living, breathing plan document for signifi
 - **Agent Orchestration**: References and ensures proper use of all other agents
 - **Context Preservation**: Prevents "where was I?" moments across sessions
 
-## Critical Distinction: wip-guardian vs docs-guardian
+## Critical Distinction: wip-guardian
 
 **wip-guardian** (this agent):
 - **Lifespan**: Temporary (days/weeks) - deleted when feature completes
@@ -30,15 +30,6 @@ The `wip-guardian` agent maintains a living, breathing plan document for signifi
 - **Content**: Living plan, current state, technical notes, agent checkpoints
 - **Updates**: Constantly - after each significant step
 - **Tone**: Informal, note-taking style, "what's next"
-
-**docs-guardian**:
-- **Lifespan**: Permanent - lives in repository forever
-- **Audience**: All users/developers, present and future
-- **Purpose**: Explain how to use, understand, contribute to the project
-- **Location**: `README.md`, `docs/`, API documentation
-- **Content**: Installation guides, API references, architecture decisions
-- **Updates**: Periodic - when features complete or APIs change
-- **Tone**: Professional, polished, world-class documentation
 
 **Example:**
 ```markdown
@@ -59,29 +50,6 @@ The `wip-guardian` agent maintains a living, breathing plan document for signifi
 **Notes**:
 - Discovered API returns null not empty array (learned)
 - Need to invoke refactor-scan after step 5
-```
-
-```markdown
-<!-- README.md (docs-guardian) -->
-## Payment Validation
-
-The payment processor validates amounts to ensure they meet business rules.
-
-### Validation Rules
-
-Payments must:
-- Be positive (greater than £0)
-- Not exceed £10,000 per transaction
-
-### Example
-
-```csharp
-var result = paymentProcessor.Process(new Payment { Amount = new Money(150) });
-if (!result.IsSuccess)
-{
-    Console.WriteLine(result.Error.Message);
-}
-```
 ```
 
 ## When to Invoke
@@ -175,7 +143,6 @@ When starting significant work, create `WIP.md` in project root:
 - [ ] refactor-scan: Assess refactoring after green tests
 - [ ] adr: Create ADRs for architectural decisions (as they arise)
 - [ ] learn: Document learnings in CLAUDE.md
-- [ ] docs-guardian: Update permanent docs when feature completes
 
 ## Next Steps
 
@@ -307,22 +274,6 @@ The `wip-guardian` references and ensures proper use of all agents:
 - Team already familiar
 
 **→ Invoke adr agent**: Create ADR-002 for validation library choice
-```
-
-**docs-guardian Integration:**
-```markdown
-## Overall Plan
-
-1. ~~Implement payment validation~~ ✅
-2. ~~Add upper/lower limits~~ ✅
-3. ~~Add card validation~~ ✅
-4. **→ Current: Create PR and update README**
-5. **→ Invoke docs-guardian** to ensure README reflects new validation
-
-**Permanent Docs to Update:**
-- README.md - Add payment validation section
-- API.md - Document validation error responses
-- docs/adr/ - Contains ADR-002 (created by adr agent)
 ```
 
 ### 4. Update on Learning
@@ -463,7 +414,6 @@ A WIP document is **temporary short-term memory** - it lives only while work is 
 - All planned steps complete
 - All tests passing
 - All PRs merged to main
-- Permanent docs updated (via docs-guardian)
 - Learnings captured (via learn agent)
 - ADRs created for architectural decisions (via adr agent)
 
@@ -488,7 +438,6 @@ git commit -m "docs: complete payment validation feature, remove WIP"
 - [x] All planned steps completed
 - [x] All tests passing ✅
 - [x] All PRs merged to main
-- [x] docs-guardian: README updated with new feature
 - [x] learn: Gotchas and patterns documented in CLAUDE.md
 - [x] adr agent: Created ADR-003 for queue selection
 - [x] No outstanding blockers
@@ -579,7 +528,6 @@ Add email notification system supporting templated emails, background queueing, 
 - [ ] tdd-guardian: Verify TDD compliance for each step (12 times)
 - [ ] refactor-scan: After each GREEN phase
 - [ ] learn: Document email template patterns, queue setup gotchas
-- [ ] docs-guardian: Update README, add EMAIL_NOTIFICATIONS.md when complete
 
 ## Next Steps
 
@@ -745,7 +693,6 @@ assistant: "All steps complete! Let me use the wip-guardian agent to verify comp
 - [x] refactor-scan: Code quality assessed, refactoring complete ✅
 - [x] adr: Created ADR-001 (SendGrid choice) and ADR-002 (BullMQ queue) ✅
 - [x] learn: Documented 3 gotchas in CLAUDE.md ✅
-- [x] docs-guardian: README and EMAIL_NOTIFICATIONS.md created ✅
 
 ## Deliverables
 
@@ -849,7 +796,6 @@ The `wip-guardian` enforces this workflow:
    └─→ Invoke wip-guardian: Session checkpoint
 
 7. Feature complete:
-   └─→ Invoke docs-guardian: Update permanent docs
    └─→ Invoke learn: Capture learnings
    └─→ Invoke wip-guardian: Verify completion
    └─→ DELETE WIP.md (standard) or archive (rare)

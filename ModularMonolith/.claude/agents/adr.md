@@ -139,14 +139,6 @@ assistant: "That's an important infrastructure decision. Let me use the adr agen
 [adr agent creates docs/adr/001-queue-infrastructure.md]
 ```
 
-**Invoked by docs-guardian:**
-```markdown
-[While documenting architecture, docs-guardian identifies undocumented decision]
-
-user: "Document the authentication system"
-docs-guardian: "I notice there's no ADR explaining why we chose JWT over sessions. Let me invoke the adr agent to create one."
-```
-
 ## ADR Format and Structure
 
 ADRs follow a standard format for consistency:
@@ -839,15 +831,6 @@ The `adr` agent is successful when:
 → Update WIP.md with ADR reference
 ```
 
-### With docs-guardian
-
-```markdown
-[docs-guardian writing architecture docs]
-→ Discovers undocumented architectural decision
-→ Invoke adr agent to create retroactive ADR
-→ Reference ADR in architecture docs
-```
-
 ### With learn agent
 
 ```markdown
@@ -868,7 +851,7 @@ The `adr` agent creates Architecture Decision Records for significant architectu
 - Identifies when decisions merit ADRs (not everything does)
 - Documents context, alternatives, trade-offs, and consequences
 - Maintains ADR index and numbering
-- Integrates with wip-guardian, docs-guardian, and learn agents
+- Integrates with wip-guardian and learn agents
 - Prevents "why did we do it this way?" confusion
 - Provides architectural continuity as team evolves
 

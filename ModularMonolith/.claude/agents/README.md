@@ -40,24 +40,6 @@ This directory contains specifications for specialized Claude Code agents that w
 
 ### Documentation & Knowledge Agents
 
-#### `docs-guardian`
-**Purpose**: Creates and maintains world-class permanent documentation.
-
-**Use proactively when**:
-- Creating new README, guides, or API docs
-- Planning user-facing documentation
-
-**Use reactively when**:
-- Reviewing existing documentation
-- Documentation needs improvement
-- Feature complete (update docs)
-
-**Core responsibility**: Permanent, user-facing, professional documentation (README, guides, API docs).
-
-**Key distinction**: Creates PERMANENT docs that live forever in the repository.
-
----
-
 #### `adr`
 **Purpose**: Documents significant architectural decisions with context and trade-offs.
 
@@ -161,7 +143,6 @@ wip-guardian (orchestrates)
     ├─→ refactor-scan (after GREEN tests)
     ├─→ adr (when architectural decision arises)
     ├─→ learn (when significant learning occurs)
-    └─→ docs-guardian (when feature complete)
 ```
 
 ### Typical Workflow
@@ -191,7 +172,6 @@ wip-guardian (orchestrates)
    - Invoke `wip-guardian`: Session checkpoint
 
 7. **Feature complete**
-   - Invoke `docs-guardian`: Update permanent documentation
    - Invoke `learn`: Capture final learnings
    - Invoke `wip-guardian`: Verify completion, **DELETE WIP.md**
 
@@ -199,8 +179,8 @@ wip-guardian (orchestrates)
 
 ### Documentation Types
 
-| Aspect | wip-guardian | adr | learn | docs-guardian |
-|--------|-------------|-----|-------|---------------|
+| Aspect | wip-guardian | adr | learn |
+|--------|-------------|-----|-------|--------------|
 | **Lifespan** | Temporary (days/weeks) | Permanent | Permanent | Permanent |
 | **Audience** | Current developer | Future developers | AI assistant + developers | Users + developers |
 | **Purpose** | Track progress | Explain "why" decisions | Explain "how" to work | Explain "what" and "how to use" |
@@ -228,12 +208,6 @@ wip-guardian (orchestrates)
 - "What patterns work well here?"
 - "How do I avoid this common mistake?"
 - → Answer: Permanent entry in `CLAUDE.md`
-
-**Use `docs-guardian`** for:
-- "How do I install this?"
-- "How do I use this API?"
-- "What features does this have?"
-- → Answer: Permanent `README.md`, guides, API docs
 
 **Use `use-case-data-patterns`** for:
 - "How does this feature work end-to-end?"
@@ -284,7 +258,7 @@ These agents work together to create a comprehensive development workflow:
 - **Analysis**: use-case-data-patterns maps use cases to implementation patterns
 - **Quality**: tdd-guardian ensures code quality
 - **Improvement**: refactor-scan optimizes code after tests pass
-- **Knowledge**: learn + adr + docs-guardian preserve knowledge
+- **Knowledge**: learn + adr preserve knowledge
 - **Progress**: wip-guardian prevents context loss during development
 
 Each agent is specialized, autonomous, and designed to be invoked at the right time to maintain high standards throughout the development process.

@@ -4,7 +4,7 @@
 
 **TEST-DRIVEN DEVELOPMENT IS NON-NEGOTIABLE.** Every single line of production code must be written in response to a failing test. No exceptions. This is not a suggestion or a preference - it is the fundamental practice that enables all other principles in this document.
 
-I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven testing and functional programming principles. All work should be done in small, incremental changes that maintain a working state throughout development.
+I follow Test-Driven Development (TDD) with a strong emphasis on behavior-driven testing and OOP programming principles with light-functional programming principles. All work should be done in small, incremental changes that maintain a working state throughout development.
 
 ## Quick Reference
 
@@ -36,7 +36,7 @@ For comprehensive testing guidelines including:
 - Test data patterns and factory functions with full examples
 - Achieving 100% coverage through business behavior
 - Testing tools (Dotnet test, NUnit, Moq)
-- Validating test data with schemas
+
 
 See @~/.claude/docs/testing.md
 
@@ -58,14 +58,13 @@ See @~/.claude/docs/architecture.md
 
 ## Code Style
 
-**Core principle**: Functional programming with immutable data. Self-documenting code.
+**Core principle**: OOP programming with immutable data and light functional programming. Self-documenting code.
 
 **Quick reference:**
 - No data mutation - immutable data structures only
-- Pure functions wherever possible
+- Pure functions wherever possible in OOP context
 - No nested if/else - use early returns or composition
 - No comments - code should be self-documenting
-- Prefer options objects over positional parameters
 
 For comprehensive code style guidelines including:
 - OOP programming patterns and when to use heavy abstractions
@@ -141,4 +140,4 @@ See @~/.claude/docs/working-with-claude.md
 
 ## Summary
 
-The key is to write clean, testable, functional code that evolves through small, safe increments. Every change should be driven by a test that describes the desired behavior, and the implementation should be the simplest thing that makes that test pass. When in doubt, favor simplicity and readability over cleverness.
+The key is to write clean, testable, OOP code that evolves through small, safe increments. Every change should be driven by a test that describes the desired behavior, and the implementation should be the simplest thing that makes that test pass. When in doubt, favor simplicity and readability over cleverness.

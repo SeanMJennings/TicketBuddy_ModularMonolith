@@ -101,6 +101,15 @@ See @~/.claude/docs/code-style.md
 - Semantic abstraction (meaning) over structural similarity (appearance)
 - DRY = Don't repeat knowledge, not code structure
 
+## Git Commits
+
+**FORBIDDEN: NEVER mention Claude in commits.** This includes:
+- No `Co-Authored-By: Claude` lines
+- No references to Claude or AI in commit messages
+- No AI attribution of any kind in git history
+
+Commit messages should be clean, professional, and describe only the changes made.
+
 For comprehensive workflow guidelines including:
 - TDD process with quality gates
 - Anti-patterns in tests to avoid

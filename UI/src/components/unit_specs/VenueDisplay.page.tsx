@@ -18,9 +18,14 @@ export function getDisplayedText(text: string) {
 }
 
 export function venueNameIsDisplayed(venueName: string): boolean {
-    return getDisplayedText(venueName) !== null;
+    return screen.queryByText(venueName, { exact: false }) !== null;
 }
 
 export function unknownVenueIsDisplayed(): boolean {
     return getDisplayedText("Unknown Venue") !== null;
+}
+
+export function venueAddressIsDisplayed(street: string, city: string, postcode: string): boolean {
+    const expectedAddress = `${street}, ${city}, ${postcode}`;
+    return screen.queryByText(expectedAddress, { exact: false }) !== null;
 }

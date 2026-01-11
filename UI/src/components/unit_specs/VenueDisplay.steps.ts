@@ -3,7 +3,8 @@ import {
     renderVenueDisplay,
     unmountVenueDisplay,
     venueNameIsDisplayed,
-    unknownVenueIsDisplayed
+    unknownVenueIsDisplayed,
+    venueAddressIsDisplayed
 } from "./VenueDisplay.page.tsx";
 import { Venues } from "../../testing/data";
 
@@ -33,4 +34,11 @@ export function should_display_venue_name_for_different_venues() {
     renderVenueDisplay(Venues, Venues[1].Id);
 
     expect(venueNameIsDisplayed(Venues[1].Name)).toBe(true);
+}
+
+export function should_display_venue_address_when_venue_exists() {
+    const venue = Venues[0];
+    renderVenueDisplay(Venues, venue.Id);
+
+    expect(venueAddressIsDisplayed(venue.Address.Street, venue.Address.City, venue.Address.Postcode)).toBe(true);
 }

@@ -31,6 +31,7 @@ import {
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import {VenueDisplay} from "../components/VenueDisplay";
+import {UserType} from "../domain/user.ts";
 
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -41,11 +42,20 @@ export const UserProfile = () => {
     const auth = useAuth();
     const user = convertToTicketBuddyUser(auth.user);
 
+    const isAdmin = user?.UserType === UserType.Administrator;
+
     useEffect(() => {
         if (!auth.user?.access_token) return;
 
-        const user = convertToTicketBuddyUser(auth.user);
-        if (!user) return;
+        const currentUser = convertToTicketBuddyUser(auth.user);
+        if (!currentUser) return;
+
+        if (currentUser.UserType === UserType.Administrator) {
+            getVenues()
+                .then(setVenues)
+                .finally(() => setLoading(false));
+            return;
+        }
 
         Promise.all([
             getTicketsForUser(auth.user?.access_token),
@@ -156,51 +166,55 @@ export const UserProfile = () => {
                     <UserEmail data-testid="user-email">{user.Email}</UserEmail>
                 </UserCard>
 
-                {!loading && tickets.length > 0 && (
-                    <StatsGrid>
-                        <StatCard data-testid="stat-card">
-                            <div className="stat-value">{tickets.length}</div>
-                            <div className="stat-label">Tickets Owned</div>
-                        </StatCard>
-                        <StatCard data-testid="stat-card">
-                            <div className="stat-value">{formatCurrency(calculateTotalSpent())}</div>
-                            <div className="stat-label">Total Spent</div>
-                        </StatCard>
-                        <StatCard data-testid="stat-card">
-                            <div className="stat-value">{formatCurrency(calculateTotalSpent() / tickets.length)}</div>
-                            <div className="stat-label">Average Price</div>
-                        </StatCard>
-                    </StatsGrid>
-                )}
+                {!isAdmin && (
+                    <>
+                        {!loading && tickets.length > 0 && (
+                            <StatsGrid>
+                                <StatCard data-testid="stat-card">
+                                    <div className="stat-value">{tickets.length}</div>
+                                    <div className="stat-label">Tickets Owned</div>
+                                </StatCard>
+                                <StatCard data-testid="stat-card">
+                                    <div className="stat-value">{formatCurrency(calculateTotalSpent())}</div>
+                                    <div className="stat-label">Total Spent</div>
+                                </StatCard>
+                                <StatCard data-testid="stat-card">
+                                    <div className="stat-value">{formatCurrency(calculateTotalSpent() / tickets.length)}</div>
+                                    <div className="stat-label">Average Price</div>
+                                </StatCard>
+                            </StatsGrid>
+                        )}
 
-                <SectionTitle>My Bookings</SectionTitle>
+                        <SectionTitle>My Bookings</SectionTitle>
 
-                {loading ? (
-                    <div className="loading-indicator">
-                        <ContentLoading />
-                    </div>
-                ) : tickets.length === 0 ? (
-                    <EmptyState>
-                        <span className="emoji">🎫</span>
-                        <h4>No tickets purchased yet</h4>
-                        <p>Start exploring events to purchase your first tickets!</p>
-                    </EmptyState>
-                ) : (
-                    <TicketsGrid>
-                        {getSortedTickets().map((ticket) => (
-                            <TicketCard key={ticket.Id} data-testid="ticket-item">
-                                <TicketHeader>
-                                    <SeatNumber>Seat {ticket.SeatNumber}</SeatNumber>
-                                    <TicketPrice>{formatCurrency(ticket.Price)}</TicketPrice>
-                                </TicketHeader>
-                                <TicketMeta>
-                                    <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
-                                    <TicketDetail>{getEventDate(ticket.EventId)}</TicketDetail>
-                                    <TicketDetail><VenueDisplay venues={venues} venueId={getEventVenueId(ticket.EventId)} /></TicketDetail>
-                                </TicketMeta>
-                            </TicketCard>
-                        ))}
-                    </TicketsGrid>
+                        {loading ? (
+                            <div className="loading-indicator">
+                                <ContentLoading />
+                            </div>
+                        ) : tickets.length === 0 ? (
+                            <EmptyState>
+                                <span className="emoji">🎫</span>
+                                <h4>No tickets purchased yet</h4>
+                                <p>Start exploring events to purchase your first tickets!</p>
+                            </EmptyState>
+                        ) : (
+                            <TicketsGrid>
+                                {getSortedTickets().map((ticket) => (
+                                    <TicketCard key={ticket.Id} data-testid="ticket-item">
+                                        <TicketHeader>
+                                            <SeatNumber>Seat {ticket.SeatNumber}</SeatNumber>
+                                            <TicketPrice>{formatCurrency(ticket.Price)}</TicketPrice>
+                                        </TicketHeader>
+                                        <TicketMeta>
+                                            <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
+                                            <TicketDetail>{getEventDate(ticket.EventId)}</TicketDetail>
+                                            <TicketDetail><VenueDisplay venues={venues} venueId={getEventVenueId(ticket.EventId)} /></TicketDetail>
+                                        </TicketMeta>
+                                    </TicketCard>
+                                ))}
+                            </TicketsGrid>
+                        )}
+                    </>
                 )}
             </ProfileContainer>
         </Container>

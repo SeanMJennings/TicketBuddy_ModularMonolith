@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using BDD;
 using Domain.DomainEvents;
 using Domain.Entities;
@@ -26,11 +27,12 @@ internal partial class DomainSpecs : Specification
     private void domain_primitives()
     {
         types = DomainAssembly.GetTypes()
-            .Where(t => t.Namespace != null && 
-                        t.Namespace.StartsWith("Domain.Tickets") 
-                        && !typeof(IDescribeADomainEvent).IsAssignableFrom(t)
-                        && t is { IsValueType: true, IsEnum: false });
+            .Where(t => t.Namespace != null &&
+                        t.Namespace.StartsWith("Domain") &&
+                        t is { IsValueType: true, IsEnum: false } &&
+                        !t.IsDefined(typeof(CompilerGeneratedAttribute), false));
     }
+
 
     private void entity_types_that_are_not_aggregate_roots()
     {

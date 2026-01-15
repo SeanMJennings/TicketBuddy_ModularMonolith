@@ -1,6 +1,14 @@
 # TicketBuddy
 A simple ticket booking platform for events.
 
+## Pre-requisites
+Run the setup script as Administrator to install all dependencies:
+```powershell
+.\setup.ps1
+```
+
+This installs: .NET 9 SDK, Docker, Node.js, .NET Aspire workload, and configures the GitHub NuGet feed.
+
 ## Modular Monolith
 Built in well-defined modules to be hosted as a single application. Modules communicate through asynchronous messages using MassTransit with RabbitMQ. 
 
@@ -10,13 +18,6 @@ In-process calls between modules are monolithic and not recommended.
 Strictly speaking, the common libraries are slightly against the modular nature but they help reduce code duplication and improve consistency across modules.
 
 A modular monolith is a good place for a team to start when building a new application.
-
-## Pre-requisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)
-- [Docker](https://www.docker.com/get-started)
-- [Node.js](https://nodejs.org/en/download/)
-- [.NET Aspire](https://dotnetaspire.com/)
-- Sign in to GitHub and authorise a package feed
 
 ## Ways to Run Locally
 - A: Ensure docker is running and then run the Host.Aspire project

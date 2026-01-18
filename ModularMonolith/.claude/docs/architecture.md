@@ -18,7 +18,7 @@ A practical, concise guide to architecture focused on simplicity, clarity, and h
 
 ## Hexagonal Architecture (Ports & Adapters)
 
-Hexagonal architecture isolates the application core (domain + use cases) from frameworks and infrastructure. The core defines ports (interfaces) and contains business rules; adapters implement ports and translate external protocols.
+Hexagonal architecture isolates the application core (domain + use cases) from frameworks and infrastructure. The core defines ports (interfaces) and contains business discount-policies; adapters implement ports and translate external protocols.
 
 - Primary (driving) ports: HTTP handlers, message handlers, CLIs, test harnesses.
 - Secondary (driven) ports: repositories, external service clients, file storage, notification services.
@@ -83,7 +83,7 @@ graph TD
 - Secondary adapters implement persistence, external APIs, and other infrastructure concerns; they implement repository and client interfaces defined by the core.
 - Keep translation/anti-corruption logic in adapters or dedicated anti-corruption services, not scattered through the core.
 
-## Domain-driven Naming (rules)
+## Domain-driven Naming (discount-policies)
 
 Name components by domain intent first, then communication pattern, then technical detail. This improves discoverability and reduces cognitive load.
 
@@ -94,16 +94,16 @@ Priority examples:
 
 Good:
 ```csharp
-public class PrescriptionSynchronizer
-public class PatientDataSynchronizer
-public class ClinicalAlertPublisher
-public class DrugInteractionPublisher
-public class PatientSafetyNotificationQC
-public class EnrollPatientCommand
+public class OrderSynchronizer
+public class CustomerDataSynchronizer
+public class FraudAlertPublisher
+public class PriceChangePublisher
+public class PaymentSecurityNotificationQC
+public class EnrollCustomerCommand
 ```
 Avoid: generic names like `DataSyncService`, `EventPublisher`, `ProcessDataCommand`.
 
-Method naming: prefer business intent — `EnrollNewPatient()`, `DispensePrescription()`, `ReviewClinicalAlert()`.
+Method naming: prefer business intent — `EnrollNewCustomer()`, `ProcessOrder()`, `ReviewFraudAlert()`.
 
 ## Testability (short)
 
@@ -123,21 +123,21 @@ We separate command (write) and query (read) responsibilities to optimize each s
 
 ```csharp
 // Example: Web API handler for commands
-public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
+public class CreateDiscountPolicyHandler : IHandlePostRequests<CreateDiscountPolicyRequest>
 {
-    private readonly IRuleRepository _repository;
+    private readonly IDiscountPolicyRepository _repository;
     private readonly IDomainEventPublisher _eventPublisher;
     
-    public async Task<PostResponse> HandleAsync(Request request, CreateRuleRequest payload)
+    public async Task<PostResponse> HandleAsync(Request request, CreateDiscountPolicyRequest payload)
     {
         // Create domain aggregate
-        var rule = new Rule(payload.Name, payload.Description);
+        var policy = new DiscountPolicy(payload.Name, payload.Description);
         
         // Persist via repository (to Cosmos DB)
         await _repository.AddAsync(rule);
         
         // Publish domain events (for read model updates)
-        await _eventPublisher.PublishAsync(new RuleCreatedEvent(rule.Id, rule.Name, rule.Description));
+        await _eventPublisher.PublishAsync(new DiscountPolicyCreatedEvent(policy.Id, policy.Name, policy.Description));
         
         return new PostResponse(HttpStatusCode.Created, rule);
     }
@@ -148,41 +148,41 @@ public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
 
 ```csharp
 // Example: Query application service
-public class RuleQueryService
+public class DiscountPolicyQueryService
 {
     private readonly IDbConnectionFactory _connectionFactory;
     
-    public RuleQueryService(IDbConnectionFactory connectionFactory)
+    public DiscountPolicyQueryService(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
     
-    public async Task<RuleReadModel> GetRuleAsync(RuleId id)
+    public async Task<DiscountPolicyReadModel> GetDiscountPolicyAsync(DiscountPolicyId id)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QuerySingleOrDefaultAsync<RuleReadModel>(
-            "SELECT Id, Name, Description, CreatedAt FROM Rules WHERE Id = @Id",
+        return await connection.QuerySingleOrDefaultAsync<DiscountPolicyReadModel>(
+            "SELECT Id, Name, Description, CreatedAt FROM DiscountPolicies WHERE Id = @Id",
             new { Id = id }
         );
     }
     
-    public async Task<PagedResults<RuleListItem>> SearchRulesAsync(string searchTerm, int page, int pageSize)
+    public async Task<PagedResults<DiscountPolicyListItem>> SearchDiscountPoliciesAsync(string searchTerm, int page, int pageSize)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
         
         // Complex queries with joins, filtering, pagination
-        var rules = await connection.QueryAsync<RuleListItem>(
-            @"SELECT r.Id, r.Name, r.CreatedAt, COUNT(p.Id) as PatientCount
-              FROM Rules r 
-              LEFT JOIN PatientRules p ON r.Id = p.RuleId 
-              WHERE r.Name LIKE @SearchTerm 
+        var discount-policies = await connection.QueryAsync<DiscountPolicyListItem>(
+            @"SELECT r.Id, r.Name, r.CreatedAt, COUNT(c.Id) as CustomerCount
+              FROM DiscountPolicies r
+              LEFT JOIN CustomerDiscountPolicies c ON r.Id = c.DiscountPolicyId
+              WHERE r.Name LIKE @SearchTerm
               GROUP BY r.Id, r.Name, r.CreatedAt
-              ORDER BY r.CreatedAt DESC 
+              ORDER BY r.CreatedAt DESC
               OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY",
             new { SearchTerm = $"%{searchTerm}%", Offset = page * pageSize, PageSize = pageSize }
         );
         
-        return new PagedResults<RuleListItem>(rules, page, pageSize);
+        return new PagedResults<DiscountPolicyListItem>(discount-policies, page, pageSize);
     }
 }
 ```
@@ -190,22 +190,22 @@ public class RuleQueryService
 ### Domain Event Handler (read model updates)
 
 ```csharp
-public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
+public class DiscountPolicyCreatedEventHandler : IHandleEvent<DiscountPolicyCreatedEvent>
 {
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly IExternalNotificationService _notificationService;
     
-    public async Task Handle(RuleCreatedEvent @event)
+    public async Task Handle(DiscountPolicyCreatedEvent @event)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
         
         // Update read model directly via SQL
         await connection.ExecuteAsync(
-            @"INSERT INTO Rules (Id, Name, Description, CreatedAt, Status) 
+            @"INSERT INTO DiscountPolicies (Id, Name, Description, CreatedAt, Status) 
               VALUES (@Id, @Name, @Description, @CreatedAt, @Status)",
             new { 
-                Id = @event.RuleId, 
-                Name = @event.RuleName,
+                Id = @event.DiscountPolicyId, 
+                Name = @event.PolicyName,
                 Description = @event.Description,
                 CreatedAt = @event.Timestamp,
                 Status = "Active"
@@ -214,13 +214,13 @@ public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
         
         // Update denormalized views
         await connection.ExecuteAsync(
-            @"UPDATE RuleSummary SET TotalRules = TotalRules + 1 
+            @"UPDATE DiscountPolicySummary SET TotalPolicies = TotalPolicies + 1 
               WHERE Category = @Category",
-            new { Category = @event.RuleCategory }
+            new { Category = @event.PolicyCategory }
         );
         
         // Cross-bounded context integration
-        await _notificationService.NotifyRuleCreated(@event.RuleId, @event.RuleName);
+        await _notificationService.NotifyDiscountPolicyCreated(@event.DiscountPolicyId, @event.PolicyName);
     }
 }
 ```
@@ -232,29 +232,29 @@ public class RuleCreatedEventHandler : IHandleEvent<RuleCreatedEvent>
 
 ```csharp
 // Example: Pure domain service
-public class DrugInteractionService
+public class FraudDetectionService
 {
-    public InteractionRisk AssessInteractionRisk(IEnumerable<Medication> medications)
+    public FraudRisk AssessFraudRisk(IEnumerable<Transaction> transactions)
     {
         // Pure business logic - no infrastructure dependencies
-        var interactions = new List<DrugInteraction>();
-        
-        foreach (var med1 in medications)
+        var indicators = new List<FraudIndicator>();
+
+        foreach (var txn1 in transactions)
         {
-            foreach (var med2 in medications.Where(m => m != med1))
+            foreach (var txn2 in transactions.Where(t => t != txn1))
             {
-                var interaction = CheckInteraction(med1, med2);
-                if (interaction.HasRisk)
-                    interactions.Add(interaction);
+                var indicator = CheckSuspiciousPattern(txn1, txn2);
+                if (indicator.HasRisk)
+                    indicators.Add(indicator);
             }
         }
-        
-        return CalculateOverallRisk(interactions);
+
+        return CalculateOverallRisk(indicators);
     }
-    
-    private DrugInteraction CheckInteraction(Medication med1, Medication med2)
+
+    private FraudIndicator CheckSuspiciousPattern(Transaction txn1, Transaction txn2)
     {
-        // Domain logic using business rules
+        // Domain logic using business discount-policies
         // No database calls - works with provided domain objects
     }
 }
@@ -267,21 +267,21 @@ public class DrugInteractionService
 
 ```csharp
 // Example: Anti-corruption layer
-public class ExternalPrescriptionService : IIntegrateWithExternalSystem
+public class ExternalPaymentService : IIntegrateWithExternalSystem
 {
     private readonly IDbConnectionFactory _connectionFactory;
-    private readonly IExternalPrescriptionApi _externalApi;
-    
-    public async Task SynchronizeExternalPrescription(ExternalPrescriptionEvent @event)
+    private readonly IExternalPaymentGatewayApi _externalApi;
+
+    public async Task SynchronizeExternalPayment(ExternalPaymentEvent @event)
     {
         // Translate external model to internal domain concepts
-        var internalPrescription = TranslateToInternalModel(@event.ExternalData);
-        
+        var internalPayment = TranslateToInternalModel(@event.ExternalData);
+
         // Update read models with translated data
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
-            "INSERT INTO Prescriptions (...) VALUES (...)",
-            internalPrescription
+            "INSERT INTO Payments (...) VALUES (...)",
+            internalPayment
         );
     }
 }
@@ -291,36 +291,36 @@ public class ExternalPrescriptionService : IIntegrateWithExternalSystem
 
 ```csharp
 // Web API Adapter (Command)
-public class CreateRuleHandler : IHandlePostRequests<CreateRuleRequest>
+public class CreateDiscountPolicyHandler : IHandlePostRequests<CreateDiscountPolicyRequest>
 {
-    private readonly IRuleRepository _repository;
+    private readonly IDiscountPolicyRepository _repository;
     
-    public async Task<PostResponse> HandleAsync(Request request, CreateRuleRequest payload)
+    public async Task<PostResponse> HandleAsync(Request request, CreateDiscountPolicyRequest payload)
     {
-        var rule = new Rule(payload.Name, payload.Description);
+        var policy = new DiscountPolicy(payload.Name, payload.Description);
         await _repository.AddAsync(rule);
         return new PostResponse(HttpStatusCode.Created, rule);
     }
 }
 
 // Web API Adapter (Query)
-public class GetRuleHandler : IHandleGetRequests
+public class GetDiscountPolicyHandler : IHandleGetRequests
 {
-    private readonly RuleQueryService _queryService;
+    private readonly DiscountPolicyQueryService _queryService;
     
     public async Task<object> HandleAsync(Request request)
     {
-        return await _queryService.GetRuleAsync(request.RuleId());
+        return await _queryService.GetDiscountPolicyAsync(request.DiscountPolicyId());
     }
 }
 
 // Message Adapter
-[Function("ProcessRuleUpdate")]
-public async Task ProcessRuleUpdate([ServiceBusTrigger("rules")] RuleUpdateMessage message)
+[Function("ProcessDiscountPolicyUpdate")]
+public async Task ProcessDiscountPolicyUpdate([ServiceBusTrigger("discount-policies")] DiscountPolicyUpdateMessage message)
 {
-    var repository = _serviceProvider.GetRequiredService<IRuleRepository>();
-    var rule = await repository.GetByIdAsync(message.RuleId);
-    rule.Update(message.Changes);
+    var repository = _serviceProvider.GetRequiredService<IDiscountPolicyRepository>();
+    var policy = await repository.GetByIdAsync(message.DiscountPolicyId);
+    policy.Update(message.Changes);
     await repository.UpdateAsync(rule);
 }
 
@@ -328,9 +328,9 @@ public async Task ProcessRuleUpdate([ServiceBusTrigger("rules")] RuleUpdateMessa
 [Test]
 public async Task rule_query_service_finds_rule()
 {
-    var queryService = new RuleQueryService(testConnectionFactory);
-    var rule = await queryService.GetRuleAsync(ruleId);
-    rule.Should().NotBeNull();
+    var queryService = new DiscountPolicyQueryService(testConnectionFactory);
+    var policy = await queryService.GetDiscountPolicyAsync(policyId);
+    policy.Should().NotBeNull();
 }
 ```
 
@@ -348,11 +348,11 @@ Leaky abstractions and embedding business logic in adapters are typical pitfalls
 ❌ Wrong:
 ```csharp
 // Business logic depends on Entity Framework
-public class RuleService
+public class DiscountPolicyService
 {
-    public async Task<Rule> GetRuleAsync(int id)
+    public async Task<DiscountPolicy> GetDiscountPolicyAsync(int id)
     {
-        return await _dbContext.Rules.FindAsync(id); // EF leaking into core
+        return await _dbContext.DiscountPolicies.FindAsync(id); // EF leaking into core
     }
 }
 ```
@@ -360,11 +360,11 @@ public class RuleService
 ✅ Correct:
 ```csharp
 // Business logic uses repository interface
-public class RuleService
+public class DiscountPolicyService
 {
-    private readonly IRuleRepository _repository;
+    private readonly IDiscountPolicyRepository _repository;
     
-    public async Task<Rule> GetRuleAsync(RuleId id)
+    public async Task<DiscountPolicy> GetDiscountPolicyAsync(DiscountPolicyId id)
     {
         return await _repository.GetByIdAsync(id); // Clean interface
     }
@@ -374,7 +374,7 @@ public class RuleService
 ❌ Wrong:
 ```csharp
 // Web handler directly using database context
-public class GetRuleHandler
+public class GetDiscountPolicyHandler
 {
     private readonly MyDbContext _dbContext; // Direct database dependency
 }
@@ -383,21 +383,21 @@ public class GetRuleHandler
 ✅ Correct:
 ```csharp
 // Web handler uses application service
-public class GetRuleHandler
+public class GetDiscountPolicyHandler
 {
-    private readonly IRuleService _ruleService; // Clean application service
+    private readonly IDiscountPolicyService _ruleService; // Clean application service
 }
 ```
 
 ❌ Wrong (business logic in controller):
 ```csharp
 [HttpPost]
-public async Task<IActionResult> CreateRule(CreateRuleRequest request)
+public async Task<IActionResult> CreateDiscountPolicy(CreateDiscountPolicyRequest request)
 {
     if (string.IsNullOrEmpty(request.Name)) return BadRequest();
     if (request.Name.Length > 100) return BadRequest();
     
-    var rule = new Rule(request.Name);
+    var policy = new DiscountPolicy(request.Name);
     await _repository.AddAsync(rule);
     return Ok(rule);
 }
@@ -406,9 +406,9 @@ public async Task<IActionResult> CreateRule(CreateRuleRequest request)
 ✅ Correct (delegate to core):
 ```csharp
 [HttpPost]
-public async Task<IActionResult> CreateRule(CreateRuleRequest request)
+public async Task<IActionResult> CreateDiscountPolicy(CreateDiscountPolicyRequest request)
 {
-    var rule = await _ruleService.CreateAsync(request); // All logic in core
+    var policy = await _ruleService.CreateAsync(request); // All logic in core
     return Ok(rule);
 }
 ```

@@ -8,72 +8,72 @@ This document outlines the testing standards and practices for projects. These s
 
 1. **File Organization**: Separate specifications from step implementations using partial classes.
    ```
-   FormularyStatusSpecs.cs    // Contains test scenarios and descriptive assertions
-   FormularyStatusSteps.cs    // Contains step implementations
+   AccountTypeSpecs.cs    // Contains test scenarios and descriptive assertions
+   AccountTypeSteps.cs    // Contains step implementations
    ```
 
 2. **Scenario Structure**: Use the `scenario()` method with Given-When-Then steps.
 
    ```csharp
    [Test]
-   public void formulary_status_must_have_text()
+   public void account_type_must_have_text()
    {
-      Given(no_formulary_status);
-      When(creating_a_formulary_status);
-      Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+      Given(no_account_type);
+      When(creating_a_account_type);
+      Then(() => informs("Account type is required and cannot exceed 100 characters."));
    }
    ```
 
 3. **Method Naming**: Use descriptive snake_case method names that express the behavior or state.
    ```csharp
    // In specs:
-   Given(no_formulary_status);
-   When(creating_a_formulary_status);
+   Given(no_account_type);
+   When(creating_a_account_type);
 
    // In step implementations:
-   private void no_formulary_status() { /* ... */ }
-   private void creating_a_formulary_status() { /* ... */ }
+   private void no_account_type() { /* ... */ }
+   private void creating_a_account_type() { /* ... */ }
    ```
 
 4. **Multiple Scenarios**: Group related scenarios within a single test method.
    ```csharp
    [Test]
-   public void formulary_status_cannot_exceed_100_characters()
+   public void account_type_cannot_exceed_100_characters()
    {
        scenario(() =>
        {
-           Given(a_formulary_status_of_100_characters);
-           When(creating_a_formulary_status);
+           Given(a_account_type_of_100_characters);
+           When(creating_a_account_type);
            Then(it_is_valid);
        });
 
        scenario(() =>
        {
-           Given(a_formulary_status_over_100_characters);
-           When(creating_a_formulary_status);
-           Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+           Given(a_account_type_over_100_characters);
+           When(creating_a_account_type);
+           Then(() => informs("Account type is required and cannot exceed 100 characters."));
        });
    }
    ```
 
 5. **Step Implementation**: Implement steps as private methods in the step class.
    ```csharp
-   private string formulary_status;
+   private string account_type;
 
-   private void no_formulary_status()
+   private void no_account_type()
    {
-       formulary_status = null;
+       account_type = null;
    }
 
-   private void creating_a_formulary_status()
+   private void creating_a_account_type()
    {
-       validating(() => new FormularyStatus(formulary_status));
+       validating(() => new AccountType(account_type));
    }
    ```
 
 6. **Common Steps Base Class**: Create base classes for common steps across related tests.
    ```csharp
-   public partial class AgedCriteriaSpecs : CommonCriteriaSteps<AgeRangeCriterion>
+   public partial class PriceTierCriteriaSpecs : CommonCriteriaSteps<PriceTierCriterion>
    {
        // Specific tests for aged criteria
    }
@@ -83,34 +83,34 @@ This document outlines the testing standards and practices for projects. These s
 
 1. **Exception Validation**: Use the `validating()` helper method to catch and validate exceptions.
    ```csharp
-   private void creating_a_formulary_status()
+   private void creating_a_account_type()
    {
-       validating(() => new FormularyStatus(formulary_status));
+       validating(() => new AccountType(account_type));
    }
    ```
 
 2. **Error Message Validation**: Use the `informs()` method to check for specific error messages.
    ```csharp
-   Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+   Then(() => informs("Account type is required and cannot exceed 100 characters."));
    ```
 
 3. **Multiple Validation Scenarios**: Test both valid and invalid inputs.
    ```csharp
    [Test]
-   public void formulary_status_must_have_text()
+   public void account_type_must_have_text()
    {
        scenario(() =>
        {
-           Given(no_formulary_status);
-           When(creating_a_formulary_status);
-           Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+           Given(no_account_type);
+           When(creating_a_account_type);
+           Then(() => informs("Account type is required and cannot exceed 100 characters."));
        });
 
        scenario(() =>
        {
-           Given(an_empty_formulary_status);
-           When(creating_a_formulary_status);
-           Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+           Given(an_empty_account_type);
+           When(creating_a_account_type);
+           Then(() => informs("Account type is required and cannot exceed 100 characters."));
        });
    }
    ```
@@ -125,17 +125,17 @@ This document outlines the testing standards and practices for projects. These s
 
 2. **Class and File Naming**: Use descriptive names with a "Specs" suffix.
    ```csharp
-   FormularyStatusSpecs.cs
-   AgedCriteriaSpecs.cs
+   AccountTypeSpecs.cs
+   PriceTierCriteriaSpecs.cs
    ```
 
 3. **Test Attributes**: Use `[TestFixture]` for test classes and `[Test]` for test methods.
    ```csharp
    [TestFixture]
-   public partial class FormularyStatusSpecs : Specification
+   public partial class AccountTypeSpecs : Specification
    {
        [Test]
-       public void formulary_status_must_have_text()
+       public void account_type_must_have_text()
        {
            // Test scenarios
        }
@@ -145,31 +145,31 @@ This document outlines the testing standards and practices for projects. These s
 4. **Test Methods**: Name test methods to clearly describe the behavior being tested.
    ```csharp
    [Test]
-   public void formulary_status_must_have_text()
+   public void account_type_must_have_text()
    
    [Test]
-   public void formulary_status_cannot_exceed_100_characters()
+   public void account_type_cannot_exceed_100_characters()
    ```
 
 5. **Obsolete Tests**: Mark obsolete tests with the `[Obsolete]` attribute and provide a reason.
    ```csharp
-   [Obsolete("Still used by Sphinx")]
+   [Obsolete("Still used by legacy system")]
    [Test]
-   public void legacy_aged_criteria_can_be_created()
+   public void legacy_price_tier_criteria_can_be_created()
    ```
 
 ## Test Data Preparation
 
 1. **Test Data Setup**: Use clear, descriptive methods to set up test data.
    ```csharp
-   private void a_formulary_status_of_100_characters()
+   private void a_account_type_of_100_characters()
    {
-       formulary_status = "".PadRight(100, 'a');
+       account_type = "".PadRight(100, 'a');
    }
 
-   private void a_formulary_status_over_100_characters()
+   private void a_account_type_over_100_characters()
    {
-       formulary_status = "".PadRight(101, 'a');
+       account_type = "".PadRight(101, 'a');
    }
    ```
 
@@ -184,14 +184,14 @@ This document outlines the testing standards and practices for projects. These s
 
 3. **Test State**: Store test state in private fields in the step implementation class.
    ```csharp
-   private string formulary_status;
+   private string account_type;
    ```
 
 ## Domain Specific Validation
 
 1. **Domain-Focused Assertions**: Create assertion methods that express domain concepts.
    ```csharp
-   private void is_is_for_aged(Aged expected)
+   private void is_for_price_tier(PriceTier expected)
    {
        // Implementation that checks if the criterion is for the expected age
    }
@@ -206,16 +206,16 @@ This document outlines the testing standards and practices for projects. These s
    ```csharp
    scenario(() =>
    {
-       Given(a_formulary_status_of_100_characters);  // Exactly at the limit
-       When(creating_a_formulary_status);
+       Given(a_account_type_of_100_characters);  // Exactly at the limit
+       When(creating_a_account_type);
        Then(it_is_valid);
    });
 
    scenario(() =>
    {
-       Given(a_formulary_status_over_100_characters); // Just over the limit
-       When(creating_a_formulary_status);
-       Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+       Given(a_account_type_over_100_characters); // Just over the limit
+       When(creating_a_account_type);
+       Then(() => informs("Account type is required and cannot exceed 100 characters."));
    });
    ```
 
@@ -224,24 +224,24 @@ This document outlines the testing standards and practices for projects. These s
 1. **Complex Domain Rules**: Use multiple scenarios to test different aspects of a domain rule.
    ```csharp
    [Test]
-   public void legacy_aged_criteria_can_be_created()
+   public void legacy_price_tier_criteria_can_be_created()
    {
-       const int age = 49;
+       const decimal amount = 49.99m;
 
        scenario(() =>
        {
-           When(creating_the_legacy_criterion(Criterion.Operators.Equality, age));
+           When(creating_the_legacy_criterion(Criterion.Operators.Equality, amount));
            Then(it_has_a_between_operator);
-           And(is_is_for_aged(Aged.From(age).To(age)));
-           And(() => it_has_a_description_of($"Age is {age} (expressed as years)"));
+           And(is_for_price_tier(PriceTier.From(amount).To(amount)));
+           And(() => it_has_a_description_of($"Price is {amount} (expressed as currency)"));
        });
 
        scenario(() =>
        {
-           When(creating_the_legacy_criterion(Criterion.Operators.GreaterThan, age));
+           When(creating_the_legacy_criterion(Criterion.Operators.GreaterThan, amount));
            Then(it_has_a_between_operator);
-           And(is_is_for_aged(Aged.From(age + 1)));
-           And(() => it_has_a_description_of($"Age is greater than {age} (expressed as years)"));
+           And(is_for_price_tier(PriceTier.From(amount + 1)));
+           And(() => it_has_a_description_of($"Price is greater than {amount} (expressed as currency)"));
        });
 
        // Additional scenarios for other operators
@@ -252,7 +252,7 @@ This document outlines the testing standards and practices for projects. These s
 
 1. **Specification Base Class**: Extend from a common base class for shared functionality.
    ```csharp
-   public partial class FormularyStatusSpecs : Specification
+   public partial class AccountTypeSpecs : Specification
    {
        // Tests
    }
@@ -260,7 +260,7 @@ This document outlines the testing standards and practices for projects. These s
 
 2. **Common Steps**: Create base classes for common step implementations.
    ```csharp
-   public partial class AgedCriteriaSpecs : CommonCriteriaSteps<AgeRangeCriterion>
+   public partial class PriceTierCriteriaSpecs : CommonCriteriaSteps<PriceTierCriterion>
    {
        // Specific tests
    }
@@ -271,13 +271,13 @@ This document outlines the testing standards and practices for projects. These s
 1. **Fluent Assertions**: Use chained assertions for improved readability.
    ```csharp
    Then(it_has_a_between_operator);
-   And(is_is_for_aged(aged));
-   And(() => it_has_a_description_of($"Age is between {aged.Minimum} and {aged.Maximum} (expressed as years)"));
+   And(is_for_price_tier(priceTier));
+   And(() => it_has_a_description_of($"Price is between {priceTier.Minimum} and {priceTier.Maximum} (expressed as currency)"));
    ```
 
 2. **Descriptive Messages**: Use descriptive messages in assertions.
    ```csharp
-   Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+   Then(() => informs("Account type is required and cannot exceed 100 characters."));
    ```
 
 ## Test Framework
@@ -317,47 +317,47 @@ When writing tests for projects, the recommended approach is:
 Example using the framework:
 
 ```csharp
-// FormularyStatusSpecs.cs
+// AccountTypeSpecs.cs
 [TestFixture]
-public partial class FormularyStatusSpecs : Specification
+public partial class AccountTypeSpecs : Specification
 {
     [Test]
-    public void formulary_status_validation()
+    public void account_type_validation()
     {
         scenario(() =>
         {
-            Given(no_formulary_status);
-            When(creating_a_formulary_status);
-            Then(() => informs("Formulary status is required and cannot exceed 100 characters."));
+            Given(no_account_type);
+            When(creating_a_account_type);
+            Then(() => informs("Account type is required and cannot exceed 100 characters."));
         });
         
         scenario(() =>
         {
-            Given(a_valid_formulary_status);
-            When(creating_a_formulary_status);
+            Given(a_valid_account_type);
+            When(creating_a_account_type);
             Then(it_is_valid);
         });
     }
 }
 
-// FormularyStatusSteps.cs
-public partial class FormularyStatusSpecs
+// AccountTypeSteps.cs
+public partial class AccountTypeSpecs
 {
-    private string formulary_status;
+    private string account_type;
     
-    private void no_formulary_status()
+    private void no_account_type()
     {
-        formulary_status = null;
+        account_type = null;
     }
     
-    private void a_valid_formulary_status()
+    private void a_valid_account_type()
     {
-        formulary_status = "Valid Status";
+        account_type = "Valid Status";
     }
     
-    private void creating_a_formulary_status()
+    private void creating_a_account_type()
     {
-        validating(() => new FormularyStatus(formulary_status));
+        validating(() => new AccountType(account_type));
     }
 }
 ```

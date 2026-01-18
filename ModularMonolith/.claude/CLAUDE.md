@@ -107,6 +107,7 @@ See @~/.claude/docs/csharp-conventions.md
 - Always commit before refactoring
 - Semantic abstraction (meaning) over structural similarity (appearance)
 - DRY = Don't repeat knowledge, not code structure
+- **NEVER mention Claude, AI, or Co-Authored-By in commit messages**
 
 For comprehensive workflow guidelines including:
 - TDD process with quality gates

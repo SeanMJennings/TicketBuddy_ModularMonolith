@@ -128,6 +128,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5
 		.claude\docs\csharp-conventions.md = .claude\docs\csharp-conventions.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skills", "Skills", "{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "learn", "learn", "{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\learn\SKILL.md = .claude\skills\learn\SKILL.md
+		.claude\skills\learn\discovery-questions.md = .claude\skills\learn\discovery-questions.md
+		.claude\skills\learn\documentation-format.md = .claude\skills\learn\documentation-format.md
+		.claude\skills\learn\significance-assessment.md = .claude\skills\learn\significance-assessment.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{C3D4E5F6-A7B8-4C5D-0E1F-2A3B4C5D6E7F}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\adr\SKILL.md = .claude\skills\adr\SKILL.md
+		.claude\skills\adr\adr-template.md = .claude\skills\adr\adr-template.md
+		.claude\skills\adr\decision-framework.md = .claude\skills\adr\decision-framework.md
+		.claude\skills\adr\examples.md = .claude\skills\adr\examples.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "use-case-data-patterns", "use-case-data-patterns", "{D4E5F6A7-B8C9-4D5E-1F2A-3B4C5D6E7F8A}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\skills\use-case-data-patterns\SKILL.md = .claude\skills\use-case-data-patterns\SKILL.md
+		.claude\skills\use-case-data-patterns\report-template.md = .claude\skills\use-case-data-patterns\report-template.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit", "Testing\Testing.Unit\Testing.Unit.csproj", "{E31EB214-C955-47F0-96D7-71E283558949}"
@@ -637,6 +661,10 @@ Global
 		{E86143F7-5497-4364-AF58-6EE582AB057C} = {B27BEC3F-9630-4040-83C5-60B309ADC70A}
 		{F5650254-D6B7-4CBF-8BFE-672686B96778} = {C467696C-ECB3-4420-80F1-5DEB3F4554F8}
 		{4A01221C-5866-41E9-823E-B4B9C391C935} = {C467696C-ECB3-4420-80F1-5DEB3F4554F8}
+		{A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D} = {C467696C-ECB3-4420-80F1-5DEB3F4554F8}
+		{B2C3D4E5-F6A7-4B5C-9D0E-1F2A3B4C5D6E} = {A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}
+		{C3D4E5F6-A7B8-4C5D-0E1F-2A3B4C5D6E7F} = {A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}
+		{D4E5F6A7-B8C9-4D5E-1F2A-3B4C5D6E7F8A} = {A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D}
 		{E31EB214-C955-47F0-96D7-71E283558949} = {A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}
 		{13AE1BE0-27D3-4B8A-8FDD-B3F88AF59DF6} = {BFAD1DFA-E07E-4062-98FB-54AC88B5EA9D}
 		{E1E7F705-A1EE-4B86-AA0B-3DA801A01D59} = {CCE57025-2696-4882-A2CA-DEB5F8413740}

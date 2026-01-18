@@ -10,13 +10,13 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 }
 
-$hasDotnet9 = (Get-Command dotnet -ErrorAction SilentlyContinue) -and ((dotnet --list-sdks 2>$null) -match "^9\.")
+$hasDotnet9 = (Get-Command dotnet -ErrorAction SilentlyContinue) -and ((dotnet --list-sdks 2>$null) -match "^10\.")
 $hasDocker = Get-Command docker -ErrorAction SilentlyContinue
 $hasNode = Get-Command node -ErrorAction SilentlyContinue
 
 if (-not $hasDotnet9) {
-    Write-Host "Installing .NET 9 SDK..."
-    choco install dotnet-9.0-sdk -y --no-progress
+    Write-Host "Installing .NET 10 SDK..."
+    choco install dotnet-10.0-sdk -y --no-progress
 }
 if (-not $hasDocker) {
     Write-Host "Installing Docker Desktop..."

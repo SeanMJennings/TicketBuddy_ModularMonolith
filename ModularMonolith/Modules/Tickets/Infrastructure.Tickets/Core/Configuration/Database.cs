@@ -1,9 +1,8 @@
-﻿using Infrastructure.Tickets.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TheDatabase = Infrastructure.Queries.Database;
 
-namespace Infrastructure.Tickets.Configuration;
+namespace Infrastructure.Tickets.Core.Configuration;
 
 public static class Database
 {

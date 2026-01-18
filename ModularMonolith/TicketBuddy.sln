@@ -112,11 +112,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "CommonLibraries\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{F5650254-D6B7-4CBF-8BFE-672686B96778}"
 	ProjectSection(SolutionItems) = preProject
-		.claude\agents\adr.md = .claude\agents\adr.md
-		.claude\agents\learn.md = .claude\agents\learn.md
 		.claude\agents\refactor-scan.md = .claude\agents\refactor-scan.md
 		.claude\agents\tdd-guardian.md = .claude\agents\tdd-guardian.md
-		.claude\agents\use-case-data-patterns.md = .claude\agents\use-case-data-patterns.md
 		.claude\agents\wip-guardian.md = .claude\agents\wip-guardian.md
 		.claude\agents\README.md = .claude\agents\README.md
 	EndProjectSection

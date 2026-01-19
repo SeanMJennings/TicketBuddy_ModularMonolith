@@ -15,7 +15,9 @@
       "Bash(Select-String -Pattern \"\\(Passed|Failed|venue\\)\" -Context 0,1)",
       "Bash(git log:*)",
       "Bash(dotnet sln:*)",
-      "Bash(dotnet sln add:*)"
+      "Bash(dotnet sln add:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": []

@@ -5,7 +5,7 @@ A simple ticket booking platform for events.
 Run the setup script as Administrator to install all dependencies:
 ```powershell
 .\setup.ps1
-```
+``` 
 
 This installs: .NET 10 SDK, Docker, Node.js, .NET Aspire workload, and configures the GitHub NuGet feed.
 

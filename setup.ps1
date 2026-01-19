@@ -45,6 +45,10 @@ if ($token) {
     $env:GITHUB_TOKEN = $token
 }
 
+Write-Host "Setting up HTTPS development certificates..."
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+
 Write-Host "Installing UI dependencies..."
 Push-Location "$PSScriptRoot\UI"
 npm install

@@ -17,7 +17,8 @@
       "Bash(dotnet sln:*)",
       "Bash(dotnet sln add:*)",
       "Bash(git rev-parse:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(dotnet dev-certs:*)"
     ],
     "deny": [],
     "ask": []

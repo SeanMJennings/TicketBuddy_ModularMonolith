@@ -20,7 +20,7 @@ A practical, concise guide to architecture focused on simplicity, clarity, and h
 
 Hexagonal architecture isolates the application core (domain + use cases) from frameworks and infrastructure. The core defines ports (interfaces) and contains business discount-policies; adapters implement ports and translate external protocols.
 
-- Primary (driving) ports: HTTP handlers, message handlers, CLIs, test harnesses.
+- Primary (driving) ports: HTTP controllers, message handlers, CLIs, test harnesses.
 - Secondary (driven) ports: repositories, external service clients, file storage, notification services.
 
 Dependency rule (central): dependencies point inward — adapters -> ports -> core. The core must not reference infrastructure, frameworks, or providers.
@@ -115,31 +115,27 @@ Method naming: prefer business intent — `EnrollNewCustomer()`, `ProcessOrder()
 
 We separate command (write) and query (read) responsibilities to optimize each side while keeping the core framework-agnostic.
 
-- Command side: command handlers, domain aggregates, repositories (write store), domain events.
-- Query side: read-model projections, SQL/read-optimized stores, query handlers, caching.
+- Command side: command services, domain aggregates, repositories (write store), domain events.
+- Query side: read-model projections, SQL/read-optimized stores, query services, caching.
 - Domain events propagate changes from the write side to read projections and external systems.
 
-### Command Handler (write-side)
+### Command Application Service (write-side)
 
 ```csharp
-// Example: Web API handler for commands
-public class CreateDiscountPolicyHandler : IHandlePostRequests<CreateDiscountPolicyRequest>
+// Example: Application service for commands
+public class DiscountPolicyCommandService(
+    IDiscountPolicyRepository repository,
+    IDomainEventPublisher eventPublisher)
 {
-    private readonly IDiscountPolicyRepository _repository;
-    private readonly IDomainEventPublisher _eventPublisher;
-    
-    public async Task<PostResponse> HandleAsync(Request request, CreateDiscountPolicyRequest payload)
+    public async Task<DiscountPolicy> CreateAsync(CreateDiscountPolicyRequest request)
     {
-        // Create domain aggregate
-        var policy = new DiscountPolicy(payload.Name, payload.Description);
-        
-        // Persist via repository (to Cosmos DB)
-        await _repository.AddAsync(rule);
-        
-        // Publish domain events (for read model updates)
-        await _eventPublisher.PublishAsync(new DiscountPolicyCreatedEvent(policy.Id, policy.Name, policy.Description));
-        
-        return new PostResponse(HttpStatusCode.Created, rule);
+        var policy = new DiscountPolicy(request.Name, request.Description);
+
+        await repository.AddAsync(policy);
+
+        await eventPublisher.PublishAsync(new DiscountPolicyCreatedEvent(policy.Id, policy.Name, policy.Description));
+
+        return policy;
     }
 }
 ```
@@ -290,27 +286,33 @@ public class ExternalPaymentService : IIntegrateWithExternalSystem
 ## Implementation Adapters (examples)
 
 ```csharp
-// Web API Adapter (Command)
-public class CreateDiscountPolicyHandler : IHandlePostRequests<CreateDiscountPolicyRequest>
+// Web API Controller (thin, delegates to application services)
+[ApiController]
+[Route("api/discount-policies")]
+public class DiscountPoliciesController(
+    DiscountPolicyCommandService commandService,
+    DiscountPolicyQueryService queryService) : ControllerBase
 {
-    private readonly IDiscountPolicyRepository _repository;
-    
-    public async Task<PostResponse> HandleAsync(Request request, CreateDiscountPolicyRequest payload)
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateDiscountPolicyRequest request)
     {
-        var policy = new DiscountPolicy(payload.Name, payload.Description);
-        await _repository.AddAsync(rule);
-        return new PostResponse(HttpStatusCode.Created, rule);
+        var policy = await commandService.CreateAsync(request);
+        return CreatedAtAction(nameof(Get), new { id = policy.Id }, policy);
     }
-}
 
-// Web API Adapter (Query)
-public class GetDiscountPolicyHandler : IHandleGetRequests
-{
-    private readonly DiscountPolicyQueryService _queryService;
-    
-    public async Task<object> HandleAsync(Request request)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(DiscountPolicyId id)
     {
-        return await _queryService.GetDiscountPolicyAsync(request.DiscountPolicyId());
+        var policy = await queryService.GetDiscountPolicyAsync(id);
+        if (policy is null) return NotFound();
+        return Ok(policy);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Search([FromQuery] string? searchTerm, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
+    {
+        var results = await queryService.SearchDiscountPoliciesAsync(searchTerm ?? "", page, pageSize);
+        return Ok(results);
     }
 }
 
@@ -321,7 +323,7 @@ public async Task ProcessDiscountPolicyUpdate([ServiceBusTrigger("discount-polic
     var repository = _serviceProvider.GetRequiredService<IDiscountPolicyRepository>();
     var policy = await repository.GetByIdAsync(message.DiscountPolicyId);
     policy.Update(message.Changes);
-    await repository.UpdateAsync(rule);
+    await repository.UpdateAsync(policy);
 }
 
 // Test Adapter
@@ -373,8 +375,8 @@ public class DiscountPolicyService
 
 ❌ Wrong:
 ```csharp
-// Web handler directly using database context
-public class GetDiscountPolicyHandler
+// Controller directly using database context
+public class DiscountPoliciesController : ControllerBase
 {
     private readonly MyDbContext _dbContext; // Direct database dependency
 }
@@ -382,10 +384,10 @@ public class GetDiscountPolicyHandler
 
 ✅ Correct:
 ```csharp
-// Web handler uses application service
-public class GetDiscountPolicyHandler
+// Controller uses application service
+public class DiscountPoliciesController : ControllerBase
 {
-    private readonly IDiscountPolicyService _ruleService; // Clean application service
+    private readonly IDiscountPolicyService _policyService; // Clean application service
 }
 ```
 
@@ -396,20 +398,20 @@ public async Task<IActionResult> CreateDiscountPolicy(CreateDiscountPolicyReques
 {
     if (string.IsNullOrEmpty(request.Name)) return BadRequest();
     if (request.Name.Length > 100) return BadRequest();
-    
+
     var policy = new DiscountPolicy(request.Name);
-    await _repository.AddAsync(rule);
-    return Ok(rule);
+    await _repository.AddAsync(policy);
+    return Ok(policy);
 }
 ```
 
-✅ Correct (delegate to core):
+✅ Correct (delegate to application service):
 ```csharp
 [HttpPost]
 public async Task<IActionResult> CreateDiscountPolicy(CreateDiscountPolicyRequest request)
 {
-    var policy = await _ruleService.CreateAsync(request); // All logic in core
-    return Ok(rule);
+    var policy = await _policyService.CreateAsync(request); // All logic in application service
+    return CreatedAtAction(nameof(Get), new { id = policy.Id }, policy);
 }
 ```
 

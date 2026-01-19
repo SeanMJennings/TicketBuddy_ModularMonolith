@@ -364,39 +364,36 @@ public partial class AccountTypeSpecs
 
 ### AsyncSpecification Base Class
 
-The `AsyncSpecification` abstract class serves as the foundation for BDD-style tests that need asynchronous operations:
+The `AsyncSpecification` abstract class serves as the foundation for BDD-style tests that need asynchronous operations. It provides **both synchronous and asynchronous** step methods - use synchronous methods when async is not needed.
 
 ```csharp
 public abstract class AsyncSpecification
 {
-    // BDD step methods
-    protected Task Given(Action action) { action.Invoke(); }
-    protected Task When(Action action) { action.Invoke(); }
-    protected Task Then(Action action) { action.Invoke(); }
-    protected Task And(Action action) { action.Invoke(); }
-    
-    // Multiple scenario support
-    protected void scenario(Action test)
-    
-    // Validation helpers
-    protected void validating(Action action)
-    protected void informs(string message)
-    
-    // BDD async step methods
+    // Synchronous BDD step methods (use when async not needed)
+    protected void Given(Action action) { action.Invoke(); }
+    protected void When(Action action) { action.Invoke(); }
+    protected void Then(Action action) { action.Invoke(); }
+    protected void And(Action action) { action.Invoke(); }
+
+    // Async BDD step methods (use only when async is required)
     protected static async Task Given(Func<Task> testAction) { await testAction.Invoke(); }
     protected static async Task And(Func<Task> testAction) { await testAction.Invoke(); }
     protected static async Task When(Func<Task> testAction) { await testAction.Invoke(); }
     protected static async Task Then(Func<Task> testAction) { await testAction.Invoke(); }
-    
-    // ASync Multiple scenario support
+
+    // Multiple scenario support
+    protected void scenario(Action test)
     protected static async Task Scenario(Func<Task> testAction){ await testAction.Invoke(); }
 
-    // Async Validation helpers
+    // Validation helpers
+    protected void validating(Action action)
+    protected void informs(string message)
     protected static Func<Task> Validating(Func<Task> testAction)
     protected static Func<Task> InformsAsync(string message)
 }
 ```
 
+**Key principle**: Do not use `async`/`await` for methods that do not need it. Use regular `void` methods for synchronous steps.
 
 ### Usage in Projects
 
@@ -404,62 +401,86 @@ When writing tests for projects, the recommended approach is:
 
 1. Create a partial class that inherits from `AsyncSpecification`
 2. Split specifications and steps into separate files
-3. Use the fluent assertions for validations
+3. Use synchronous (`void`) methods for steps that don't need async
+4. Only use `async Task` for steps that perform actual async operations (HTTP calls, database queries, etc.)
+5. Only use `await` in the spec for steps that return `Task`
 
-Example using the framework:
+Example using the framework (from EventApiSpecs):
 
 ```csharp
-// AsyncExampleShould.cs
+// EventApi.specs.cs
 [TestFixture]
-public partial class AsyncExampleShould : AsyncSpecification
+public partial class EventApiSpecs : AsyncSpecification
 {
     [Test]
-    public async Task pass_our_first_behavioural_test_async()
+    public async Task can_create_event()
     {
-        await Given(two_numbers_from_a_remote_source);
-              When(we_give_them_to_our_complex_system);
-        await Then(we_get_the_sum_from_a_remote_source);
-              And(we_can_validate_something_else);
+              Given(an_admin_user_exists);           // sync - no await
+              And(a_request_to_create_an_event);    // sync - no await
+        await When(creating_the_event);              // async - needs await
+        await And(requesting_the_event);             // async - needs await
+        await Then(the_event_is_created);            // async - needs await
+              And(an_integration_event_is_published); // sync - no await
+    }
+
+    [Test]
+    public async Task a_non_admin_cannot_create_event()
+    {
+              Given(an_admin_user_exists);
+              And(a_request_to_create_an_event_as_a_non_admin_user);
+        await When(creating_the_event_that_should_fail);
+              Then(the_event_creation_is_forbidden); // sync assertion - no await
     }
 }
 
-// AsyncExampleSteps.cs
-public partial class AsyncExampleShould
+// EventApi.steps.cs
+public partial class EventApiSpecs
 {
-    private int sum;
-    private ComplexSystem complex_system;
-    private int first_number;
-    private int second_number;
+    private HttpClient client = null!;
+    private HttpContent content = null!;
+    private HttpStatusCode response_code;
 
-    protected override Task before_each()
+    // Synchronous step - regular void method
+    private void an_admin_user_exists() {}
+
+    // Synchronous step - sets up test data, no async needed
+    private void a_request_to_create_an_event()
     {
-        base.before_each();
-        sum = 0;
-        first_number = 0;
-        second_number = 0;
-        complex_system = new ComplexSystem(new MagicDependency());
-        return Task.CompletedTask;
+        content = new StringContent(
+            JsonSerialization.Serialize(new EventPayload(...)),
+            Encoding.UTF8,
+            "application/json");
     }
 
-    private Task two_numbers_from_a_remote_source()
+    // Async step - performs HTTP call
+    private async Task creating_the_event()
     {
-        first_number = 0;
-        second_number = 2;
-        return Task.CompletedTask;
+        var response = await client.PostAsync(Routes.Events, content);
+        response_code = response.StatusCode;
+        // ...
     }
 
-    private void we_give_them_to_our_complex_system()
+    // Async step - reads response content
+    private async Task the_event_is_created()
     {
-        sum = complex_system.Sum(first_number, second_number);
+        var theEvent = JsonSerialization.Deserialize<Event>(await content.ReadAsStringAsync());
+        response_code.ShouldBe(HttpStatusCode.OK);
+        // ...
     }
 
-    private Task we_get_the_sum_from_a_remote_source()
+    // Synchronous step - simple assertion, no async needed
+    private void the_event_creation_is_forbidden()
     {
-        sum = first_number + second_number;
-        return Task.CompletedTask;
+        response_code.ShouldBe(HttpStatusCode.Forbidden);
     }
-    
-    private static void we_can_validate_something_else(){}
+
+    // Synchronous step - checks published messages (sync API)
+    private void an_integration_event_is_published()
+    {
+        testHarness.Published.Select<EventUpserted>()
+            .Any(e => e.Context.Message.Id == returned_id)
+            .ShouldBeTrue("Event was not published to the bus");
+    }
 }
 ```
 

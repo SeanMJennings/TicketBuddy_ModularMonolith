@@ -7,7 +7,7 @@ namespace Controllers.Notifications;
 [ApiController]
 public class GetNotificationsEndpoint(GetNotifications getNotifications) : ControllerBase
 {
-    [HttpGet("/notifications")]
+    [HttpGet(Routes.Notifications)]
     public async Task<IEnumerable<NotificationResponse>> GetNotifications()
     {
         var userId = User.GetUserId();

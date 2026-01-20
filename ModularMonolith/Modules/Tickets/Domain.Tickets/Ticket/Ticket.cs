@@ -19,6 +19,7 @@ public class Ticket(Guid id, Guid eventId, Money price, uint seatNumber) : Entit
         if (UserId is not null) throw new ValidationException("Tickets are not available");
         UserId = userId;
         PurchasedAt = DateTimeOffset.UtcNow;
+        AddDomainEvent(new TicketWasPurchased(Id, userId, EventId));
     }
     
     public void UpdatePrice(Money newPrice)

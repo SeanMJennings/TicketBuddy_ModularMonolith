@@ -37,6 +37,7 @@ public static class Services
             .AddScoped<GetTicketsForEvent>()
             .AddScoped<GetTicketsForUser>()
             .AddScoped<AllTicketsSoldHandler>()
+            .AddScoped<TicketWasPurchasedHandler>()
             .AddScoped<IPersistUsers, User.UserRepository>()
             .AddScoped<UpsertUser>()
             .AddSingleton(

@@ -79,11 +79,16 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         };
     }
 
-    private async Task notifications_exist_for_user()
+    private async Task PersistNotification(Notification notification)
     {
         var repository = serviceProvider.GetRequiredService<IPersistNotifications>();
         var dbContext = serviceProvider.GetRequiredService<NotificationDbContext>();
+        await repository.Add(notification);
+        await dbContext.Commit();
+    }
 
+    private async Task notifications_exist_for_user()
+    {
         var olderNotification = Notification.Create(
             Guid.NewGuid(),
             userId,
@@ -98,9 +103,8 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
             "{\"eventName\":\"Concert B\"}",
             newerCreatedAt);
 
-        await repository.Add(olderNotification);
-        await repository.Add(newerNotification);
-        await dbContext.Commit();
+        await PersistNotification(olderNotification);
+        await PersistNotification(newerNotification);
     }
 
     private async Task requesting_notifications()
@@ -117,9 +121,6 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
 
     private async Task an_unread_notification_exists()
     {
-        var repository = serviceProvider.GetRequiredService<IPersistNotifications>();
-        var dbContext = serviceProvider.GetRequiredService<NotificationDbContext>();
-
         var notification = Notification.Create(
             notificationId,
             userId,
@@ -127,8 +128,7 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
             "{\"eventName\":\"Concert\"}",
             DateTimeOffset.UtcNow);
 
-        await repository.Add(notification);
-        await dbContext.Commit();
+        await PersistNotification(notification);
     }
 
     private async Task marking_notification_as_read()

@@ -17,9 +17,11 @@ namespace Integration;
 public partial class NotificationControllerSpecs : TruncateDbSpecification
 {
     private GetNotificationsEndpoint getNotificationsEndpoint = null!;
+    private MarkNotificationAsReadEndpoint markNotificationAsReadEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
     private static PostgreSqlContainer database = null!;
     private Guid userId = Guid.NewGuid();
+    private Guid notificationId = Guid.NewGuid();
     private List<NotificationResponse> returnedNotifications = [];
 
     private readonly DateTimeOffset olderCreatedAt = DateTimeOffset.UtcNow.AddHours(-2);
@@ -36,6 +38,7 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
     {
         await base.before_each();
         userId = Guid.NewGuid();
+        notificationId = Guid.NewGuid();
         returnedNotifications = [];
 
         serviceProvider = new ServiceCollection()
@@ -44,9 +47,11 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
             .ConfigureNotificationsDatabase(database.GetConnectionString())
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<GetNotificationsEndpoint>()
+            .AddScoped<MarkNotificationAsReadEndpoint>()
             .BuildServiceProvider();
 
         getNotificationsEndpoint = serviceProvider.GetRequiredService<GetNotificationsEndpoint>();
+        markNotificationAsReadEndpoint = serviceProvider.GetRequiredService<MarkNotificationAsReadEndpoint>();
         AddUserClaimToControllerContext(userId);
     }
 
@@ -65,6 +70,10 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", theUserId.ToString())], "TestAuth"));
         getNotificationsEndpoint.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+        markNotificationAsReadEndpoint.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = principal }
         };
@@ -104,5 +113,34 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         returnedNotifications.Count.ShouldBe(2);
         returnedNotifications[0].CreatedAt.ShouldBe(newerCreatedAt);
         returnedNotifications[1].CreatedAt.ShouldBe(olderCreatedAt);
+    }
+
+    private async Task an_unread_notification_exists()
+    {
+        var repository = serviceProvider.GetRequiredService<IPersistNotifications>();
+        var dbContext = serviceProvider.GetRequiredService<NotificationDbContext>();
+
+        var notification = Notification.Create(
+            notificationId,
+            userId,
+            "TicketPurchased",
+            "{\"eventName\":\"Concert\"}",
+            DateTimeOffset.UtcNow);
+
+        await repository.Add(notification);
+        await dbContext.Commit();
+    }
+
+    private async Task marking_notification_as_read()
+    {
+        await markNotificationAsReadEndpoint.MarkAsRead(notificationId);
+    }
+
+    private async Task the_notification_is_marked_as_read()
+    {
+        var repository = serviceProvider.GetRequiredService<IPersistNotifications>();
+        var notification = await repository.GetById(notificationId);
+        notification.ShouldNotBeNull();
+        notification.IsRead.ShouldBeTrue();
     }
 }

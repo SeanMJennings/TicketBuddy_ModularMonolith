@@ -10,7 +10,9 @@ public static class Services
     public static IServiceCollection ConfigureNotificationsServices(this IServiceCollection services)
     {
         services.AddScoped<IPersistNotifications, NotificationRepository>();
+        services.AddScoped<INotificationsUnitOfWork, UnitOfWork>();
         services.AddScoped<GetNotifications>();
+        services.AddScoped<MarkNotificationAsRead>();
         return services;
     }
 }

@@ -1,4 +1,5 @@
 using Application.Notifications;
+using Application.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Notifications;

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Controllers.Notifications;
+namespace Application.Authentication;
 
 public static class ClaimsPrincipalExtensions
 {

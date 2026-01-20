@@ -1,6 +1,7 @@
 ﻿﻿using Application.Tickets.Ticket.ReserveTickets;
 using Controllers.Tickets.Requests;
 using Application;
+using Application.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

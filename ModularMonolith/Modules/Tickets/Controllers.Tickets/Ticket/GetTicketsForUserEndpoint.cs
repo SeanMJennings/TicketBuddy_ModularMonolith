@@ -1,6 +1,7 @@
 ﻿﻿using Application.Tickets.Ticket.GetTicketsForUser;
 using Domain.Tickets.Ticket;
 using Application;
+using Application.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

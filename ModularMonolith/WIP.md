@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Implementation Phase
-**Current Step**: 5 of 9 (Step 5 complete, ready for Step 6)
+**Current Step**: 6 of 9 (Step 6 complete, ready for Step 7)
 
 ## Goal
 
@@ -31,11 +31,12 @@ Each step: Write failing integration test → implement full vertical slice → 
    - Implemented: Controller → GetNotifications use case → Repository (EF Core)
    - Commits: f9ae5fc (green), a61ecab (refactor: shared ClaimsPrincipalExtensions), e53b0a5 (refactor: Routes.cs)
 
-6. **POST /notifications/{id}/read** (mark as read) (NEXT)
+6. ~~**POST /notifications/{id}/read** (mark as read)~~ ✓
    - Integration test: mark notification as read, verify state change
-   - Implement: Controller → Use case → Repository
+   - Implemented: Controller → MarkNotificationAsRead use case → Repository with UnitOfWork
+   - Commits: c470901 (green), 7efddf8 (refactor)
 
-7. GET /notifications/unread-count
+7. **GET /notifications/unread-count** (NEXT)
    - Integration test: request unread count for user
    - Implement: Controller → Query service
 
@@ -51,9 +52,9 @@ Each step: Write failing integration test → implement full vertical slice → 
 
 ## Current Focus
 
-**Status**: Phase 2 in progress (5/9 steps complete). Ready for Step 6: POST /notifications/{id}/read
+**Status**: Phase 2 in progress (6/9 steps complete). Ready for Step 7: GET /notifications/unread-count
 
-**Next Action**: Write failing integration test for mark notification as read endpoint
+**Next Action**: Write failing integration test for unread count endpoint
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)
@@ -184,3 +185,27 @@ None currently
 
 **Next Session**:
 - Step 6: POST /notifications/{id}/read (mark as read)
+
+### 2026-01-20 - Session 2 continued (Step 6 Complete)
+**Duration**: Step 6 implementation with TDD
+**Completed**:
+- **Step 6**: POST /notifications/{id}/read endpoint with full TDD cycle
+  - RED: Wrote failing integration test (creates notification, marks as read, verifies IsRead=true)
+  - GREEN: Implemented MarkNotificationAsReadEndpoint, MarkNotificationAsRead use case
+  - Created UnitOfWork pattern (INotificationsUnitOfWork + UnitOfWork impl) following Tickets pattern
+  - REFACTOR: Removed redundant ordering in GetNotifications, extracted PersistNotification test helper
+  - Commits: c470901 (green), 7efddf8 (refactor)
+
+**Files Created**:
+- Domain.Notifications/INotificationsUnitOfWork.cs
+- Infrastructure.Notifications/Core/UnitOfWork.cs
+- Application.Notifications/MarkNotificationAsRead.cs
+- Controllers.Notifications/MarkNotificationAsReadEndpoint.cs
+
+**Agent/Skill Activity**:
+- tdd-guardian: Verified RED-GREEN-REFACTOR cycle
+- refactor-scan: Identified ordering duplication (critical) and test helper extraction (high value)
+- wip-guardian: Updated WIP.md with Step 6 completion
+
+**Next Session**:
+- Step 7: GET /notifications/unread-count

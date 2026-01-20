@@ -14,6 +14,7 @@ public static class Services
         services.AddScoped<GetNotifications>();
         services.AddScoped<MarkNotificationAsRead>();
         services.AddScoped<GetUnreadCount>();
+        services.AddScoped<CreateTicketPurchaseNotification>();
         return services;
     }
 }

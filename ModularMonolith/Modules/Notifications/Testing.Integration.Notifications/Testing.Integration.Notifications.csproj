@@ -13,6 +13,8 @@
     <ProjectReference Include="..\Controllers.Notifications\Controllers.Notifications.csproj" />
     <ProjectReference Include="..\Infrastructure.Notifications\Infrastructure.Notifications.csproj" />
     <ProjectReference Include="..\Messages.Notifications\Messages.Notifications.csproj" />
+    <ProjectReference Include="..\Messaging.Notifications\Messaging.Notifications.csproj" />
+    <ProjectReference Include="..\..\Tickets\Messages.Tickets\Messages.Tickets.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Planning Phase
-**Current Step**: 4 of 16 (Repository implemented without TDD - will test in Phase 5)
+**Current Step**: 4 of 9 (Phase 1 complete, ready for Phase 2 vertical slices)
 
 ## Goal
 
@@ -10,37 +10,40 @@ Introduce a user notifications system to inform users about important events. In
 
 ## Overall Plan
 
-### Phase 1: Core Domain & Ports (Steps 1-5) - Unit Testable
+### Phase 1: Foundation (Steps 1-4) ✓
 1. ~~Create Notifications module structure~~ ✓
 2. ~~Create DbUp migration for Notification schema and tables~~ ✓
-3. ~~Define domain model for notifications~~ ✓ (TDD)
+3. ~~Define domain model for notifications~~ ✓ (TDD - unit tests)
 4. ~~Create notification repository port (interface)~~ ✓
-5. Create query port interface (IQueryNotifications)
 
-### Phase 2: Use Cases (Steps 6-8) - TDD with Mocked Ports
-6. CreateNotification use case (TDD - mocked repository)
-7. MarkNotificationAsRead use case (TDD - mocked repository)
-8. GetNotificationsForUser query (TDD - mocked query port)
+### Phase 2: Vertical Slices - API Endpoints (Steps 5-7)
+Each step: Write failing integration test → implement full vertical slice → green → commit
 
-### Phase 3: Ticket Purchase Integration (Steps 9-10) - TDD with Mocks
-9. Create TicketPurchased domain event + publish from PurchaseTickets
-10. NotificationHandler consumer (TDD - mocked CreateNotification use case)
+5. GET /notifications for user
+   - Integration test: request notifications for user, expect list
+   - Implement: Controller → Query service → Repository (EF/Dapper)
 
-### Phase 4: Controllers/API (Steps 11-13) - TDD with Mocked Use Cases
-11. GET /notifications endpoint (TDD)
-12. POST /notifications/{id}/read endpoint (TDD)
-13. GET /notifications/unread-count endpoint (TDD)
+6. POST /notifications/{id}/read (mark as read)
+   - Integration test: mark notification as read, verify state change
+   - Implement: Controller → Use case → Repository
 
-### Phase 5: Infrastructure + Integration Tests (Steps 14-16)
-14. PostgreSQL repository implementation + integration tests
-15. Dapper query service implementation + integration tests
-16. End-to-end integration tests (full flow)
+7. GET /notifications/unread-count
+   - Integration test: request unread count for user
+   - Implement: Controller → Query service
 
-**Note:** Step 5 (PostgreSQL repository) was implemented without TDD - this will be properly tested in Phase 5 integration tests.
+### Phase 3: Ticket Purchase Notification (Steps 8-9)
+8. TicketPurchased event + handler creates notification
+   - Integration test: purchase ticket → verify notification created
+   - Implement: Domain event, publish from PurchaseTickets, consumer, create notification
+
+9. End-to-end flow test
+   - Integration test: purchase → notification appears in GET /notifications
+
+**Note:** Repository was implemented in earlier session without TDD. It will be exercised and validated through the integration tests in Phase 2.
 
 ## Current Focus
 
-**Status**: Phase 1 nearly complete, next is Step 5 (Query port interface), then Phase 2 (Use Cases with TDD)
+**Status**: Phase 1 complete, ready for Step 5 (GET /notifications vertical slice with integration test)
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)

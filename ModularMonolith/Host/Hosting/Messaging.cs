@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Notifications.Core.Configuration;
 using Infrastructure.Tickets.Configuration;
 using MassTransit;
 
@@ -13,11 +14,13 @@ internal static class Messaging
             x.SetKebabCaseEndpointNameFormatter();
             x.AddEventsConsumers();
             x.AddTicketsConsumers();
+            x.AddNotificationsConsumers();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(rabbitMqConnectionString);
                 cfg.ConfigureEventsMessaging();
                 cfg.ConfigureTicketsMessaging();
+                cfg.ConfigureNotificationsMessaging();
                 cfg.ConfigureEndpoints(context);
             });
         });

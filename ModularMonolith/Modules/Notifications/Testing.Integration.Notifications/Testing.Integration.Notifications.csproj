@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>Integration</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibraries\Testing\Testing.csproj" />
+    <ProjectReference Include="..\..\..\Database\Migrations\Migrations.csproj" />
+    <ProjectReference Include="..\Controllers.Notifications\Controllers.Notifications.csproj" />
+    <ProjectReference Include="..\Infrastructure.Notifications\Infrastructure.Notifications.csproj" />
+    <ProjectReference Include="..\Messages.Notifications\Messages.Notifications.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit" />
+  </ItemGroup>
+</Project>

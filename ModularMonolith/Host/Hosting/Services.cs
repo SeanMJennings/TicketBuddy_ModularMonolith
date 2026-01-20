@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Notifications.Core.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 
@@ -12,5 +13,6 @@ public static class Services
         services.ConfigureInfrastructureServices();
         services.ConfigureEventsServices();
         services.ConfigureTicketsServices();
+        services.ConfigureNotificationsServices();
     }
 }

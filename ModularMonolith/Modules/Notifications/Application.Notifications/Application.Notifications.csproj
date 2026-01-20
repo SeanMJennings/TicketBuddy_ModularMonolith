@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CommonLibraries\Application\Application.csproj" />
+    <ProjectReference Include="..\Domain.Notifications\Domain.Notifications.csproj" />
+    <ProjectReference Include="..\Messages.Notifications\Messages.Notifications.csproj" />
+  </ItemGroup>
+</Project>

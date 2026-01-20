@@ -43,7 +43,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
       <ProjectReference Include="..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
+      <ProjectReference Include="..\Modules\Notifications\Controllers.Notifications\Controllers.Notifications.csproj" />
       <ProjectReference Include="..\Modules\Events\Infrastructure.Events\Infrastructure.Events.csproj" />
       <ProjectReference Include="..\Modules\Tickets\Infrastructure.Tickets\Infrastructure.Tickets.csproj" />
+      <ProjectReference Include="..\Modules\Notifications\Infrastructure.Notifications\Infrastructure.Notifications.csproj" />
     </ItemGroup>
 </Project>

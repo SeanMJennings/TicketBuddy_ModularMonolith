@@ -24,6 +24,13 @@ public class NotificationRepository(NotificationDbContext dbContext) : IPersistN
             .ToListAsync();
     }
 
+    public async Task<int> GetUnreadCountByUserId(Guid userId)
+    {
+        return await dbContext.Notifications
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .CountAsync();
+    }
+
     public Task Update(Domain.Notifications.Notification notification)
     {
         dbContext.Entry(notification).State = EntityState.Modified;

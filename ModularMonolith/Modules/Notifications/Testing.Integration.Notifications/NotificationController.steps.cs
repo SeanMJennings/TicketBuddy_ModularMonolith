@@ -18,11 +18,13 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
 {
     private GetNotificationsEndpoint getNotificationsEndpoint = null!;
     private MarkNotificationAsReadEndpoint markNotificationAsReadEndpoint = null!;
+    private GetUnreadCountEndpoint getUnreadCountEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
     private static PostgreSqlContainer database = null!;
     private Guid userId = Guid.NewGuid();
     private Guid notificationId = Guid.NewGuid();
     private List<NotificationResponse> returnedNotifications = [];
+    private int returnedUnreadCount;
 
     private readonly DateTimeOffset olderCreatedAt = DateTimeOffset.UtcNow.AddHours(-2);
     private readonly DateTimeOffset newerCreatedAt = DateTimeOffset.UtcNow.AddHours(-1);
@@ -40,6 +42,7 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         userId = Guid.NewGuid();
         notificationId = Guid.NewGuid();
         returnedNotifications = [];
+        returnedUnreadCount = 0;
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
@@ -48,10 +51,12 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<GetNotificationsEndpoint>()
             .AddScoped<MarkNotificationAsReadEndpoint>()
+            .AddScoped<GetUnreadCountEndpoint>()
             .BuildServiceProvider();
 
         getNotificationsEndpoint = serviceProvider.GetRequiredService<GetNotificationsEndpoint>();
         markNotificationAsReadEndpoint = serviceProvider.GetRequiredService<MarkNotificationAsReadEndpoint>();
+        getUnreadCountEndpoint = serviceProvider.GetRequiredService<GetUnreadCountEndpoint>();
         AddUserClaimToControllerContext(userId);
     }
 
@@ -74,6 +79,10 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
             HttpContext = new DefaultHttpContext { User = principal }
         };
         markNotificationAsReadEndpoint.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = principal }
+        };
+        getUnreadCountEndpoint.ControllerContext = new ControllerContext
         {
             HttpContext = new DefaultHttpContext { User = principal }
         };
@@ -142,5 +151,44 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         var notification = await repository.GetById(notificationId);
         notification.ShouldNotBeNull();
         notification.IsRead.ShouldBeTrue();
+    }
+
+    private async Task unread_and_read_notifications_exist()
+    {
+        var unread1 = Notification.Create(
+            Guid.NewGuid(),
+            userId,
+            "TicketPurchased",
+            "{\"eventName\":\"Concert A\"}",
+            DateTimeOffset.UtcNow);
+
+        var unread2 = Notification.Create(
+            Guid.NewGuid(),
+            userId,
+            "TicketPurchased",
+            "{\"eventName\":\"Concert B\"}",
+            DateTimeOffset.UtcNow);
+
+        var read = Notification.Create(
+            Guid.NewGuid(),
+            userId,
+            "TicketPurchased",
+            "{\"eventName\":\"Concert C\"}",
+            DateTimeOffset.UtcNow);
+        read.MarkAsRead();
+
+        await PersistNotification(unread1);
+        await PersistNotification(unread2);
+        await PersistNotification(read);
+    }
+
+    private async Task requesting_unread_count()
+    {
+        returnedUnreadCount = await getUnreadCountEndpoint.GetUnreadCount();
+    }
+
+    private void unread_count_is_returned()
+    {
+        returnedUnreadCount.ShouldBe(2);
     }
 }

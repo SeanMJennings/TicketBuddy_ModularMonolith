@@ -13,6 +13,7 @@ public static class Services
         services.AddScoped<INotificationsUnitOfWork, UnitOfWork>();
         services.AddScoped<GetNotifications>();
         services.AddScoped<MarkNotificationAsRead>();
+        services.AddScoped<GetUnreadCount>();
         return services;
     }
 }

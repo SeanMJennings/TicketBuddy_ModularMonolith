@@ -4,4 +4,5 @@ public static class Routes
 {
     public const string Notifications = "notifications";
     public const string NotificationRead = "notifications/{id:guid}/read";
+    public const string UnreadCount = "notifications/unread-count";
 }

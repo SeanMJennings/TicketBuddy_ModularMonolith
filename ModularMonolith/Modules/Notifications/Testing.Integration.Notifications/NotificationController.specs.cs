@@ -19,4 +19,12 @@ public partial class NotificationControllerSpecs
         await When(marking_notification_as_read);
         await Then(the_notification_is_marked_as_read);
     }
+
+    [Test]
+    public async Task can_get_unread_notification_count()
+    {
+        await Given(unread_and_read_notifications_exist);
+        await When(requesting_unread_count);
+              Then(unread_count_is_returned);
+    }
 }

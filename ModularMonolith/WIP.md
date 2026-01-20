@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Planning Phase
-**Current Step**: 1 of 16 (Complete)
+**Current Step**: 2 of 16 (Complete)
 
 ## Goal
 
@@ -12,7 +12,7 @@ Introduce a user notifications system to inform users about important events. In
 
 ### Phase 1: Core Notifications Infrastructure (Steps 1-6)
 1. ~~Create Notifications module structure~~ ✓
-2. Create DbUp migration for Notification schema and tables
+2. ~~Create DbUp migration for Notification schema and tables~~ ✓
 3. Define domain model for notifications
 4. Create notification repository port (interface)
 5. Implement PostgreSQL notification repository adapter (EF Core)
@@ -36,7 +36,7 @@ Introduce a user notifications system to inform users about important events. In
 
 ## Current Focus
 
-**Status**: Step 1 complete, ready for Step 2 (DbUp migration)
+**Status**: Step 2 complete, ready for Step 3 (Domain model)
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)

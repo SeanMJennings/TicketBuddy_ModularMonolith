@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Planning Phase
-**Current Step**: 5 of 16 (Complete)
+**Current Step**: 4 of 16 (Repository implemented without TDD - will test in Phase 5)
 
 ## Goal
 
@@ -10,33 +10,37 @@ Introduce a user notifications system to inform users about important events. In
 
 ## Overall Plan
 
-### Phase 1: Core Notifications Infrastructure (Steps 1-6)
+### Phase 1: Core Domain & Ports (Steps 1-5) - Unit Testable
 1. ~~Create Notifications module structure~~ ✓
 2. ~~Create DbUp migration for Notification schema and tables~~ ✓
-3. ~~Define domain model for notifications~~ ✓
+3. ~~Define domain model for notifications~~ ✓ (TDD)
 4. ~~Create notification repository port (interface)~~ ✓
-5. ~~Implement PostgreSQL notification repository adapter (EF Core)~~ ✓
-6. Add notification query service (read side, Dapper)
+5. Create query port interface (IQueryNotifications)
 
-### Phase 2: Ticket Purchase Integration (Steps 7-10)
-7. Create TicketPurchased domain event
-8. Publish TicketPurchased event from PurchaseTickets use case
-9. Create notification event handler (subscribes to TicketPurchased)
-10. Verify end-to-end: purchase creates notification
+### Phase 2: Use Cases (Steps 6-8) - TDD with Mocked Ports
+6. CreateNotification use case (TDD - mocked repository)
+7. MarkNotificationAsRead use case (TDD - mocked repository)
+8. GetNotificationsForUser query (TDD - mocked query port)
 
-### Phase 3: Browser API (Steps 11-13)
-11. Create GET notifications endpoint (polling)
-12. Add mark-as-read endpoint
-13. Add notification count endpoint (unread)
+### Phase 3: Ticket Purchase Integration (Steps 9-10) - TDD with Mocks
+9. Create TicketPurchased domain event + publish from PurchaseTickets
+10. NotificationHandler consumer (TDD - mocked CreateNotification use case)
 
-### Phase 4: Testing & Integration (Steps 14-16)
-14. Add integration tests for full flow
-15. Test browser polling behavior
-16. Update documentation and complete WIP
+### Phase 4: Controllers/API (Steps 11-13) - TDD with Mocked Use Cases
+11. GET /notifications endpoint (TDD)
+12. POST /notifications/{id}/read endpoint (TDD)
+13. GET /notifications/unread-count endpoint (TDD)
+
+### Phase 5: Infrastructure + Integration Tests (Steps 14-16)
+14. PostgreSQL repository implementation + integration tests
+15. Dapper query service implementation + integration tests
+16. End-to-end integration tests (full flow)
+
+**Note:** Step 5 (PostgreSQL repository) was implemented without TDD - this will be properly tested in Phase 5 integration tests.
 
 ## Current Focus
 
-**Status**: Step 5 complete, ready for Step 6 (Query service)
+**Status**: Phase 1 nearly complete, next is Step 5 (Query port interface), then Phase 2 (Use Cases with TDD)
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)

@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Implementation Phase
-**Current Step**: 6 of 9 (Step 6 complete, ready for Step 7)
+**Current Step**: 7 of 9 (Phase 2 complete, ready for Phase 3)
 
 ## Goal
 
@@ -23,7 +23,7 @@ Introduce a user notifications system to inform users about important events. In
 - fe9da91: add notification repository port
 - 02fd87f: add PostgreSQL notification repository with EF Core
 
-### Phase 2: Vertical Slices - API Endpoints (Steps 5-7)
+### Phase 2: Vertical Slices - API Endpoints (Steps 5-7) ✓ COMPLETE
 Each step: Write failing integration test → implement full vertical slice → green → commit
 
 5. ~~**GET /notifications for user**~~ ✓
@@ -36,9 +36,10 @@ Each step: Write failing integration test → implement full vertical slice → 
    - Implemented: Controller → MarkNotificationAsRead use case → Repository with UnitOfWork
    - Commits: c470901 (green), 7efddf8 (refactor)
 
-7. **GET /notifications/unread-count** (NEXT)
+7. ~~**GET /notifications/unread-count**~~ ✓
    - Integration test: request unread count for user
-   - Implement: Controller → Query service
+   - Implemented: Controller → GetUnreadCount use case → Repository (GetUnreadCountByUserId)
+   - Commits: fe0eccc (green), dc97351 (refactor: test data factory)
 
 ### Phase 3: Ticket Purchase Notification (Steps 8-9)
 8. TicketPurchased event + handler creates notification
@@ -52,9 +53,9 @@ Each step: Write failing integration test → implement full vertical slice → 
 
 ## Current Focus
 
-**Status**: Phase 2 in progress (6/9 steps complete). Ready for Step 7: GET /notifications/unread-count
+**Status**: Phase 2 complete (7/9 steps complete). Ready for Phase 3: Ticket Purchase Notification
 
-**Next Action**: Write failing integration test for unread count endpoint
+**Next Action**: Write failing integration test for Step 8 (TicketPurchased event → notification created)
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)
@@ -209,3 +210,33 @@ None currently
 
 **Next Session**:
 - Step 7: GET /notifications/unread-count
+
+### 2026-01-20 - Session 3 (Step 7 Complete - Phase 2 Done)
+**Duration**: Step 7 implementation with TDD
+**Completed**:
+- **Step 7**: GET /notifications/unread-count endpoint with full TDD cycle
+  - RED: Wrote failing integration test (creates unread/read notifications, calls endpoint, asserts count=2)
+  - GREEN: Implemented GetUnreadCountEndpoint, GetUnreadCount use case, added GetUnreadCountByUserId to repository
+  - REFACTOR: Extracted CreateNotification test data factory
+  - Commits: fe0eccc (green), dc97351 (refactor: test data factory)
+
+**Files Created/Modified**:
+- Domain.Notifications/IPersistNotifications.cs (added GetUnreadCountByUserId)
+- Infrastructure.Notifications/Notification/NotificationRepository.cs (implemented GetUnreadCountByUserId)
+- Application.Notifications/GetUnreadCount.cs (new)
+- Controllers.Notifications/GetUnreadCountEndpoint.cs (new)
+- Controllers.Notifications/Routes.cs (added UnreadCount)
+
+**Phase 2 Summary**:
+All 3 API endpoints complete with integration tests:
+- GET /notifications - list notifications for user (ordered by CreatedAt DESC)
+- POST /notifications/{id}/read - mark notification as read
+- GET /notifications/unread-count - count of unread notifications for user
+
+**Agent/Skill Activity**:
+- tdd-guardian: Verified RED-GREEN-REFACTOR cycle
+- refactor-scan: Identified test data factory opportunity (high value)
+- wip-guardian: Updated WIP.md with Step 7 and Phase 2 completion
+
+**Next Session**:
+- Phase 3: Step 8 (TicketPurchased event + handler creates notification)

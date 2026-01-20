@@ -18,7 +18,13 @@
       "Bash(dotnet sln add:*)",
       "Bash(git rev-parse:*)",
       "Bash(chmod:*)",
-      "Bash(dotnet dev-certs:*)"
+      "Bash(dotnet dev-certs:*)",
+      "Bash(test:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(git checkout:*)",
+      "Skill(adr)"
     ],
     "deny": [],
     "ask": []

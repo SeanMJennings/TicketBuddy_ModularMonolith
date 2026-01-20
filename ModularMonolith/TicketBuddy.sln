@@ -171,6 +171,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ADRs", "ADRs", "{F7EF14DA-9
 		Documents\ADRs\003-vertical-slicing-within-horizontal-layers.md = Documents\ADRs\003-vertical-slicing-within-horizontal-layers.md
 		Documents\ADRs\004-cross-module-data-minimization.md = Documents\ADRs\004-cross-module-data-minimization.md
 		Documents\ADRs\005-compile-time-architecture-enforcement.md = Documents\ADRs\005-compile-time-architecture-enforcement.md
+		Documents\ADRs\006-notifications-as-separate-bounded-context.md = Documents\ADRs\006-notifications-as-separate-bounded-context.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Architecture.Events", "Modules\Events\Architecture.Events\Architecture.Events.csproj", "{F5644D19-CA9C-4813-B08F-DC0C6D0AB58E}"

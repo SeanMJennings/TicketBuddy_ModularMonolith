@@ -1,4 +1,4 @@
-# ADR-001: Notifications as Separate Bounded Context
+# ADR-006: Notifications as Separate Bounded Context
 
 **Status**: Accepted
 **Date**: 2026-01-20
@@ -121,11 +121,7 @@ All endpoints require `[Authorize(Roles = Roles.Customer)]`.
 
 ## Related Decisions
 
+- [ADR-001](001-initial-architecture.md) - Initial modular monolith architecture
+- [ADR-004](004-cross-module-data-minimization.md) - Cross-module data minimization
 - Future ADR needed if adding WebSocket/SSE delivery
 - Future ADR needed if adding email notification channel
-
-## References
-
-- Commits: 47da880 through cd4f20c (notifications feature implementation)
-- Module structure follows existing Events/Tickets module conventions
-- MassTransit documentation for consumer patterns

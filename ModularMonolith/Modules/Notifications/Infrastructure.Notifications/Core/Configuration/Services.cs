@@ -1,3 +1,4 @@
+using Application.Notifications;
 using Domain.Notifications;
 using Infrastructure.Notifications.Notification;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ public static class Services
     public static IServiceCollection ConfigureNotificationsServices(this IServiceCollection services)
     {
         services.AddScoped<IPersistNotifications, NotificationRepository>();
+        services.AddScoped<GetNotifications>();
         return services;
     }
 }

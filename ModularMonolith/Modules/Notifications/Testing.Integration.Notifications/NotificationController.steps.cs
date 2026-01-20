@@ -96,24 +96,30 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         await dbContext.Commit();
     }
 
+    private Notification CreateNotification(
+        Guid? id = null,
+        Guid? forUserId = null,
+        string eventName = "Concert",
+        DateTimeOffset? createdAt = null,
+        bool isRead = false)
+    {
+        var notification = Notification.Create(
+            id ?? Guid.NewGuid(),
+            forUserId ?? userId,
+            "TicketPurchased",
+            $"{{\"eventName\":\"{eventName}\"}}",
+            createdAt ?? DateTimeOffset.UtcNow);
+
+        if (isRead)
+            notification.MarkAsRead();
+
+        return notification;
+    }
+
     private async Task notifications_exist_for_user()
     {
-        var olderNotification = Notification.Create(
-            Guid.NewGuid(),
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert A\"}",
-            olderCreatedAt);
-
-        var newerNotification = Notification.Create(
-            Guid.NewGuid(),
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert B\"}",
-            newerCreatedAt);
-
-        await PersistNotification(olderNotification);
-        await PersistNotification(newerNotification);
+        await PersistNotification(CreateNotification(eventName: "Concert A", createdAt: olderCreatedAt));
+        await PersistNotification(CreateNotification(eventName: "Concert B", createdAt: newerCreatedAt));
     }
 
     private async Task requesting_notifications()
@@ -130,14 +136,7 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
 
     private async Task an_unread_notification_exists()
     {
-        var notification = Notification.Create(
-            notificationId,
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert\"}",
-            DateTimeOffset.UtcNow);
-
-        await PersistNotification(notification);
+        await PersistNotification(CreateNotification(id: notificationId));
     }
 
     private async Task marking_notification_as_read()
@@ -155,31 +154,9 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
 
     private async Task unread_and_read_notifications_exist()
     {
-        var unread1 = Notification.Create(
-            Guid.NewGuid(),
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert A\"}",
-            DateTimeOffset.UtcNow);
-
-        var unread2 = Notification.Create(
-            Guid.NewGuid(),
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert B\"}",
-            DateTimeOffset.UtcNow);
-
-        var read = Notification.Create(
-            Guid.NewGuid(),
-            userId,
-            "TicketPurchased",
-            "{\"eventName\":\"Concert C\"}",
-            DateTimeOffset.UtcNow);
-        read.MarkAsRead();
-
-        await PersistNotification(unread1);
-        await PersistNotification(unread2);
-        await PersistNotification(read);
+        await PersistNotification(CreateNotification(eventName: "Concert A"));
+        await PersistNotification(CreateNotification(eventName: "Concert B"));
+        await PersistNotification(CreateNotification(eventName: "Concert C", isRead: true));
     }
 
     private async Task requesting_unread_count()

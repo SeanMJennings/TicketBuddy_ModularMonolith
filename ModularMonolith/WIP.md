@@ -1,8 +1,8 @@
 # WIP: User Notifications System
 
 **Started**: 2026-01-20
-**Status**: Planning Phase
-**Current Step**: 4 of 9 (Phase 1 complete, ready for Phase 2 vertical slices)
+**Status**: Implementation Phase
+**Current Step**: 5 of 9 (Step 5 complete, ready for Step 6)
 
 ## Goal
 
@@ -10,20 +10,28 @@ Introduce a user notifications system to inform users about important events. In
 
 ## Overall Plan
 
-### Phase 1: Foundation (Steps 1-4) ✓
+### Phase 1: Foundation (Steps 1-4) ✓ COMPLETE
 1. ~~Create Notifications module structure~~ ✓
 2. ~~Create DbUp migration for Notification schema and tables~~ ✓
-3. ~~Define domain model for notifications~~ ✓ (TDD - unit tests)
-4. ~~Create notification repository port (interface)~~ ✓
+3. ~~Define domain model for notifications~~ ✓ (TDD - unit tests passing)
+4. ~~Create notification repository port and implementation~~ ✓
+
+**Commits:**
+- 47da880: add Notifications module structure
+- f4d0c1c: add DbUp migration for Notification schema
+- e2ec3da: add Notification domain model with TDD
+- fe9da91: add notification repository port
+- 02fd87f: add PostgreSQL notification repository with EF Core
 
 ### Phase 2: Vertical Slices - API Endpoints (Steps 5-7)
 Each step: Write failing integration test → implement full vertical slice → green → commit
 
-5. GET /notifications for user
-   - Integration test: request notifications for user, expect list
-   - Implement: Controller → Query service → Repository (EF/Dapper)
+5. ~~**GET /notifications for user**~~ ✓
+   - Integration test: request notifications for user, expect list ordered by CreatedAt DESC
+   - Implemented: Controller → GetNotifications use case → Repository (EF Core)
+   - Commits: f9ae5fc (green), a61ecab (refactor: shared ClaimsPrincipalExtensions), e53b0a5 (refactor: Routes.cs)
 
-6. POST /notifications/{id}/read (mark as read)
+6. **POST /notifications/{id}/read** (mark as read) (NEXT)
    - Integration test: mark notification as read, verify state change
    - Implement: Controller → Use case → Repository
 
@@ -43,7 +51,9 @@ Each step: Write failing integration test → implement full vertical slice → 
 
 ## Current Focus
 
-**Status**: Phase 1 complete, ready for Step 5 (GET /notifications vertical slice with integration test)
+**Status**: Phase 2 in progress (5/9 steps complete). Ready for Step 6: POST /notifications/{id}/read
+
+**Next Action**: Write failing integration test for mark notification as read endpoint
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)
@@ -111,32 +121,66 @@ None currently
 
 ## Session Log
 
-### 2026-01-20 - Session 1 (Planning + Step 1)
-**Duration**: Planning phase + Step 1 implementation
+### 2026-01-20 - Session 1 (Planning + Phase 1 Complete)
+**Duration**: Planning phase + Steps 1-4 implementation
 **Completed**:
 - Analyzed existing codebase structure
 - Identified module boundaries
-- Designed 16-step incremental plan
+- Designed 9-step incremental plan
 - Identified architecture decision points
-- **Step 1**: Created Notifications module structure (10 projects)
+- **Step 1**: Created Notifications module structure (10 projects) - commit 47da880
+- **Step 2**: Created DbUp migration (015-CreateNotificationSchemaAndTable.sql) - commit f4d0c1c
+- **Step 3**: Defined Notification domain model with TDD (5 tests passing) - commit e2ec3da
+- **Step 4**: Created IPersistNotifications port and NotificationRepository - commits fe9da91, 02fd87f
 
-**Step 1 Details**:
-- Created 10 projects: Domain, Application, Infrastructure, Controllers, Messages, Messaging, Architecture, Testing.Unit, Testing.Integration, Testing.Architecture
-- Added all projects to solution under "Notifications" folder
-- Wired up module in Host (Host.csproj, Services.cs, Messaging.cs)
-- Build succeeded with 0 errors
+**Phase 1 Deliverables**:
+- Module structure: 10 projects (Domain, Application, Infrastructure, Controllers, Messages, Messaging, Architecture, Testing.Unit, Testing.Integration, Testing.Architecture)
+- Database: Notification schema with Notifications table (Id, UserId, Type, Payload, IsRead, CreatedAt)
+- Domain model: Notification entity with Create factory method and MarkAsRead behavior
+- Repository: IPersistNotifications port with EF Core implementation (NotificationRepository)
+- Tests: 5 unit tests passing (Notification.specs.cs)
 
 **Learned**:
 - Tickets module already has messaging infrastructure
 - PurchaseTickets use case does not publish domain event yet
 - Need to add TicketPurchased event to Messages.Tickets
-- Notification module will follow existing module conventions
-- DbUp for migrations, EF Core for writes, Dapper for reads
+- Notification module follows existing module conventions
+- DbUp for migrations, EF Core for writes, Dapper for reads (established pattern)
+- Repository implemented without TDD (will be validated via integration tests in Phase 2)
 
 **Next Session**:
-- Step 2: Create DbUp migration for Notification schema and tables
-- Follow TDD for domain model (Step 3+)
+- Start Phase 2: Vertical slices with integration tests
+- Step 5: Write failing integration test for GET /notifications endpoint
+- Implement full vertical slice (Controller → Query → Repository)
 
 **Agent/Skill Activity**:
-- wip-guardian: Created WIP.md
-- Explore agent: Analyzed module structure and database patterns
+- wip-guardian: Created WIP.md, updated after Phase 1 completion
+- Planned to invoke tdd-guardian for Phase 2 integration tests
+
+### 2026-01-20 - Session 2 (Step 5 Complete)
+**Duration**: Step 5 implementation with TDD
+**Completed**:
+- **Step 5**: GET /notifications endpoint with full TDD cycle
+  - RED: Wrote failing integration test (seeds notifications, calls endpoint, asserts ordering)
+  - GREEN: Implemented GetNotificationsEndpoint, NotificationResponse, GetNotifications use case
+  - REFACTOR: Extracted ClaimsPrincipalExtensions to CommonLibraries/Application (eliminated duplication with Tickets)
+  - REFACTOR: Added Routes.cs pattern for centralized route constants
+  - Commits: f9ae5fc (green), a61ecab (refactor: ClaimsPrincipalExtensions), e53b0a5 (refactor: Routes.cs)
+
+**Files Created**:
+- Controllers.Notifications/GetNotificationsEndpoint.cs
+- Controllers.Notifications/NotificationResponse.cs
+- Controllers.Notifications/Routes.cs
+- Application.Notifications/GetNotifications.cs
+- Testing.Integration.Notifications/Setup.cs
+- Testing.Integration.Notifications/NotificationController.specs.cs
+- Testing.Integration.Notifications/NotificationController.steps.cs
+- CommonLibraries/Application/Authentication/ClaimsPrincipalExtensions.cs (shared)
+
+**Agent/Skill Activity**:
+- tdd-guardian: Verified RED-GREEN-REFACTOR cycle, identified DI configuration issue
+- refactor-scan: Identified ClaimsPrincipalExtensions duplication (critical) and Routes.cs pattern (high value)
+- wip-guardian: Updated WIP.md with Step 5 completion
+
+**Next Session**:
+- Step 6: POST /notifications/{id}/read (mark as read)

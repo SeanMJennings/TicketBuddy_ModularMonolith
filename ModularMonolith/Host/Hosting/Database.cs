@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Notifications.Core.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 
 namespace Api.Hosting;
@@ -9,5 +10,6 @@ internal static class Database
     {
         services.ConfigureEventsDatabase(connectionString);
         services.ConfigureTicketsDatabase(connectionString);
+        services.ConfigureNotificationsDatabase(connectionString);
     }
 }

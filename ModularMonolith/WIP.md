@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Planning Phase
-**Current Step**: 4 of 16 (Complete)
+**Current Step**: 5 of 16 (Complete)
 
 ## Goal
 
@@ -15,7 +15,7 @@ Introduce a user notifications system to inform users about important events. In
 2. ~~Create DbUp migration for Notification schema and tables~~ ✓
 3. ~~Define domain model for notifications~~ ✓
 4. ~~Create notification repository port (interface)~~ ✓
-5. Implement PostgreSQL notification repository adapter (EF Core)
+5. ~~Implement PostgreSQL notification repository adapter (EF Core)~~ ✓
 6. Add notification query service (read side, Dapper)
 
 ### Phase 2: Ticket Purchase Integration (Steps 7-10)
@@ -36,7 +36,7 @@ Introduce a user notifications system to inform users about important events. In
 
 ## Current Focus
 
-**Status**: Step 4 complete, ready for Step 5 (PostgreSQL repository adapter)
+**Status**: Step 5 complete, ready for Step 6 (Query service)
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)

@@ -1,5 +1,7 @@
+using Application;
 using Application.Notifications;
 using Application.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers.Notifications;
@@ -8,6 +10,7 @@ namespace Controllers.Notifications;
 public class GetNotificationsEndpoint(GetNotifications getNotifications) : ControllerBase
 {
     [HttpGet(Routes.Notifications)]
+    [Authorize(Roles = Roles.Customer)]
     public async Task<IEnumerable<NotificationResponse>> GetNotifications()
     {
         var userId = User.GetUserId();

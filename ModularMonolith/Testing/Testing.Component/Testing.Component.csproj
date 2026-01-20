@@ -13,6 +13,7 @@
       <ProjectReference Include="..\..\CommonLibraries\Testing\Testing.csproj" />
       <ProjectReference Include="..\..\Modules\Events\Controllers.Events\Controllers.Events.csproj" />
       <ProjectReference Include="..\..\Modules\Tickets\Controllers.Tickets\Controllers.Tickets.csproj" />
+      <ProjectReference Include="..\..\Modules\Notifications\Controllers.Notifications\Controllers.Notifications.csproj" />
       <ProjectReference Include="..\..\Host\Host.csproj" />
       <ProjectReference Include="..\..\CommonLibraries\Domain\Domain.csproj" />
       <ProjectReference Include="..\..\Database\Migrations\Migrations.csproj" />
@@ -33,6 +34,9 @@
       </Compile>
       <Compile Update="Api\EventApi.steps.cs">
         <DependentUpon>EventApi.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Api\NotificationApi.steps.cs">
+        <DependentUpon>NotificationApi.specs.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

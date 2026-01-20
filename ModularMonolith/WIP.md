@@ -2,7 +2,7 @@
 
 **Started**: 2026-01-20
 **Status**: Implementation Phase
-**Current Step**: 7 of 9 (Phase 2 complete, ready for Phase 3)
+**Current Step**: 8 of 9 (Step 8 complete, ready for Step 9)
 
 ## Goal
 
@@ -42,20 +42,22 @@ Each step: Write failing integration test → implement full vertical slice → 
    - Commits: fe0eccc (green), dc97351 (refactor: test data factory)
 
 ### Phase 3: Ticket Purchase Notification (Steps 8-9)
-8. TicketPurchased event + handler creates notification
-   - Integration test: purchase ticket → verify notification created
-   - Implement: Domain event, publish from PurchaseTickets, consumer, create notification
+8. ~~**TicketPurchased event + handler creates notification**~~ ✓
+   - Integration test: consumer creates notification when receiving message
+   - Implemented: TicketPurchased message, TicketWasPurchased domain event, handler, consumer
+   - Commits: 2d86c7c (consumer), 00d82b3 (publishing)
 
-9. End-to-end flow test
-   - Integration test: purchase → notification appears in GET /notifications
+9. **Authentication/Authorization component tests** (NEXT)
+   - Component tests verifying each notification endpoint requires authentication
+   - Tests verifying users can only access their own notifications
 
 **Note:** Repository was implemented in earlier session without TDD. It will be exercised and validated through the integration tests in Phase 2.
 
 ## Current Focus
 
-**Status**: Phase 2 complete (7/9 steps complete). Ready for Phase 3: Ticket Purchase Notification
+**Status**: Phase 3 in progress (8/9 steps complete). Ready for Step 9: End-to-end flow test
 
-**Next Action**: Write failing integration test for Step 8 (TicketPurchased event → notification created)
+**Next Action**: Write component tests for authentication/authorization on notification endpoints
 
 **Architecture Decisions to Document**:
 - Notifications as separate bounded context (new module)

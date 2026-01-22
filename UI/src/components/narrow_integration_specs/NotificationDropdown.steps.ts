@@ -36,11 +36,21 @@ vi.mock("react-oidc-context", () => ({
     })
 }));
 
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+    const actual = await vi.importActual("react-router-dom");
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate
+    };
+});
+
 afterEach(() => {
     mockNotifications = [];
     mockIsLoading = false;
     mockRefetch.mockReset();
     mockMarkNotificationAsRead.mockReset();
+    mockNavigate.mockReset();
     unmountNotificationDropdown();
 });
 
@@ -129,4 +139,20 @@ export async function should_refetch_notifications_after_marking_as_read() {
     await clickNotification(0);
 
     expect(mockRefetch).toHaveBeenCalled();
+}
+
+export async function should_navigate_to_tickets_page_when_ticket_purchased_notification_clicked() {
+    mockNotifications = [
+        createNotification({
+            Id: "notif-123",
+            Type: "TicketPurchased",
+            Payload: JSON.stringify({ eventId: "event-456", ticketId: "ticket-789", eventName: "Rock Concert" })
+        })
+    ];
+    mockMarkNotificationAsRead.mockResolvedValue(undefined);
+
+    renderNotificationDropdown();
+    await clickNotification(0);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/tickets/event-456");
 }

@@ -6,7 +6,8 @@ import {
     should_show_loading_state_while_fetching,
     should_highlight_unread_notifications,
     should_call_mark_as_read_when_notification_clicked,
-    should_refetch_notifications_after_marking_as_read
+    should_refetch_notifications_after_marking_as_read,
+    should_navigate_to_tickets_page_when_ticket_purchased_notification_clicked
 } from "./NotificationDropdown.steps";
 
 describe("NotificationDropdown", () => {
@@ -17,4 +18,5 @@ describe("NotificationDropdown", () => {
     it("should highlight unread notifications", should_highlight_unread_notifications);
     it("should call mark as read when notification clicked", should_call_mark_as_read_when_notification_clicked);
     it("should refetch notifications after marking as read", should_refetch_notifications_after_marking_as_read);
+    it("should navigate to tickets page when TicketPurchased notification clicked", should_navigate_to_tickets_page_when_ticket_purchased_notification_clicked);
 });

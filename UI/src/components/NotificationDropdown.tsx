@@ -1,4 +1,5 @@
 import { useAuth } from "react-oidc-context";
+import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications";
 import { markNotificationAsRead } from "../api/notifications.api";
 import { parseNotificationPayload, type Notification } from "../domain/notification";
@@ -28,14 +29,20 @@ const formatTime = (dateString: string): string => {
 
 export const NotificationDropdown = () => {
     const auth = useAuth();
+    const navigate = useNavigate();
     const { notifications, isLoading, refetch } = useNotifications();
 
-    const handleNotificationClick = async (notificationId: string) => {
+    const handleNotificationClick = async (notification: Notification) => {
         const jwt = auth.user?.access_token;
         if (!jwt) return;
 
-        await markNotificationAsRead(notificationId, jwt);
+        await markNotificationAsRead(notification.Id, jwt);
         refetch();
+
+        const parsed = parseNotificationPayload(notification);
+        if (parsed.type === "TicketPurchased") {
+            navigate(`/tickets/${parsed.eventId}`);
+        }
     };
 
     if (isLoading) {
@@ -66,7 +73,7 @@ export const NotificationDropdown = () => {
                     $unread={!notification.IsRead}
                     data-testid="notification-item"
                     data-unread={!notification.IsRead}
-                    onClick={() => handleNotificationClick(notification.Id)}
+                    onClick={() => handleNotificationClick(notification)}
                 >
                     <NotificationTitle>
                         {formatNotificationMessage(notification)}

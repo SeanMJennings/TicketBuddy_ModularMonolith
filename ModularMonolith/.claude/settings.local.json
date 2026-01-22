@@ -24,9 +24,14 @@
       "Bash(ls:*)",
       "Bash(grep:*)",
       "Bash(git checkout:*)",
-      "Skill(adr)"
+      "Skill(adr)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== Run $i ===\")",
+      "Bash(done)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [
+      "Bash(git push:*)"
+    ]
   }
 }

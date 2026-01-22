@@ -75,6 +75,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         var venue1Response = await client.PostAsJsonAsync(Controllers.Events.Routes.Venues, new VenuePayload("Old Trafford", "Sir Matt Busby Way", "Manchester", "M16 0RA", 17));
         venue1Response.StatusCode.ShouldBe(HttpStatusCode.Created);
         venue1Id = JsonSerialization.Deserialize<Guid>(await venue1Response.Content.ReadAsStringAsync());
+        await testHarness.Consumed.Any<VenueUpserted>(x => x.Context.Message.Id == venue1Id);
         client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
         client.DefaultRequestHeaders.Add(UserHeaders.UserId, user_id.ToString());

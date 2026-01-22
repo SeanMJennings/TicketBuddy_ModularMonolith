@@ -13,10 +13,31 @@ public partial class TicketApiSpecs
     }
     
     [Test]
-    public async Task anonymous_user_cannot_interact_with_tickets()
+    public async Task anonymous_user_cannot_get_tickets_for_event()
     {
         await Given(an_event_exists);
         await When(requesting_the_tickets_as_an_anonymous_user);
+              Then(the_request_is_unauthorized);
+    }
+
+    [Test]
+    public async Task anonymous_user_cannot_purchase_tickets()
+    {
+        await When(purchasing_tickets_as_an_anonymous_user);
+              Then(the_request_is_unauthorized);
+    }
+
+    [Test]
+    public async Task anonymous_user_cannot_reserve_tickets()
+    {
+        await When(reserving_tickets_as_an_anonymous_user);
+              Then(the_request_is_unauthorized);
+    }
+
+    [Test]
+    public async Task anonymous_user_cannot_get_their_tickets()
+    {
+        await When(requesting_user_tickets_as_an_anonymous_user);
               Then(the_request_is_unauthorized);
     }
     

@@ -1,4 +1,4 @@
-﻿﻿using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events.Requests;
@@ -144,6 +144,35 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         var response = await client.GetAsync(EventTickets(event_id));
         response_code = response.StatusCode;
         content = response.Content;
+    }
+
+    private async Task purchasing_tickets_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        content = new StringContent(
+            JsonSerialization.Serialize(new TicketPurchasePayload([Guid.NewGuid()])),
+            Encoding.UTF8,
+            application_json);
+        var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
+        response_code = response.StatusCode;
+    }
+
+    private async Task reserving_tickets_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        content = new StringContent(
+            JsonSerialization.Serialize(new TicketReservationPayload([Guid.NewGuid()])),
+            Encoding.UTF8,
+            application_json);
+        var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);
+        response_code = response.StatusCode;
+    }
+
+    private async Task requesting_user_tickets_as_an_anonymous_user()
+    {
+        client.DefaultRequestHeaders.Clear();
+        var response = await client.GetAsync(TicketsForUser);
+        response_code = response.StatusCode;
     }
 
     private async Task purchasing_two_tickets()

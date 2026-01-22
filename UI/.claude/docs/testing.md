@@ -296,19 +296,64 @@ describe("Payment processing", () => {
 
 ## React Component Testing
 
+Use the specs/steps/page pattern for React component tests:
+
 ```typescript
-// Good - testing user-visible behavior
+// PaymentForm.spec.ts - test descriptions only
+import { describe, it } from "vitest";
+import { should_show_error_when_submitting_invalid_amount } from "./PaymentForm.steps";
+
 describe("PaymentForm", () => {
-  it("should show error when submitting invalid amount", async () => {
-    render(<PaymentForm />);
-
-    const amountInput = screen.getByLabelText("Amount");
-    const submitButton = screen.getByRole("button", { name: "Submit Payment" });
-
-    await userEvent.type(amountInput, "-100");
-    await userEvent.click(submitButton);
-
-    expect(screen.getByText("Amount must be positive")).toBeInTheDocument();
-  });
+  it("should show error when submitting invalid amount", should_show_error_when_submitting_invalid_amount);
 });
+```
+
+```typescript
+// PaymentForm.steps.ts - test implementations
+import { expect, afterEach } from "vitest";
+import {
+  renderPaymentForm,
+  unmountPaymentForm,
+  enterAmount,
+  submitForm,
+  errorMessageIsDisplayed
+} from "./PaymentForm.page.tsx";
+
+afterEach(() => { unmountPaymentForm(); });
+
+export async function should_show_error_when_submitting_invalid_amount() {
+  renderPaymentForm();
+  await enterAmount("-100");
+  await submitForm();
+  expect(errorMessageIsDisplayed("Amount must be positive")).toBe(true);
+}
+```
+
+```typescript
+// PaymentForm.page.tsx - page object with render/query helpers
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { PaymentForm } from "../PaymentForm";
+
+let renderResult: ReturnType<typeof render>;
+
+export function renderPaymentForm() {
+  renderResult = render(<PaymentForm />);
+}
+
+export function unmountPaymentForm() { renderResult?.unmount(); }
+
+export async function enterAmount(amount: string) {
+  const input = screen.getByLabelText("Amount");
+  await userEvent.type(input, amount);
+}
+
+export async function submitForm() {
+  const button = screen.getByRole("button", { name: "Submit Payment" });
+  await userEvent.click(button);
+}
+
+export function errorMessageIsDisplayed(message: string): boolean {
+  return screen.queryByText(message) !== null;
+}
 ```

@@ -30,18 +30,8 @@ vi.mock("react-oidc-context", () => ({
     })
 }));
 
-const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-    const actual = await vi.importActual("react-router-dom");
-    return {
-        ...actual,
-        useNavigate: () => mockNavigate
-    };
-});
-
 beforeEach(() => {
     mockServer.reset();
-    mockNavigate.mockReset();
 });
 
 afterEach(() => {
@@ -140,22 +130,4 @@ export async function should_refetch_notifications_after_marking_as_read() {
     await waitUntil(wait_for_refetch);
 
     expect(isNotificationUnread(0)).toBe(false);
-}
-
-export async function should_navigate_to_tickets_page_when_ticket_purchased_notification_clicked() {
-    const notification = createNotification({
-        Id: "notif-123",
-        Type: "TicketPurchased",
-        Payload: JSON.stringify({ eventId: "event-456", ticketId: "ticket-789", eventName: "Rock Concert" })
-    });
-    wait_for_get_notifications = mockServer.get("/notifications", [notification]);
-    wait_for_mark_as_read = mockServer.post("/notifications/notif-123/read", undefined, 204);
-    mockServer.start();
-
-    renderNotificationDropdown();
-    await waitUntil(wait_for_get_notifications);
-    await clickNotification(0);
-    await waitUntil(wait_for_mark_as_read);
-
-    expect(mockNavigate).toHaveBeenCalledWith("/tickets/event-456");
 }

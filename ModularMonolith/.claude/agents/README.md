@@ -1,23 +1,13 @@
-# Claude Code Agents & Skills
+# Claude Code Agents
 
-This directory contains agents that require explicit invocation for fresh-context critique. For auto-triggering documentation and analysis, see the `skills/` directory.
+This directory contains specifications for specialized Claude Code agents that work together to maintain code quality, documentation, and development workflow.
 
-## Hybrid Approach
+## Agent Overview
 
-We use a hybrid system optimised for different task types:
+### Development Process Agents
 
-| Type | Location | Invocation | Best For |
-|------|----------|------------|----------|
-| **Agents** | `.claude/agents/` | Explicit (`/agent-name`) | Fresh-context critique |
-| **Skills** | `.claude/skills/` | Auto-trigger | Documentation with conversation context |
-
-**Why?** Agents spawn with fresh context, making them more objective when critiquing code you just wrote. Skills have full conversation context, which helps with documentation tasks.
-
-## Agents (This Directory)
-
-### `tdd-guardian`
-
-**Purpose**: Ensures strict Test-Driven Development compliance.
+#### `tdd-guardian`
+**Purpose**: Ensures strict Test-Driven Development compliance throughout the coding process.
 
 **Use proactively when**:
 - Planning to implement a new feature
@@ -29,12 +19,9 @@ We use a hybrid system optimised for different task types:
 
 **Core responsibility**: Enforce RED-GREEN-REFACTOR cycle, verify tests written first.
 
-**Why an agent?** Fresh context provides objective critique of whether TDD was actually followed, without bias from having written the code.
-
 ---
 
-### `refactor-scan`
-
+#### `refactor-scan`
 **Purpose**: Assesses refactoring opportunities after tests pass (TDD's third step).
 
 **Use proactively when**:
@@ -49,13 +36,78 @@ We use a hybrid system optimised for different task types:
 
 **Core responsibility**: Identify valuable refactoring (only refactor if adds value), distinguish knowledge duplication from structural similarity.
 
-**Why an agent?** Fresh context enables honest assessment of whether code needs refactoring, without justifying decisions already made.
+---
+
+### Documentation & Knowledge Agents
+
+#### `adr`
+**Purpose**: Documents significant architectural decisions with context and trade-offs.
+
+**Use proactively when**:
+- About to make significant architectural choice
+- Evaluating technology/library options
+- Planning foundational decisions
+
+**Use reactively when**:
+- Just made an architectural decision
+- Discovering undocumented architectural choice
+- Need to explain "why we did it this way"
+
+**Core responsibility**: Create Architecture Decision Records (ADRs) for significant decisions only.
+
+**When to use**:
+- ✅ Significant architectural choices with trade-offs
+- ✅ Technology selections with long-term impact
+- ✅ Pattern decisions affecting multiple modules
+- ❌ Trivial implementation choices
+- ❌ Temporary workarounds
+- ❌ Standard patterns already in CLAUDE.md
 
 ---
 
-### `wip-guardian`
+#### `learn`
+**Purpose**: Captures learnings, gotchas, and patterns into CLAUDE.md.
 
-**Purpose**: Maintains living plan document for work in progress.
+**Use proactively when**:
+- Discovering unexpected behavior
+- Making architectural decisions (rationale)
+
+**Use reactively when**:
+- Completing significant features
+- Fixing complex bugs
+- After any significant learning moment
+
+**Core responsibility**: Document gotchas, patterns, anti-patterns, decisions while context is fresh.
+
+**Key distinction**: Captures HOW to work with the codebase (gotchas, patterns), not WHY architecture chosen (that's ADRs).
+
+---
+
+### Analysis & Architecture Agents
+
+#### `use-case-data-patterns`
+**Purpose**: Analyzes how user-facing use cases map to underlying data access patterns and architectural implementation.
+
+**Use proactively when**:
+- Implementing new features that interact with data
+- Designing API endpoints
+- Planning refactoring of data-heavy systems
+
+**Use reactively when**:
+- Understanding how a feature works end-to-end
+- Identifying gaps in data access patterns
+- Investigating architectural decisions
+
+**Core responsibility**: Create comprehensive analytical reports mapping use cases to data patterns, database interactions, and architectural decisions.
+
+> **Attribution**: Adapted from [Kieran O'Hara's dotfiles](https://github.com/kieran-ohara/dotfiles/blob/main/config/claude/agents/analyse-use-case-to-data-patterns.md).
+
+---
+
+### Workflow & Planning Agents
+
+#### `wip-guardian`
+**Purpose**: Maintains living plan document for work in progress to prevent context loss.
 
 **Use proactively when**:
 - Starting significant multi-step work
@@ -72,68 +124,141 @@ We use a hybrid system optimised for different task types:
 **Core responsibility**:
 - Create and maintain temporary `WIP.md` file
 - Enforce small PRs, incremental work, tests passing
-- Coordinate agents and skills at appropriate times
-- **DELETE `WIP.md` when complete**
+- Orchestrate other agents at appropriate times
+- Update plan as reality unfolds
+- **DELETE `WIP.md` when complete** (not archive, unless instructive)
+
+**Key distinction**: Creates TEMPORARY, short-term memory (deleted when done), NOT permanent docs.
 
 ---
 
-## Skills (See `.claude/skills/`)
+## Agent Relationships
 
-These auto-trigger based on conversation context:
-
-| Skill | Auto-triggers When | Purpose |
-|-------|-------------------|---------|
-| `learn` | Discovering gotchas, completing features, fixing bugs | Captures learnings → CLAUDE.md |
-| `adr` | Discussing architecture trade-offs, technology choices | Creates Architecture Decision Records |
-| `use-case-data-patterns` | Asking "how does X work?", analyzing data flows | Maps use cases to data patterns |
-
-## Workflow Integration
+### Orchestration Flow
 
 ```
-1. Start significant work
-   └─→ Invoke wip-guardian: Creates WIP.md
-
-2. For each step in plan
-   └─→ Invoke tdd-guardian: Verify TDD (RED)
-   └─→ Write minimal code (GREEN)
-   └─→ Invoke refactor-scan: Assess improvements (REFACTOR)
-   └─→ Invoke wip-guardian: Update progress
-
-3. When architectural decision arises
-   └─→ Invoke wip-guardian: Document decision point
-   └─→ adr skill auto-triggers
-
-4. When learning occurs
-   └─→ Invoke wip-guardian: Update plan
-   └─→ learn skill auto-triggers
-
-5. Feature complete
-   └─→ learn skill captures final learnings
-   └─→ Invoke wip-guardian: DELETE WIP.md
+wip-guardian (orchestrates)
+    ├─→ use-case-data-patterns (when analyzing existing patterns)
+    ├─→ tdd-guardian (for each step: RED-GREEN-REFACTOR)
+    ├─→ refactor-scan (after GREEN tests)
+    ├─→ adr (when architectural decision arises)
+    ├─→ learn (when significant learning occurs)
 ```
+
+### Typical Workflow
+
+1. **Start significant work**
+   - Invoke `wip-guardian`: Creates `WIP.md` with plan
+   - Invoke `use-case-data-patterns`: Analyze existing patterns before implementing
+
+2. **For each step in plan**
+   - Invoke `tdd-guardian`: RED (failing test)
+   - Write minimal code: GREEN (tests pass)
+   - Invoke `refactor-scan`: REFACTOR (assess improvements)
+   - Invoke `wip-guardian`: Update progress
+
+3. **When architectural decision arises**
+   - Invoke `wip-guardian`: Document decision point
+   - Invoke `adr`: Create ADR for significant decisions
+
+4. **Before commits/PRs**
+   - Invoke `tdd-guardian`: Verify TDD compliance
+
+5. **When learning occurs**
+   - Invoke `wip-guardian`: Update plan if it changes approach
+   - Invoke `learn`: Document in CLAUDE.md if significant
+
+6. **End of session**
+   - Invoke `wip-guardian`: Session checkpoint
+
+7. **Feature complete**
+   - Invoke `learn`: Capture final learnings
+   - Invoke `wip-guardian`: Verify completion, **DELETE WIP.md**
 
 ## Key Distinctions
 
-### Agents vs Skills
-
-| Aspect | Agents | Skills |
-|--------|--------|--------|
-| **Context** | Fresh (no conversation history) | Full conversation context |
-| **Invocation** | Explicit | Auto-trigger |
-| **Best for** | Objective critique | Documentation |
-| **Examples** | tdd-guardian, refactor-scan | learn, adr |
-
 ### Documentation Types
 
-| Tool | Lifespan | Purpose | Output |
-|------|----------|---------|--------|
-| `wip-guardian` | Temporary | Track progress | `WIP.md` (deleted when done) |
-| `adr` skill | Permanent | Explain "why" decisions | `docs/adr/*.md` |
-| `learn` skill | Permanent | Explain "how" to work | `CLAUDE.md` entries |
+| Aspect | wip-guardian | adr | learn |
+|--------|-------------|-----|-------|--------------|
+| **Lifespan** | Temporary (days/weeks) | Permanent | Permanent | Permanent |
+| **Audience** | Current developer | Future developers | AI assistant + developers | Users + developers |
+| **Purpose** | Track progress | Explain "why" decisions | Explain "how" to work | Explain "what" and "how to use" |
+| **Content** | Current state, next steps | Context, decision, consequences | Gotchas, patterns | Features, API, setup |
+| **Updates** | Constantly | Once (rarely updated) | As learning occurs | When features change |
+| **Format** | Informal notes | Structured ADR format | Informal examples | Professional, polished |
+| **End of life** | **DELETED** when done | Lives forever | Lives forever | Lives forever |
+
+### When to Use Which Documentation Agent
+
+**Use `wip-guardian`** for:
+- "What am I working on right now?"
+- "What's the next step?"
+- "Where was I when I stopped yesterday?"
+- → Answer: Temporary `WIP.md` (deleted when done)
+
+**Use `adr`** for:
+- "Why did we choose technology X over Y?"
+- "What were the trade-offs in this architectural decision?"
+- "Why is the system designed this way?"
+- → Answer: Permanent ADR in `docs/adr/`
+
+**Use `learn`** for:
+- "What gotchas should I know about?"
+- "What patterns work well here?"
+- "How do I avoid this common mistake?"
+- → Answer: Permanent entry in `CLAUDE.md`
+
+**Use `use-case-data-patterns`** for:
+- "How does this feature work end-to-end?"
+- "What data patterns support this use case?"
+- "What's missing to implement this feature?"
+- → Answer: Analytical report mapping use cases to data patterns
+
+## Using These Agents
+
+These agent specifications are designed to be integrated into Claude Code. To use them:
+
+1. **Read the agent specification** to understand when to invoke it
+2. **Invoke the agent** via Claude Code's Task tool with the appropriate `subagent_type`
+3. **Follow the agent's guidance** for your specific situation
+
+Each agent is designed to be:
+- **Proactive**: Used before work begins to guide best practices
+- **Reactive**: Used after work to verify compliance and improvements
+- **Autonomous**: Operates independently with clear responsibilities
+- **Integrated**: Works with other agents as part of a cohesive system
+
+## Agent Design Principles
+
+All agents follow these principles:
+
+1. **Clear Purpose**: Each agent has a specific, well-defined responsibility
+2. **Trigger Patterns**: Explicit proactive and reactive usage patterns
+3. **Integration Points**: Clear handoffs between agents
+4. **Examples-Driven**: Comprehensive examples of good/bad usage
+5. **Anti-Patterns**: Explicit documentation of what NOT to do
+6. **Success Criteria**: Clear metrics for agent effectiveness
+
+## Contributing New Agents
+
+When creating a new agent specification:
+
+1. **Define clear purpose**: What specific problem does it solve?
+2. **Distinguish from existing agents**: How is it different?
+3. **Provide comprehensive examples**: Show proactive and reactive usage
+4. **Document integration points**: How does it work with other agents?
+5. **Include anti-patterns**: What should users avoid?
+6. **Follow the template**: Use existing agents as reference
 
 ## Summary
 
-- **Agents** (invoke explicitly): `tdd-guardian`, `refactor-scan`, `wip-guardian`
-- **Skills** (auto-trigger): `learn`, `adr`, `use-case-data-patterns`
+These agents work together to create a comprehensive development workflow:
 
-Agents provide fresh-context critique. Skills provide context-aware documentation.
+- **Analysis**: use-case-data-patterns maps use cases to implementation patterns
+- **Quality**: tdd-guardian ensures code quality
+- **Improvement**: refactor-scan optimizes code after tests pass
+- **Knowledge**: learn + adr preserve knowledge
+- **Progress**: wip-guardian prevents context loss during development
+
+Each agent is specialized, autonomous, and designed to be invoked at the right time to maintain high standards throughout the development process.

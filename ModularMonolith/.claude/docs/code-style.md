@@ -45,7 +45,7 @@ Be vigilant for common anti-patterns that degrade code quality.
 
 ### Why Self-Documenting Code Matters
 
-- **Safety**: Clear, unambiguous code reduces misinterpretation that could affect financial transactions
+- **Safety**: Clear, unambiguous code reduces misinterpretation that could affect patient care
 - **Maintainability**: Future developers can understand and modify code without extensive documentation
 - **Domain Alignment**: Code that mirrors business language improves communication with domain experts
 - **Reduced Cognitive Load**: Developers spend less time deciphering what code does and more time on business logic
@@ -66,11 +66,11 @@ Self-documenting code standards complement and reinforce other development pract
 
 ```csharp
 // AVOID: Comments explaining what the code does
-// Check if the order total is over 100
-if (order.Total >= 100)
+// Check if the user is over 18
+if (user.Age >= 18)
 
 // PREFER: Self-revealing code
-if (order.QualifiesForFreeShipping())
+if (user.IsAdult())
 
 // AVOID: Magic numbers requiring explanation
 if (order.Status == 3) // 3 means "shipped"
@@ -91,9 +91,9 @@ public class DataProcessor
 }
 
 // PREFER: Domain language
-public class OrderValidator
+public class PrescriptionValidator
 {
-    public void ValidateOrders(List<Order> orders) { }
+    public void ValidatePrescriptions(List<Prescription> prescriptions) { }
 }
 ```
 
@@ -106,8 +106,8 @@ public class OrderValidator
 throw new Exception("Invalid input");
 
 // PREFER: Specific, actionable error messages
-throw new InvalidOrderException(
-    $"Order {orderId} cannot be processed: customer account {accountId} has insufficient funds");
+throw new InvalidPrescriptionException(
+    $"Prescription {prescriptionId} cannot be dispensed: patient allergy to {allergen} detected");
 ```
 
 #### Code Readability Hierarchy
@@ -126,8 +126,8 @@ throw new InvalidOrderException(
 
 ```csharp
 // GOOD: Clear responsibility
-public class FraudDetectionChecker { }
-public class CustomerEligibilityValidator { }
+public class DrugInteractionChecker { }
+public class PatientEligibilityValidator { }
 
 // AVOID: Vague or technical names
 public class DataHelper { }
@@ -136,10 +136,10 @@ public class Processor { }
 ```
 
 **Naming Patterns:**
-- **Services**: Use domain verbs (`FraudDetectionChecker`, `OrderValidator`)
-- **Entities**: Use domain nouns (`Customer`, `Order`, `Product`)
-- **Primitives**: Use descriptive domain concepts (`Money`, `CustomerId`, `ProductCode`)
-- **Repositories**: Use `Repository` suffix (`CustomerRepository`, `OrderRepository`)
+- **Services**: Use domain verbs (`DrugInteractionChecker`, `PrescriptionValidator`)
+- **Entities**: Use domain nouns (`Patient`, `Prescription`, `Formulary`)
+- **Primitives**: Use descriptive domain concepts (`Money`, `PatientId`, `DrugCode`)
+- **Repositories**: Use `Repository` suffix (`PatientRepository`, `PrescriptionRepository`)
 
 #### Method Naming
 
@@ -147,9 +147,9 @@ public class Processor { }
 
 ```csharp
 // GOOD: Action-oriented, specific
-public bool HasRestrictionFor(Product product)
-public Money CalculateShippingCost(Address address, Order order)
-public void ProcessOrder(Order order)
+public bool HasAllergiesTo(Drug drug)
+public Money CalculateCopay(Insurance insurance, Drug drug)
+public void DispensePrescription(Prescription prescription)
 
 // AVOID: Vague or abbreviated
 public bool Check(object obj)
@@ -160,9 +160,9 @@ public object Validate()
 
 **Naming Guidelines:**
 - **Boolean methods**: Start with `Is`, `Has`, `Can`, `Should`
-- **Action methods**: Use clear verbs (`Calculate`, `Validate`, `Process`)
-- **Query methods**: Describe what is returned (`GetEligibleCustomers`, `FindActiveOrders`)
-- **Avoid abbreviations**: `CalculateShippingCost` not `CalcShip`
+- **Action methods**: Use clear verbs (`Calculate`, `Validate`, `Dispense`)
+- **Query methods**: Describe what is returned (`GetEligiblePatients`, `FindActivePrescriptions`)
+- **Avoid abbreviations**: `CalculateCopayment` not `CalcCopay`
 
 #### Variable Naming
 
@@ -170,14 +170,14 @@ public object Validate()
 
 ```csharp
 // GOOD: Self-explanatory
-var eligibleCustomers = customerService.GetEligibleCustomers();
-var maximumTransactionLimit = account.GetDailyTransactionLimit();
-var manualApprovalRequired = order.RequiresManualApproval();
+var eligiblePatients = patientService.GetEligiblePatients();
+var maximumDosage = drug.GetMaximumDailyDosage();
+var insuranceApprovalRequired = prescription.RequiresPreAuthorization();
 
 // AVOID: Cryptic or generic
 var list = service.Get();
-var max = account.GetMax();
-var flag = order.Check();
+var max = drug.GetMax();
+var flag = prescription.Check();
 ```
 
 #### Constants and Configuration
@@ -188,9 +188,9 @@ var flag = order.Check();
 // GOOD: Business meaning clear
 public static class BusinessRules
 {
-    public const int MaximumOrderHoldDays = 90;
-    public const decimal MinimumOrderAmount = 5.00m;
-    public const int CustomerEligibilityGracePeriodDays = 30;
+    public const int MaximumPrescriptionDurationDays = 90;
+    public const decimal MinimumInsuranceCopayAmount = 5.00m;
+    public const int PatientEligibilityGracePeriodDays = 30;
 }
 
 // AVOID: Technical or unclear names
@@ -207,21 +207,21 @@ public const int GRACE = 30;
 
 ```csharp
 // GOOD: Single, clear responsibility
-public ValidationResult ValidateCustomerEligibility(Customer customer, PaymentMethod paymentMethod)
+public ValidationResult ValidatePatientEligibility(Patient patient, Insurance insurance)
 {
-    if (!customer.IsActive())
-        return ValidationResult.Failed("Customer is not active");
+    if (!patient.IsActive())
+        return ValidationResult.Failed("Patient is not active");
 
-    if (!paymentMethod.IsValidFor(customer))
-        return ValidationResult.Failed("Payment method is not valid for this customer");
+    if (!insurance.CoversPatient(patient))
+        return ValidationResult.Failed("Insurance does not cover this patient");
 
     return ValidationResult.Success();
 }
 
 // AVOID: Multiple responsibilities
-public bool ProcessCustomer(Customer customer, PaymentMethod paymentMethod, List<Order> orders)
+public bool ProcessPatient(Patient patient, Insurance insurance, List<Prescription> prescriptions)
 {
-    // Validates customer, processes payment, fulfills orders
+    // Validates patient, processes insurance, dispenses prescriptions
     // Too many responsibilities in one method
 }
 ```
@@ -232,10 +232,10 @@ public bool ProcessCustomer(Customer customer, PaymentMethod paymentMethod, List
 
 ```csharp
 // GOOD: Specific, typed parameters
-public void TransferOrder(
-    OrderId orderId,
-    WarehouseId fromWarehouse,
-    WarehouseId toWarehouse,
+public void TransferPrescription(
+    PrescriptionId prescriptionId, 
+    PharmacyId fromPharmacy, 
+    PharmacyId toPharmacy,
     TransferReason reason)
 
 // AVOID: Generic or primitive parameters
@@ -248,14 +248,14 @@ public void Transfer(string id, string from, string to, int reasonCode)
 
 ```csharp
 // GOOD: Specific return types
-public EligibilityResult CheckCustomerEligibility(CustomerId customerId)
-public Maybe<Order> FindActiveOrder(CustomerId customerId, ProductId productId)
-public ValidationResult ValidatePaymentMethod(PaymentMethod paymentMethod)
+public EligibilityResult CheckPatientEligibility(PatientId patientId)
+public Maybe<Prescription> FindActivePrescription(PatientId patientId, DrugId drugId)
+public ValidationResult ValidateInsuranceCoverage(Insurance insurance)
 
 // AVOID: Generic return types
 public bool Check(string id)
-public object Find(string customerId, string productId)
-public string Validate(object paymentMethod)
+public object Find(string patientId, string drugId)
+public string Validate(object insurance)
 ```
 
 #### Method Length Guidelines
@@ -268,13 +268,13 @@ public string Validate(object paymentMethod)
 
 ```csharp
 // GOOD: Concise and focused
-public Money CalculateShippingCost(Order order, ShippingMethod shippingMethod)
+public Money CalculateInsuranceCopay(Prescription prescription, Insurance insurance)
 {
-    var baseWeight = order.TotalWeight;
-    var ratePerKg = shippingMethod.GetRatePerKg(order.Destination);
-    var shippingAmount = baseWeight * ratePerKg;
+    var baseCost = prescription.Drug.Cost;
+    var coveragePercentage = insurance.GetCoveragePercentage(prescription.Drug);
+    var copayAmount = baseCost * (1 - coveragePercentage);
 
-    return Money.FromDecimal(shippingAmount, Currency.USD);
+    return Money.FromDecimal(copayAmount, Currency.USD);
 }
 
 // Consider refactoring when methods become too long or have multiple concerns
@@ -290,16 +290,16 @@ Primitive obsession occurs when we use built-in language types (string, int, dec
 
 ```csharp
 // PROBLEMATIC: What do these strings and decimals represent?
-public void ProcessPayment(string customerId, string orderId, decimal amount, string currency)
+public void ProcessPayment(string patientId, string pharmacyId, decimal amount, string currency)
 {
-    // Is customerId a GUID? Account number? Internal ID?
-    // What format should orderId be in?
+    // Is patientId a GUID? Social Security Number? Internal ID?
+    // What format should pharmacyId be in?
     // What currency codes are valid?
     // Can amount be negative?
 }
 
 // Method call provides no clarity
-ProcessPayment("12345", "ORD789", 25.50m, "USD");
+ProcessPayment("12345", "PH789", 25.50m, "USD");
 ```
 
 #### Domain Primitives for Clarity
@@ -308,7 +308,7 @@ ProcessPayment("12345", "ORD789", 25.50m, "USD");
 
 ```csharp
 // BETTER: Domain concepts are explicit
-public void ProcessPayment(CustomerId customerId, OrderId orderId, Money amount)
+public void ProcessPayment(PatientId patientId, PharmacyId pharmacyId, Money amount)
 {
     // Clear what each parameter represents
     // Types enforce valid construction
@@ -317,8 +317,8 @@ public void ProcessPayment(CustomerId customerId, OrderId orderId, Money amount)
 
 // Method call is self-documenting
 ProcessPayment(
-    CustomerId.FromGuid(customerGuid),
-    OrderId.FromString("ORD789"),
+    PatientId.FromGuid(patientGuid),
+    PharmacyId.FromString("PH789"),
     Money.Dollars(25.50m));
 ```
 
@@ -364,22 +364,22 @@ public readonly struct Money : IEquatable<Money>
 
 ```csharp
 // AVOID: Magic numbers and strings
-public class Order
+public class Prescription
 {
     public int Status { get; set; } // What does 1, 2, 3 mean?
 }
 
 // PREFER: Self-documenting enums
-public class Order
+public class Prescription
 {
-    public OrderStatus Status { get; set; }
+    public PrescriptionStatus Status { get; set; }
 }
 
-public enum OrderStatus
+public enum PrescriptionStatus
 {
     Pending,
     Approved,
-    Shipped,
+    Dispensed,
     Cancelled,
     Expired
 }
@@ -391,51 +391,51 @@ public enum OrderStatus
 
 ```csharp
 // PROBLEMATIC: Nothing prevents invalid combinations
-public class Order
+public class Prescription
 {
     public string Status { get; set; }
-    public DateTime? ShippedAt { get; set; }
-    public string FulfilledById { get; set; }
+    public DateTime? DispensedAt { get; set; }
+    public string PharmacistId { get; set; }
 }
 
-// Can create: Status = "Pending", ShippedAt = DateTime.Now (invalid!)
+// Can create: Status = "Pending", DispensedAt = DateTime.Now (invalid!)
 
 // BETTER: Types prevent invalid states
-public abstract class Order
+public abstract class Prescription
 {
-    public OrderId Id { get; }
-    public CustomerId CustomerId { get; }
-    public ProductId ProductId { get; }
+    public PrescriptionId Id { get; }
+    public PatientId PatientId { get; }
+    public DrugId DrugId { get; }
 
-    protected Order(OrderId id, CustomerId customerId, ProductId productId)
+    protected Prescription(PrescriptionId id, PatientId patientId, DrugId drugId)
     {
         Id = id;
-        CustomerId = customerId;
-        ProductId = productId;
+        PatientId = patientId;
+        DrugId = drugId;
     }
 }
 
-public class PendingOrder : Order
+public class PendingPrescription : Prescription
 {
-    // Pending orders cannot have shipping information
+    // Pending prescriptions cannot have dispense information
     public DateTime CreatedAt { get; }
 }
 
-public class ShippedOrder : Order
+public class DispensedPrescription : Prescription  
 {
-    // Shipped orders must have this information
-    public DateTime ShippedAt { get; }
-    public WarehouseStaffId FulfilledBy { get; }
+    // Dispensed prescriptions must have this information
+    public DateTime DispensedAt { get; }
+    public PharmacistId DispensedBy { get; }
 
-    public ShippedOrder(
-        OrderId id,
-        CustomerId customerId,
-        ProductId productId,
-        DateTime shippedAt,
-        WarehouseStaffId fulfilledBy) : base(id, customerId, productId)
+    public DispensedPrescription(
+        PrescriptionId id,
+        PatientId patientId,
+        DrugId drugId,
+        DateTime dispensedAt,
+        PharmacistId dispensedBy) : base(id, patientId, drugId)
     {
-        ShippedAt = shippedAt;
-        FulfilledBy = fulfilledBy;
+        DispensedAt = dispensedAt;
+        DispensedBy = dispensedBy;
     }
 }
 ```
@@ -445,24 +445,24 @@ public class ShippedOrder : Order
 **Primitives support rich domain models:**
 
 ```csharp
-public class Customer
+public class Patient
 {
-    public CustomerId Id { get; }
-    public CustomerName Name { get; }
+    public PatientId Id { get; }
+    public PatientName Name { get; }
     public DateOfBirth DateOfBirth { get; }
-    public PaymentMethod PaymentMethod { get; }
-    private readonly List<ProductRestriction> _restrictions = new();
+    public Insurance Insurance { get; }
+    private readonly List<Allergy> _allergies = new();
 
-    public Customer(CustomerId id, CustomerName name, DateOfBirth dateOfBirth)
+    public Patient(PatientId id, PatientName name, DateOfBirth dateOfBirth)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Name = name ?? throw new ArgumentNullException(nameof(name));
         DateOfBirth = dateOfBirth;
     }
 
-    public bool HasRestrictionFor(Product product)
+    public bool IsAllergicTo(Drug drug)
     {
-        return _restrictions.Any(restriction => restriction.AppliesTo(product));
+        return _allergies.Any(allergy => allergy.ConflictsWith(drug));
     }
 
     public Age CalculateAge(Date asOfDate)
@@ -480,28 +480,28 @@ public class Customer
 
 ```
 // Domain-aligned namespace structure
- Orders.Domain/
+ Prescriptions.Domain/
 ├── Entities/
-│   ├── Customer.cs
-│   ├── Order.cs
-│   └── Warehouse.cs
+│   ├── Patient.cs
+│   ├── Prescription.cs
+│   └── Pharmacy.cs
 ├── Primitives/
-│   ├── CustomerId.cs
+│   ├── PatientId.cs
 │   ├── Money.cs
-│   └── ProductCode.cs
+│   └── DrugCode.cs
 ├── Services/
-│   ├── OrderValidator.cs
+│   ├── PrescriptionValidator.cs
 │   └── EligibilityChecker.cs
 └── Repositories/
-    └── IOrderRepository.cs
+    └── IPrescriptionRepository.cs
 ```
 
 **Namespace naming should reflect business domains:**
 
 ```csharp
 // GOOD: Business domain alignment
-namespace  Orders.Domain.Entities
-namespace  Payments.Domain.Services
+namespace  Prescriptions.Domain.Entities
+namespace  Insurance.Domain.Services
 
 // AVOID: Technical structure
 namespace  Data.Models
@@ -514,18 +514,18 @@ namespace  Common.Helpers
 **Organize class members in a predictable order:**
 
 ```csharp
-public class OrderService
+public class PrescriptionService
 {
     // 1. Constants and static fields
     private const int MaxRetryAttempts = 3;
 
     // 2. Private fields
-    private readonly IOrderRepository _repository;
+    private readonly IPrescriptionRepository _repository;
     private readonly IEligibilityChecker _eligibilityChecker;
 
     // 3. Constructor(s)
-    public OrderService(
-        IOrderRepository repository,
+    public PrescriptionService(
+        IPrescriptionRepository repository,
         IEligibilityChecker eligibilityChecker)
     {
         _repository = repository;
@@ -533,13 +533,13 @@ public class OrderService
     }
 
     // 4. Public methods (primary interface)
-    public async Task<OrderResult> CreateOrder(CreateOrderCommand command)
+    public async Task<PrescriptionResult> CreatePrescription(CreatePrescriptionCommand command)
     {
         // Implementation
     }
 
     // 5. Private methods (implementation details)
-    private async Task<ValidationResult> ValidateEligibility(CustomerId customerId)
+    private async Task<ValidationResult> ValidateEligibility(PatientId patientId)
     {
         // Implementation
     }
@@ -551,30 +551,30 @@ public class OrderService
 **Group related functionality together:**
 
 ```csharp
-public class Customer
+public class Patient
 {
     // Identity and basic info
-    public CustomerId Id { get; }
-    public CustomerName Name { get; }
+    public PatientId Id { get; }
+    public PatientName Name { get; }
     public DateOfBirth DateOfBirth { get; }
 
-    // Payment-related
-    public PaymentMethod PrimaryPaymentMethod { get; private set; }
-    public PaymentMethod SecondaryPaymentMethod { get; private set; }
+    // Insurance-related
+    public Insurance PrimaryInsurance { get; private set; }
+    public Insurance SecondaryInsurance { get; private set; }
 
-    public void UpdatePrimaryPaymentMethod(PaymentMethod paymentMethod) { }
-    public void UpdateSecondaryPaymentMethod(PaymentMethod paymentMethod) { }
+    public void UpdatePrimaryInsurance(Insurance insurance) { }
+    public void UpdateSecondaryInsurance(Insurance insurance) { }
 
-    // Restriction-related
-    private readonly List<ProductRestriction> _restrictions = new();
+    // Allergy-related
+    private readonly List<Allergy> _allergies = new();
 
-    public void AddRestriction(ProductRestriction restriction) { }
-    public void RemoveRestriction(RestrictionId restrictionId) { }
-    public bool HasRestrictionFor(Product product) { }
+    public void AddAllergy(Allergy allergy) { }
+    public void RemoveAllergy(AllergyId allergyId) { }
+    public bool IsAllergicTo(Drug drug) { }
 
-    // Order-related
-    public bool IsEligibleFor(Product product) { }
-    public Money CalculateShippingFor(Order order) { }
+    // Prescription-related
+    public bool IsEligibleFor(Drug drug) { }
+    public Money CalculateCopayFor(Drug drug) { }
 }
 ```
 
@@ -585,27 +585,27 @@ public class Customer
 **Ensure code terminology matches domain expert language:**
 
 ```csharp
-// Code should use the same terms that sales reps, account managers, and
-// finance teams use in their daily work
+// Code should use the same terms that pharmacists, doctors, and insurance
+// specialists use in their daily work
 
-// GOOD: Matches ecommerce/banking terminology
-public class PaymentAuthorization
+// GOOD: Matches healthcare terminology
+public class PriorAuthorization
 {
     public AuthorizationStatus Status { get; }
     public DateTime ExpirationDate { get; }
 
-    public bool IsValidFor(Order order, Customer customer)
-    public void Approve(ManagerId approvingManager)
+    public bool IsValidFor(Drug drug, Patient patient)
+    public void Approve(PhysicianId approvingPhysician)
     public void Deny(DenialReason reason)
 }
 
 // AVOID: Technical terms not used by domain experts
-public class AuthRecord
+public class PreAuthRecord
 {
     public int StatusCode { get; }
     public DateTime EndDate { get; }
 
-    public bool CheckValidity(object orderObj, object customerObj)
+    public bool CheckValidity(object drugObj, object patientObj)
 }
 ```
 
@@ -644,7 +644,7 @@ public class AuthRecord
 
 ## Conclusion
 
-The code style is not just about writing clear names—it's about creating code that serves as the primary source of truth for how the system works. In financial and ecommerce domains where complexity is high and correctness is critical, self-documenting code becomes a safety mechanism that helps prevent misunderstandings and errors.
+The code style is not just about writing clear names—it's about creating code that serves as the primary source of truth for how the system works. In healthcare domains where complexity is high and correctness is critical, self-documenting code becomes a safety mechanism that helps prevent misunderstandings and errors.
 
 By following these standards, projects will have:
 - Code that domain experts can read and validate

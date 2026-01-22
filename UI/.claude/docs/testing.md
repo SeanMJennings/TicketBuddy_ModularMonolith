@@ -9,6 +9,45 @@
 - **Coverage targets**: 100% coverage should be expected at all times, but these tests must ALWAYS be based on business behaviour, not implementation details
 - Tests must document expected business behaviour
 
+## When to Use Pure Unit Tests vs Integration Tests
+
+**Always prefer integration tests** that verify application behavior for interacting areas of the application. Integration tests with MSW provide more realistic testing of how components, hooks, and APIs work together.
+
+**Pure unit tests are appropriate for:**
+- **Domain logic** - schemas, validation, type parsing, business rules (e.g., `parseNotificationPayload`)
+- **Generic helper methods** - utility functions, formatters, transformers
+- **Particularly difficult areas** - complex algorithms, long-running hooks with timers/intervals where isolation helps
+
+**Integration tests are preferred for:**
+- Components that fetch data
+- Components that interact with APIs
+- User flows spanning multiple components
+- Anything involving HTTP calls (use MSW)
+
+**Example - Domain logic (unit test appropriate):**
+```typescript
+// domain/unit_specs/notification.spec.ts
+describe("parseNotificationPayload", () => {
+    it("should parse TicketPurchased payload", () => {
+        const notification = createNotification({ Type: "TicketPurchased", ... });
+        const result = parseNotificationPayload(notification);
+        expect(result.type).toBe("TicketPurchased");
+    });
+});
+```
+
+**Example - Component with API (integration test preferred):**
+```typescript
+// components/narrow_integration_specs/NotificationDropdown.steps.ts
+export async function should_render_list_of_notifications() {
+    wait_for_get = mockServer.get("/notifications", testData);
+    mockServer.start();
+    renderNotificationDropdown();
+    await waitUntil(wait_for_get);
+    expect(getNotificationItemCount()).toBe(2);
+}
+```
+
 ## Testing Tools
 
 - **Jest** or **Vitest** for testing frameworks

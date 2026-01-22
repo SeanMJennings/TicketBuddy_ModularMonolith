@@ -1,4 +1,8 @@
 ﻿<Project>
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);RS1041</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup Condition="$(MSBuildProjectName.Contains('Testing'))">
     <PackageReference Include="coverlet.collector">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,6 +20,13 @@
   <!-- Include Architecture.Tickets Analyzer for all Tickets module projects except the analyzer itself and test projects -->
   <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Tickets')) AND '$(MSBuildProjectName)' != 'Architecture.Tickets' AND !$(MSBuildProjectName.Contains('Testing'))">
     <ProjectReference Include="$(MSBuildThisFileDirectory)Modules\Tickets\Architecture.Tickets\Architecture.Tickets.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <!-- Include Architecture.Notifications Analyzer for all Notifications module projects except the analyzer itself and test projects -->
+  <ItemGroup Condition="$(MSBuildProjectName.EndsWith('.Notifications')) AND '$(MSBuildProjectName)' != 'Architecture.Notifications' AND !$(MSBuildProjectName.Contains('Testing'))">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Modules\Notifications\Architecture.Notifications\Architecture.Notifications.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
   </ItemGroup>

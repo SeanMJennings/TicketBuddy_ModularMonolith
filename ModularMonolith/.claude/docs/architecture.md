@@ -20,7 +20,7 @@ A practical, concise guide to architecture focused on simplicity, clarity, and h
 
 Hexagonal architecture isolates the application core (domain + use cases) from frameworks and infrastructure. The core defines ports (interfaces) and contains business rules; adapters implement ports and translate external protocols.
 
-- Primary (driving) ports: HTTP handlers, message handlers, CLIs, test harnesses.
+- Primary (driving) ports: Controllers, message handlers, CLIs, test harnesses.
 - Secondary (driven) ports: repositories, external service clients, file storage, notification services.
 
 Dependency rule (central): dependencies point inward — adapters -> ports -> core. The core must not reference infrastructure, frameworks, or providers.
@@ -119,27 +119,26 @@ We separate command (write) and query (read) responsibilities to optimize each s
 - Query side: read-model projections, SQL/read-optimized stores, query handlers, caching.
 - Domain events propagate changes from the write side to read projections and external systems.
 
-### Command Handler (write-side)
+### Command Application Service (write-side)
 
 ```csharp
-// Example: Web API handler for commands
-public class CreatePromotionHandler : IHandlePostRequests<CreatePromotionRequest>
+// Example: Command application service
+public class PromotionCommandService(
+    IPromotionRepository repository,
+    IDomainEventPublisher eventPublisher)
 {
-    private readonly IPromotionRepository _repository;
-    private readonly IDomainEventPublisher _eventPublisher;
-
-    public async Task<PostResponse> HandleAsync(Request request, CreatePromotionRequest payload)
+    public async Task<Promotion> CreatePromotionAsync(string name, string description)
     {
         // Create domain aggregate
-        var promotion = new Promotion(payload.Name, payload.Description);
+        var promotion = new Promotion(name, description);
 
         // Persist via repository (to Cosmos DB)
-        await _repository.AddAsync(promotion);
+        await repository.AddAsync(promotion);
 
         // Publish domain events (for read model updates)
-        await _eventPublisher.PublishAsync(new PromotionCreatedEvent(promotion.Id, promotion.Name, promotion.Description));
+        await eventPublisher.PublishAsync(new PromotionCreatedEvent(promotion.Id, promotion.Name, promotion.Description));
 
-        return new PostResponse(HttpStatusCode.Created, promotion);
+        return promotion;
     }
 }
 ```
@@ -290,27 +289,33 @@ public class ExternalOrderService : IIntegrateWithExternalSystem
 ## Implementation Adapters (examples)
 
 ```csharp
-// Web API Adapter (Command)
-public class CreatePromotionHandler : IHandlePostRequests<CreatePromotionRequest>
+// Web API Controller (delegates to application services)
+[ApiController]
+[Route("api/[controller]")]
+public class PromotionsController(
+    PromotionCommandService commandService,
+    PromotionQueryService queryService) : ControllerBase
 {
-    private readonly IPromotionRepository _repository;
-
-    public async Task<PostResponse> HandleAsync(Request request, CreatePromotionRequest payload)
+    [HttpPost]
+    public async Task<IActionResult> CreatePromotion(CreatePromotionRequest request)
     {
-        var promotion = new Promotion(payload.Name, payload.Description);
-        await _repository.AddAsync(promotion);
-        return new PostResponse(HttpStatusCode.Created, promotion);
+        var promotion = await commandService.CreatePromotionAsync(request.Name, request.Description);
+        return CreatedAtAction(nameof(GetPromotion), new { id = promotion.Id }, promotion);
     }
-}
 
-// Web API Adapter (Query)
-public class GetPromotionHandler : IHandleGetRequests
-{
-    private readonly PromotionQueryService _queryService;
-
-    public async Task<object> HandleAsync(Request request)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPromotion(PromotionId id)
     {
-        return await _queryService.GetPromotionAsync(request.PromotionId());
+        var promotion = await queryService.GetPromotionAsync(id);
+        if (promotion is null) return NotFound();
+        return Ok(promotion);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchPromotions([FromQuery] string searchTerm, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
+    {
+        var results = await queryService.SearchPromotionsAsync(searchTerm, page, pageSize);
+        return Ok(results);
     }
 }
 

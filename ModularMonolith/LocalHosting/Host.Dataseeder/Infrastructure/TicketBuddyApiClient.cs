@@ -27,7 +27,6 @@ internal class TicketBuddyApiClient(HttpClient httpClient, Settings settings)
         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakJwt);
         _isAuthenticated = true;
     }
-    
 
     internal async Task<int> GetVenuesCountAsync()
     {
@@ -39,30 +38,32 @@ internal class TicketBuddyApiClient(HttpClient httpClient, Settings settings)
     {
         var response = await httpClient.GetAsync(EventRoutes.Venues);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<Venue[]>() ?? [];
+        return await response.Content.DeserializeAsync<Venue[]>() ?? [];
     }
 
     internal async Task<int> GetEventsCountAsync()
     {
         var response = await httpClient.GetAsync(EventRoutes.Events);
         response.EnsureSuccessStatusCode();
-        var events = await response.Content.ReadFromJsonAsync<Event[]>();
+        var events = await response.Content.DeserializeAsync<Event[]>();
         return events!.Length;
     }
 
     internal async Task CreateVenueAsync(VenuePayload payload)
     {
-        var response = await httpClient.PostAsJsonAsync(EventRoutes.Venues, payload);
+        var response = await httpClient.PostAsJsonAsync(EventRoutes.Venues, payload, JsonSerialization.GetJsonSerializerOptions());
         response.EnsureSuccessStatusCode();
-        await response.Content.ReadFromJsonAsync<Guid>();
     }
 
     internal async Task CreateEventAsync(EventPayload payload)
     {
-        var response = await httpClient.PostAsJsonAsync(
-            EventRoutes.Events, 
-            payload,
-            JsonSerialization.GetJsonSerializerOptions());
+        var response = await httpClient.PostAsJsonAsync(EventRoutes.Events, payload, JsonSerialization.GetJsonSerializerOptions());
         response.EnsureSuccessStatusCode();
     }
+}
+
+internal static class HttpContentExtensions
+{
+    internal static Task<T?> DeserializeAsync<T>(this HttpContent content) =>
+        content.ReadFromJsonAsync<T>(JsonSerialization.GetJsonSerializerOptions());
 }

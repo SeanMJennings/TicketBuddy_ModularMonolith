@@ -1,6 +1,6 @@
 import { render, screen, cleanup, type RenderResult } from "@testing-library/react";
-import { VenueDisplay } from "../VenueDisplay";
-import { type Venue } from "../../domain/venue";
+import { VenueDisplay } from "../VenueDisplay.tsx";
+import { type Venue } from "../../domain/venue.ts";
 
 let renderedComponent: RenderResult;
 

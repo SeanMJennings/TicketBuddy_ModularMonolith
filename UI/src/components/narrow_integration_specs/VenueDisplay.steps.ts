@@ -6,7 +6,7 @@ import {
     unknownVenueIsDisplayed,
     venueAddressIsDisplayed
 } from "./VenueDisplay.page.tsx";
-import { Venues } from "../../testing/data";
+import { Venues } from "../../testing/data.ts";
 
 afterEach(() => {
     unmountVenueDisplay();

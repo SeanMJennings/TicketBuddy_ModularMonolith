@@ -168,6 +168,10 @@ export const EventsManagementLink = styled(Link)`
     }
 `;
 
+export const NotificationBellWrapper = styled.div`
+    position: relative;
+`;
+
 export const NotificationBellContainer = styled.div`
     font-size: 1.25rem;
     cursor: pointer;

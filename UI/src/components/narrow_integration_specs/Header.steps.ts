@@ -1,12 +1,13 @@
 import { vi, beforeEach, afterEach, expect } from "vitest";
-import React from "react";
 import { AnOidcCustomerUser } from "../../testing/data";
 import {
     renderHeader,
     unmountHeader,
     notificationBellIsRendered,
     notificationBadgeIsRendered,
-    getBadgeText
+    getBadgeText,
+    clickNotificationBell,
+    notificationDropdownIsRendered
 } from "./Header.page.tsx";
 
 let mockIsAuthenticated = true;
@@ -29,6 +30,19 @@ vi.mock("../../hooks/useNotificationCount", () => ({
         error: null,
         refetch: () => {}
     })
+}));
+
+vi.mock("../../hooks/useNotifications", () => ({
+    useNotifications: () => ({
+        notifications: [],
+        isLoading: false,
+        error: null,
+        refetch: () => {}
+    })
+}));
+
+vi.mock("../../api/notifications.api", () => ({
+    markNotificationAsRead: vi.fn()
 }));
 
 beforeEach(() => {
@@ -88,4 +102,34 @@ export function should_not_show_badge_when_count_is_null() {
     renderHeader();
 
     expect(notificationBadgeIsRendered()).toBe(false);
+}
+
+export function should_not_show_dropdown_initially() {
+    mockIsAuthenticated = true;
+    mockUser = AnOidcCustomerUser;
+
+    renderHeader();
+
+    expect(notificationDropdownIsRendered()).toBe(false);
+}
+
+export async function should_show_dropdown_when_bell_clicked() {
+    mockIsAuthenticated = true;
+    mockUser = AnOidcCustomerUser;
+
+    renderHeader();
+    await clickNotificationBell();
+
+    expect(notificationDropdownIsRendered()).toBe(true);
+}
+
+export async function should_hide_dropdown_when_bell_clicked_again() {
+    mockIsAuthenticated = true;
+    mockUser = AnOidcCustomerUser;
+
+    renderHeader();
+    await clickNotificationBell();
+    await clickNotificationBell();
+
+    expect(notificationDropdownIsRendered()).toBe(false);
 }

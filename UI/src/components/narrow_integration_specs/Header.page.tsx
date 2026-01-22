@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { Header } from "../Header";
 
@@ -26,4 +27,15 @@ export function notificationBadgeIsRendered(): boolean {
 
 export function getBadgeText(): string | null {
     return screen.queryByTestId("notification-badge")?.textContent ?? null;
+}
+
+export async function clickNotificationBell(): Promise<void> {
+    const bell = screen.queryByTestId("notification-bell");
+    if (bell) {
+        await userEvent.click(bell);
+    }
+}
+
+export function notificationDropdownIsRendered(): boolean {
+    return screen.queryByTestId("notification-dropdown") !== null;
 }

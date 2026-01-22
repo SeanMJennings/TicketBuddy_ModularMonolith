@@ -1,14 +1,17 @@
-﻿import {
+﻿import { useState } from "react";
+import {
     Container,
     EventsManagementLink,
     HeaderBar,
     NotificationBadge,
     NotificationBellContainer,
     NotificationBellIcon,
+    NotificationBellWrapper,
     TicketStubImage,
     UserIcon,
     UserIconContainer,
 } from "./Header.styles.tsx";
+import { NotificationDropdown } from "./NotificationDropdown";
 import {useNotificationCount} from "../hooks/useNotificationCount";
 import * as React from "react";
 import {UserType} from "../domain/user.ts";
@@ -22,10 +25,15 @@ export const Header = () => {
     const user = convertToTicketBuddyUser(auth.user);
     const navigate = useNavigate();
     const { count } = useNotificationCount();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const onUserIconClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         navigate('/profile');
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen((prev) => !prev);
     };
 
     return (
@@ -41,14 +49,24 @@ export const Header = () => {
                                 <EventsManagementLink to="/venues-management">Venues Management</EventsManagementLink>
                             </>
                         )}
-                        <NotificationBellContainer data-testid="notification-bell">
-                            <NotificationBellIcon />
-                            {count !== null && count > 0 && (
-                                <NotificationBadge data-testid="notification-badge">
-                                    {count}
-                                </NotificationBadge>
+                        <NotificationBellWrapper>
+                            <NotificationBellContainer
+                                data-testid="notification-bell"
+                                onClick={toggleDropdown}
+                            >
+                                <NotificationBellIcon />
+                                {count !== null && count > 0 && (
+                                    <NotificationBadge data-testid="notification-badge">
+                                        {count}
+                                    </NotificationBadge>
+                                )}
+                            </NotificationBellContainer>
+                            {isDropdownOpen && (
+                                <div data-testid="notification-dropdown">
+                                    <NotificationDropdown />
+                                </div>
                             )}
-                        </NotificationBellContainer>
+                        </NotificationBellWrapper>
                         <UserIconContainer onClick={onUserIconClick} data-testid="user-icon">
                             <UserIcon />
                         </UserIconContainer>

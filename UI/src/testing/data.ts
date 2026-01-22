@@ -4,6 +4,7 @@ import moment from "moment";
 import type {Ticket} from "../domain/ticket.ts";
 import jwt from 'jsonwebtoken';
 import type { Venue as VenueEntity } from "../domain/venue.ts";
+import type { Notification } from "../domain/notification.ts";
 
 const JWT_SECRET = 'test-secret-key';
 const JWT_EXPIRY = '1h';
@@ -241,3 +242,44 @@ export const Venues: VenueEntity[] = [
         Capacity: 10
     }
 ]
+
+export const NotificationsForFirstUser: Notification[] = [
+    {
+        Id: "n1-uuid-0000-0000-000000000001",
+        UserId: Users[0].Id,
+        Type: "TicketPurchased",
+        Payload: JSON.stringify({
+            eventId: Events[0].Id,
+            ticketId: TicketsForFirstEvent[0].Id,
+            eventName: Events[0].EventName
+        }),
+        IsRead: false,
+        CreatedAt: "2026-01-22T10:30:00+00:00"
+    },
+    {
+        Id: "n2-uuid-0000-0000-000000000002",
+        UserId: Users[0].Id,
+        Type: "TicketPurchased",
+        Payload: JSON.stringify({
+            eventId: Events[1].Id,
+            ticketId: "t-purchased-uuid",
+            eventName: Events[1].EventName
+        }),
+        IsRead: true,
+        CreatedAt: "2026-01-21T14:00:00+00:00"
+    }
+]
+
+export const createNotification = (overrides: Partial<Notification> = {}): Notification => ({
+    Id: "n-test-uuid-0000-000000000000",
+    UserId: Users[0].Id,
+    Type: "TicketPurchased",
+    Payload: JSON.stringify({
+        eventId: Events[0].Id,
+        ticketId: TicketsForFirstEvent[0].Id,
+        eventName: Events[0].EventName
+    }),
+    IsRead: false,
+    CreatedAt: "2026-01-22T10:30:00+00:00",
+    ...overrides
+})

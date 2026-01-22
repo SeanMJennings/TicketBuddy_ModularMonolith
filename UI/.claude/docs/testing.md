@@ -27,6 +27,82 @@ src/
       payment-processor.test.ts // The validator is an implementation detail. Validation is fully covered, but by testing the expected business behaviour, treating the validation code itself as an implementation detail
 ```
 
+## Test File Structure: Specs/Steps Pattern
+
+Separate test specifications from implementation:
+
+**For non-UI tests (API, hooks, domain):**
+```
+src/
+  api/
+    unit_specs/
+      notifications.api.spec.ts   // Test descriptions only (describe/it)
+      notifications.api.steps.ts  // Test implementations (actual test logic)
+```
+
+**For React component tests (specs/steps/page pattern):**
+```
+src/
+  components/
+    narrow_integration_specs/
+      Header.spec.ts    // Test descriptions only (describe/it)
+      Header.steps.ts   // Test implementations, mocks, beforeEach/afterEach
+      Header.page.tsx   // Page object: render helpers, query helpers
+```
+
+**Example spec file:**
+```typescript
+// Header.spec.ts
+import { describe, it } from "vitest";
+import { should_show_notification_bell_when_authenticated } from "./Header.steps";
+
+describe("Header - Notifications", () => {
+    it("should show notification bell when authenticated", should_show_notification_bell_when_authenticated);
+});
+```
+
+**Example steps file:**
+```typescript
+// Header.steps.ts
+import { vi, beforeEach, afterEach, expect } from "vitest";
+import { renderHeader, unmountHeader, notificationBellIsRendered } from "./Header.page.tsx";
+
+vi.mock("react-oidc-context", () => ({ useAuth: () => ({ isAuthenticated: true }) }));
+
+afterEach(() => { unmountHeader(); });
+
+export function should_show_notification_bell_when_authenticated() {
+    renderHeader();
+    expect(notificationBellIsRendered()).toBe(true);
+}
+```
+
+**Example page object file:**
+```typescript
+// Header.page.tsx
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { Header } from "../Header";
+
+let renderResult: ReturnType<typeof render>;
+
+export function renderHeader() {
+    renderResult = render(<MemoryRouter><Header /></MemoryRouter>);
+}
+
+export function unmountHeader() { renderResult?.unmount(); }
+
+export function notificationBellIsRendered(): boolean {
+    return screen.queryByTestId("notification-bell") !== null;
+}
+```
+
+**Benefits:**
+- Spec file is a clean table of contents for behaviors
+- Steps file contains all mocking and test logic
+- Page object encapsulates DOM queries (single source of truth for selectors)
+- Easy to scan test coverage from spec file alone
+
 ## Test Data Pattern
 
 Use factory functions with optional overrides for test data:

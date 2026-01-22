@@ -1,393 +1,528 @@
-# C# Testing Standards
+# Testing Standards
 
-## Overview
+## Testing Philosophy
 
-This document outlines the testing standards and practices for projects. These standards ensure consistent, maintainable, and thorough testing aligned with domain-driven design principles.
+**Core principle**: Black-box behavioral testing with real dependencies. Mock only at application edges.
 
-## BDD Testing
+### Key Tenets
 
-1. **File Organization**: Separate specifications from step implementations using partial classes.
-   ```
-   ProductCategorySpecs.cs    // Contains test scenarios and descriptive assertions
-   ProductCategorySteps.cs    // Contains step implementations
-   ```
+1. **Test behavior, not implementation** - Tests describe what the system does, not how it does it
+2. **Favor real dependencies** - Use Testcontainers for databases, message brokers, and identity providers
+3. **Mock only at true boundaries** - External APIs, payment gateways, email services - things you don't control
+4. **100% coverage through business behavior** - Every line is covered because it implements tested behavior, not because we wrote tests targeting lines
 
-2. **Scenario Structure**: Use the `scenario()` method with Given-When-Then steps.
+### What This Means in Practice
 
-   ```csharp
-   [Test]
-   public void product_category_must_have_text()
-   {
-      Given(no_product_category);
-      When(creating_a_product_category);
-      Then(() => informs("Product category is required and cannot exceed 100 characters."));
-   }
-   ```
+```
+PREFER: Real PostgreSQL in a container
+AVOID:  Mocking IDbConnection or repository interfaces
 
-3. **Method Naming**: Use descriptive snake_case method names that express the behavior or state.
-   ```csharp
-   // In specs:
-   Given(no_product_category);
-   When(creating_a_product_category);
+PREFER: Real RabbitMQ with MassTransit test harness
+AVOID:  Mocking IMessageBus
 
-   // In step implementations:
-   private void no_product_category() { /* ... */ }
-   private void creating_a_product_category() { /* ... */ }
-   ```
+PREFER: Real Keycloak for auth testing
+AVOID:  Mocking IAuthenticationService
 
-4. **Multiple Scenarios**: Group related scenarios within a single test method.
-   ```csharp
-   [Test]
-   public void product_category_cannot_exceed_100_characters()
-   {
-       scenario(() =>
-       {
-           Given(a_product_category_of_100_characters);
-           When(creating_a_product_category);
-           Then(it_is_valid);
-       });
+MOCK:   External payment provider (Stripe, PayPal)
+MOCK:   Third-party email service (SendGrid)
+MOCK:   External APIs you don't control
+```
 
-       scenario(() =>
-       {
-           Given(a_product_category_over_100_characters);
-           When(creating_a_product_category);
-           Then(() => informs("Product category is required and cannot exceed 100 characters."));
-       });
-   }
-   ```
+### Why Real Dependencies?
 
-5. **Step Implementation**: Implement steps as private methods in the step class.
-   ```csharp
-   private string product_category;
+- **Catch real bugs**: EF Core mappings, SQL constraints, message serialization
+- **Confidence**: Tests prove the system works, not that mocks behave as expected
+- **Refactoring safety**: Change internals freely without updating mock setups
+- **Documentation**: Tests show actual system behavior
 
-   private void no_product_category()
-   {
-       product_category = null;
-   }
+---
 
-   private void creating_a_product_category()
-   {
-       validating(() => new ProductCategory(product_category));
-   }
-   ```
+## Test Pyramid
 
-6. **Common Steps Base Class**: Create base classes for common steps across related tests.
-   ```csharp
-   public partial class CustomerAgeCriteriaSpecs : CommonCriteriaSteps<AgeRangeCriterion>
-   {
-       // Specific tests for customer age criteria
-   }
-   ```
+```
+                    ┌─────────────┐
+                    │ Acceptance  │  ← End-to-end business journeys
+                    │   Tests     │
+                    └─────────────┘
+                  ┌─────────────────┐
+                  │   Component     │  ← Module APIs with real infra
+                  │     Tests       │
+                  └─────────────────┘
+              ┌───────────────────────┐
+              │   Integration Tests   │  ← Infrastructure integration
+              │ (Module-specific)     │
+              └───────────────────────┘
+          ┌───────────────────────────────┐
+          │        Unit Tests             │  ← Domain & application logic
+          │    (Fast & Isolated)          │
+          └───────────────────────────────┘
+      ┌───────────────────────────────────────┐
+      │       Architecture Tests              │  ← Enforce domain qualities
+      └───────────────────────────────────────┘
+```
 
-## Validation Testing
+### When to Use Each Level
 
-1. **Exception Validation**: Use the `validating()` helper method to catch and validate exceptions.
-   ```csharp
-   private void creating_a_product_category()
-   {
-       validating(() => new ProductCategory(product_category));
-   }
-   ```
+| Level | Purpose | Infrastructure | Speed |
+|-------|---------|----------------|-------|
+| **Unit** | Domain logic, validation, business rules | None | Fast |
+| **Integration** | Database, messaging within a module | Testcontainers | Medium |
+| **Component** | HTTP API contracts, auth, cross-cutting | Testcontainers + WebApplicationFactory | Medium |
+| **Acceptance** | Cross-module business journeys | Full system | Slower |
+| **Architecture** | Domain immutability, aggregate boundaries | None (reflection-based) | Fast |
 
-2. **Error Message Validation**: Use the `informs()` method to check for specific error messages.
-   ```csharp
-   Then(() => informs("Product category is required and cannot exceed 100 characters."));
-   ```
+---
 
-3. **Multiple Validation Scenarios**: Test both valid and invalid inputs.
-   ```csharp
-   [Test]
-   public void product_category_must_have_text()
-   {
-       scenario(() =>
-       {
-           Given(no_product_category);
-           When(creating_a_product_category);
-           Then(() => informs("Product category is required and cannot exceed 100 characters."));
-       });
+## BDD Testing Framework
 
-       scenario(() =>
-       {
-           Given(an_empty_product_category);
-           When(creating_a_product_category);
-           Then(() => informs("Product category is required and cannot exceed 100 characters."));
-       });
-   }
-   ```
+All tests use the `Testing.Bdd` package with separate specifications and step implementations using partial classes.
 
-## Test Organization
+### File Organization
 
-1. **Namespaces**: Organize tests to match the production code structure.
-   ```csharp
-   namespace Testing.Primitives;
-   namespace Testing.Primitives.Execution.Criteria;
-   ```
+```
+{Name}.specs.cs    // Test scenarios with Given-When-Then
+{Name}.steps.cs    // Step implementations (private methods)
+```
 
-2. **Class and File Naming**: Use descriptive names with a "Specs" suffix.
-   ```csharp
-   ProductCategorySpecs.cs
-   CustomerAgeCriteriaSpecs.cs
-   ```
+### Base Classes
 
-3. **Test Attributes**: Use `[TestFixture]` for test classes and `[Test]` for test methods.
-   ```csharp
-   [TestFixture]
-   public partial class ProductCategorySpecs : Specification
-   {
-       [Test]
-       public void product_category_must_have_text()
-       {
-           // Test scenarios
-       }
-   }
-   ```
+#### Specification (Synchronous)
 
-4. **Test Methods**: Name test methods to clearly describe the behavior being tested.
-   ```csharp
-   [Test]
-   public void product_category_must_have_text()
-   
-   [Test]
-   public void product_category_cannot_exceed_100_characters()
-   ```
-
-5. **Obsolete Tests**: Mark obsolete tests with the `[Obsolete]` attribute and provide a reason.
-   ```csharp
-   [Obsolete("Still used by Sphinx")]
-   [Test]
-   public void legacy_customer_age_criteria_can_be_created()
-   ```
-
-## Test Data Preparation
-
-1. **Test Data Setup**: Use clear, descriptive methods to set up test data.
-   ```csharp
-   private void a_product_category_of_100_characters()
-   {
-       product_category = "".PadRight(100, 'a');
-   }
-
-   private void a_product_category_over_100_characters()
-   {
-       product_category = "".PadRight(101, 'a');
-   }
-   ```
-
-2. **Common Test Data**: Extract common test data to reusable methods.
-   ```csharp
-   // In a base class or shared helper
-   protected Product CreateDefaultProduct() 
-   {
-       // Implementation
-   }
-   ```
-
-3. **Test State**: Store test state in private fields in the step implementation class.
-   ```csharp
-   private string product_category;
-   ```
-
-## Domain Specific Validation
-
-1. **Domain-Focused Assertions**: Create assertion methods that express domain concepts.
-   ```csharp
-   private void is_for_customer_age(CustomerAge expected)
-   {
-       // Implementation that checks if the criterion is for the expected age
-   }
-
-   private void it_has_a_description_of(string expected)
-   {
-       // Implementation that checks for the expected description
-   }
-   ```
-
-2. **Boundary Testing**: Test boundary conditions for domain validation rules.
-   ```csharp
-   scenario(() =>
-   {
-       Given(a_product_category_of_100_characters);  // Exactly at the limit
-       When(creating_a_product_category);
-       Then(it_is_valid);
-   });
-
-   scenario(() =>
-   {
-       Given(a_product_category_over_100_characters); // Just over the limit
-       When(creating_a_product_category);
-       Then(() => informs("Product category is required and cannot exceed 100 characters."));
-   });
-   ```
-
-## Multiple Scenario Testing
-
-1. **Complex Domain Rules**: Use multiple scenarios to test different aspects of a domain rule.
-   ```csharp
-   [Test]
-   public void legacy_customer_age_criteria_can_be_created()
-   {
-       const int age = 21;
-
-       scenario(() =>
-       {
-           When(creating_the_legacy_criterion(Criterion.Operators.Equality, age));
-           Then(it_has_a_between_operator);
-           And(is_for_customer_age(CustomerAge.From(age).To(age)));
-           And(() => it_has_a_description_of($"Customer age is {age} (expressed as years)"));
-       });
-
-       scenario(() =>
-       {
-           When(creating_the_legacy_criterion(Criterion.Operators.GreaterThan, age));
-           Then(it_has_a_between_operator);
-           And(is_for_customer_age(CustomerAge.From(age + 1)));
-           And(() => it_has_a_description_of($"Customer age is greater than {age} (expressed as years)"));
-       });
-
-       // Additional scenarios for other operators
-   }
-   ```
-
-## Base Classes and Common Functionality
-
-1. **Specification Base Class**: Extend from a common base class for shared functionality.
-   ```csharp
-   public partial class ProductCategorySpecs : Specification
-   {
-       // Tests
-   }
-   ```
-
-2. **Common Steps**: Create base classes for common step implementations.
-   ```csharp
-   public partial class CustomerAgeCriteriaSpecs : CommonCriteriaSteps<AgeRangeCriterion>
-   {
-       // Specific tests
-   }
-   ```
-
-## Test Readability
-
-1. **Fluent Assertions**: Use chained assertions for improved readability.
-   ```csharp
-   Then(it_has_a_between_operator);
-   And(is_for_customer_age(customerAge));
-   And(() => it_has_a_description_of($"Customer age is between {customerAge.Minimum} and {customerAge.Maximum} (expressed as years)"));
-   ```
-
-2. **Descriptive Messages**: Use descriptive messages in assertions.
-   ```csharp
-   Then(() => informs("Product category is required and cannot exceed 100 characters."));
-   ```
-
-## Test Framework
-
-The TestingLibrary repository provides the `Testing.bdd` package, which includes BDD testing utilities that align with our testing standards. This section outlines the key components of this framework.
-
-### Specification Base Class
-
-The `Specification` abstract class serves as the foundation for BDD-style tests:
+For unit tests and architecture tests - no I/O, pure in-memory logic.
 
 ```csharp
 public abstract class Specification
 {
-    // BDD step methods
-    protected void Given(Action action) { action.Invoke(); }
-    protected void When(Action action) { action.Invoke(); }
-    protected void Then(Action action) { action.Invoke(); }
-    protected void And(Action action) { action.Invoke(); }
-    
-    // Multiple scenario support
-    protected void scenario(Action test)
-    
+    // Lifecycle hooks
+    protected virtual void before_each() { }
+    protected virtual void after_each() { }
+
+    // BDD steps - all take Action (synchronous)
+    protected void Given(Action action) { action(); }
+    protected void When(Action action) { action(); }
+    protected void Then(Action action) { action(); }
+    protected void And(Action action) { action(); }
+
+    // Multiple scenarios in one test
+    protected void Scenario(Action test);
+
     // Validation helpers
-    protected void validating(Action action)
-    protected void informs(string message)
+    protected Action Validating(Action action);  // Captures exceptions
+    protected Action Informs(string message);    // Asserts exception message
 }
 ```
 
-### Usage in Projects
+#### AsyncSpecification (Asynchronous)
 
-When writing tests for projects, the recommended approach is:
-
-1. Create a partial class that inherits from `Specification`
-2. Split specifications and steps into separate files
-3. Use the fluent assertions for validations
-
-Example using the framework:
+For integration, component, and acceptance tests - I/O with databases, HTTP, messaging.
 
 ```csharp
-// ProductCategorySpecs.cs
-[TestFixture]
-public partial class ProductCategorySpecs : Specification
+public abstract class AsyncSpecification
 {
-    [Test]
-    public void product_category_validation()
-    {
-        scenario(() =>
-        {
-            Given(no_product_category);
-            When(creating_a_product_category);
-            Then(() => informs("Product category is required and cannot exceed 100 characters."));
-        });
-        
-        scenario(() =>
-        {
-            Given(a_valid_product_category);
-            When(creating_a_product_category);
-            Then(it_is_valid);
-        });
-    }
-}
+    // Lifecycle hooks
+    protected virtual Task before_all() => Task.CompletedTask;
+    protected virtual Task before_each() => Task.CompletedTask;
+    protected virtual Task after_each() => Task.CompletedTask;
+    protected virtual Task after_all() => Task.CompletedTask;
 
-// ProductCategorySteps.cs
-public partial class ProductCategorySpecs
-{
-    private string product_category;
-    
-    private void no_product_category()
-    {
-        product_category = null;
-    }
-    
-    private void a_valid_product_category()
-    {
-        product_category = "Valid Status";
-    }
-    
-    private void creating_a_product_category()
-    {
-        validating(() => new ProductCategory(product_category));
-    }
+    // BDD steps - BOTH sync and async overloads
+    protected void Given(Action action) { action(); }
+    protected Task Given(Func<Task> action) => action();
+
+    protected void When(Action action) { action(); }
+    protected Task When(Func<Task> action) => action();
+
+    protected void Then(Action action) { action(); }
+    protected Task Then(Func<Task> action) => action();
+
+    protected void And(Action action) { action(); }
+    protected Task And(Func<Task> action) => action();
 }
 ```
 
-### AsyncSpecification Base Class
+### The Alignment Pattern
 
-`AsyncSpecification` provides both sync and async overloads for all BDD step methods. **Only use `await` for truly async operations** (HTTP calls, database queries). Use sync overloads for setup and in-memory assertions.
-
-The alignment pattern makes sync vs async visually clear:
+**Key insight**: `AsyncSpecification` provides both sync and async overloads. Use `await` only for actual I/O operations. The visual alignment makes sync vs async immediately clear:
 
 ```csharp
 [Test]
-public async Task can_create_order()
+public async Task can_create_event()
 {
-          Given(a_customer_exists);              // sync - sets up test data
-          And(a_request_to_create_an_order);     // sync - builds request object
-    await When(creating_the_order);              // async - HTTP call
-    await Then(the_order_is_created);            // async - HTTP verification
-          And(an_integration_event_is_published); // sync - checks in-memory
+          Given(a_request_to_create_an_event);   // sync - builds request object
+    await When(creating_the_event);              // async - HTTP/database call
+    await And(requesting_the_event);             // async - HTTP call
+          Then(the_event_is_created);            // sync - in-memory assertion
+          And(an_integration_event_is_published); // sync - checks test harness
 }
-
-// Step implementations match their usage:
-private void a_customer_exists() { /* sync */ }
-private void a_request_to_create_an_order() { /* sync */ }
-private async Task creating_the_order() { _response = await _client.PostAsync(...); }
-private void an_integration_event_is_published() { _events.Should().Contain(...); }
 ```
 
-## Conclusion
+Step implementations match their usage:
 
-These testing standards aim to ensure that the codebase maintains a consistent approach to testing that aligns with domain-driven design principles. The BDD-style testing approach with clear separation of specifications and step implementations improves readability and helps focus tests on domain behaviors rather than implementation details. 
+```csharp
+// Sync steps - return void
+private void a_request_to_create_an_event()
+{
+    eventPayload = new EventPayload(name, startDate, endDate, venueId, price);
+}
 
-The `Testing.Bdd` package provides utilities that support these standards and make it easier to write clean, expressive tests.
+private void the_event_is_created()
+{
+    theEvent.Id.ShouldBe(returned_id);
+    theEvent.EventName.ToString().ShouldBe(name);
+}
+
+// Async steps - return Task
+private async Task creating_the_event()
+{
+    var response = await createEventEndpoint.CreateEvent(eventPayload);
+    returned_id = (Guid)response.Value!;
+}
+
+private async Task requesting_the_event()
+{
+    theEvent = (await getEventByIdEndpoint.GetEvent(returned_id)).Value!;
+}
+```
+
+---
+
+## Test Types
+
+### 1. Unit Tests
+
+**Purpose**: Fast, isolated tests of domain logic and business rules.
+
+**Location**: `Modules/{Module}/Testing.Unit.{Module}/`
+
+**Base class**: `Specification`
+
+**What to test**:
+- Domain entities and value objects
+- Business rule validation
+- Pure domain logic
+
+**Example**:
+
+```csharp
+// Event.specs.cs
+public partial class EventSpecs
+{
+    [Test]
+    public void an_event_must_have_a_name()
+    {
+        Scenario(() =>
+        {
+            Given(valid_inputs);
+            And(a_null_user_name);
+            When(Validating(creating_an_event));
+            Then(Informs("EventName cannot be null or empty"));
+        });
+
+        Scenario(() =>
+        {
+            Given(valid_inputs);
+            And(an_event_name);
+            When(Validating(creating_an_event));
+            Then(Informs("EventName cannot be null or empty"));
+        });
+    }
+
+    [Test]
+    public void can_create_valid_event()
+    {
+        Given(valid_inputs);
+        When(creating_an_event);
+        Then(the_event_is_created);
+    }
+}
+```
+
+```csharp
+// Event.steps.cs
+public partial class EventSpecs : Specification
+{
+    private Guid id;
+    private string name = null!;
+    private Event result = null!;
+
+    protected override void before_each()
+    {
+        base.before_each();
+        id = Guid.NewGuid();
+        name = null!;
+        result = null!;
+    }
+
+    private void valid_inputs() => name = "Concert 2024";
+    private void a_null_user_name() => name = null!;
+    private void creating_an_event() => result = new Event(id, name, ...);
+    private void the_event_is_created() => result.Id.ShouldBe(id);
+}
+```
+
+### 2. Integration Tests
+
+**Purpose**: Test module infrastructure with real dependencies.
+
+**Location**: `Modules/{Module}/Testing.Integration.{Module}/`
+
+**Base class**: `TruncateDbSpecification` (extends `AsyncSpecification`)
+
+**Infrastructure**: PostgreSQL + RabbitMQ via Testcontainers
+
+**What to test**:
+- Database persistence (EF Core with PostgreSQL)
+- Message publishing/consuming (RabbitMQ + MassTransit)
+- Domain events → Integration messages flow
+
+**Example**:
+
+```csharp
+// EventController.specs.cs
+public partial class EventControllerSpecs
+{
+    [Test]
+    public async Task can_create_event()
+    {
+              Given(a_request_to_create_an_event);
+        await When(creating_the_event);
+        await And(requesting_the_event);
+              Then(the_event_is_created);
+              And(an_integration_event_is_published);
+    }
+
+    [Test]
+    public async Task cannot_double_book_venue()
+    {
+        await Given(an_event_exists);
+              And(a_request_to_create_an_event_with_the_same_venue_and_time);
+        await When(creating_the_event_that_will_fail);
+              Then(the_user_is_informed_that_the_venue_is_unavailable);
+    }
+}
+```
+
+### 3. Component Tests
+
+**Purpose**: Test module APIs as black boxes with real infrastructure.
+
+**Location**: `Testing/Testing.Component/`
+
+**Base class**: `TruncateDbSpecification`
+
+**Infrastructure**: WebApplicationFactory + Testcontainers (PostgreSQL, RabbitMQ, Keycloak)
+
+**What to test**:
+- HTTP API contracts
+- Authentication/Authorization
+- Cross-cutting concerns
+
+**Key difference from Integration**: Tests via HTTP API (external boundary), not application layer directly.
+
+### 4. Acceptance Tests
+
+**Purpose**: End-to-end business scenarios across multiple modules.
+
+**Location**: `Testing/Testing.Acceptance/`
+
+**Base class**: `AsyncSpecification` or `TruncateDbSpecification`
+
+**Infrastructure**: Full system with all containers
+
+**What to test**:
+- Complete user journeys
+- Cross-module workflows
+- Business-level acceptance criteria
+
+### 5. Architecture Tests
+
+**Purpose**: Enforce domain qualities via reflection.
+
+**Location**: `Modules/{Module}/Testing.Architecture.{Module}/`
+
+**Base class**: `Specification`
+
+**What to test**:
+- Domain events are immutable
+- Domain primitives (value objects) are immutable
+- Non-aggregate-root entities are internal
+- Entities don't reference other aggregate roots
+
+**Note**: Layer dependencies are NOT tested here. They're enforced at compile-time via Roslyn analyzers in the `Architecture.{Module}` projects.
+
+**Example**:
+
+```csharp
+// Domain.specs.cs
+public partial class DomainSpecs
+{
+    [Test]
+    public void domain_events_should_be_immutable()
+    {
+        Given(domain_event_types);
+        Then(should_be_immutable);
+    }
+
+    [Test]
+    public void domain_primitives_should_be_immutable()
+    {
+        Given(domain_primitives);
+        Then(should_be_immutable);
+    }
+
+    [Test]
+    public void entities_that_are_not_aggregate_roots_cannot_be_public()
+    {
+        Given(entity_types_that_are_not_aggregate_roots);
+        Then(should_not_be_public_if_not_aggregate_root);
+    }
+
+    [Test]
+    public void entity_cannot_have_reference_to_other_aggregate_root()
+    {
+        Given(entity_types_that_are_aggregate_roots);
+        Then(should_not_reference_other_aggregate_root);
+    }
+}
+```
+
+```csharp
+// Domain.steps.cs
+public partial class DomainSpecs : Specification
+{
+    private IEnumerable<Type> types = [];
+    private static Assembly DomainAssembly => typeof(Event).Assembly;
+
+    private void domain_event_types()
+    {
+        types = DomainAssembly.GetTypes()
+            .Where(t => typeof(IDescribeADomainEvent).IsAssignableFrom(t)
+                     && t != typeof(IDescribeADomainEvent));
+    }
+
+    private void should_be_immutable()
+    {
+        List<Type> failingTypes = [];
+        foreach (var type in types)
+        {
+            var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var hasWritableField = fields.Any(f => f is { IsInitOnly: false, IsLiteral: false });
+            if (hasWritableField)
+                failingTypes.Add(type);
+        }
+        Assert.That(failingTypes, Is.Null.Or.Empty);
+    }
+}
+```
+
+---
+
+## Testing Infrastructure
+
+### Testcontainers Setup
+
+```csharp
+protected override async Task before_all()
+{
+    database = PostgreSql.CreateContainer();
+    await database.StartAsync();
+    database.Migrate();
+}
+
+protected override async Task after_all()
+{
+    await database.StopAsync();
+    await database.DisposeAsync();
+}
+```
+
+### Database Management
+
+- `TruncateDbSpecification` base class provides cleanup between tests
+- Truncation is faster than recreating containers
+- Migrations run once per test session via `before_all()`
+
+### Message Verification
+
+```csharp
+private ITestHarness testHarness;
+
+private void an_integration_event_is_published()
+{
+    testHarness.Published.Select<EventUpserted>()
+        .Any(e =>
+            e.Context.Message.Id == returned_id &&
+            e.Context.Message.EventName == name)
+        .ShouldBeTrue("Event was not published to the bus");
+}
+```
+
+---
+
+## Test Naming Conventions
+
+### Test Methods
+
+Describe behavior in lowercase with underscores:
+
+```csharp
+an_event_must_have_a_name()
+cannot_create_event_with_end_date_before_start_date()
+user_can_purchase_tickets_for_an_event()
+```
+
+### Step Methods
+
+Snake_case describing state or action:
+
+```csharp
+// Given
+valid_inputs()
+an_event_exists()
+a_request_to_create_an_event()
+
+// When
+creating_the_event()
+creating_the_event_that_will_fail()
+
+// Then
+the_event_is_created()
+the_user_is_informed_that_the_venue_is_unavailable()
+```
+
+---
+
+## What NOT to Test
+
+- Implementation details (private methods)
+- Framework code (ASP.NET, EF Core internals)
+- Third-party libraries
+- Trivial property getters/setters
+
+## What TO Test
+
+- Business rules and validation
+- Domain behavior and invariants
+- API contracts and responses
+- Integration message contracts
+- Cross-module workflows
+- Domain qualities (immutability, aggregate boundaries)
+
+---
+
+## Test Execution
+
+```bash
+# All tests
+dotnet test
+
+# By level
+dotnet test --filter "FullyQualifiedName~Testing.Unit"
+dotnet test --filter "FullyQualifiedName~Testing.Integration"
+dotnet test --filter "FullyQualifiedName~Testing.Component"
+dotnet test --filter "FullyQualifiedName~Testing.Acceptance"
+dotnet test --filter "FullyQualifiedName~Testing.Architecture"
+
+# Specific module
+dotnet test Modules/Events/Testing.Unit.Events
+```

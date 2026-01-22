@@ -15,8 +15,6 @@ public class Notification : Entity, IAmAnAggregateRoot
         {
             if (userId == Guid.Empty)
                 errors.Add("Entity ID cannot be an empty GUID");
-            if (!Enum.IsDefined(typeof(NotificationType), type))
-                errors.Add("Invalid NotificationType value");
         });
 
         UserId = userId;

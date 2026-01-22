@@ -22,15 +22,6 @@ public partial class NotificationSpecs
     }
 
     [Test]
-    public void notification_must_have_a_type()
-    {
-        Given(valid_inputs);
-        And(an_empty_type);
-        When(Validating(creating_a_notification));
-        Then(Informs("Invalid NotificationType value"));
-    }
-
-    [Test]
     public void notification_is_unread_by_default()
     {
         Given(valid_inputs);

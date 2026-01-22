@@ -14,8 +14,7 @@ public static class Keycloak
     {
         var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
         
-        return new KeycloakBuilder()
-            .WithImage("quay.io/keycloak/keycloak:26.3")
+        return new KeycloakBuilder("quay.io/keycloak/keycloak:26.3")
             .WithPortBinding(port, true)
             .WithRealm("ticketbuddy-realm.json")
             .WithBindMount(keycloakJarHostPath, "/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar")

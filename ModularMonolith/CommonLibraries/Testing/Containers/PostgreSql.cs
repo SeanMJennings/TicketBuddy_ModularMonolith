@@ -7,7 +7,7 @@ public static class PostgreSql
 {
     public static PostgreSqlContainer CreateContainer(int port = 1434)
     {
-        return new PostgreSqlBuilder()
+        return new PostgreSqlBuilder("postgres:latest")
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")

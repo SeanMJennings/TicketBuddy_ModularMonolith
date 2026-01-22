@@ -6,7 +6,7 @@ public static class Redis
 {
    public static RedisContainer CreateContainer(int port = 6380) 
    {
-       return new RedisBuilder()
+       return new RedisBuilder("redis:latest")
            .WithPortBinding(port)
            .Build();
    }

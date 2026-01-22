@@ -8,7 +8,7 @@ public static class RabbitMq
     public const string Password = "guest";
     public static RabbitMqContainer CreateContainer(int port = 5673)
     {
-        return new RabbitMqBuilder()
+        return new RabbitMqBuilder("rabbitmq:management")
             .WithUsername(UserName)
             .WithPassword(Password)
             .WithPortBinding(port)

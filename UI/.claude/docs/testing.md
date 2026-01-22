@@ -27,20 +27,10 @@ src/
       payment-processor.test.ts // The validator is an implementation detail. Validation is fully covered, but by testing the expected business behaviour, treating the validation code itself as an implementation detail
 ```
 
-## Test File Structure: Specs/Steps Pattern
+## Test File Structure: Specs/Steps/Page Pattern
 
-Separate test specifications from implementation:
+Separate test specifications from implementation using the **specs/steps/page pattern**:
 
-**For non-UI tests (API, hooks, domain):**
-```
-src/
-  api/
-    unit_specs/
-      notifications.api.spec.ts   // Test descriptions only (describe/it)
-      notifications.api.steps.ts  // Test implementations (actual test logic)
-```
-
-**For React component tests (specs/steps/page pattern):**
 ```
 src/
   components/
@@ -48,6 +38,63 @@ src/
       Header.spec.ts    // Test descriptions only (describe/it)
       Header.steps.ts   // Test implementations, mocks, beforeEach/afterEach
       Header.page.tsx   // Page object: render helpers, query helpers
+```
+
+## API Testing: Use MSW, Not Direct API Tests
+
+**DO NOT create separate unit tests for API client functions.** Instead, test API calls through component integration tests using MSW (Mock Service Worker).
+
+**Why:**
+- API client functions are implementation details
+- Testing them directly creates brittle tests that break when internals change
+- Component tests with MSW test the real user behavior end-to-end
+- MSW intercepts actual HTTP calls, providing more realistic testing
+
+**Bad - Separate API unit tests:**
+```typescript
+// ❌ DON'T DO THIS - api/unit_specs/notifications.api.spec.ts
+describe("Notifications API", () => {
+  it("should fetch notifications", async () => {
+    mockServer.get("/notifications", [...]);
+    const result = await getNotifications(jwt);  // Testing implementation
+    expect(result).toHaveLength(2);
+  });
+});
+```
+
+**Good - Test through component tests with MSW:**
+```typescript
+// ✅ DO THIS - components/narrow_integration_specs/NotificationDropdown.steps.ts
+export async function should_render_list_of_notifications() {
+    wait_for_get_notifications = mockServer.get("/notifications", [...]);
+    mockServer.start();
+
+    renderNotificationDropdown();  // Real component
+    await waitUntil(wait_for_get_notifications);  // Real HTTP call intercepted
+
+    expect(getNotificationItemCount()).toBe(2);  // Test user-visible behavior
+}
+```
+
+**The MockServer wrapper pattern:**
+```typescript
+const mockServer = MockServer.New();
+let wait_for_get_notifications: () => boolean;
+
+beforeEach(() => {
+    mockServer.reset();
+});
+
+// Each test sets up its own HTTP mocks
+export async function should_show_notifications() {
+    wait_for_get_notifications = mockServer.get("/notifications", testData);
+    mockServer.start();
+
+    renderComponent();
+    await waitUntil(wait_for_get_notifications);
+
+    // Assert on DOM, not API response
+}
 ```
 
 **Example spec file:**

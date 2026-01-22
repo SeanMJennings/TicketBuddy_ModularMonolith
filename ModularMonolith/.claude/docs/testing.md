@@ -364,103 +364,26 @@ public partial class ProductCategorySpecs
 
 ### AsyncSpecification Base Class
 
-The `AsyncSpecification` abstract class serves as the foundation for BDD-style tests that need asynchronous operations:
+`AsyncSpecification` provides both sync and async overloads for all BDD step methods. **Only use `await` for truly async operations** (HTTP calls, database queries). Use sync overloads for setup and in-memory assertions.
+
+The alignment pattern makes sync vs async visually clear:
 
 ```csharp
-public abstract class AsyncSpecification
+[Test]
+public async Task can_create_order()
 {
-    // BDD step methods
-    protected Task Given(Action action) { action.Invoke(); }
-    protected Task When(Action action) { action.Invoke(); }
-    protected Task Then(Action action) { action.Invoke(); }
-    protected Task And(Action action) { action.Invoke(); }
-    
-    // Multiple scenario support
-    protected void scenario(Action test)
-    
-    // Validation helpers
-    protected void validating(Action action)
-    protected void informs(string message)
-    
-    // BDD async step methods
-    protected static async Task Given(Func<Task> testAction) { await testAction.Invoke(); }
-    protected static async Task And(Func<Task> testAction) { await testAction.Invoke(); }
-    protected static async Task When(Func<Task> testAction) { await testAction.Invoke(); }
-    protected static async Task Then(Func<Task> testAction) { await testAction.Invoke(); }
-    
-    // ASync Multiple scenario support
-    protected static async Task Scenario(Func<Task> testAction){ await testAction.Invoke(); }
-
-    // Async Validation helpers
-    protected static Func<Task> Validating(Func<Task> testAction)
-    protected static Func<Task> InformsAsync(string message)
-}
-```
-
-
-### Usage in Projects
-
-When writing tests for projects, the recommended approach is:
-
-1. Create a partial class that inherits from `AsyncSpecification`
-2. Split specifications and steps into separate files
-3. Use the fluent assertions for validations
-
-Example using the framework:
-
-```csharp
-// AsyncExampleShould.cs
-[TestFixture]
-public partial class AsyncExampleShould : AsyncSpecification
-{
-    [Test]
-    public async Task pass_our_first_behavioural_test_async()
-    {
-        await Given(two_numbers_from_a_remote_source);
-              When(we_give_them_to_our_complex_system);
-        await Then(we_get_the_sum_from_a_remote_source);
-              And(we_can_validate_something_else);
-    }
+          Given(a_customer_exists);              // sync - sets up test data
+          And(a_request_to_create_an_order);     // sync - builds request object
+    await When(creating_the_order);              // async - HTTP call
+    await Then(the_order_is_created);            // async - HTTP verification
+          And(an_integration_event_is_published); // sync - checks in-memory
 }
 
-// AsyncExampleSteps.cs
-public partial class AsyncExampleShould
-{
-    private int sum;
-    private ComplexSystem complex_system;
-    private int first_number;
-    private int second_number;
-
-    protected override Task before_each()
-    {
-        base.before_each();
-        sum = 0;
-        first_number = 0;
-        second_number = 0;
-        complex_system = new ComplexSystem(new MagicDependency());
-        return Task.CompletedTask;
-    }
-
-    private Task two_numbers_from_a_remote_source()
-    {
-        first_number = 0;
-        second_number = 2;
-        return Task.CompletedTask;
-    }
-
-    private void we_give_them_to_our_complex_system()
-    {
-        sum = complex_system.Sum(first_number, second_number);
-    }
-
-    private Task we_get_the_sum_from_a_remote_source()
-    {
-        sum = first_number + second_number;
-        return Task.CompletedTask;
-    }
-    
-    private static void we_can_validate_something_else(){}
-}
+// Step implementations match their usage:
+private void a_customer_exists() { /* sync */ }
+private void a_request_to_create_an_order() { /* sync */ }
+private async Task creating_the_order() { _response = await _client.PostAsync(...); }
+private void an_integration_event_is_published() { _events.Should().Contain(...); }
 ```
 
 ## Conclusion

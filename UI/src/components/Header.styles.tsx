@@ -1,7 +1,7 @@
 ﻿import styled from "styled-components";
 import TicketStub from "../assets/ticket-stub.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 
 export const HeaderBar = styled.div`
@@ -162,8 +162,51 @@ export const EventsManagementLink = styled(Link)`
     &:active {
         transform: translateY(0);
     }
-    
+
     &::after {
         display: none;
     }
 `;
+
+export const NotificationBellContainer = styled.div`
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-normal);
+    position: relative;
+    color: var(--gray-100);
+
+    &:hover {
+        background: rgba(14, 165, 233, 0.1);
+        border-color: var(--primary-500);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: var(--primary-300);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+`;
+
+export const NotificationBadge = styled.span`
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: white;
+    background: var(--primary-500);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const NotificationBellIcon = () => <FontAwesomeIcon icon={faBell} />;

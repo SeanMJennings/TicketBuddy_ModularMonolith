@@ -15,6 +15,7 @@ public partial class NotificationSpecs : Specification
 
     private static readonly NotificationType validType = NotificationType.TicketPurchased;
     private const string validPayload = """{"ticketId":"12345","eventName":"Concert"}""";
+    private const NotificationType InvalidNotificationType = (NotificationType)999;
 
     protected override void before_each()
     {
@@ -40,7 +41,7 @@ public partial class NotificationSpecs : Specification
 
     private void an_empty_type()
     {
-        type = (NotificationType)999; // Invalid enum value
+        type = InvalidNotificationType;
     }
 
     private void a_valid_notification()

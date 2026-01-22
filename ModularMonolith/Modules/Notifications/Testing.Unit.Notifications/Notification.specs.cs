@@ -27,7 +27,7 @@ public partial class NotificationSpecs
         Given(valid_inputs);
         And(an_empty_type);
         When(Validating(creating_a_notification));
-        Then(Informs("NotificationType cannot be null or empty"));
+        Then(Informs("Invalid NotificationType value"));
     }
 
     [Test]

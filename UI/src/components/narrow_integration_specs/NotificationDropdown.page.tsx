@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { NotificationDropdown } from "../NotificationDropdown";
 
@@ -40,4 +41,11 @@ export function loadingStateIsRendered(): boolean {
 export function isNotificationUnread(index: number): boolean {
     const items = getNotificationItems();
     return items[index]?.getAttribute("data-unread") === "true";
+}
+
+export async function clickNotification(index: number): Promise<void> {
+    const items = getNotificationItems();
+    if (items[index]) {
+        await userEvent.click(items[index]);
+    }
 }

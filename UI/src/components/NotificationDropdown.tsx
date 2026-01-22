@@ -1,4 +1,6 @@
+import { useAuth } from "react-oidc-context";
 import { useNotifications } from "../hooks/useNotifications";
+import { markNotificationAsRead } from "../api/notifications.api";
 import { parseNotificationPayload, type Notification } from "../domain/notification";
 import {
     DropdownContainer,
@@ -25,7 +27,16 @@ const formatTime = (dateString: string): string => {
 };
 
 export const NotificationDropdown = () => {
-    const { notifications, isLoading } = useNotifications();
+    const auth = useAuth();
+    const { notifications, isLoading, refetch } = useNotifications();
+
+    const handleNotificationClick = async (notificationId: string) => {
+        const jwt = auth.user?.access_token;
+        if (!jwt) return;
+
+        await markNotificationAsRead(notificationId, jwt);
+        refetch();
+    };
 
     if (isLoading) {
         return (
@@ -55,6 +66,7 @@ export const NotificationDropdown = () => {
                     $unread={!notification.IsRead}
                     data-testid="notification-item"
                     data-unread={!notification.IsRead}
+                    onClick={() => handleNotificationClick(notification.Id)}
                 >
                     <NotificationTitle>
                         {formatNotificationMessage(notification)}

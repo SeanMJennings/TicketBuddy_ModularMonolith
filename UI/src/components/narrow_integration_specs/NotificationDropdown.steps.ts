@@ -7,24 +7,40 @@ import {
     getNotificationText,
     emptyStateIsRendered,
     loadingStateIsRendered,
-    isNotificationUnread
+    isNotificationUnread,
+    clickNotification
 } from "./NotificationDropdown.page.tsx";
 
 let mockNotifications: Notification[] = [];
 let mockIsLoading = false;
+let mockRefetch = vi.fn();
 
 vi.mock("../../hooks/useNotifications", () => ({
     useNotifications: () => ({
         notifications: mockNotifications,
         isLoading: mockIsLoading,
         error: null,
-        refetch: () => {}
+        refetch: mockRefetch
+    })
+}));
+
+const mockMarkNotificationAsRead = vi.fn();
+vi.mock("../../api/notifications.api", () => ({
+    markNotificationAsRead: (...args: unknown[]) => mockMarkNotificationAsRead(...args)
+}));
+
+vi.mock("react-oidc-context", () => ({
+    useAuth: () => ({
+        isAuthenticated: true,
+        user: { access_token: "test-jwt-token" }
     })
 }));
 
 afterEach(() => {
     mockNotifications = [];
     mockIsLoading = false;
+    mockRefetch.mockReset();
+    mockMarkNotificationAsRead.mockReset();
     unmountNotificationDropdown();
 });
 
@@ -89,4 +105,28 @@ export function should_highlight_unread_notifications() {
 
     expect(isNotificationUnread(0)).toBe(true);
     expect(isNotificationUnread(1)).toBe(false);
+}
+
+export async function should_call_mark_as_read_when_notification_clicked() {
+    mockNotifications = [
+        createNotification({ Id: "notif-123", IsRead: false })
+    ];
+    mockMarkNotificationAsRead.mockResolvedValue(undefined);
+
+    renderNotificationDropdown();
+    await clickNotification(0);
+
+    expect(mockMarkNotificationAsRead).toHaveBeenCalledWith("notif-123", "test-jwt-token");
+}
+
+export async function should_refetch_notifications_after_marking_as_read() {
+    mockNotifications = [
+        createNotification({ Id: "notif-123", IsRead: false })
+    ];
+    mockMarkNotificationAsRead.mockResolvedValue(undefined);
+
+    renderNotificationDropdown();
+    await clickNotification(0);
+
+    expect(mockRefetch).toHaveBeenCalled();
 }

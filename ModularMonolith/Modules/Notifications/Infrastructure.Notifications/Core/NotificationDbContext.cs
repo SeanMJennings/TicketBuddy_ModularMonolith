@@ -23,7 +23,7 @@ public class NotificationDbContext(DbContextOptions<NotificationDbContext> optio
         modelBuilder.Entity<Domain.Notifications.Notification>().HasKey(n => n.Id);
         modelBuilder.Entity<Domain.Notifications.Notification>().Property(n => n.UserId);
         modelBuilder.Entity<Domain.Notifications.Notification>().Property(n => n.Type)
-            .HasConversion(t => t.ToString(), t => new Domain.Notifications.NotificationType(t));
+            .HasConversion(t => t.ToString(), t => Enum.Parse<Domain.Notifications.NotificationType>(t));
         modelBuilder.Entity<Domain.Notifications.Notification>().Property(n => n.Payload).HasColumnType("jsonb");
         modelBuilder.Entity<Domain.Notifications.Notification>().Property(n => n.IsRead);
         modelBuilder.Entity<Domain.Notifications.Notification>().Property(n => n.CreatedAt);

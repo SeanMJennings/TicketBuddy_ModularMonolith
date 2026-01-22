@@ -89,7 +89,7 @@ public partial class TicketPurchasedConsumerSpecs : TruncateDbSpecification
         notifications.Count.ShouldBe(1);
         var notification = notifications[0];
         notification.UserId.ShouldBe(userId);
-        ((string)notification.Type).ShouldBe("TicketPurchased");
+        notification.Type.ShouldBe(NotificationType.TicketPurchased);
         notification.Payload.ShouldContain(eventName);
     }
 }

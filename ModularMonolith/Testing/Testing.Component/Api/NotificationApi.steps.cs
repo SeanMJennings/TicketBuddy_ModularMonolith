@@ -66,7 +66,7 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
         var notification = Notification.Create(
             notificationId,
             userId,
-            "TicketPurchased",
+            NotificationType.TicketPurchased,
             "{\"eventName\":\"Test Concert\"}",
             DateTimeOffset.UtcNow);
 

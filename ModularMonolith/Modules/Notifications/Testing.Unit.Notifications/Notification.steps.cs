@@ -8,12 +8,12 @@ public partial class NotificationSpecs : Specification
 {
     private Guid id;
     private Guid userId;
-    private string type = null!;
+    private NotificationType type;
     private string payload = null!;
     private DateTimeOffset createdAt;
     private Notification theNotification = null!;
 
-    private const string validType = "TicketPurchased";
+    private static readonly NotificationType validType = NotificationType.TicketPurchased;
     private const string validPayload = """{"ticketId":"12345","eventName":"Concert"}""";
 
     protected override void before_each()
@@ -21,7 +21,7 @@ public partial class NotificationSpecs : Specification
         base.before_each();
         id = Guid.NewGuid();
         userId = Guid.NewGuid();
-        type = null!;
+        type = default;
         payload = null!;
         createdAt = DateTimeOffset.UtcNow;
         theNotification = null!;
@@ -40,7 +40,7 @@ public partial class NotificationSpecs : Specification
 
     private void an_empty_type()
     {
-        type = string.Empty;
+        type = (NotificationType)999; // Invalid enum value
     }
 
     private void a_valid_notification()
@@ -51,8 +51,7 @@ public partial class NotificationSpecs : Specification
 
     private void creating_a_notification()
     {
-        var notificationType = new NotificationType(type);
-        theNotification = Notification.Create(id, userId, notificationType, payload, createdAt);
+        theNotification = Notification.Create(id, userId, type, payload, createdAt);
     }
 
     private void marking_as_read()
@@ -65,7 +64,7 @@ public partial class NotificationSpecs : Specification
         theNotification.ShouldNotBeNull();
         theNotification.Id.ShouldBe(id);
         theNotification.UserId.ShouldBe(userId);
-        theNotification.Type.ToString().ShouldBe(validType);
+        theNotification.Type.ShouldBe(validType);
         theNotification.Payload.ShouldBe(validPayload);
         theNotification.CreatedAt.ShouldBe(createdAt);
     }

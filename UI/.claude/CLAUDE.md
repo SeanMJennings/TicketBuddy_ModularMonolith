@@ -96,8 +96,9 @@ See @~/.claude/docs/code-style.md
 **Quick reference:**
 - RED: Write failing test first (NO production code without failing test)
 - GREEN: Write MINIMUM code to pass test
+- Commit immediately after GREEN (before refactoring or next test)
 - REFACTOR: Assess improvement opportunities (only refactor if adds value)
-- Always commit before refactoring
+- Commit after refactoring (separate from GREEN commit)
 - Semantic abstraction (meaning) over structural similarity (appearance)
 - DRY = Don't repeat knowledge, not code structure
 

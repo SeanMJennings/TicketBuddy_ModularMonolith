@@ -20,6 +20,37 @@ Follow Red-Green-Refactor strictly:
 
 **Remember**: If you're typing production code and there isn't a failing test demanding that code, you're not doing TDD.
 
+### Commit Timing in TDD Cycle
+
+**CRITICAL**: Commit immediately after achieving GREEN state, before refactoring or moving to the next test.
+
+```bash
+# RED: Write failing test
+git add src/features/payment/payment.test.ts
+git commit -m "test: add payment validation test (RED)"
+
+# GREEN: Make test pass with minimal code
+git add src/features/payment/payment.ts
+git commit -m "feat: implement payment validation (GREEN)"
+
+# REFACTOR: Only if needed - you now have a safe rollback point
+git add .
+git commit -m "refactor: extract payment validation constants (REFACTOR)"
+```
+
+**Why this matters:**
+- **Incremental capture**: Each step's work is saved immediately, never lost
+- **Safe rollback**: If refactoring goes wrong, revert to working GREEN state
+- **Clear history**: Git log shows explicit RED-GREEN-REFACTOR progression
+- **TDD compliance**: Commit sequence proves tests were written first
+- **Risk reduction**: Never lose working code to failed refactoring attempts
+
+**Common violations:**
+- ❌ Combining GREEN + REFACTOR in one commit (loses safe rollback point)
+- ❌ Writing multiple tests before committing GREEN implementation
+- ❌ Committing test and implementation together (obscures RED phase)
+- ❌ Refactoring without committing GREEN state first
+
 ## TDD Quality Gates
 
 Before allowing any commit, verify:
@@ -245,14 +276,39 @@ const processOrder = (order: Order): ProcessedOrder => {
 
 ### Refactoring Guidelines
 
-#### 1. Commit Before Refactoring
+#### 1. Commit Immediately After GREEN - Before Refactoring
 
-Always commit your working code before starting any refactoring. This gives you a safe point to return to:
+**CRITICAL**: The moment your tests go green, commit that working state BEFORE starting any refactoring. This is not optional - it's a safety practice that ensures you never lose working code.
 
 ```bash
+# Tests just passed - commit NOW
 git add .
 git commit -m "feat: add payment validation"
-# Now safe to refactor
+
+# NOW safe to refactor with confidence
+# If refactoring fails, you can always revert to this commit
+```
+
+**Why commit before refactoring:**
+1. **Safe rollback point**: If refactoring goes wrong, you have working code to return to
+2. **Preserves working state**: Your GREEN implementation is captured even if you never finish refactoring
+3. **Clear git history**: Separates feature implementation from code cleanup
+4. **Reduced risk**: Refactoring becomes low-risk experimentation, not all-or-nothing
+5. **TDD compliance**: Git history proves you achieved working code before optimization
+
+**Anti-pattern to avoid:**
+```bash
+# ❌ WRONG - Trying to do GREEN + REFACTOR in one commit
+# Tests pass...
+# ...refactor code...
+# ...tests break...
+# ...now you've lost your working state and have to start over
+
+# ✅ CORRECT - Commit GREEN immediately
+git commit -m "feat: add payment validation"
+# ...refactor code...
+# ...tests break...
+# No problem: git reset --hard HEAD (back to working GREEN state)
 ```
 
 #### 2. Look for Useful Abstractions Based on Semantic Meaning

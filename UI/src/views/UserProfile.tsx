@@ -1,11 +1,4 @@
-import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
-import {getTicketsForUser} from '../api/tickets.api';
-import {getEvents} from '../api/events.api';
-import {getVenues} from '../api/venues.api';
-import {type Ticket} from '../domain/ticket';
-import {type Event} from '../domain/event';
-import {type Venue} from '../domain/venue';
 import {Container, PageTitle, ActionBar} from './Common.styles';
 import {ContentLoading} from '../components/LoadingContainers.styles';
 import {Button} from '../components/Button.styles';
@@ -28,51 +21,14 @@ import {
     StatsGrid,
     StatCard
 } from './UserProfile.styles';
-import {useAuth} from "react-oidc-context";
-import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import {VenueDisplay} from "../components/VenueDisplay";
-import {UserType} from "../domain/user.ts";
-import moment from "moment";
+import {formatCurrency, getInitials} from "../domain/formatting";
+import {getEventName, getEventDate, getEventVenueId} from "../domain/event.utils";
+import {calculateTotalSpent, sortTicketsByEventDateThenSeatNumber} from "../domain/ticket.utils";
+import {useUserProfileData} from "../hooks/useUserProfileData";
 
 export const UserProfile = () => {
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-    const [events, setEvents] = useState<Event[]>([]);
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    const auth = useAuth();
-    const user = convertToTicketBuddyUser(auth.user);
-
-    const isAdmin = user?.UserType === UserType.Administrator;
-
-    useEffect(() => {
-        if (!auth.user?.access_token) return;
-
-        const currentUser = convertToTicketBuddyUser(auth.user);
-        if (!currentUser) return;
-
-        if (currentUser.UserType === UserType.Administrator) {
-            getVenues()
-                .then(setVenues)
-                .finally(() => setLoading(false));
-            return;
-        }
-
-        Promise.all([
-            getTicketsForUser(auth.user?.access_token),
-            getEvents(),
-            getVenues()
-        ])
-            .then(([ticketsData, eventsData, venuesData]) => {
-                setTickets(ticketsData);
-                setEvents(eventsData);
-                setVenues(venuesData);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    }, [auth.user]);
+    const { tickets, events, venues, loading, isAdmin, user } = useUserProfileData();
 
     if (!user) {
         return (
@@ -87,65 +43,8 @@ export const UserProfile = () => {
         );
     }
 
-    const getInitials = (fullName: string): string => {
-        return fullName
-            .split(' ')
-            .map(name => name.charAt(0))
-            .join('')
-            .toUpperCase()
-            .slice(0, 2);
-    };
-
-    const calculateTotalSpent = (): number => {
-        return tickets.reduce((total, ticket) => total + ticket.Price, 0);
-    };
-
-    const formatCurrency = (amount: number): string => {
-        return `£${amount.toFixed(2)}`;
-    };
-
-    const getEventName = (eventId: string): string => {
-        const event = events.find(e => e.Id === eventId);
-        return event ? event.EventName : 'Unknown Event';
-    };
-
-    const getEventDate = (eventId: string): string => {
-        const event = events.find(e => e.Id === eventId);
-        if (!event) return '';
-
-        return moment(event.StartDate).format('DD MMM YYYY');
-    };
-
-    const compareEventsByDate = (eventA: Event, eventB: Event): number => {
-        return new Date(eventA.StartDate).valueOf() - new Date(eventB.StartDate).valueOf();
-    };
-
-    const getEventVenueId = (eventId: string): string => {
-        const event = events.find(e => e.Id === eventId);
-        return event?.VenueId ?? '';
-    };
-
-    const compareTicketsByEventDateThenSeatNumber = (ticketA: Ticket, ticketB: Ticket): number => {
-        const eventA = events.find(e => e.Id === ticketA.EventId);
-        const eventB = events.find(e => e.Id === ticketB.EventId);
-
-        if (!eventA && !eventB) return 0;
-        if (!eventA) return 1;
-        if (!eventB) return -1;
-
-        const dateDiff = compareEventsByDate(eventA, eventB);
-        if (dateDiff !== 0) {
-            return dateDiff;
-        }
-
-        return ticketA.SeatNumber - ticketB.SeatNumber;
-    };
-
-    const getSortedTickets = (): Ticket[] => {
-        return tickets
-            .slice()
-            .sort(compareTicketsByEventDateThenSeatNumber);
-    };
+    const sortedTickets = sortTicketsByEventDateThenSeatNumber(tickets, events);
+    const totalSpent = calculateTotalSpent(tickets);
 
     return (
         <Container>
@@ -176,11 +75,11 @@ export const UserProfile = () => {
                                     <div className="stat-label">Tickets Owned</div>
                                 </StatCard>
                                 <StatCard data-testid="stat-card">
-                                    <div className="stat-value">{formatCurrency(calculateTotalSpent())}</div>
+                                    <div className="stat-value">{formatCurrency(totalSpent)}</div>
                                     <div className="stat-label">Total Spent</div>
                                 </StatCard>
                                 <StatCard data-testid="stat-card">
-                                    <div className="stat-value">{formatCurrency(calculateTotalSpent() / tickets.length)}</div>
+                                    <div className="stat-value">{formatCurrency(totalSpent / tickets.length)}</div>
                                     <div className="stat-label">Average Price</div>
                                 </StatCard>
                             </StatsGrid>
@@ -200,16 +99,16 @@ export const UserProfile = () => {
                             </EmptyState>
                         ) : (
                             <TicketsGrid>
-                                {getSortedTickets().map((ticket) => (
+                                {sortedTickets.map((ticket) => (
                                     <TicketCard key={ticket.Id} data-testid="ticket-item">
                                         <TicketHeader>
                                             <SeatNumber>Seat {ticket.SeatNumber}</SeatNumber>
                                             <TicketPrice>{formatCurrency(ticket.Price)}</TicketPrice>
                                         </TicketHeader>
                                         <TicketMeta>
-                                            <TicketDetail>{getEventName(ticket.EventId)}</TicketDetail>
-                                            <TicketDetail>{getEventDate(ticket.EventId)}</TicketDetail>
-                                            <TicketDetail><VenueDisplay venues={venues} venueId={getEventVenueId(ticket.EventId)} /></TicketDetail>
+                                            <TicketDetail>{getEventName(events, ticket.EventId)}</TicketDetail>
+                                            <TicketDetail>{getEventDate(events, ticket.EventId)}</TicketDetail>
+                                            <TicketDetail><VenueDisplay venues={venues} venueId={getEventVenueId(events, ticket.EventId)} /></TicketDetail>
                                         </TicketMeta>
                                     </TicketCard>
                                 ))}

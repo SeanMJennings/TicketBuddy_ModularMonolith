@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from 'react';
 import {
     AddIcon,
     BackIcon,
@@ -10,35 +9,15 @@ import {
     Label,
     Select,
 } from './EventsManagement.styles.tsx';
-import {type Event} from '../domain/event.ts';
-import {type Venue} from '../domain/venue.ts';
-import {getEventById, getEvents, postEvent, putEvent,} from "../api/events.api.ts";
-import {getVenues} from "../api/venues.api.ts";
 import moment from 'moment'
-import {Link, Outlet, Route, Routes, useNavigate, useParams} from "react-router-dom";
+import {Link, Outlet, Route, Routes} from "react-router-dom";
 import {Button} from "../components/Button.styles.tsx";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {EventItem, EventList, PageTitle, PageContainer, ActionBar, Container} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
-import { useAuth } from 'react-oidc-context';
 import {VenueDisplay} from "../components/VenueDisplay.tsx";
-
-type EventFormData = {
-    eventName: string;
-    startDateTime: string;
-    endDateTime: string;
-    venueId: string;
-    price: number;
-};
-
-const initialFormData: EventFormData = {
-    eventName: '',
-    startDateTime: '',
-    endDateTime: '',
-    venueId: '',
-    price: 0,
-};
+import {useEventsListData} from "../hooks/useEventsListData";
+import {useEventForm} from "../hooks/useEventForm";
 
 export const EventsManagement = () => {
     return (
@@ -54,21 +33,7 @@ export const EventsManagement = () => {
 }
 
 export const ListEvents = () => {
-    const [events, setEvents] = useState<Event[]>([]);
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        Promise.all([getEvents(), getVenues()])
-            .then(([eventsData, venuesData]) => {
-                setEvents(eventsData);
-                setVenues(venuesData);
-                setLoading(false);
-            })
-            .catch(() => {
-                setLoading(false);
-            });
-    },[]);
+    const { events, venues, loading } = useEventsListData();
 
     return (
         <>
@@ -113,78 +78,16 @@ interface EventFormProps {
 }
 
 export const EventForm = ({ mode }: EventFormProps) => {
-    const [formData, setFormData] = useState<EventFormData>(initialFormData);
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>();
-    const isEditMode = mode === 'edit';
-    const auth = useAuth();
-
-    useEffect(() => {
-        getVenues().then(setVenues).catch(() => {});
-    }, []);
-
-    useEffect(() => {
-        if (isEditMode && id) {
-            setLoading(true);
-            getEventById(id).then(event => {
-                setFormData({
-                    eventName: event.EventName,
-                    startDateTime: moment(event.StartDate).format('YYYY-MM-DDTHH:mm'),
-                    endDateTime: moment(event.EndDate).format('YYYY-MM-DDTHH:mm'),
-                    venueId: event.VenueId,
-                    price: event.Price,
-                });
-                setLoading(false);
-            }).catch(() => {
-                toast.error('Failed to fetch event details');
-                setLoading(false);
-                navigate('/events-management');
-            });
-        }
-    }, [id, isEditMode, navigate]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (isFormValid()) {
-            const eventData = {
-                EventName: formData.eventName,
-                StartDate: new Date(formData.startDateTime).toISOString(),
-                EndDate: new Date(formData.endDateTime).toISOString(),
-                Price: formData.price,
-            };
-
-            const apiCall = isEditMode && id
-                ? putEvent(id, eventData, auth.user?.access_token ?? '')
-                : postEvent({ ...eventData, VenueId: formData.venueId }, auth.user?.access_token ?? '');
-
-            apiCall.then(() => {
-                setFormData(initialFormData);
-                navigate('/events-management');
-            }).catch((error) => {
-                if (error.errors && Array.isArray(error.errors)) {
-                    error.errors.forEach((errorMessage: string) => {
-                        toast.error(errorMessage);
-                    });
-                } else {
-                    toast.error(`Failed to ${isEditMode ? 'update' : 'create'} event`);
-                }
-            });
-        }
-    };
-
-    const isFormValid = () => {
-        return formData.eventName && formData.startDateTime && formData.endDateTime && formData.venueId;
-    };
+    const {
+        formData,
+        venues,
+        loading,
+        isEditMode,
+        handleInputChange,
+        handleVenueChange,
+        handleSubmit,
+        isFormValid
+    } = useEventForm({ mode });
 
     return (
         <>
@@ -243,7 +146,7 @@ export const EventForm = ({ mode }: EventFormProps) => {
                             id="venueId"
                             name="venueId"
                             value={formData.venueId}
-                            onChange={(e) => setFormData({ ...formData, venueId: e.target.value })}
+                            onChange={handleVenueChange}
                             disabled={isEditMode}
                         >
                             <option value="">Select a venue</option>

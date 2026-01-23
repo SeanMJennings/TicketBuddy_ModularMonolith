@@ -1,8 +1,4 @@
-﻿import {useEffect, useState} from 'react';
-import {useParams, Link, useNavigate} from 'react-router-dom';
-import {getEventById} from '../api/events.api';
-import {type Ticket} from '../domain/ticket';
-import {type Event} from '../domain/event';
+import {useParams, Link} from 'react-router-dom';
 import {
     SeatMapContainer,
     SeatRow,
@@ -16,78 +12,18 @@ import {
 } from './Tickets.styles';
 import {Button} from '../components/Button.styles';
 import {BackIcon} from './EventsManagement.styles';
-import {getTicketsForEvent, reserveTickets} from "../api/tickets.api.ts";
-import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
-import { useAuth } from 'react-oidc-context';
+import {calculateTotalPrice} from "../domain/ticket.utils";
+import {useTicketsData} from "../hooks/useTicketsData";
+import {useSeatSelection} from "../hooks/useSeatSelection";
 
 const SEATS_PER_ROW = 5;
 
 export const Tickets = () => {
     const {eventId} = useParams<{ eventId: string }>();
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-    const [event, setEvent] = useState<Event | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
-    const navigate = useNavigate();
-    const [proceeding, setProceeding] = useState(false);
-
-    const auth = useAuth();
-
-    useEffect(() => {
-        const fetchEventAndTickets = async () => {
-            if (!eventId) return;
-            await Promise.all([
-                getEventById(eventId),
-                getTicketsForEvent(eventId, auth.user?.access_token ?? '')
-            ]).then(data => {
-                setEvent(data[0]);
-                setTickets(data[1]);
-                setLoading(false);
-            }).catch(() => {
-                setLoading(false);
-            });
-        };
-
-        fetchEventAndTickets();
-    }, [auth.user?.access_token, eventId]);
-
-    const handleSeatClick = (seatNumber: number) => {
-        const ticket = tickets.find(t => t.SeatNumber === seatNumber);
-        if (ticket?.Purchased) {
-            return;
-        }
-
-        setSelectedSeats(prevSelectedSeats => {
-            if (prevSelectedSeats.includes(seatNumber)) {
-                return prevSelectedSeats.filter(seat => seat !== seatNumber);
-            } else {
-                return [...prevSelectedSeats, seatNumber].sort((a, b) => a - b);
-            }
-        });
-    };
-
-    const proceedToPurchase = () => {
-        if (selectedSeats.length > 0 && eventId) {
-            setProceeding(true);
-            reserveTickets(eventId, {
-                TicketIds: tickets.filter(t => selectedSeats.includes(t.SeatNumber)).map(t => t.Id)
-            }, auth.user?.access_token
-            ).then(() => {
-                navigate(`/tickets/${eventId}/purchase`, {
-                    state: {
-                        selectedTickets: tickets.filter(t => selectedSeats.includes(t.SeatNumber)),
-                        event: event
-                    }
-                });
-            })
-            .catch(handleError)
-            .finally(() => {
-                setProceeding(false);
-            })
-        }
-    };
+    const { tickets, event, loading } = useTicketsData(eventId);
+    const { selectedSeats, proceeding, handleSeatClick, proceedToPurchase } = useSeatSelection({ eventId, tickets, event });
 
     const renderSeatMap = () => {
         const maxSeatNumber = Math.max(...tickets.map(ticket => ticket.SeatNumber), 0);
@@ -128,11 +64,6 @@ export const Tickets = () => {
         return rows;
     };
 
-    const calculateTotalPrice = () => {
-        if (tickets.length === 0 || selectedSeats.length === 0) return 0;
-        const ticketPrice = tickets[0].Price;
-        return ticketPrice * selectedSeats.length;
-    };
 
     return (
         <Container>
@@ -173,7 +104,7 @@ export const Tickets = () => {
                                 <h3>Selected Seats</h3>
                                 <p>Seats: {selectedSeats.join(', ')}</p>
                                 <PriceInfo data-testid="price-info">
-                                    Total: £{calculateTotalPrice().toFixed(2)}
+                                    Total: £{calculateTotalPrice(tickets, selectedSeats).toFixed(2)}
                                 </PriceInfo>
                                 <CenteredButtonContainer>
                                     <Button

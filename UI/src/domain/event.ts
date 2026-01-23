@@ -1,26 +1,30 @@
-﻿import type {Moment} from "moment";
+import { z } from "zod";
 
-export interface Event {
-    Id: string;
-    EventName: string;
-    StartDate: Moment;
-    EndDate: Moment;
-    VenueId: string;
-    Price: number;
-    IsSoldOut: boolean;
-}
+export const EventSchema = z.object({
+    Id: z.string(),
+    EventName: z.string(),
+    StartDate: z.string().datetime({ offset: true }),
+    EndDate: z.string().datetime({ offset: true }),
+    VenueId: z.string(),
+    Price: z.number().min(0),
+    IsSoldOut: z.boolean()
+});
 
-export interface EventPayload {
-    EventName: string;
-    StartDate: Moment;
-    EndDate: Moment;
-    VenueId: string;
-    Price: number
-}
+export const EventPayloadSchema = z.object({
+    EventName: z.string(),
+    StartDate: z.string().datetime({ offset: true }),
+    EndDate: z.string().datetime({ offset: true }),
+    VenueId: z.string(),
+    Price: z.number().min(0)
+});
 
-export interface UpdateEventPayload {
-    EventName: string;
-    StartDate: Moment;
-    EndDate: Moment;
-    Price: number
-}
+export const UpdateEventPayloadSchema = z.object({
+    EventName: z.string(),
+    StartDate: z.string().datetime({ offset: true }),
+    EndDate: z.string().datetime({ offset: true }),
+    Price: z.number().min(0)
+});
+
+export type Event = z.infer<typeof EventSchema>;
+export type EventPayload = z.infer<typeof EventPayloadSchema>;
+export type UpdateEventPayload = z.infer<typeof UpdateEventPayloadSchema>;

@@ -1,21 +1,33 @@
-﻿export interface User {
-    Id: string;
-    FullName: string;
-    Email: string;
-    UserType: UserType;
-}
+import { z } from "zod";
 
-export interface OidcUser {
-    profile: { sub: string; name: string; email: string; email_verified: boolean };
-    id_token: string;
-    access_token: string;
-    token_type: string;
-    scope: string;
-    expires_at: number;
-    session_state: null
-}
-
-export enum UserType{
-    Customer= "Customer",
+export enum UserType {
+    Customer = "Customer",
     Administrator = "Administrator",
 }
+
+export const UserSchema = z.object({
+    Id: z.string(),
+    FullName: z.string(),
+    Email: z.string(),
+    UserType: z.nativeEnum(UserType)
+});
+
+const OidcProfileSchema = z.object({
+    sub: z.string(),
+    name: z.string(),
+    email: z.string(),
+    email_verified: z.boolean()
+});
+
+export const OidcUserSchema = z.object({
+    profile: OidcProfileSchema,
+    id_token: z.string(),
+    access_token: z.string(),
+    token_type: z.string(),
+    scope: z.string(),
+    expires_at: z.number(),
+    session_state: z.null()
+});
+
+export type User = z.infer<typeof UserSchema>;
+export type OidcUser = z.infer<typeof OidcUserSchema>;

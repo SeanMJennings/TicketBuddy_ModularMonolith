@@ -1,4 +1,4 @@
-﻿import {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {getEvents} from "../api/events.api";
 import {type Event} from "../domain/event";
 import {type Venue} from "../domain/venue";
@@ -10,6 +10,7 @@ import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser, isALoggedInCustomer} from "../oidc/key-cloak-user.extensions.ts";
 import {VenueDisplay} from "../components/VenueDisplay.tsx";
+import moment from "moment";
 
 export const Home = () => {
     const [events, setEvents] = useState<Event[]>([]);
@@ -47,7 +48,7 @@ export const Home = () => {
                         <EventItem key={index} data-testid="event-item">
                             <div>
                                 <h2>{event.EventName}</h2>
-                                <p>{event.StartDate.format('MMMM Do YYYY, h:mm A')} to {event.EndDate.format('MMMM Do YYYY, h:mm A')}</p>
+                                <p>{moment(event.StartDate).format('MMMM Do YYYY, h:mm A')} to {moment(event.EndDate).format('MMMM Do YYYY, h:mm A')}</p>
                                 <p>Venue: <VenueDisplay venues={venues} venueId={event.VenueId} /></p>
                                 {isALoggedInCustomer(user) && (event.IsSoldOut ? (<span>Sold Out</span>) : (<Button onClick={() => handleFindTickets(event.Id)}>Find Tickets</Button>))}
                             </div>

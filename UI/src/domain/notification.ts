@@ -1,13 +1,9 @@
 import { z } from "zod";
 
-export enum NotificationType {
-    TicketPurchased = "TicketPurchased"
-}
-
 export const NotificationSchema = z.object({
     Id: z.string(),
     UserId: z.string(),
-    Type: z.enum(NotificationType),
+    Type: z.string(),
     Payload: z.string(),
     IsRead: z.boolean(),
     CreatedAt: z.string()
@@ -44,7 +40,7 @@ export const parseNotificationPayload = (notification: Notification): ParsedNoti
     try {
         const parsed = JSON.parse(notification.Payload);
 
-        if (notification.Type === NotificationType.TicketPurchased) {
+        if (notification.Type === "TicketPurchased") {
             const result = TicketPurchasedPayloadSchema.safeParse(parsed);
             if (result.success) {
                 return {

@@ -1,6 +1,5 @@
 import type {Event} from '../domain/event';
 import {type OidcUser, type User, UserType} from "../domain/user.ts";
-import moment from "moment";
 import type {Ticket} from "../domain/ticket.ts";
 import jwt from 'jsonwebtoken';
 import type { Venue as VenueEntity } from "../domain/venue.ts";
@@ -9,12 +8,18 @@ import type { Notification } from "../domain/notification.ts";
 const JWT_SECRET = 'test-secret-key';
 const JWT_EXPIRY = '1h';
 
+const createFutureDate = (daysFromNow: number): string => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromNow);
+    return date.toISOString();
+};
+
 export const Events : Event[] = [
     {
         Id: "1",
         EventName: "Concert at O2 Arena",
-        StartDate: moment(new Date().setDate(new Date().getDate() + 1)),
-        EndDate: moment(new Date().setDate(new Date().getDate() + 1 + 2)),
+        StartDate: createFutureDate(1),
+        EndDate: createFutureDate(3),
         VenueId: "v1-uuid-0000-0000-000000000001",
         Price: 50.00,
         IsSoldOut: false
@@ -22,8 +27,8 @@ export const Events : Event[] = [
     {
         Id: "2",
         EventName: "Football Match at Wembley Stadium",
-        StartDate: moment(new Date().setDate(new Date().getDate() + 2)),
-        EndDate: moment(new Date().setDate(new Date().getDate() + 2 + 3)),
+        StartDate: createFutureDate(2),
+        EndDate: createFutureDate(5),
         VenueId: "v2-uuid-0000-0000-000000000002",
         Price: 75.00,
         IsSoldOut: true
@@ -31,8 +36,8 @@ export const Events : Event[] = [
     {
         Id: "3",
         EventName: "Basketball Game at Manchester Arena",
-        StartDate: moment(new Date().setDate(new Date().getDate() + 3)),
-        EndDate: moment(new Date().setDate(new Date().getDate() + 3 + 1)),
+        StartDate: createFutureDate(3),
+        EndDate: createFutureDate(4),
         VenueId: "v2-uuid-0000-0000-000000000002",
         Price: 60.00,
         IsSoldOut: false
@@ -40,8 +45,8 @@ export const Events : Event[] = [
     {
         Id: "4",
         EventName: "Concert at Utilita Arena Birmingham",
-        StartDate: moment(new Date().setDate(new Date().getDate() + 4)),
-        EndDate: moment(new Date().setDate(new Date().getDate() + 4 + 1)),
+        StartDate: createFutureDate(4),
+        EndDate: createFutureDate(5),
         VenueId: "v3-uuid-0000-0000-000000000003",
         Price: 55.00,
         IsSoldOut: false
@@ -49,8 +54,8 @@ export const Events : Event[] = [
     {
         Id: "5",
         EventName: "Theatre Show at SSE Hydro Glasgow",
-        StartDate: moment(new Date().setDate(new Date().getDate() + 5)),
-        EndDate: moment(new Date().setDate(new Date().getDate() + 5 + 1)),
+        StartDate: createFutureDate(5),
+        EndDate: createFutureDate(6),
         VenueId: "v1-uuid-0000-0000-000000000001",
         Price: 65.00,
         IsSoldOut: false

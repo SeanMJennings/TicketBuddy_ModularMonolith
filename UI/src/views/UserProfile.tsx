@@ -1,4 +1,4 @@
-﻿import {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {getTicketsForUser} from '../api/tickets.api';
 import {getEvents} from '../api/events.api';
@@ -32,6 +32,7 @@ import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import {VenueDisplay} from "../components/VenueDisplay";
 import {UserType} from "../domain/user.ts";
+import moment from "moment";
 
 export const UserProfile = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -112,11 +113,11 @@ export const UserProfile = () => {
         const event = events.find(e => e.Id === eventId);
         if (!event) return '';
 
-        return event.StartDate.format('DD MMM YYYY');
+        return moment(event.StartDate).format('DD MMM YYYY');
     };
 
     const compareEventsByDate = (eventA: Event, eventB: Event): number => {
-        return eventA.StartDate.valueOf() - eventB.StartDate.valueOf();
+        return new Date(eventA.StartDate).valueOf() - new Date(eventB.StartDate).valueOf();
     };
 
     const getEventVenueId = (eventId: string): string => {

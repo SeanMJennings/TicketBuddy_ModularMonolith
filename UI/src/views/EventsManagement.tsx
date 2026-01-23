@@ -158,8 +158,8 @@ export const EventForm = ({ mode }: EventFormProps) => {
         if (isFormValid()) {
             const eventData = {
                 EventName: formData.eventName,
-                StartDate: moment(formData.startDateTime),
-                EndDate: moment(formData.endDateTime),
+                StartDate: new Date(formData.startDateTime).toISOString(),
+                EndDate: new Date(formData.endDateTime).toISOString(),
                 Price: formData.price,
             };
 

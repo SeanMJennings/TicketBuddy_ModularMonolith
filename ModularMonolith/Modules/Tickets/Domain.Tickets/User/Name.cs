@@ -1,10 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Domain.ValueObjects;
 
 namespace Domain.Tickets.User;
 
-[JsonConverter(typeof(NameConverter))]
 public readonly struct Name : IEquatable<Name>
 {
     private readonly StringValueObject<Name> _value;
@@ -29,12 +27,4 @@ public readonly struct Name : IEquatable<Name>
     public static bool operator !=(Name left, Name right) => left._value != right._value;
     public static implicit operator string(Name name) => name._value;
     public static implicit operator Name(string name) => new(name);
-}
-
-public class NameConverter : StringValueObjectJsonConverter<Name>
-{
-    protected override Name CreateFromString(string value)
-    {
-        return new Name(value);
-    }
 }

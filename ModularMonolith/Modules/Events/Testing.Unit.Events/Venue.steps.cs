@@ -183,6 +183,22 @@ public partial class VenueSpecs : AsyncSpecification
         retrievedVenue.Id.ShouldBe(id);
     }
 
+    private void a_venue_that_does_not_exist()
+    {
+        id = Guid.NewGuid();
+        venueRepository.Setup(x => x.GetById(id)).ReturnsAsync((Venue?)null);
+    }
+
+    private void venue_not_found_error()
+    {
+        Informs($"Venue with id {id} not found")();
+    }
+
+    private void no_existing_venues()
+    {
+        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([]);
+    }
+
     // Address uniqueness with exclusion tests
     private Guid? excludeVenueId = null;
     private Venue? otherVenue = null;

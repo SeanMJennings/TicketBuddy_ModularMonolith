@@ -76,4 +76,41 @@ public partial class EventSpecs : Specification
         user.VenueId.ShouldBe(venueId);
         user.Price.ShouldBe(new Money(10m));
     }
+
+    private void an_existing_event()
+    {
+        valid_inputs();
+        creating_an_event();
+    }
+
+    private void updating_dates_with_start_date_in_the_past()
+    {
+        user.UpdateDates(DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(2));
+    }
+
+    private void updating_dates_with_end_date_in_the_past()
+    {
+        user.UpdateDates(DateTimeOffset.UtcNow.AddDays(1), DateTimeOffset.UtcNow.AddDays(-1));
+    }
+
+    private void updating_dates_with_end_date_before_start_date()
+    {
+        user.UpdateDates(DateTimeOffset.UtcNow.AddDays(5), DateTimeOffset.UtcNow.AddDays(3));
+    }
+
+    private DateTimeOffset new_start_date;
+    private DateTimeOffset new_end_date;
+
+    private void updating_dates_with_valid_dates()
+    {
+        new_start_date = DateTimeOffset.UtcNow.AddDays(10);
+        new_end_date = DateTimeOffset.UtcNow.AddDays(12);
+        user.UpdateDates(new_start_date, new_end_date);
+    }
+
+    private void the_event_dates_are_updated()
+    {
+        user.StartDate.ShouldBe(new_start_date);
+        user.EndDate.ShouldBe(new_end_date);
+    }
 }

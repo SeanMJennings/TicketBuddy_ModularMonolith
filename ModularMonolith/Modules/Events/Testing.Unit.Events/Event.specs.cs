@@ -57,4 +57,36 @@ public partial class EventSpecs
         When(creating_an_event);
         Then(the_event_is_created);
     }
+
+    [Test]
+    public void cannot_update_event_with_start_date_in_the_past()
+    {
+        Given(an_existing_event);
+        When(Validating(updating_dates_with_start_date_in_the_past));
+        Then(Informs("Event date cannot be in the past"));
+    }
+
+    [Test]
+    public void cannot_update_event_with_end_date_in_the_past()
+    {
+        Given(an_existing_event);
+        When(Validating(updating_dates_with_end_date_in_the_past));
+        Then(Informs("Event date cannot be in the past"));
+    }
+
+    [Test]
+    public void cannot_update_event_with_end_date_before_start_date()
+    {
+        Given(an_existing_event);
+        When(Validating(updating_dates_with_end_date_before_start_date));
+        Then(Informs("End date cannot be before start date"));
+    }
+
+    [Test]
+    public void can_update_event_with_valid_dates()
+    {
+        Given(an_existing_event);
+        When(updating_dates_with_valid_dates);
+        Then(the_event_dates_are_updated);
+    }
 }

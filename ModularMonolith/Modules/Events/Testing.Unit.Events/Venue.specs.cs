@@ -114,6 +114,22 @@ public partial class VenueSpecs
     }
 
     [Test]
+    public async Task check_venue_exists_throws_when_venue_not_found()
+    {
+              Given(a_venue_that_does_not_exist);
+        await When(Validating(checking_venue_exists));
+              Then(venue_not_found_error);
+    }
+
+    [Test]
+    public async Task can_create_venue_with_unique_address()
+    {
+              Given(valid_inputs);
+              And(no_existing_venues);
+        await When(validating_address_uniqueness);
+    }
+
+    [Test]
     public async Task can_update_venue_keeping_same_address()
     {
               Given(a_venue_exists);

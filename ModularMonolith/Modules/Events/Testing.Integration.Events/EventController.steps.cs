@@ -36,6 +36,7 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     private ValidationException theError = null!;
     private Event theEvent = null!;
     private List<Event> theEvents = [];
+    private Microsoft.AspNetCore.Mvc.ActionResult<Event>? getEventResult;
 
     private Guid venue1Id;
     private Guid venue2Id;
@@ -241,6 +242,13 @@ public partial class EventControllerSpecs : TruncateDbSpecification
         eventSoldOutConsumer.Consume(mockContext).Await();
     }
 
+    private async Task marking_non_existent_event_as_sold_out()
+    {
+        var mockContext = Substitute.For<ConsumeContext<EventSoldOut>>();
+        mockContext.Message.Returns(new EventSoldOut { EventId = Guid.NewGuid() });
+        await eventSoldOutConsumer.Consume(mockContext);
+    }
+
     private static void a_short_wait()
     {
         Thread.Sleep(2000);
@@ -279,7 +287,18 @@ public partial class EventControllerSpecs : TruncateDbSpecification
     {
         theEvent = (await getEventByIdEndpoint.GetEvent(returned_id)).Value!;
     }
-    
+
+    private async Task requesting_a_non_existent_event()
+    {
+        getEventResult = await getEventByIdEndpoint.GetEvent(Guid.NewGuid());
+    }
+
+    private void a_not_found_response_is_returned()
+    {
+        getEventResult.ShouldNotBeNull();
+        getEventResult.Result.ShouldBeOfType<Microsoft.AspNetCore.Mvc.NotFoundResult>();
+    }
+
     private async Task listing_the_events()
     {
         theEvents = (await getEventsEndpoint.GetEvents()).ToList();

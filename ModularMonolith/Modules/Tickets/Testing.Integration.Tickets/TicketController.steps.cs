@@ -34,6 +34,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private ServiceProvider serviceProvider = null!;
     private StackExchange.Redis.IConnectionMultiplexer cache = null!;
     private Exception theError = null!;
+    private Guid nonExistentEventId = Guid.NewGuid();
 
     private Guid event_id = Guid.NewGuid();
     private Guid user_id = Guid.NewGuid();
@@ -333,15 +334,9 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private async Task purchasing_tickets_for_non_existent_event()
     {
         AddUserClaimToControllerContext(user_id);
-        var nonExistentEventId = Guid.NewGuid();
+        nonExistentEventId = Guid.NewGuid();
         var payload = new TicketPurchasePayload([Guid.NewGuid()]);
         await purchaseTicketsEndpoint.PurchaseTickets(nonExistentEventId, payload);
-    }
-
-    private void user_informed_that_event_does_not_exist()
-    {
-        theError.Message.ShouldContain("Event with id");
-        theError.Message.ShouldContain("not found");
     }
 
     private async Task the_ticket_prices_are_updated()

@@ -89,4 +89,17 @@ public partial class EventControllerSpecs
         await When(requesting_the_event);
               Then(the_event_is_marked_as_sold_out);
     }
+
+    [Test]
+    public async Task marking_non_existent_event_as_sold_out_does_nothing()
+    {
+        await When(marking_non_existent_event_as_sold_out);
+    }
+
+    [Test]
+    public async Task get_event_returns_not_found_for_non_existent_event()
+    {
+        await When(requesting_a_non_existent_event);
+              Then(a_not_found_response_is_returned);
+    }
 }

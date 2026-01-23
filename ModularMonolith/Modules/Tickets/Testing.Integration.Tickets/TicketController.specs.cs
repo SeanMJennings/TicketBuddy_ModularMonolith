@@ -59,7 +59,7 @@ public partial class TicketControllerSpecs
     {
         await Given(a_user_exists);
         await When(Validating(purchasing_tickets_for_non_existent_event));
-              Then(user_informed_that_event_does_not_exist);
+              Then(Informs($"Event with id {nonExistentEventId} not found"));
     }
     
     [Test]

@@ -106,7 +106,7 @@ public partial class NotificationControllerSpecs : TruncateDbSpecification
         var notification = Notification.Create(
             id ?? Guid.NewGuid(),
             forUserId ?? userId,
-            "TicketPurchased",
+            NotificationType.TicketPurchased,
             $"{{\"eventName\":\"{eventName}\"}}",
             createdAt ?? DateTimeOffset.UtcNow);
 

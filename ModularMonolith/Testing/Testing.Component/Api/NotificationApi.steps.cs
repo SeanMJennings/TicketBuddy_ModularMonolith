@@ -66,7 +66,7 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
         var notification = Notification.Create(
             notificationId,
             userId,
-            "TicketPurchased",
+            NotificationType.TicketPurchased,
             "{\"eventName\":\"Test Concert\"}",
             DateTimeOffset.UtcNow);
 
@@ -100,7 +100,7 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
         var response = await client.GetAsync(Routes.Notifications);
         responseCode = response.StatusCode;
         if (response.IsSuccessStatusCode)
-            returnedNotifications = await response.Content.ReadFromJsonAsync<List<NotificationResponse>>() ?? [];
+            returnedNotifications = await response.Content.ReadFromJsonAsync<List<NotificationResponse>>(JsonSerialization.GetJsonSerializerOptions()) ?? [];
     }
 
     private async Task marking_notification_as_read()

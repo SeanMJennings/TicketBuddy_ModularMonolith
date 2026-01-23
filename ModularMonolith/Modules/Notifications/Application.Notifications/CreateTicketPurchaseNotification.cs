@@ -11,7 +11,7 @@ public class CreateTicketPurchaseNotification(
         var notification = Notification.Create(
             Guid.NewGuid(),
             userId,
-            "TicketPurchased",
+            NotificationType.TicketPurchased,
             $"{{\"ticketId\":\"{ticketId}\",\"eventId\":\"{eventId}\",\"eventName\":\"{eventName}\"}}",
             DateTimeOffset.UtcNow);
 

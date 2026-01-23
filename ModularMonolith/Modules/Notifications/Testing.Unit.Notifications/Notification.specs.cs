@@ -21,14 +21,6 @@ public partial class NotificationSpecs
         Then(Informs("Entity ID cannot be an empty GUID"));
     }
 
-    [Test]
-    public void notification_must_have_a_type()
-    {
-        Given(valid_inputs);
-        And(an_empty_type);
-        When(Validating(creating_a_notification));
-        Then(Informs("NotificationType cannot be null or empty"));
-    }
 
     [Test]
     public void notification_is_unread_by_default()

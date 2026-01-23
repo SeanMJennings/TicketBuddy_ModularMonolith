@@ -7,7 +7,7 @@ export enum NotificationType {
 export const NotificationSchema = z.object({
     Id: z.string(),
     UserId: z.string(),
-    Type: z.nativeEnum(NotificationType),
+    Type: z.enum(NotificationType),
     Payload: z.string(),
     IsRead: z.boolean(),
     CreatedAt: z.string()

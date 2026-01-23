@@ -51,7 +51,7 @@ export const Tickets = () => {
         };
 
         fetchEventAndTickets();
-    }, [eventId]);
+    }, [auth.user?.access_token, eventId]);
 
     const handleSeatClick = (seatNumber: number) => {
         const ticket = tickets.find(t => t.SeatNumber === seatNumber);

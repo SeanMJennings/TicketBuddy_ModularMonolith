@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using DbUp;
 
 namespace Migrations;
@@ -20,9 +21,7 @@ public static class Migration
 
         if (!result.Successful)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(result.Error);
-            Console.ResetColor();
+            WriteError(result.Error);
             return false;
         }
 
@@ -30,5 +29,13 @@ public static class Migration
         Console.WriteLine("Success!");
         Console.ResetColor();
         return true;
+    }
+
+    [ExcludeFromCodeCoverage]
+    private static void WriteError(Exception error)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(error);
+        Console.ResetColor();
     }
 }

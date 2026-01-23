@@ -53,6 +53,14 @@ public partial class TicketControllerSpecs
         await When(purchasing_two_non_existent_tickets);
               Then(user_informed_they_cannot_purchase_tickets_that_are_non_existent);
     }
+
+    [Test]
+    public async Task cannot_purchase_tickets_for_non_existent_event()
+    {
+        await Given(a_user_exists);
+        await When(Validating(purchasing_tickets_for_non_existent_event));
+              Then(user_informed_that_event_does_not_exist);
+    }
     
     [Test]
     public async Task user_can_reserve_a_ticket_for_15_minutes()

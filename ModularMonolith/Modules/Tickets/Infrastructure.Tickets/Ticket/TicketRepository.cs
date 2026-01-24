@@ -9,7 +9,7 @@ public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
     public async Task<IReadOnlyList<Domain.Tickets.Ticket.Ticket>> GetByIds(Guid[] ids)
     {
         return await ticketDbContext.Tickets
-            .Where(t => ids.Contains(t.Id))
+            .Where(t => ((IEnumerable<Guid>)ids).Contains(t.Id))
             .ToListAsync();
     }
 

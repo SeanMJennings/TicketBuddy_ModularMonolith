@@ -1,20 +1,35 @@
-﻿using Common.Environment;
+using Common.Environment;
 using NUnit.Framework;
+using Testing.Containers;
+using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
 namespace Integration;
 
 [SetUpFixture]
-public static class Setup
+public class Setup
 {
+    internal static PostgreSqlContainer Database { get; private set; } = null!;
+    internal static RedisContainer Redis { get; private set; } = null!;
+
     [OneTimeSetUp]
-    public static void BeforeAll()
+    public async Task BeforeAll()
     {
         CommonEnvironment.LocalTesting.SetEnvironment();
+        Database = PostgreSql.CreateContainer();
+        await Database.StartAsync();
+        Database.Migrate();
+        Redis = Testing.Containers.Redis.CreateContainer();
+        await Redis.StartAsync();
     }
-    
+
     [OneTimeTearDown]
-    public static void AfterAll()
+    public async Task AfterAll()
     {
+        await Database.StopAsync();
+        await Database.DisposeAsync();
+        await Redis.StopAsync();
+        await Redis.DisposeAsync();
         CommonEnvironment.LocalDevelopment.SetEnvironment();
     }
 }

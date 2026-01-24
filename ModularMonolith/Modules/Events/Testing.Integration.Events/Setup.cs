@@ -1,20 +1,29 @@
-﻿using Common.Environment;
+using Common.Environment;
 using NUnit.Framework;
+using Testing.Containers;
+using Testcontainers.PostgreSql;
 
 namespace Integration;
 
 [SetUpFixture]
-public static class Setup
+public class Setup
 {
+    internal static PostgreSqlContainer Database { get; private set; } = null!;
+
     [OneTimeSetUp]
-    public static void BeforeAll()
+    public async Task BeforeAll()
     {
         CommonEnvironment.LocalTesting.SetEnvironment();
+        Database = PostgreSql.CreateContainer();
+        await Database.StartAsync();
+        Database.Migrate();
     }
-    
+
     [OneTimeTearDown]
-    public static void AfterAll()
+    public async Task AfterAll()
     {
+        await Database.StopAsync();
+        await Database.DisposeAsync();
         CommonEnvironment.LocalDevelopment.SetEnvironment();
     }
 }

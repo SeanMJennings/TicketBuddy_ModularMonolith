@@ -22,4 +22,25 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="NUnit" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="NotificationController.steps.cs">
+      <DependentUpon>NotificationController.specs.cs</DependentUpon>
+    </Compile>
+    <Compile Update="TicketPurchasedConsumer.steps.cs">
+      <DependentUpon>TicketPurchasedConsumer.specs.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Consumer\TicketPurchasedConsumer.steps.cs">
+      <DependentUpon>TicketPurchasedConsumer.specs.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Notifications\GetNotifications.steps.cs">
+      <DependentUpon>GetNotifications.specs.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Notifications\GetUnreadCount.steps.cs">
+      <DependentUpon>GetUnreadCount.specs.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Notifications\MarkNotificationAsRead.steps.cs">
+      <DependentUpon>MarkNotificationAsRead.specs.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

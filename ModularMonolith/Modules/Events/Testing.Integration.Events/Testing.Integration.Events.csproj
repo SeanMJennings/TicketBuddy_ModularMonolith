@@ -29,6 +29,21 @@
       <Compile Update="VenueController.steps.cs">
         <DependentUpon>VenueController.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Events\CreateEvent.steps.cs">
+        <DependentUpon>CreateEvent.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Events\EventSoldOutConsumer.steps.cs">
+        <DependentUpon>EventSoldOutConsumer.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Events\GetEventById.steps.cs">
+        <DependentUpon>GetEventById.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Events\GetEvents.steps.cs">
+        <DependentUpon>GetEvents.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Events\UpdateEvent.steps.cs">
+        <DependentUpon>UpdateEvent.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

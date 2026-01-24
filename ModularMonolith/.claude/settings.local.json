@@ -27,7 +27,8 @@
       "Skill(adr)",
       "Bash(for:*)",
       "Bash(do echo \"=== Run $i ===\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "ask": [

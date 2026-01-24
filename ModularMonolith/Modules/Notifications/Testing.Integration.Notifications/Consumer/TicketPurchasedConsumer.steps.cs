@@ -8,30 +8,20 @@ using Messaging.Notifications.Consumers;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
-using Testcontainers.PostgreSql;
 using Testing;
-using Testing.Containers;
 
-namespace Integration;
+namespace Integration.Consumer;
 
 public partial class TicketPurchasedConsumerSpecs : TruncateDbSpecification
 {
-    private TicketPurchasedConsumer consumer = null!;
+    private Messaging.Notifications.Consumers.TicketPurchasedConsumer consumer = null!;
     private ServiceProvider serviceProvider = null!;
-    private static PostgreSqlContainer database = null!;
 
     private Guid userId = Guid.NewGuid();
     private Guid ticketId = Guid.NewGuid();
     private Guid eventId = Guid.NewGuid();
     private string eventName = "Summer Concert 2026";
     private TicketPurchased message = null!;
-
-    protected override async Task before_all()
-    {
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        database.Migrate();
-    }
 
     protected override async Task before_each()
     {
@@ -43,23 +33,17 @@ public partial class TicketPurchasedConsumerSpecs : TruncateDbSpecification
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
             .ConfigureNotificationsServices()
-            .ConfigureNotificationsDatabase(database.GetConnectionString())
+            .ConfigureNotificationsDatabase(Setup.Database.GetConnectionString())
             .AddSingleton(new Dictionary<Type, Type>())
-            .AddScoped<TicketPurchasedConsumer>()
+            .AddScoped<Messaging.Notifications.Consumers.TicketPurchasedConsumer>()
             .BuildServiceProvider();
 
-        consumer = serviceProvider.GetRequiredService<TicketPurchasedConsumer>();
+        consumer = serviceProvider.GetRequiredService<Messaging.Notifications.Consumers.TicketPurchasedConsumer>();
     }
 
     protected override async Task after_each()
     {
-        await Truncate(database.GetConnectionString());
-    }
-
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
+        await Truncate(Setup.Database.GetConnectionString());
     }
 
     private Task a_ticket_purchased_message()

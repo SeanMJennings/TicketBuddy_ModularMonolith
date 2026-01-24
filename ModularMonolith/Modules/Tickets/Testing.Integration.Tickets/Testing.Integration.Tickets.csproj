@@ -26,6 +26,15 @@
       <Compile Update="TicketController.steps.cs">
         <DependentUpon>TicketController.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Tickets\GetTicketsForEvent.steps.cs">
+        <DependentUpon>GetTicketsForEvent.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Tickets\PurchaseTickets.steps.cs">
+        <DependentUpon>PurchaseTickets.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Tickets\ReserveTickets.steps.cs">
+        <DependentUpon>ReserveTickets.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

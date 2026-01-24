@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using BDD;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
 using Infrastructure.Configuration;
@@ -12,29 +11,29 @@ using Messages.Events;
 using Messages.Tickets;
 using Messaging.Keycloak.Users;
 using Messaging.Tickets.Consumers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shouldly;
-using Testcontainers.PostgreSql;
-using Testcontainers.Redis;
 using Testing;
 using Testing.Containers;
 
-namespace Integration;
+namespace Integration.Tickets;
 
-public partial class TicketControllerSpecs : TruncateDbSpecification
+public partial class PurchaseTicketsSpecs : TruncateDbSpecification
 {
     private GetTicketsForEventEndpoint getTicketsForEventEndpoint = null!;
     private GetTicketsForUserEndpoint getTicketsForUserEndpoint = null!;
     private PurchaseTicketsEndpoint purchaseTicketsEndpoint = null!;
     private ReserveTicketsEndpoint reserveTicketsEndpoint = null!;
-    private EventUpsertedConsumer _eventUpsertedConsumer = null!;
-    private VenueUpsertedConsumer _venueUpsertedConsumer = null!;
+    private EventUpsertedConsumer eventUpsertedConsumer = null!;
+    private VenueUpsertedConsumer venueUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
-    private StackExchange.Redis.IConnectionMultiplexer cache = null!;
     private Exception theError = null!;
-    private Guid nonExistentEventId = Guid.NewGuid();
+    internal Guid nonExistentEventId = Guid.NewGuid();
+    private ITestHarness testHarness = null!;
 
     private Guid event_id = Guid.NewGuid();
     private Guid user_id = Guid.NewGuid();
@@ -46,31 +45,19 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private const string another_email = "johnny.smith@gmail.com";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
     private readonly DateTime event_end_date = DateTime.Now.AddDays(1).AddHours(2);
-    private static PostgreSqlContainer database = null!;
-    private static RedisContainer redis = null!;
-    private ITestHarness testHarness = null!;
     private Guid[] ticket_ids = null!;
 
-    protected override async Task before_all()
-    {
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        database.Migrate();
-        redis = Redis.CreateContainer();
-        await redis.StartAsync();
-    }
-    
     protected override Task before_each()
     {
         ticket_ids = [];
         event_id = Guid.NewGuid();
         user_id = Guid.NewGuid();
         theError = null!;
-        
+
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
-            .ConfigureCache(redis.GetConnectionString())
-            .ConfigureTicketsDatabase(database.GetConnectionString())
+            .ConfigureCache(Setup.Redis.GetConnectionString())
+            .ConfigureTicketsDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
@@ -82,17 +69,16 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             .AddScoped<PurchaseTicketsEndpoint>()
             .AddScoped<ReserveTicketsEndpoint>()
             .BuildServiceProvider();
-        
+
         testHarness = serviceProvider.GetRequiredService<ITestHarness>();
-        testHarness.Start().Await();
+        testHarness.Start().GetAwaiter().GetResult();
         getTicketsForEventEndpoint = serviceProvider.GetRequiredService<GetTicketsForEventEndpoint>();
         getTicketsForUserEndpoint = serviceProvider.GetRequiredService<GetTicketsForUserEndpoint>();
         purchaseTicketsEndpoint = serviceProvider.GetRequiredService<PurchaseTicketsEndpoint>();
         reserveTicketsEndpoint = serviceProvider.GetRequiredService<ReserveTicketsEndpoint>();
         AddUserClaimToControllerContext(user_id);
-        cache = serviceProvider.GetRequiredService<StackExchange.Redis.IConnectionMultiplexer>();
-        _eventUpsertedConsumer = serviceProvider.GetRequiredService<EventUpsertedConsumer>();
-        _venueUpsertedConsumer = serviceProvider.GetRequiredService<VenueUpsertedConsumer>();
+        eventUpsertedConsumer = serviceProvider.GetRequiredService<EventUpsertedConsumer>();
+        venueUpsertedConsumer = serviceProvider.GetRequiredService<VenueUpsertedConsumer>();
         userRegisteredConsumer = serviceProvider.GetRequiredService<UserRegisteredConsumer>();
         return Task.CompletedTask;
     }
@@ -100,42 +86,29 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     private void AddUserClaimToControllerContext(Guid userId)
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity([new Claim("sub", userId.ToString())], "TestAuth"));
-        getTicketsForEventEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        getTicketsForEventEndpoint.ControllerContext = new ControllerContext
         {
-            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+            HttpContext = new DefaultHttpContext { User = principal }
         };
-        getTicketsForUserEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        getTicketsForUserEndpoint.ControllerContext = new ControllerContext
         {
-            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+            HttpContext = new DefaultHttpContext { User = principal }
         };
-        purchaseTicketsEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        purchaseTicketsEndpoint.ControllerContext = new ControllerContext
         {
-            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+            HttpContext = new DefaultHttpContext { User = principal }
         };
-        reserveTicketsEndpoint.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
+        reserveTicketsEndpoint.ControllerContext = new ControllerContext
         {
-            HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext { User = principal }
+            HttpContext = new DefaultHttpContext { User = principal }
         };
     }
 
     protected override async Task after_each()
     {
-        await Truncate(database.GetConnectionString());
-        await ClearRedisCache();
+        await Truncate(Setup.Database.GetConnectionString());
+        await Setup.Redis.Clear();
         await testHarness.Stop();
-    }
-
-    private async Task ClearRedisCache()
-    {
-        await redis.Clear();
-    }
-
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
-        await redis.StopAsync();
-        await redis.DisposeAsync();
     }
 
     private async Task an_event_exists()
@@ -149,7 +122,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             Name = "Test Venue",
             Capacity = 17
         });
-        await _venueUpsertedConsumer.Consume(venueContext);
+        await venueUpsertedConsumer.Consume(venueContext);
 
         var eventContext = Substitute.For<ConsumeContext<EventUpserted>>();
         eventContext.Message.Returns(new EventUpserted
@@ -161,12 +134,11 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             VenueId = venueId,
             Price = price
         });
-        await _eventUpsertedConsumer.Consume(eventContext);
+        await eventUpsertedConsumer.Consume(eventContext);
     }
 
     private async Task a_user_exists()
     {
-        // would prefer to use the test harness here but haven't got it working yet
         var mockContext = Substitute.For<ConsumeContext<UserRegistered>>();
         var details = new Dictionary<string, string>
         {
@@ -180,7 +152,6 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
 
     private async Task another_user_exists()
     {
-        // would prefer to use the test harness here but haven't got it working yet
         var mockContext = Substitute.For<ConsumeContext<UserRegistered>>();
         var details = new Dictionary<string, string>
         {
@@ -208,7 +179,7 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
     {
         await purchasing_two_tickets();
     }
-    
+
     private async Task purchasing_two_tickets_again()
     {
         try
@@ -220,36 +191,12 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             theError = ex;
         }
     }
-    
+
     private async Task reserving_a_ticket()
     {
         AddUserClaimToControllerContext(user_id);
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
         await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
-    }
-
-    private async Task the_user_extends_their_reservation()
-    {
-        await reserving_a_ticket();
-    }
-
-    private async Task another_user_reserving_a_ticket()
-    {
-        AddUserClaimToControllerContext(another_user_id);
-        var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
-        try
-        {
-            await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
-        }
-        catch (ValidationException ex)
-        {
-            theError = ex;
-        }
-    }
-
-    private async Task the_user_purchases_their_reserved_ticket()
-    {
-        await purchasing_two_tickets();
     }
 
     private async Task another_user_purchasing_the_reserved_ticket()
@@ -266,6 +213,11 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         }
     }
 
+    private async Task the_user_purchases_their_reserved_ticket()
+    {
+        await purchasing_two_tickets();
+    }
+
     private async Task purchasing_two_non_existent_tickets()
     {
         AddUserClaimToControllerContext(user_id);
@@ -280,9 +232,16 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         }
     }
 
+    private async Task purchasing_tickets_for_non_existent_event()
+    {
+        AddUserClaimToControllerContext(user_id);
+        nonExistentEventId = Guid.NewGuid();
+        var payload = new TicketPurchasePayload([Guid.NewGuid()]);
+        await purchaseTicketsEndpoint.PurchaseTickets(nonExistentEventId, payload);
+    }
+
     private async Task updating_the_ticket_prices()
     {
-        // would prefer to use the test harness here but haven't got it working yet
         var mockContext = Substitute.For<ConsumeContext<EventUpserted>>();
         mockContext.Message.Returns(new EventUpserted
         {
@@ -293,22 +252,14 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
             VenueId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
             Price = new_price
         });
-        await _eventUpsertedConsumer.Consume(mockContext);
+        await eventUpsertedConsumer.Consume(mockContext);
     }
 
-    private async Task the_tickets_are_released()
+    private async Task purchasing_all_tickets()
     {
-        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
-        tickets.Count.ShouldBe(17);
-        tickets = tickets.OrderBy(t => t.SeatNumber).ToList();
-        var counter = 1;
-        foreach (var ticket in tickets)
-        {
-            ticket.EventId.ShouldBe(event_id);
-            ticket.Price.ShouldBe(price);
-            ticket.SeatNumber.ShouldBe(counter);
-            counter++;
-        }
+        AddUserClaimToControllerContext(user_id);
+        var payload = new TicketPurchasePayload(ticket_ids);
+        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
 
     private async Task the_tickets_are_purchased()
@@ -331,12 +282,9 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         theError.Message.ShouldContain("One or more tickets do not exist");
     }
 
-    private async Task purchasing_tickets_for_non_existent_event()
+    private void another_user_informed_they_cannot_purchase_a_reserved_ticket()
     {
-        AddUserClaimToControllerContext(user_id);
-        nonExistentEventId = Guid.NewGuid();
-        var payload = new TicketPurchasePayload([Guid.NewGuid()]);
-        await purchaseTicketsEndpoint.PurchaseTickets(nonExistentEventId, payload);
+        theError.Message.ShouldContain("Tickets already reserved");
     }
 
     private async Task the_ticket_prices_are_updated()
@@ -360,50 +308,12 @@ public partial class TicketControllerSpecs : TruncateDbSpecification
         }
     }
 
-    private async Task the_ticket_is_reserved()
-    {
-        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
-        tickets.Count.ShouldBe(17);
-        var reservedTicket = tickets.Single(t => t.Id == ticket_ids.Take(1).First());
-        reservedTicket.Reserved.ShouldBeTrue();
-    }
-
-    private void the_reservation_expires_in_15_minutes()
-    {
-        var db = cache.GetDatabase();
-        var reservationKey = $"event:{event_id}:ticket:{ticket_ids.Take(1).First()}:reservation";
-        var ttl = db.KeyTimeToLive(reservationKey);
-        ttl.HasValue.ShouldBeTrue();
-        ttl.Value.TotalMinutes.ShouldBeLessThanOrEqualTo(15);
-        ttl.Value.TotalMinutes.ShouldBeGreaterThan(14);
-        var keyValue = db.StringGet(reservationKey);
-        keyValue.HasValue.ShouldBeTrue();
-        keyValue.ToString().ShouldBe(user_id.ToString());
-    }
-
-    private void user_informed_they_cannot_reserve_an_already_reserved_ticket()
-    {
-        theError.Message.ShouldContain("Tickets already reserved");
-    }
-
-    private void another_user_informed_they_cannot_purchase_a_reserved_ticket()
-    {
-        theError.Message.ShouldContain("Tickets already reserved");
-    }
-    
-    private async Task purchasing_all_tickets()
-    {
-        AddUserClaimToControllerContext(user_id);
-        var payload = new TicketPurchasePayload(ticket_ids);
-        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
-    }
-    
     private async Task event_sold_out_integration_event_is_published()
     {
         var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
         tickets.Count.ShouldBe(17);
         tickets.All(t => t.Purchased).ShouldBeTrue();
-        
-        testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id).Await().ShouldBeTrue();
+
+        (await testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id)).ShouldBeTrue();
     }
 }

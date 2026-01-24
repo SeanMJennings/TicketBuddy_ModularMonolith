@@ -1,9 +1,8 @@
 using NUnit.Framework;
-using Testing;
 
-namespace Integration;
+namespace Integration.Consumer;
 
-public partial class TicketPurchasedConsumerSpecs : TruncateDbSpecification
+public partial class TicketPurchasedConsumerSpecs
 {
     [Test]
     public async Task creates_notification_when_ticket_is_purchased()

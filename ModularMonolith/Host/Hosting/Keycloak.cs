@@ -41,10 +41,9 @@ internal static class Keycloak
                 if (ctx.Principal?.Identity is not CaseSensitiveClaimsIdentity identity) return Task.CompletedTask;
 
                 var realmAccess = ctx.Principal.FindFirst("realm_access")?.Value;
-                if (string.IsNullOrEmpty(realmAccess)) return Task.CompletedTask;
                 
                 ExtractNameIdentity(ctx, identity);
-                ExtractRoles(realmAccess, identity);
+                ExtractRoles(realmAccess!, identity);
 
                 return Task.CompletedTask;
             }
@@ -53,27 +52,19 @@ internal static class Keycloak
 
     private static void ExtractRoles(string realmAccess, CaseSensitiveClaimsIdentity identity)
     {
-        try
+        using var doc = JsonDocument.Parse(realmAccess);
+        var roles = doc.RootElement.GetProperty("roles");
+        
+        foreach (var r in roles.EnumerateArray())
         {
-            using var doc = JsonDocument.Parse(realmAccess);
-            if (!doc.RootElement.TryGetProperty("roles", out var roles)) return;
-            foreach (var r in roles.EnumerateArray())
-            {
-                var role = r.GetString();
-                if (!string.IsNullOrEmpty(role)) identity.AddClaim(new Claim(identity.RoleClaimType, role));
-            }
+            var role = r.GetString();
+            identity.AddClaim(new Claim(identity.RoleClaimType, role!));
         }
-        catch (JsonException) { }
-        catch (ArgumentException) { }
     }
 
     private static void ExtractNameIdentity(TokenValidatedContext ctx, CaseSensitiveClaimsIdentity identity)
     {
         var subRaw = ctx.Principal!.FindFirst("sub")?.Value;
-        if (string.IsNullOrEmpty(subRaw)) return;
-        
-        var existingSubClaim = identity.FindFirst("sub");
-        if (existingSubClaim != null) identity.RemoveClaim(existingSubClaim);
-        identity.AddClaim(new Claim("sub", subRaw));
+        identity.AddClaim(new Claim("sub", subRaw!));
     }
 }

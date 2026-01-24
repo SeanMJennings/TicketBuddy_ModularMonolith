@@ -10,7 +10,7 @@ namespace Controllers.Notifications;
 public class GetUnreadCountEndpoint(GetUnreadCount getUnreadCount) : ControllerBase
 {
     [HttpGet(Routes.UnreadCount)]
-    [Authorize(Roles = Roles.Customer)]
+    [Authorize(Roles = UserRoles.Customer)]
     public async Task<int> GetUnreadCount()
     {
         var userId = User.GetUserId();

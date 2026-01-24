@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Events;
 
 [ApiController]
-[Authorize(Roles = Roles.Admin)]
+[Authorize(Roles = UserRoles.Admin)]
 public class UpdateEventEndpoint(UpdateEvent updateEvent) : ControllerBase
 {
     [HttpPut(Routes.TheEvent)]

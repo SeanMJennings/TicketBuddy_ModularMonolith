@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Tickets.Ticket;
 
 [ApiController]
-[Authorize(Roles = Roles.Customer)]
+[Authorize(Roles = UserRoles.Customer)]
 public class GetTicketsForEventEndpoint(GetTicketsForEvent getTicketsForEvent) : ControllerBase
 {
     [HttpGet(Routes.Tickets)]

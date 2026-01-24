@@ -1,4 +1,4 @@
-﻿﻿using Application.Tickets.Ticket.GetTicketsForUser;
+﻿using Application.Tickets.Ticket.GetTicketsForUser;
 using Domain.Tickets.Ticket;
 using Application;
 using Application.Authentication;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Tickets.Ticket;
 
 [ApiController]
-[Authorize(Roles = Roles.Customer)]
+[Authorize(Roles = UserRoles.Customer)]
 public class GetTicketsForUserEndpoint(GetTicketsForUser getTicketsForUser) : ControllerBase
 {
     [HttpGet(Routes.TicketsPurchased)]

@@ -1,4 +1,4 @@
-﻿﻿using Application.Tickets.Ticket.PurchaseTickets;
+﻿using Application.Tickets.Ticket.PurchaseTickets;
 using Controllers.Tickets.Requests;
 using Application;
 using Application.Authentication;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Controllers.Tickets.Ticket;
 
 [ApiController]
-[Authorize(Roles = Roles.Customer)]
+[Authorize(Roles = UserRoles.Customer)]
 public class PurchaseTicketsEndpoint(PurchaseTickets purchaseTickets) : ControllerBase
 {
     [HttpPost(Routes.TicketsPurchase)]

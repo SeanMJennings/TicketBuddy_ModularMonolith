@@ -9,7 +9,7 @@ namespace Controllers.Notifications;
 public class MarkNotificationAsReadEndpoint(MarkNotificationAsRead markNotificationAsRead) : ControllerBase
 {
     [HttpPost(Routes.NotificationRead)]
-    [Authorize(Roles = Roles.Customer)]
+    [Authorize(Roles = UserRoles.Customer)]
     public async Task<ActionResult> MarkAsRead(Guid id)
     {
         await markNotificationAsRead.Execute(id);

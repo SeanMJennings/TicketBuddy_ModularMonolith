@@ -32,8 +32,8 @@ public class FakeAuthHandler(
 
         var roleClaim = userType switch
         {
-            nameof(UserType.Admin) => Roles.Admin,
-            nameof(UserType.Customer) => Roles.Customer,
+            nameof(UserType.Admin) => UserRoles.Admin,
+            nameof(UserType.Customer) => UserRoles.Customer,
             _ => null
         };
 

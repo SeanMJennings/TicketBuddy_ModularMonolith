@@ -10,7 +10,7 @@ namespace Controllers.Notifications;
 public class GetNotificationsEndpoint(GetNotifications getNotifications) : ControllerBase
 {
     [HttpGet(Routes.Notifications)]
-    [Authorize(Roles = Roles.Customer)]
+    [Authorize(Roles = UserRoles.Customer)]
     public async Task<IEnumerable<NotificationResponse>> GetNotifications()
     {
         var userId = User.GetUserId();

@@ -84,6 +84,32 @@ All tests use the `Testing.Bdd` package with separate specifications and step im
 {Name}.steps.cs    // Step implementations (private methods)
 ```
 
+Tests are organized by endpoint/behavior, with specs and steps as partial classes in separate files. In Visual Studio/Rider, nest the steps file under the specs file for cleaner navigation.
+
+**Nesting via .csproj:**
+
+Add `DependentUpon` entries in the test project file to nest steps under specs:
+
+```xml
+<ItemGroup>
+  <Compile Update="Events\CreateEvent.steps.cs">
+    <DependentUpon>CreateEvent.specs.cs</DependentUpon>
+  </Compile>
+  <Compile Update="Events\GetEventById.steps.cs">
+    <DependentUpon>GetEventById.specs.cs</DependentUpon>
+  </Compile>
+</ItemGroup>
+```
+
+This makes the Solution Explorer show:
+```
+Events/
+├── CreateEvent.specs.cs
+│   └── CreateEvent.steps.cs  (nested)
+├── GetEventById.specs.cs
+│   └── GetEventById.steps.cs (nested)
+```
+
 ### Base Classes
 
 #### Specification (Synchronous)

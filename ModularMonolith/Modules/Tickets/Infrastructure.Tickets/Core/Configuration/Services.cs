@@ -1,5 +1,4 @@
-﻿using Application.Tickets.Core;
-using Application.Tickets.Event;
+﻿using Application.Tickets.Event;
 using Application.Tickets.Ticket;
 using Application.Tickets.Ticket.GetTicketsForEvent;
 using Application.Tickets.Ticket.GetTicketsForUser;
@@ -12,6 +11,7 @@ using Domain.Tickets.Event;
 using Domain.Tickets.Ticket;
 using Domain.Tickets.User;
 using Domain.Tickets.Venue;
+using Infrastructure.DomainEventsDispatching;
 using Microsoft.Extensions.DependencyInjection;
 using EventUpsertedHandler = Domain.Tickets.Event.EventUpsertedHandler;
 
@@ -21,6 +21,12 @@ public static class Services
 {
     public static IServiceCollection ConfigureTicketsServices(this IServiceCollection services)
     {
+        var eventHandlerMap = new DomainEventsMapBuilder()
+            .Map<EventUpserted, EventUpsertedHandler>()
+            .Map<AllTicketsSold, AllTicketsSoldHandler>()
+            .Map<TicketWasPurchased, TicketWasPurchasedHandler>()
+            .Build();
+
         services
             .AddScoped<ITicketsUnitOfWork, UnitOfWork>()
             .AddScoped<IPersistEvents, Event.EventRepository>()
@@ -40,10 +46,7 @@ public static class Services
             .AddScoped<TicketWasPurchasedHandler>()
             .AddScoped<IPersistUsers, User.UserRepository>()
             .AddScoped<UpsertUser>()
-            .AddSingleton(
-                TicketDomainEventsToHandlersMap.Map
-                    .Concat(DomainEventsToHandlersMap.Map)
-                    .ToDictionary(kv => kv.Key, kv => kv.Value));
+            .AddSingleton(eventHandlerMap);
         return services;
     }
 }

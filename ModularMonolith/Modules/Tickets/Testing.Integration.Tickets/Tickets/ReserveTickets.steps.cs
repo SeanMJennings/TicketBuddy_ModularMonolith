@@ -145,7 +145,7 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(user_id);
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
-        await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
+        await reserveTicketsEndpoint.FastReserveTicketsWithoutCheckingForExistence(event_id, payload);
     }
 
     private async Task the_user_extends_their_reservation()
@@ -157,7 +157,7 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(another_user_id);
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
-        await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
+        await reserveTicketsEndpoint.FastReserveTicketsWithoutCheckingForExistence(event_id, payload);
     }
 
     private async Task the_ticket_is_reserved()

@@ -12,7 +12,8 @@ namespace Controllers.Tickets.Ticket;
 public class ReserveTicketsEndpoint(ReserveTickets reserveTickets) : ControllerBase
 {
     [HttpPost(Routes.TicketsReservation)]
-    public async Task<ActionResult> ReserveTickets([FromRoute] Guid id, [FromBody] TicketReservationPayload payload)
+    public async Task<ActionResult> FastReserveTicketsWithoutCheckingForExistence(
+        [FromRoute] Guid id, [FromBody] TicketReservationPayload payload)
     {
         var userId = User.GetUserId();
         await reserveTickets.Execute(id, userId, payload.ticketIds);

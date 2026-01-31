@@ -22,9 +22,7 @@ public readonly struct Address : IEquatable<Address>
     }
 
     public string Street { get; }
-
     public string City { get; }
-
     public string Postcode { get; }
 
     private static bool IsValidUkPostcode(string postcode)
@@ -53,7 +51,6 @@ public readonly struct Address : IEquatable<Address>
 
     public static bool operator ==(Address left, Address right) => left.Equals(right);
     public static bool operator !=(Address left, Address right) => !left.Equals(right);
-
     public override string ToString() => $"{Street}, {City}, {Postcode}";
 }
 
@@ -63,37 +60,22 @@ public class AddressConverter : JsonConverter<Address>
     {
         if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected StartObject token");
 
-        string? street = null;
-        string? city = null;
-        string? postcode = null;
+        var properties = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
 
-        while (reader.Read())
+        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
         {
-            if (reader.TokenType == JsonTokenType.EndObject) break;
-
             if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected PropertyName token");
 
-            var propertyName = reader.GetString();
+            var propertyName = reader.GetString()!;
             reader.Read();
-
-            switch (propertyName)
-            {
-                case nameof(Address.Street):
-                case "street":
-                    street = reader.GetString();
-                    break;
-                case nameof(Address.City):
-                case "city":
-                    city = reader.GetString();
-                    break;
-                case nameof(Address.Postcode):
-                case "postcode":
-                    postcode = reader.GetString();
-                    break;
-            }
+            properties[propertyName] = reader.GetString();
         }
 
-        if (street == null || city == null || postcode == null) throw new JsonException("Missing required Address properties");
+        if (!properties.TryGetValue(nameof(Address.Street), out var street) ||
+            !properties.TryGetValue(nameof(Address.City), out var city) ||
+            !properties.TryGetValue(nameof(Address.Postcode), out var postcode) ||
+            street == null || city == null || postcode == null)
+            throw new JsonException("Missing required Address properties");
 
         return new Address(street, city, postcode);
     }

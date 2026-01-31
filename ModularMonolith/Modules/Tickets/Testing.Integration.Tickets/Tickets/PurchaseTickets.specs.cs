@@ -55,7 +55,8 @@ public partial class PurchaseTicketsSpecs
         await Given(a_user_exists);
         await And(reserving_tickets);
         await When(Validating(purchasing_tickets_for_non_existent_event));
-              Then(Informs($"Event with id {nonExistentEventId} not found"));
+              Then(Informs($"Event with id {nonExistentEventId} was not found."));
+              And(an_entity_not_found_exception_was_thrown);
     }
 
     [Test]

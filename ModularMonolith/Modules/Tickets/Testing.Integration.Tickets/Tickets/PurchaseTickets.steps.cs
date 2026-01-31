@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
+using Domain.Exceptions;
 using Infrastructure.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
@@ -288,5 +289,10 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         tickets.All(t => t.Purchased).ShouldBeTrue();
 
         (await testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id)).ShouldBeTrue();
+    }
+
+    private static void an_entity_not_found_exception_was_thrown()
+    {
+        error.ShouldBeOfType<EntityNotFoundException>();
     }
 }

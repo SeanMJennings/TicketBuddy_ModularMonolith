@@ -3,7 +3,7 @@
 public static class RabbitMqResourceExtensions
 {
     public const string ResourceName = "Messaging";
-    private const string VolumeName = "TicketBuddy.Monolith.RabbitMQ";
+    private const string VolumeName = "Ticketbuddy.Aspire.RabbitMQ";
     private const string DefaultUsername = "guest";
     private const string DefaultPassword = "guest";
     private const int TcpPort = 5672;

@@ -4,7 +4,7 @@ public static class PostgresResourceExtensions
 {
     private const string ResourceName = "Postgres";
     private const string DatabaseName = "TicketBuddy";
-    private const string VolumeName = "TicketBuddy.Monolith.Postgres";
+    private const string VolumeName = "Ticketbuddy.Aspire.Postgres";
     private const int HostPort = 5432;
     private const string DefaultPassword = "YourStrong@Passw0rd";
 

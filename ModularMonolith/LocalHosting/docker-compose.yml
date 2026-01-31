@@ -1,3 +1,5 @@
+name: Ticketbuddy.Docker
+
 services:
   postgresql:
     container_name: ticketbuddy-postgresql
@@ -55,6 +57,8 @@ services:
     image: "redis:latest"
     ports:
     - "6379:6379"
+    volumes:
+    - redis_data:/data
     networks:
     - ticketbuddy-network
     healthcheck:
@@ -83,6 +87,7 @@ services:
     ports:
       - "8180:8080"
     volumes:
+      - keycloak_data:/opt/keycloak/data
       - ../Modules/Keycloak.Users/Infrastructure.Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
       - ../Modules/Keycloak.Users/Infrastructure.Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar:/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
     restart: always
@@ -168,6 +173,8 @@ services:
 volumes:
   postgresql_data:
   rabbitmq_data:
+  redis_data:
+  keycloak_data:
   
 networks:
   ticketbuddy-network:

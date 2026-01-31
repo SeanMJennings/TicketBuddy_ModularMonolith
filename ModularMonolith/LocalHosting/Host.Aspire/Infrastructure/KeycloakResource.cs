@@ -3,7 +3,7 @@
 public static class KeycloakResourceExtensions
 {
     private const string ResourceName = "Identity";
-    private const string VolumeName = "TicketBuddy.Monolith.Identity";
+    private const string VolumeName = "Ticketbuddy.Aspire.Identity";
     private const string DefaultAdminUsername = "admin";
     private const string DefaultAdminPassword = "admin";
     private const int Port = 8180;

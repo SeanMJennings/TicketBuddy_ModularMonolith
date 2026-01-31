@@ -1,3 +1,4 @@
+using Domain.Exceptions;
 using Domain.Notifications;
 
 namespace Application.Notifications;
@@ -7,7 +8,7 @@ public class MarkNotificationAsRead(IPersistNotifications repository, INotificat
     public async Task Execute(Guid notificationId)
     {
         var notification = await repository.GetById(notificationId);
-        if (notification is null) return;
+        if (notification is null) throw new EntityNotFoundException(nameof(Notification), notificationId);
 
         notification.MarkAsRead();
         await repository.Update(notification);

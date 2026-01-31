@@ -13,8 +13,7 @@ public class Notification : Entity, IAmAnAggregateRoot
     {
         Validation.BasedOn(errors =>
         {
-            if (userId == Guid.Empty)
-                errors.Add("Entity ID cannot be an empty GUID");
+            if (userId == Guid.Empty) errors.Add("Entity ID cannot be an empty GUID");
         });
 
         UserId = userId;

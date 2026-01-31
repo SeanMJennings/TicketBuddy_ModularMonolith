@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Controllers.Notifications;
+using Domain.Exceptions;
 using Domain.Notifications;
 using Infrastructure.Configuration;
 using Infrastructure.Notifications.Core;
@@ -96,4 +97,7 @@ public partial class MarkNotificationAsReadSpecs : TruncateDbSpecification
         notification.ShouldNotBeNull();
         notification.IsRead.ShouldBeTrue();
     }
+
+    private static void an_entity_not_found_exception_was_thrown() =>
+        error.ShouldBeOfType<EntityNotFoundException>();
 }

@@ -1,6 +1,6 @@
 services:
   postgresql:
-    container_name: monolith-postgresql
+    container_name: ticketbuddy-postgresql
     image: postgres:latest
     environment:
       - POSTGRES_USER=postgres
@@ -16,11 +16,11 @@ services:
       retries: 10
       start_period: 10s
     volumes:
-      - postgresql_data:/var/lib/postgresql/data
+      - postgresql_data:/var/lib/postgresql
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
   aspire-dashboard:
-    container_name: monolith-aspire-dashboard
+    container_name: ticketbuddy-aspire-dashboard
     image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
     environment:
       ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS: "true"
@@ -30,9 +30,9 @@ services:
     depends_on:
       - postgresql
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
   rabbitmq:
-    container_name: monolith-rabbitmq
+    container_name: ticketbuddy-rabbitmq
     image: masstransit/rabbitmq
     ports:
       - "15672:15672"
@@ -44,27 +44,27 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
     healthcheck:
       test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 5s
       timeout: 5s
       retries: 5
   redis:
-    container_name: monolith-redis
+    container_name: ticketbuddy-redis
     image: "redis:latest"
     ports:
     - "6379:6379"
     networks:
-    - ticketbuddy-monolith-network
+    - ticketbuddy-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 5
   keycloak:
-    container_name: monolith-keycloak
-    image: quay.io/keycloak/keycloak:latest
+    container_name: ticketbuddy-keycloak
+    image: quay.io/keycloak/keycloak:26.3
     entrypoint: /bin/sh
     command:
       - -c
@@ -75,7 +75,7 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KK_TO_RMQ_URL=amqp://guest:guest@monolith-rabbitmq:5672/
+      - KK_TO_RMQ_URL=amqp://guest:guest@ticketbuddy-rabbitmq:5672/
       - KK_TO_RMQ_VHOST=/
       - KK_TO_RMQ_USERNAME=guest
       - KK_TO_RMQ_PASSWORD=guest
@@ -83,11 +83,11 @@ services:
     ports:
       - "8180:8080"
     volumes:
-      - ../CommonLibraries/Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
-      - ../CommonLibraries/Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar:/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
+      - ../Modules/Keycloak.Users/Infrastructure.Keycloak/Artifacts/ticketbuddy-realm.json:/opt/keycloak/data/import/ticketbuddy-realm.json
+      - ../Modules/Keycloak.Users/Infrastructure.Keycloak/Artifacts/keycloak-to-rabbit-3.0.5.jar:/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar
     restart: always
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
     healthcheck:
       test: [ "CMD-SHELL", "exec 3<> /dev/tcp/127.0.0.1/9000; echo -e 'GET /health/ready HTTP/1.1\\r\\nhost: http://localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3; if [ $? -eq 0 ]; then echo 'Healthcheck Successful'; exit 0; else echo 'Healthcheck Failed'; exit 1; fi;" ]
       interval: 10s
@@ -95,7 +95,7 @@ services:
       retries: 12
       start_period: 10s
   migrations:
-    container_name: monolith-migrations
+    container_name: ticketbuddy-migrations
     build:
       context: ..
       dockerfile: Database/Host.Migrations/Dockerfile
@@ -107,10 +107,10 @@ services:
     environment:
       - ENVIRONMENT=Development
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
     restart: "no"
   api:
-    container_name: monolith-api
+    container_name: ticketbuddy-api
     build:
       context: ..
       dockerfile: Host/Dockerfile
@@ -127,14 +127,14 @@ services:
         condition: service_healthy
     environment:
       - ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
     ports:
       - "5000:8080"
-      - "5001:8081"
     restart: on-failure
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
   dataseeder:
-    container_name: monolith-dataseeder
+    container_name: ticketbuddy-dataseeder
     build:
       context: ..
       dockerfile: LocalHosting/Host.Dataseeder/Dockerfile
@@ -146,21 +146,23 @@ services:
     environment:
       - ENVIRONMENT=Development
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
     restart: "no"
     command: ["sh", "-c", "sleep 20 && dotnet Host.Dataseeder.dll"]
   ui:
-    container_name: monolith-ui
+    container_name: ticketbuddy-ui
     build:
       context: ../../UI
       dockerfile: ../UI/Dockerfile
+      args:
+        - USE_COMPOSE_ENV=true
     depends_on:
       dataseeder:
         condition: service_completed_successfully
     ports:
       - "5173:5173"
     networks:
-      - ticketbuddy-monolith-network
+      - ticketbuddy-network
     restart: "no"
 
 volumes:
@@ -168,6 +170,6 @@ volumes:
   rabbitmq_data:
   
 networks:
-  ticketbuddy-monolith-network:
-    name: ticketbuddy-monolith-network
+  ticketbuddy-network:
+    name: ticketbuddy-network
     driver: bridge

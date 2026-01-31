@@ -23,7 +23,7 @@ internal static class Keycloak
                     RequireSignedTokens = true,
                     ValidateAudience = false,
                     ValidateIssuer = true,
-                    ValidIssuer = $"{settings.ServerUrl}/realms/ticketbuddy",
+                    ValidIssuer = $"{settings.IssuerUrl}/realms/ticketbuddy",
                 };
                 
                 RetrieveRealmAccessRolesFromJwt(x);

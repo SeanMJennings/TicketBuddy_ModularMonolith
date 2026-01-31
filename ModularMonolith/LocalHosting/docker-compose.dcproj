@@ -16,6 +16,9 @@
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include=".env" />
+  </ItemGroup>
     <Target Name="CopyKeycloakArtifacts" AfterTargets="Build">
         <ItemGroup>
             <KeycloakArtifacts Include="$(MSBuildThisFileDirectory)..\CommonLibraries\Keycloak\Artifacts\**\*.*" />

@@ -44,6 +44,7 @@ internal class Settings
     internal class KeycloakSettings
     {
         public string ServerUrl => Configuration.GetRequired("ConnectionStrings:Identity");
+        public string IssuerUrl => Configuration["ConnectionStrings:IdentityIssuer"] ?? ServerUrl;
     }
 }
 

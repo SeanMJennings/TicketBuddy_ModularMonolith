@@ -1,4 +1,6 @@
-﻿FROM node:20-alpine as build
+﻿FROM node:20-alpine AS build
+
+ARG USE_COMPOSE_ENV=false
 
 WORKDIR /app
 
@@ -7,7 +9,7 @@ RUN npm install
 
 COPY . .
 
-RUN if [ -f .env.docker ]; then cp .env.docker .env; fi
+RUN if [ "$USE_COMPOSE_ENV" = "true" ] && [ -f .env.compose ]; then cp .env.compose .env; fi
 
 EXPOSE 5173
 

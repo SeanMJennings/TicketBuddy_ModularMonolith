@@ -9,8 +9,7 @@ ARG BUILD_CONFIGURATION=Release
 ARG GITHUB_TOKEN
 WORKDIR /src
 COPY . .
-RUN dotnet nuget add source https://nuget.pkg.github.com/SeanMJennings/index.json \
-    --name github \
+RUN dotnet nuget update source TicketBuddyGitHub \
     --username SeanMJennings \
     --password $GITHUB_TOKEN \
     --store-password-in-clear-text

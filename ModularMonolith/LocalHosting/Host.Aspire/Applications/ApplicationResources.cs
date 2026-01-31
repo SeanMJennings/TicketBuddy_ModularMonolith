@@ -23,6 +23,8 @@ public static class ApplicationResources
             IResourceBuilder<KeycloakResource> keycloak)
         {
             return builder.AddProject<Projects.Host>("Api")
+                .WithHttpEndpoint(port: 5000, name: "http")
+                .WithHttpHealthCheck("/health")
                 .WithReference(database)
                 .WaitFor(database)
                 .WithReference(migrations)

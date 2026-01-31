@@ -157,14 +157,7 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(another_user_id);
         var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
-        try
-        {
-            await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
-        }
-        catch (ValidationException ex)
-        {
-            theError = ex;
-        }
+        await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
     }
 
     private async Task the_ticket_is_reserved()

@@ -22,8 +22,8 @@ public partial class ReserveTicketsSpecs
         await And(a_user_exists);
         await And(requesting_the_tickets);
         await And(reserving_a_ticket);
-        await When(another_user_reserving_a_ticket);
-              Then(user_informed_they_cannot_reserve_an_already_reserved_ticket);
+        await When(Validating(another_user_reserving_a_ticket));
+              Then(Informs("Ticket already reserved"));
     }
 
     [Test]

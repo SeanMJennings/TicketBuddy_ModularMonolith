@@ -18,8 +18,8 @@ public partial class CreateEventSpecs
     public async Task cannot_create_event_with_date_in_the_past()
     {
               Given(a_request_to_create_an_event_with_a_date_in_the_past);
-        await When(creating_the_event_that_will_fail);
-              Then(the_event_is_not_created);
+        await When(Validating(creating_the_event_that_will_fail));
+              Then(Informs("Event date cannot be in the past"));
     }
 
     [Test]
@@ -27,7 +27,7 @@ public partial class CreateEventSpecs
     {
         await Given(an_event_exists);
               And(a_request_to_create_an_event_with_the_same_venue_and_time);
-        await When(creating_the_event_that_will_fail);
-              Then(the_user_is_informed_that_the_venue_is_unavailable);
+        await When(Validating(creating_the_event_that_will_fail));
+              Then(Informs("Venue is not available at the selected time"));
     }
 }

@@ -36,8 +36,8 @@ public partial class PurchaseTicketsSpecs
         await And(requesting_the_tickets);
         await And(reserving_tickets);
         await And(two_tickets_are_purchased);
-        await When(purchasing_two_tickets_again);
-              Then(user_informed_they_cannot_purchase_tickets_that_are_purchased);
+        await When(Validating(purchasing_two_tickets_again));
+              Then(Informs("Tickets are not available"));
     }
 
     [Test]
@@ -45,8 +45,8 @@ public partial class PurchaseTicketsSpecs
     {
         await Given(an_event_exists);
         await And(a_user_exists);
-        await When(purchasing_two_non_existent_tickets);
-              Then(user_informed_they_cannot_purchase_tickets_that_are_non_existent);
+        await When(Validating(purchasing_two_non_existent_tickets));
+              Then(Informs("One or more tickets do not exist"));
     }
 
     [Test]
@@ -66,8 +66,8 @@ public partial class PurchaseTicketsSpecs
         await And(another_user_exists);
         await And(requesting_the_tickets);
         await And(reserving_tickets);
-        await When(another_user_purchasing_the_reserved_tickets);
-              Then(another_user_informed_they_cannot_purchase_reserved_tickets);
+        await When(Validating(another_user_purchasing_the_reserved_tickets));
+              Then(Informs("Ticket not reserved for this user"));
     }
 
     [Test]

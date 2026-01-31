@@ -134,16 +134,6 @@ public partial class CreateEventSpecs : TruncateDbSpecification
         theEvent.Price.ShouldBe(price);
     }
 
-    private void the_event_is_not_created()
-    {
-        theError.Message.ShouldContain("Event date cannot be in the past");
-    }
-
-    private void the_user_is_informed_that_the_venue_is_unavailable()
-    {
-        theError.Message.ShouldContain("Venue is not available at the selected time");
-    }
-
     private void an_integration_event_is_published()
     {
         testHarness.Published.Select<EventUpserted>()

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Events.Venue;
@@ -25,13 +24,11 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
     private ServiceProvider serviceProvider = null!;
     private EventPayload eventPayload = null!;
     private UpdateEventPayload updateEventPayload = null!;
-    private ValidationException theError = null!;
     private Event theEvent = null!;
     private ITestHarness testHarness = null!;
 
     private Guid venue1Id;
     private Guid returned_id;
-    private Guid another_id;
     private const string name = "wibble";
     private const string new_name = "wobble";
     private readonly DateTimeOffset event_start_date = DateTimeOffset.UtcNow.AddDays(3);
@@ -46,10 +43,8 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
     {
         await base.before_each();
         returned_id = Guid.Empty;
-        another_id = Guid.Empty;
         eventPayload = null!;
         updateEventPayload = null!;
-        theError = null!;
         theEvent = null!;
 
         serviceProvider = new ServiceCollection()
@@ -103,7 +98,6 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
     private async Task creating_another_event()
     {
         var response = await createEventEndpoint.CreateEvent(eventPayload);
-        another_id = (Guid)response.Value!;
     }
 
     private async Task an_event_exists()
@@ -140,14 +134,7 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
 
     private async Task updating_the_event_that_will_fail()
     {
-        try
-        {
-            await updateEventEndpoint.UpdateEvent(returned_id, updateEventPayload);
-        }
-        catch (ValidationException e)
-        {
-            theError = e;
-        }
+        await updateEventEndpoint.UpdateEvent(returned_id, updateEventPayload);
     }
 
     private async Task requesting_the_updated_event()
@@ -163,16 +150,6 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
         (theEvent.EndDate.ToUniversalTime() - new_event_end_date.ToUniversalTime()).TotalMilliseconds.ShouldBeLessThan(1);
         theEvent.VenueId.ShouldBe(venue1Id);
         theEvent.Price.ShouldBe(new_price);
-    }
-
-    private void the_event_is_not_updated()
-    {
-        theError.Message.ShouldContain("Event date cannot be in the past");
-    }
-
-    private void the_user_is_informed_that_the_venue_is_unavailable()
-    {
-        theError.Message.ShouldContain("Venue is not available at the selected time");
     }
 
     private void an_another_integration_event_is_published()

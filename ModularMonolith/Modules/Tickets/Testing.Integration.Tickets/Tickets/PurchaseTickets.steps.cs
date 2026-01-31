@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
@@ -31,8 +30,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     private VenueUpsertedConsumer venueUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
-    private Exception theError = null!;
-    internal Guid nonExistentEventId = Guid.NewGuid();
+    private Guid nonExistentEventId = Guid.NewGuid();
     private ITestHarness testHarness = null!;
 
     private Guid event_id = Guid.NewGuid();
@@ -52,7 +50,6 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         ticket_ids = [];
         event_id = Guid.NewGuid();
         user_id = Guid.NewGuid();
-        theError = null!;
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
@@ -182,14 +179,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
 
     private async Task purchasing_two_tickets_again()
     {
-        try
-        {
-            await purchasing_two_tickets();
-        }
-        catch (ValidationException ex)
-        {
-            theError = ex;
-        }
+        await purchasing_two_tickets();
     }
 
     private async Task reserving_tickets()
@@ -203,14 +193,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(another_user_id);
         var payload = new TicketPurchasePayload(ticket_ids.Take(2).ToArray());
-        try
-        {
-            await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
-        }
-        catch (ValidationException ex)
-        {
-            theError = ex;
-        }
+        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
 
     private async Task the_user_purchases_their_reserved_tickets()
@@ -227,14 +210,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     {
         AddUserClaimToControllerContext(user_id);
         var payload = new TicketPurchasePayload([Guid.NewGuid(), Guid.NewGuid()]);
-        try
-        {
-            await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
-        }
-        catch (Exception ex)
-        {
-            theError = ex;
-        }
+        await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
 
     private async Task purchasing_tickets_for_non_existent_event()
@@ -282,21 +258,6 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         {
             ticket.Purchased.ShouldBeTrue();
         }
-    }
-
-    private void user_informed_they_cannot_purchase_tickets_that_are_purchased()
-    {
-        theError.Message.ShouldContain("Tickets are not available");
-    }
-
-    private void user_informed_they_cannot_purchase_tickets_that_are_non_existent()
-    {
-        theError.Message.ShouldContain("One or more tickets do not exist");
-    }
-
-    private void another_user_informed_they_cannot_purchase_reserved_tickets()
-    {
-        theError.Message.ShouldContain("Ticket not reserved for this user");
     }
 
     private async Task the_ticket_prices_are_updated()

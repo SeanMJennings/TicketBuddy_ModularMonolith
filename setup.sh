@@ -85,6 +85,8 @@ dotnet dev-certs https
 echo "Installing UI dependencies..."
 cd "$SCRIPT_DIR/UI"
 sudo -u $SUDO_USER npm install
+echo "Installing Playwright browsers..."
+sudo -u $SUDO_USER npx playwright install
 cd "$SCRIPT_DIR"
 
 echo "Restoring .NET packages..."

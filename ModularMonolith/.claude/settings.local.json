@@ -28,7 +28,8 @@
       "Bash(for:*)",
       "Bash(do echo \"=== Run $i ===\")",
       "Bash(done)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(dotnet run)"
     ],
     "deny": [],
     "ask": [

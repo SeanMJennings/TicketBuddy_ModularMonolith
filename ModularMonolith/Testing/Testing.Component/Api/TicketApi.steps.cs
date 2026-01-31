@@ -191,6 +191,17 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         await purchasing_two_tickets();
     }
     
+    private async Task reserving_tickets()
+    {
+        content = new StringContent(
+            JsonSerialization.Serialize(new TicketReservationPayload(ticket_ids.Take(2).ToArray())),
+            Encoding.UTF8,
+            application_json);
+        var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);
+        response_code = response.StatusCode;
+        content = response.Content;
+    }    
+    
     private async Task reserving_a_ticket()
     {
         content = new StringContent(

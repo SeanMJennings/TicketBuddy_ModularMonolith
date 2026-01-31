@@ -1,14 +1,16 @@
-﻿using Application.Tickets.Ticket.GetTicketsForUser;
+﻿using Domain.Tickets.Event;
 using Domain.Tickets.Ticket;
 
 namespace Application.Tickets.Ticket.GetTicketsForEvent;
 
 public class GetTicketsForEvent(
     IQueryTickets ticketQuerist,
-    IQueryTicketReservations ticketReservationCache)
+    IQueryTicketReservations ticketReservationCache,
+    IPersistEvents eventRepository)
 {
     public async Task<IList<TicketQuery>> Execute(Guid eventId)
     {
+        await TicketsValidator.CheckEventExists(eventId, eventRepository);
         var tickets = await ticketQuerist.GetTicketsForEvent(eventId);
         await MarkTicketsWithReservationStatus(eventId, tickets);
         return tickets;

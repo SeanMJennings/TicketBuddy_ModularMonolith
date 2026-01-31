@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Controllers.Tickets.Ticket;
+using Domain.Exceptions;
 using Infrastructure.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
@@ -123,4 +124,7 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
             counter++;
         }
     }
+
+    private static void an_entity_not_found_exception_was_thrown() =>
+        error.ShouldBeOfType<EntityNotFoundException>();
 }

@@ -1,4 +1,4 @@
-﻿﻿using Application.Events;
+﻿using Application.Events;
 using Controllers.Events.Requests;
 using Domain.ValueObjects;
 using Application;

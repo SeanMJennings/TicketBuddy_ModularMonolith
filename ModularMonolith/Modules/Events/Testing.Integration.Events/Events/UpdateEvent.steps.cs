@@ -30,7 +30,6 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
 
     private Guid venue1Id;
     private Guid returned_id;
-    private Guid non_existing_id;
     private const string name = "wibble";
     private const string new_name = "wobble";
     private readonly DateTimeOffset event_start_date = DateTimeOffset.UtcNow.AddDays(3);
@@ -99,7 +98,7 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
 
     private async Task creating_another_event()
     {
-        var response = await createEventEndpoint.CreateEvent(eventPayload);
+        await createEventEndpoint.CreateEvent(eventPayload);
     }
 
     private async Task an_event_exists()

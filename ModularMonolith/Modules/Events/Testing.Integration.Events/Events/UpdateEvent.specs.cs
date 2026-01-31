@@ -39,7 +39,7 @@ public partial class UpdateEventSpecs
     {
           Given(a_request_to_update_the_event);
           await When(Validating(updating_the_event));
-          Then(Informs($"Event with id {non_existing_id} was not found."));
+          Then(Informs($"Event with id {returned_id} was not found."));
           And(an_entity_not_found_exception_was_thrown);
     }
 }

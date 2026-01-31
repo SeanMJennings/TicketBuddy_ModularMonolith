@@ -32,6 +32,7 @@ public static class KeycloakResourceExtensions
             .WithEnvironment("KK_TO_RMQ_VHOST", rabbitVHostParam)
             .WithEnvironment("KK_TO_RMQ_USERNAME", rabbitUserParam)
             .WithEnvironment("KK_TO_RMQ_PASSWORD", rabbitPasswordParam)
-            .WithLifetime(ContainerLifetime.Persistent);
+            .WithLifetime(ContainerLifetime.Persistent)
+            .WithComposeProjectLabel();
     }
 }

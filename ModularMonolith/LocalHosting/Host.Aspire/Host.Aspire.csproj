@@ -9,6 +9,7 @@
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
     <RootNamespace>TicketBuddy.AppHost</RootNamespace>
+    <AssemblyName>Ticketbuddy.Aspire</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

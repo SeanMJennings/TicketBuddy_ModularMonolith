@@ -29,7 +29,8 @@
       "Bash(do echo \"=== Run $i ===\")",
       "Bash(done)",
       "Bash(wc:*)",
-      "Bash(dotnet run)"
+      "Bash(dotnet run)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [

@@ -26,7 +26,8 @@ public static class RabbitMqResourceExtensions
                 endpoint.TargetPort = TcpPort;
             })
             .WithHttpEndpoint(port: ManagementPort, targetPort: ManagementPort, name: "management")
-            .WithLifetime(ContainerLifetime.Persistent);
+            .WithLifetime(ContainerLifetime.Persistent)
+            .WithComposeProjectLabel();
 
         return (rabbitmq, userParam, passwordParam);
     }

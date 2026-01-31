@@ -16,7 +16,8 @@ public static class PostgresResourceExtensions
             .WithPassword(builder.AddParameter("PostgresPassword", DefaultPassword))
             .WithDataVolume(VolumeName)
             .WithHostPort(HostPort)
-            .WithLifetime(ContainerLifetime.Persistent);
+            .WithLifetime(ContainerLifetime.Persistent)
+            .WithComposeProjectLabel();
 
         return postgres.AddDatabase(DatabaseName);
     }

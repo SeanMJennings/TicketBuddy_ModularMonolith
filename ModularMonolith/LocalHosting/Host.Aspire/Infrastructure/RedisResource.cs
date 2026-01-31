@@ -16,6 +16,7 @@ public static class RedisResourceExtensions
             .WithImage(Image)
             .WithDataVolume(VolumeName)
             .WithPassword(builder.AddParameter("RedisPassword", DefaultPassword))
-            .WithLifetime(ContainerLifetime.Persistent);
+            .WithLifetime(ContainerLifetime.Persistent)
+            .WithComposeProjectLabel();
     }
 }

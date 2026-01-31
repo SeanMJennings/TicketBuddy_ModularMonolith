@@ -1,4 +1,4 @@
-﻿﻿using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events;
@@ -15,6 +15,7 @@ using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
 using Testing.TestData;
+using WebHost;
 
 namespace Component.Api;
 
@@ -35,6 +36,11 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private const string application_json = "application/json";
     private const string name = "wibble";
     private const string new_name = "wobble";
+    private const string updated_venue_name = "Royal Albert Hall - Renovated";
+    private const string updated_street = "123 Updated Street";
+    private const string updated_city = "Manchester";
+    private const string updated_postcode = "M1 1AA";
+    private const uint updated_capacity = 40;
     private readonly DateTimeOffset event_start_date = DateTimeOffset.UtcNow.AddDays(3);
     private readonly DateTimeOffset event_end_date = DateTimeOffset.UtcNow.AddDays(3).AddHours(2);
     private readonly DateTimeOffset new_event_start_date = DateTimeOffset.UtcNow.AddDays(1);
@@ -176,6 +182,21 @@ public partial class EventApiSpecs : TruncateDbSpecification
         var response = await client.PutAsync(Routes.Events + $"/{returned_id}", content);
         response_code = response.StatusCode;
         response_code.ShouldBe(HttpStatusCode.NoContent);
+    }    
+    
+    private async Task updating_the_non_existent_event()
+    {
+        var response = await client.PutAsync(Routes.Events + $"/{returned_id}", content);
+        response_code = response.StatusCode;
+        content  = response.Content;
+    }
+
+    private async Task returns_a_not_found_response()
+    {
+        response_code.ShouldBe(HttpStatusCode.NotFound);
+        var apiError = JsonSerialization.Deserialize<ApiError>(await content.ReadAsStringAsync());
+        apiError.Message.ShouldBe("The requested resource was not found.");
+        apiError.Errors.ShouldBe([$"Event with id {returned_id} was not found."]);
     }
     
     private async Task an_event_exists()
@@ -407,13 +428,6 @@ public partial class EventApiSpecs : TruncateDbSpecification
                 v.Context.Message.Capacity == 30
                 ).ShouldBeTrue("VenueUpserted was not published to the bus");
     }
-
-    // Update venue tests
-    private const string updated_venue_name = "Royal Albert Hall - Renovated";
-    private const string updated_street = "123 Updated Street";
-    private const string updated_city = "Manchester";
-    private const string updated_postcode = "M1 1AA";
-    private const uint updated_capacity = 40;
 
     private void a_request_to_update_the_venue()
     {

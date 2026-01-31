@@ -46,6 +46,15 @@ public partial class EventApiSpecs
     }
     
     [Test]
+    public async Task cannot_update_non_existent_event()
+    {
+              Given(an_admin_user_exists);
+              And(a_request_to_update_the_event);
+        await When(Validating(updating_the_non_existent_event));
+        await Then(returns_a_not_found_response);
+    }
+    
+    [Test]
     public async Task can_list_events()
     {
               Given(an_admin_user_exists);

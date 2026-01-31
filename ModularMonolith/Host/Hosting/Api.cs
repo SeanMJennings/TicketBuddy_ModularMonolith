@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Api.Middleware;
 using Domain;
 using Infrastructure.Tickets.Configuration;
 using OpenTelemetry;
@@ -17,6 +18,7 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
     protected override void ConfigureServices(IServiceCollection services)
     {
         base.ConfigureServices(services);
+        services.UseExceptionHandler<CustomExceptionHandler>();
         services.ConfigureDatabase(_settings.Database.Connection);
         services.ConfigureCache(_settings.Cache.Connection);
         services.ConfigureServices();

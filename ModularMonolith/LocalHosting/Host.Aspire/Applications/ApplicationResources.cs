@@ -6,63 +6,58 @@ public static class ApplicationResources
 {
     private const string EnvironmentVariable = "Environment";
 
-    public static IResourceBuilder<ProjectResource> AddMigrations(
-        this IDistributedApplicationBuilder builder,
-        IResourceBuilder<PostgresDatabaseResource> database)
+    extension(IDistributedApplicationBuilder builder)
     {
-        return builder.AddProject<Projects.Host_Migrations>("Migrations")
-            .WithReference(database)
-            .WaitFor(database)
-            .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
-    }
+        public IResourceBuilder<ProjectResource> AddMigrations(IResourceBuilder<PostgresDatabaseResource> database)
+        {
+            return builder.AddProject<Projects.Host_Migrations>("Migrations")
+                .WithReference(database)
+                .WaitFor(database)
+                .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
+        }
 
-    public static IResourceBuilder<ProjectResource> AddApi(
-        this IDistributedApplicationBuilder builder,
-        IResourceBuilder<PostgresDatabaseResource> database,
-        IResourceBuilder<ProjectResource> migrations,
-        IResourceBuilder<RabbitMQServerResource> rabbitmq,
-        IResourceBuilder<RedisResource> redis,
-        IResourceBuilder<KeycloakResource> keycloak)
-    {
-        return builder.AddProject<Projects.Host>("Api")
-            .WithReference(database)
-            .WaitFor(database)
-            .WithReference(migrations)
-            .WaitFor(migrations)
-            .WithReference(rabbitmq)
-            .WaitFor(rabbitmq)
-            .WithReference(redis)
-            .WaitFor(redis)
-            .WithReference(keycloak)
-            .WaitFor(keycloak)
-            .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
-    }
+        public IResourceBuilder<ProjectResource> AddApi(IResourceBuilder<PostgresDatabaseResource> database,
+            IResourceBuilder<ProjectResource> migrations,
+            IResourceBuilder<RabbitMQServerResource> rabbitmq,
+            IResourceBuilder<RedisResource> redis,
+            IResourceBuilder<KeycloakResource> keycloak)
+        {
+            return builder.AddProject<Projects.Host>("Api")
+                .WithReference(database)
+                .WaitFor(database)
+                .WithReference(migrations)
+                .WaitFor(migrations)
+                .WithReference(rabbitmq)
+                .WaitFor(rabbitmq)
+                .WithReference(redis)
+                .WaitFor(redis)
+                .WithReference(keycloak)
+                .WaitFor(keycloak)
+                .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
+        }
 
-    public static IResourceBuilder<ProjectResource> AddDataSeeder(
-        this IDistributedApplicationBuilder builder,
-        IResourceBuilder<ProjectResource> api)
-    {
-        return builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
-            .WithReference(api)
-            .WaitFor(api)
-            .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
-    }
+        public IResourceBuilder<ProjectResource> AddDataSeeder(IResourceBuilder<ProjectResource> api)
+        {
+            return builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
+                .WithReference(api)
+                .WaitFor(api)
+                .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);
+        }
 
-    public static async Task<IResourceBuilder<ContainerResource>> AddUserInterface(
-        this IDistributedApplicationBuilder builder,
-        IResourceBuilder<ProjectResource> api,
-        IResourceBuilder<ProjectResource> dataSeeder)
-    {
-        await UserInterface.CreateImage();
+        public async Task<IResourceBuilder<ContainerResource>> AddUserInterface(IResourceBuilder<ProjectResource> api,
+            IResourceBuilder<ProjectResource> dataSeeder)
+        {
+            await UserInterface.CreateImage();
 
-        return builder
-            .AddContainer("User-Interface", UserInterface.ImageName)
-            .WithHttpEndpoint(port: 5173, targetPort: 5173)
-            .WithReference(api)
-            .WaitFor(api)
-            .WithReference(dataSeeder)
-            .WaitFor(dataSeeder)
-            .WithLifetime(ContainerLifetime.Persistent);
+            return builder
+                .AddContainer("User-Interface", UserInterface.ImageName)
+                .WithHttpEndpoint(port: 5173, targetPort: 5173)
+                .WithReference(api)
+                .WaitFor(api)
+                .WithReference(dataSeeder)
+                .WaitFor(dataSeeder)
+                .WithLifetime(ContainerLifetime.Persistent);
+        }
     }
 }
 

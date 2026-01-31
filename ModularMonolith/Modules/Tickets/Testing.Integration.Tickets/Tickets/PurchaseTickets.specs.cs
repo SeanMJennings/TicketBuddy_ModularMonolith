@@ -10,6 +10,7 @@ public partial class PurchaseTicketsSpecs
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
+        await And(reserving_tickets);
         await When(purchasing_two_tickets);
         await Then(the_tickets_are_purchased);
     }
@@ -20,6 +21,7 @@ public partial class PurchaseTicketsSpecs
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
+        await And(reserving_tickets);
         await And(two_tickets_are_purchased);
         await When(updating_the_ticket_prices);
         await Then(the_ticket_prices_are_updated);
@@ -32,6 +34,7 @@ public partial class PurchaseTicketsSpecs
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
+        await And(reserving_tickets);
         await And(two_tickets_are_purchased);
         await When(purchasing_two_tickets_again);
               Then(user_informed_they_cannot_purchase_tickets_that_are_purchased);
@@ -50,31 +53,42 @@ public partial class PurchaseTicketsSpecs
     public async Task cannot_purchase_tickets_for_non_existent_event()
     {
         await Given(a_user_exists);
+        await And(reserving_tickets);
         await When(Validating(purchasing_tickets_for_non_existent_event));
               Then(Informs($"Event with id {nonExistentEventId} not found"));
     }
 
     [Test]
-    public async Task different_user_cannot_purchase_a_reserved_ticket()
+    public async Task different_user_cannot_purchase_reserved_tickets()
     {
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(another_user_exists);
         await And(requesting_the_tickets);
-        await And(reserving_a_ticket);
-        await When(another_user_purchasing_the_reserved_ticket);
-              Then(another_user_informed_they_cannot_purchase_a_reserved_ticket);
+        await And(reserving_tickets);
+        await When(another_user_purchasing_the_reserved_tickets);
+              Then(another_user_informed_they_cannot_purchase_reserved_tickets);
     }
 
     [Test]
-    public async Task a_user_can_purchase_their_own_reserved_ticket()
+    public async Task a_user_can_purchase_their_own_reserved_tickets()
     {
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
-        await And(reserving_a_ticket);
-        await When(the_user_purchases_their_reserved_ticket);
+        await And(reserving_tickets);
+        await When(the_user_purchases_their_reserved_tickets);
         await Then(the_tickets_are_purchased);
+    }    
+    
+    [Test]
+    public async Task a_user_cannot_purchase_unreserved_tickets()
+    {
+        await Given(an_event_exists);
+        await And(a_user_exists);
+        await And(requesting_the_tickets);
+        await When(Validating(the_user_purchases_tickets_that_are_not_reserved));
+              Then(Informs("Ticket not reserved for this user"));
     }
 
     [Test]
@@ -83,6 +97,7 @@ public partial class PurchaseTicketsSpecs
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
+        await And(reserving_all_tickets);
         await When(purchasing_all_tickets);
         await Then(event_sold_out_integration_event_is_published);
     }

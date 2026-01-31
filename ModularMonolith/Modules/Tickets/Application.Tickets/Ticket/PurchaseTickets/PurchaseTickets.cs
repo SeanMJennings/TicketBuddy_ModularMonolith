@@ -12,13 +12,12 @@ public class PurchaseTickets(
 {
     public async Task Execute(Guid eventId, Guid userId, Guid[] ticketIds)
     {
-        foreach (var ticketId in ticketIds)
-        {
-            await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
-        }
-        
         var theEvent = await TicketsValidator.CheckEventExists(eventId, eventRepository);
-        var soldOut = await TicketsPurchaser.PurchaseTickets(eventId, userId, ticketIds, ticketRepository);
+        var theTickets = await TicketsValidator.CheckTicketsExist(ticketIds, ticketRepository);
+        
+        foreach (var ticketId in ticketIds) await EnsureTicketReservedForUser(eventId, ticketId, userId);
+        
+        var soldOut = await TicketsPurchaser.PurchaseTickets(eventId, userId, theTickets, ticketRepository);
         
         if (soldOut)
         {
@@ -29,9 +28,9 @@ public class PurchaseTickets(
         await unitOfWork.Commit();
     }
     
-    private async Task CheckIfTicketReservedForDifferentUser(Guid eventId, Guid ticketId, Guid userId)
+    private async Task EnsureTicketReservedForUser(Guid eventId, Guid ticketId, Guid userId)
     {
         var userIdForReservation = await ticketReservationCache.GetUserIdForTicketReservation(eventId, ticketId);
-        TicketsValidator.CheckIfTicketReservedForDifferentUser(userId, userIdForReservation);
+        TicketsValidator.EnsureTicketReservedForUser(userId, userIdForReservation);
     }
 }

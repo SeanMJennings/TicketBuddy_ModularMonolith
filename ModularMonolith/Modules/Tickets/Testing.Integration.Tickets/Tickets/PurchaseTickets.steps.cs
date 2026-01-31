@@ -192,17 +192,17 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         }
     }
 
-    private async Task reserving_a_ticket()
+    private async Task reserving_tickets()
     {
         AddUserClaimToControllerContext(user_id);
-        var payload = new TicketReservationPayload(ticket_ids.Take(1).ToArray());
+        var payload = new TicketReservationPayload(ticket_ids.Take(2).ToArray());
         await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
     }
 
-    private async Task another_user_purchasing_the_reserved_ticket()
+    private async Task another_user_purchasing_the_reserved_tickets()
     {
         AddUserClaimToControllerContext(another_user_id);
-        var payload = new TicketPurchasePayload(ticket_ids.Take(1).ToArray());
+        var payload = new TicketPurchasePayload(ticket_ids.Take(2).ToArray());
         try
         {
             await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
@@ -213,7 +213,12 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         }
     }
 
-    private async Task the_user_purchases_their_reserved_ticket()
+    private async Task the_user_purchases_their_reserved_tickets()
+    {
+        await purchasing_two_tickets();
+    }    
+    
+    private async Task the_user_purchases_tickets_that_are_not_reserved()
     {
         await purchasing_two_tickets();
     }
@@ -255,6 +260,13 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         await eventUpsertedConsumer.Consume(mockContext);
     }
 
+    private async Task reserving_all_tickets()
+    {
+        AddUserClaimToControllerContext(user_id);
+        var payload = new TicketReservationPayload(ticket_ids);
+        await reserveTicketsEndpoint.ReserveTickets(event_id, payload);
+    }
+
     private async Task purchasing_all_tickets()
     {
         AddUserClaimToControllerContext(user_id);
@@ -282,9 +294,9 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         theError.Message.ShouldContain("One or more tickets do not exist");
     }
 
-    private void another_user_informed_they_cannot_purchase_a_reserved_ticket()
+    private void another_user_informed_they_cannot_purchase_reserved_tickets()
     {
-        theError.Message.ShouldContain("Tickets already reserved");
+        theError.Message.ShouldContain("Ticket not reserved for this user");
     }
 
     private async Task the_ticket_prices_are_updated()

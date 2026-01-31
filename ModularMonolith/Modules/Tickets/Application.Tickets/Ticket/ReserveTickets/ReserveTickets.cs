@@ -10,6 +10,7 @@ public class ReserveTickets(
     {
         foreach (var ticketId in ticketIds)
         {
+            // check ticket exists first
             await CheckIfTicketReservedForDifferentUser(eventId, ticketId, userId);
             await ticketReservationCache.ExtendTicketReservationForUser(eventId, ticketId, userId);
         }

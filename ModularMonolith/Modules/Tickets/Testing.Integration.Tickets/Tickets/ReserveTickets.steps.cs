@@ -190,6 +190,6 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
 
     private void user_informed_they_cannot_reserve_an_already_reserved_ticket()
     {
-        theError.Message.ShouldContain("Tickets already reserved");
+        theError.Message.ShouldContain("Ticket already reserved");
     }
 }

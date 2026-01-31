@@ -58,24 +58,12 @@ public class AddressConverter : JsonConverter<Address>
 {
     public override Address Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType != JsonTokenType.StartObject) throw new JsonException("Expected StartObject token");
+        using var doc = JsonDocument.ParseValue(ref reader);
+        var root = doc.RootElement;
 
-        var properties = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-
-        while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
-        {
-            if (reader.TokenType != JsonTokenType.PropertyName) throw new JsonException("Expected PropertyName token");
-
-            var propertyName = reader.GetString()!;
-            reader.Read();
-            properties[propertyName] = reader.GetString();
-        }
-
-        if (!properties.TryGetValue(nameof(Address.Street), out var street) ||
-            !properties.TryGetValue(nameof(Address.City), out var city) ||
-            !properties.TryGetValue(nameof(Address.Postcode), out var postcode) ||
-            street == null || city == null || postcode == null)
-            throw new JsonException("Missing required Address properties");
+        var street = GetProperty(root, nameof(Address.Street));
+        var city = GetProperty(root, nameof(Address.City));
+        var postcode = GetProperty(root, nameof(Address.Postcode));
 
         return new Address(street, city, postcode);
     }
@@ -88,4 +76,9 @@ public class AddressConverter : JsonConverter<Address>
         writer.WriteString(nameof(Address.Postcode), value.Postcode);
         writer.WriteEndObject();
     }
+
+    private static string GetProperty(JsonElement element, string name) =>
+        element.EnumerateObject()
+            .FirstOrDefault(p => string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase))
+            .Value.GetString() ?? throw new JsonException($"Missing required property: {name}");
 }

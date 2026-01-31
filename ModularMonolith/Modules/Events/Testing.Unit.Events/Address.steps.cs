@@ -1,4 +1,5 @@
-﻿using BDD;
+﻿using System.Text.Json;
+using BDD;
 using Domain.Events.Venue;
 using Shouldly;
 
@@ -17,6 +18,9 @@ public partial class AddressSpecs : Specification
     private int hashCode1;
     private int hashCode2;
     private string? stringResult;
+    private string? jsonInput;
+    private string? serializedJson;
+    private Address deserializedAddress;
 
     private const string valid_street = "Peninsula Square";
     private const string valid_city = "London";
@@ -41,6 +45,9 @@ public partial class AddressSpecs : Specification
         hashCode1 = 0;
         hashCode2 = 0;
         stringResult = null;
+        jsonInput = null;
+        serializedJson = null;
+        deserializedAddress = default;
     }
 
     private void valid_address_inputs()
@@ -175,5 +182,31 @@ public partial class AddressSpecs : Specification
         stringResult!.ShouldContain(valid_street);
         stringResult!.ShouldContain(valid_city);
         stringResult!.ShouldContain(valid_postcode.ToUpperInvariant());
+    }
+
+    private void valid_address_json() =>
+        jsonInput = $@"{{""Street"":""{valid_street}"",""City"":""{valid_city}"",""Postcode"":""{valid_postcode}""}}";
+
+    private void valid_address_json_with_camel_case() =>
+        jsonInput = $@"{{""street"":""{valid_street}"",""city"":""{valid_city}"",""postcode"":""{valid_postcode}""}}";
+
+    private void serializing_address_to_json() =>
+        serializedJson = JsonSerializer.Serialize(address);
+
+    private void deserializing_json_to_address() =>
+        deserializedAddress = JsonSerializer.Deserialize<Address>(jsonInput!);
+
+    private void json_contains_all_address_properties()
+    {
+        serializedJson!.ShouldContain($@"""Street"":""{valid_street}""");
+        serializedJson!.ShouldContain($@"""City"":""{valid_city}""");
+        serializedJson!.ShouldContain($@"""Postcode"":""{valid_postcode.ToUpperInvariant()}""");
+    }
+
+    private void deserialized_address_has_correct_values()
+    {
+        deserializedAddress.Street.ShouldBe(valid_street);
+        deserializedAddress.City.ShouldBe(valid_city);
+        deserializedAddress.Postcode.ShouldBe(valid_postcode.ToUpperInvariant());
     }
 }

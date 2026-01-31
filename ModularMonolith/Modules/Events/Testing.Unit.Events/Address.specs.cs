@@ -152,4 +152,29 @@ public partial class AddressSpecs
         And(converting_address_to_string);
         Then(string_contains_street_city_and_postcode);
     }
+
+    [Test]
+    public void can_serialize_address_to_json()
+    {
+        Given(valid_address_inputs);
+        And(creating_an_address);
+        When(serializing_address_to_json);
+        Then(json_contains_all_address_properties);
+    }
+
+    [Test]
+    public void can_deserialize_json_to_address()
+    {
+        Given(valid_address_json);
+        When(deserializing_json_to_address);
+        Then(deserialized_address_has_correct_values);
+    }
+
+    [Test]
+    public void can_deserialize_json_with_camel_case_property_names()
+    {
+        Given(valid_address_json_with_camel_case);
+        When(deserializing_json_to_address);
+        Then(deserialized_address_has_correct_values);
+    }
 }

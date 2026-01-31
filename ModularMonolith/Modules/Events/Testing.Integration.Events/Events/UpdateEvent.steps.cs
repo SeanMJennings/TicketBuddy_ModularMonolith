@@ -1,6 +1,7 @@
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Events.Venue;
+using Domain.Exceptions;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
@@ -29,6 +30,7 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
 
     private Guid venue1Id;
     private Guid returned_id;
+    private Guid non_existing_id;
     private const string name = "wibble";
     private const string new_name = "wobble";
     private readonly DateTimeOffset event_start_date = DateTimeOffset.UtcNow.AddDays(3);
@@ -163,5 +165,10 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
                 e.Context.Message.VenueId == venue1Id &&
                 e.Context.Message.Price == new_price
             ).ShouldBeTrue("Event was not published to the bus");
+    }
+
+    private static void an_entity_not_found_exception_was_thrown()
+    {
+        error.ShouldBeOfType<EntityNotFoundException>();
     }
 }

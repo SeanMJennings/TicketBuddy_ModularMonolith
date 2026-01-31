@@ -58,6 +58,7 @@ public partial class TicketApiSpecs
         await Given(an_event_exists);
         await And(a_user_exists);
         await And(requesting_the_tickets);
+        await And(reserving_tickets);
         await And(two_tickets_are_purchased);
         await When(updating_the_ticket_prices);
         await Then(the_ticket_prices_are_updated);

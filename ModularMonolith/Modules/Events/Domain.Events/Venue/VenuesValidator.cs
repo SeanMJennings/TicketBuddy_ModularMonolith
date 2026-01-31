@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Exceptions;
 
 namespace Domain.Events.Venue;
 
@@ -7,7 +8,7 @@ public class VenuesValidator(IPersistVenues venueRepository)
     public async Task<Venue> CheckVenueExists(Guid venueId)
     {
         var existingVenue = await venueRepository.GetById(venueId);
-        return existingVenue ?? throw new ValidationException($"Venue with id {venueId} not found");
+        return existingVenue ?? throw new EntityNotFoundException(nameof(Venue), venueId);
     }
 
     public async Task CheckAddressUniqueness(Address address, Guid? excludeVenueId = null)

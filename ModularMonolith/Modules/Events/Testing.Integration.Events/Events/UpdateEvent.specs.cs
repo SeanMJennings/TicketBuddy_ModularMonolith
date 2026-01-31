@@ -33,4 +33,13 @@ public partial class UpdateEventSpecs
         await When(Validating(updating_the_event_that_will_fail));
               Then(Informs("Event date cannot be in the past"));
     }
+    
+    [Test]
+    public async Task cannot_update_non_existent_event()
+    {
+          Given(a_request_to_update_the_event);
+          await When(Validating(updating_the_event));
+          Then(Informs($"Event with id {non_existing_id} was not found."));
+          And(an_entity_not_found_exception_was_thrown);
+    }
 }

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Controllers.Events;
 using Controllers.Events.Requests;
 using Controllers.Events.Venue;
@@ -23,7 +22,6 @@ public partial class CreateEventSpecs : TruncateDbSpecification
     private CreateVenueEndpoint createVenueEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
     private EventPayload eventPayload = null!;
-    private ValidationException theError = null!;
     private Event theEvent = null!;
     private ITestHarness testHarness = null!;
 
@@ -42,7 +40,6 @@ public partial class CreateEventSpecs : TruncateDbSpecification
         await base.before_each();
         returned_id = Guid.Empty;
         eventPayload = null!;
-        theError = null!;
         theEvent = null!;
 
         serviceProvider = new ServiceCollection()
@@ -103,14 +100,7 @@ public partial class CreateEventSpecs : TruncateDbSpecification
 
     private async Task creating_the_event_that_will_fail()
     {
-        try
-        {
-            await createEventEndpoint.CreateEvent(eventPayload);
-        }
-        catch (ValidationException e)
-        {
-            theError = e;
-        }
+        await createEventEndpoint.CreateEvent(eventPayload);
     }
 
     private async Task an_event_exists()

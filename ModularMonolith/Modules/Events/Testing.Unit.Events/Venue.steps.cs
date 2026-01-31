@@ -1,5 +1,6 @@
 using BDD;
 using Domain.Events.Venue;
+using Domain.Exceptions;
 using Moq;
 using Shouldly;
 
@@ -13,6 +14,8 @@ public partial class VenueSpecs : AsyncSpecification
     private string city = null!;
     private string postcode = null!;
     private uint capacity;
+    private Guid? excludeVenueId;
+    private Venue? otherVenue;
     private Venue venue = null!;
     private Mock<IPersistVenues> venueRepository = null!;
     private VenuesValidator validator = null!;
@@ -22,6 +25,11 @@ public partial class VenueSpecs : AsyncSpecification
     private const string valid_city = "London";
     private const string valid_postcode = "SE10 0DX";
     private const uint valid_capacity = 20;
+    private const string updated_venue_name = "Updated Arena";
+    private const string updated_street = "New Street";
+    private const string updated_city = "Manchester";
+    private const string updated_postcode = "M1 1AA";
+    private const uint updated_capacity = 35;
 
     protected override Task before_each()
     {
@@ -101,13 +109,6 @@ public partial class VenueSpecs : AsyncSpecification
         var address = new Address(street, city, postcode);
         await validator.CheckAddressUniqueness(address, excludeVenueId);
     }
-
-    // Update tests
-    private const string updated_venue_name = "Updated Arena";
-    private const string updated_street = "New Street";
-    private const string updated_city = "Manchester";
-    private const string updated_postcode = "M1 1AA";
-    private const uint updated_capacity = 35;
 
     private void a_venue_exists()
     {
@@ -189,19 +190,10 @@ public partial class VenueSpecs : AsyncSpecification
         venueRepository.Setup(x => x.GetById(id)).ReturnsAsync((Venue?)null);
     }
 
-    private void venue_not_found_error()
-    {
-        Informs($"Venue with id {id} not found")();
-    }
-
     private void no_existing_venues()
     {
         venueRepository.Setup(x => x.GetAll()).ReturnsAsync([]);
     }
-
-    // Address uniqueness with exclusion tests
-    private Guid? excludeVenueId = null;
-    private Venue? otherVenue = null;
 
     private void the_venue_is_in_the_repository()
     {
@@ -229,5 +221,10 @@ public partial class VenueSpecs : AsyncSpecification
         street = otherVenue!.Address.Street;
         city = otherVenue.Address.City;
         postcode = otherVenue.Address.Postcode;
+    }
+
+    private static void an_entity_not_found_error_is_thrown()
+    {
+        error.ShouldBeOfType<EntityNotFoundException>();
     }
 }

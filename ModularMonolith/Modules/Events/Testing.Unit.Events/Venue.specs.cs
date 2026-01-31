@@ -118,7 +118,8 @@ public partial class VenueSpecs
     {
               Given(a_venue_that_does_not_exist);
         await When(Validating(checking_venue_exists));
-              Then(venue_not_found_error);
+              Then(Informs($"Venue with id {id} was not found."));
+              And(an_entity_not_found_error_is_thrown);
     }
 
     [Test]

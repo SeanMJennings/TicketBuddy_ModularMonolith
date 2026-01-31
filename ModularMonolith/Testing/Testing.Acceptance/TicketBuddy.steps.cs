@@ -189,6 +189,19 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
         ticket_ids = tickets.Select(t => t.Id).ToArray();
     }
     
+    private async Task the_user_reserves_the_tickets()
+    {
+        content = new StringContent(
+            JsonSerialization.Serialize(new TicketReservationPayload(ticket_ids.Take(2).ToArray())),
+            Encoding.UTF8,
+            application_json);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakCustomerJwt);
+
+        var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);
+        response_code = response.StatusCode;
+        content = response.Content;
+    }    
+    
     private async Task the_user_purchases_tickets_for_the_event()
     {
         content = new StringContent(

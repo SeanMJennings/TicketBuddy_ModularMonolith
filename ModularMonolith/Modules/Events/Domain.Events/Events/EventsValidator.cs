@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain.Exceptions;
 
 namespace Domain.Events;
 
@@ -7,7 +8,7 @@ public class EventsValidator(IPersistEvents eventRepository)
     public async Task<Event> CheckEventExists(Guid eventId)
     {
         var existingEvent = await eventRepository.Get(eventId);
-        return existingEvent ?? throw new ValidationException($"Event with id {eventId} not found");
+        return existingEvent ?? throw new EntityNotFoundException(nameof(Event), eventId);
     }
 
     public async Task CheckIfVenueAlreadyBooked(Event theEvent)

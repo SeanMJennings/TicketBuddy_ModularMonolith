@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using TicketBuddy.AppHost.Infrastructure;
 
 namespace TicketBuddy.AppHost.Applications;
 
@@ -16,7 +17,7 @@ public static class UserInterface
 
         await RunDockerCommandAsync($"image rm -f {ImageName}", throwOnError: false);
 
-        var buildArgs = $"build -f \"{uiDockerfile}\" -t {ImageName} \"{uiBuildContext}\"";
+        var buildArgs = $"build -f \"{uiDockerfile}\" -t {ImageName} \"{uiBuildContext}\" --label com.docker.compose.project={ContainerExtensions.ProjectName}";
         await RunDockerCommandAsync(buildArgs, throwOnError: true);
     }
     

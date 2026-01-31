@@ -10,24 +10,41 @@ public class TruncateDbSpecification : AsyncSpecification
         await using var connection = new NpgsqlConnection(connectionString);
         connection.Open();
         
-        var existingSchemas = new List<string>();
-        const string schemasQuery = """
-                                        SELECT schema_name 
-                                        FROM information_schema.schemata 
-                                        WHERE schema_name NOT IN ('pg_catalog', 'information_schema')
-                                    """;
+        var existingSchemas = await GetSchemas(connection);
+        var tablesToTruncate = await GetTablesToTruncate(existingSchemas, connection);
 
-        await using (var schemaCommand = new NpgsqlCommand(schemasQuery, connection))
-        await using (var schemaReader = await schemaCommand.ExecuteReaderAsync())
+        await DisableConstraints(connection);
+        await TruncateTables(tablesToTruncate, connection);
+        await EnableConstraints(connection);
+    }
+
+    private static async Task EnableConstraints(NpgsqlConnection connection)
+    {
+        await using var enableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'origin';", connection);
+        await enableConstraintsCmd.ExecuteNonQueryAsync();
+    }
+
+    private static async Task TruncateTables(List<string> tablesToTruncate, NpgsqlConnection connection)
+    {
+        tablesToTruncate = tablesToTruncate
+            .Select(t => string.Join(".", t.Split('.').Select(part => $"\"{part}\"")))
+            .ToList();
+
+        foreach (var table in tablesToTruncate)
         {
-            while (await schemaReader.ReadAsync())
-            {
-                existingSchemas.Add(schemaReader.GetString(0));
-            }
+            await using var truncateCommand = new NpgsqlCommand($"TRUNCATE TABLE {table} CASCADE;", connection);
+            await truncateCommand.ExecuteNonQueryAsync();
         }
+    }
 
-        if (existingSchemas.Count == 0) return;
-        
+    private static async Task DisableConstraints(NpgsqlConnection connection)
+    {
+        await using var disableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'replica';", connection);
+        await disableConstraintsCmd.ExecuteNonQueryAsync();
+    }
+
+    private static async Task<List<string>> GetTablesToTruncate(List<string> existingSchemas, NpgsqlConnection connection)
+    {
         var schemasClause = string.Join(", ", existingSchemas.Select(s => $"'{s}'"));
         var tablesToTruncateQuery = $"""
                                          SELECT table_schema || '.' || table_name AS qualified_table
@@ -39,35 +56,32 @@ public class TruncateDbSpecification : AsyncSpecification
                                      """;
             
         var tablesToTruncate = new List<string>();
-        await using (var command = new NpgsqlCommand(tablesToTruncateQuery, connection))
-        await using (var reader = await command.ExecuteReaderAsync())
+        await using var command = new NpgsqlCommand(tablesToTruncateQuery, connection);
+        await using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
         {
-            while (await reader.ReadAsync())
-            {
-                tablesToTruncate.Add(reader.GetString(0));
-            }
+            tablesToTruncate.Add(reader.GetString(0));
         }
 
-        if (tablesToTruncate.Count == 0) return;
+        return tablesToTruncate;
+    }
 
-        await using (var disableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'replica';", connection))
+    private static async Task<List<string>> GetSchemas(NpgsqlConnection connection)
+    {
+        var existingSchemas = new List<string>();
+        const string schemasQuery = """
+                                        SELECT schema_name 
+                                        FROM information_schema.schemata 
+                                        WHERE schema_name NOT IN ('pg_catalog', 'information_schema')
+                                    """;
+
+        await using var schemaCommand = new NpgsqlCommand(schemasQuery, connection);
+        await using var schemaReader = await schemaCommand.ExecuteReaderAsync();
+        while (await schemaReader.ReadAsync())
         {
-            await disableConstraintsCmd.ExecuteNonQueryAsync();
+            existingSchemas.Add(schemaReader.GetString(0));
         }
 
-        tablesToTruncate = tablesToTruncate
-            .Select(t => string.Join(".", t.Split('.').Select(part => $"\"{part}\"")))
-            .ToList();
-        
-        foreach (var table in tablesToTruncate)
-        {
-            await using var truncateCommand = new NpgsqlCommand($"TRUNCATE TABLE {table} CASCADE;", connection);
-            await truncateCommand.ExecuteNonQueryAsync();
-        }
-
-        await using (var enableConstraintsCmd = new NpgsqlCommand("SET session_replication_role = 'origin';", connection))
-        {
-            await enableConstraintsCmd.ExecuteNonQueryAsync();
-        }
+        return existingSchemas;
     }
 }

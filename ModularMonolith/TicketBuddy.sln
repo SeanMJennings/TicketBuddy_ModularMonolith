@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TopLevelDocuments", "TopLev
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "LocalHosting\docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "Host.DockerCompose", "LocalHosting\Host.DockerCompose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Aspire", "LocalHosting\Host.Aspire\Host.Aspire.csproj", "{8C866276-D219-4913-9C42-FFF5B2271053}"
 EndProject

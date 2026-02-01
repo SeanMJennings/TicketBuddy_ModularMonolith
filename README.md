@@ -2,10 +2,7 @@
 A simple ticket booking platform for events.
 
 ## Pre-requisites
-Run the setup script as Administrator to install all dependencies:
-```powershell
-.\setup.ps1
-``` 
+Run the setup.ps1 or setup.sh script as Administrator to install all dependencies:
 
 This installs: .NET 10 SDK, Docker, Node.js, .NET Aspire workload, and configures the GitHub NuGet feed.
 
@@ -15,11 +12,11 @@ Built in well-defined modules to be hosted as a single application. Modules comm
 You could also use synchronous network calls between modules if preferred though it will not scale as well.
 In-process calls between modules are monolithic and not recommended.
 
-Strictly speaking, the common libraries are slightly against the modular nature but they help reduce code duplication and improve consistency across modules.
+The common libraries are slightly against the modular nature but they help reduce code duplication and improve consistency across modules.
 
 A modular monolith is a good place for a team to start when building a new application.
 
-## Ways to Run Locally
+## Running Locally
 - A: Ensure docker is running and then run the Host.Aspire project
 - B: Ensure docker is running and then run docker compose
 - C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations => API => dataseeder => UI with `npm run dev`
@@ -31,7 +28,6 @@ There are some initial hardcoded users
 - Customer 2. Email: jane.doe@example.com Password: janedoe
 - Customer 3. Email: robert.johnson@example.com Password: robertjohnson
 - Customer 4. Email: emily.davis@example.com Password: emilydavis
-
 
 ## Architecture Overview
 ![Modular Monolith Architecture](./Documents/ModularMonolith.drawio.png)

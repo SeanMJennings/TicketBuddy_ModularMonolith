@@ -3,16 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TopLevelDocuments", "TopLevelDocuments", "{8578EFB1-3D7D-46B6-A63B-A2B147064E21}"
-	ProjectSection(SolutionItems) = preProject
-		..\Documents\CleanArchitecture.jpg = ..\Documents\CleanArchitecture.jpg
-		..\Documents\ModernTestPyramid.png = ..\Documents\ModernTestPyramid.png
-		..\Documents\ModularMonolith.drawio = ..\Documents\ModularMonolith.drawio
-		..\Documents\ModularMonolith.drawio.png = ..\Documents\ModularMonolith.drawio.png
-		..\Documents\Observability.png = ..\Documents\Observability.png
-		..\README.md = ..\README.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5EBD2-F136-4009-8BA3-183C3FACC9EE}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "LocalHost.DockerCompose", "LocalHosting\LocalHost.DockerCompose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
@@ -133,6 +123,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4A01221C-5
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{2B781B5E-8BDD-419B-8F7D-12CCD4C3DFA0}"
+	ProjectSection(SolutionItems) = preProject
+		..\Documents\CleanArchitecture.jpg = ..\Documents\CleanArchitecture.jpg
+		..\Documents\ModernTestPyramid.png = ..\Documents\ModernTestPyramid.png
+		..\Documents\ModularMonolith.drawio = ..\Documents\ModularMonolith.drawio
+		..\Documents\ModularMonolith.drawio.png = ..\Documents\ModularMonolith.drawio.png
+		..\Documents\Observability.png = ..\Documents\Observability.png
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Unit", "Testing\Testing.Unit\Testing.Unit.csproj", "{E31EB214-C955-47F0-96D7-71E283558949}"
 EndProject

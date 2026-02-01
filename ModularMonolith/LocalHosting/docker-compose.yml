@@ -142,7 +142,7 @@ services:
     container_name: ticketbuddy-dataseeder
     build:
       context: ..
-      dockerfile: LocalHosting/Host.Dataseeder/Dockerfile
+      dockerfile: LocalHosting/LocalHost.Dataseeder/Dockerfile
       args:
         - GITHUB_TOKEN=${GITHUB_TOKEN}
     depends_on:
@@ -153,7 +153,7 @@ services:
     networks:
       - ticketbuddy-network
     restart: "no"
-    command: ["sh", "-c", "sleep 20 && dotnet Host.Dataseeder.dll"]
+    command: ["sh", "-c", "sleep 20 && dotnet LocalHost.Dataseeder.dll"]
   ui:
     container_name: ticketbuddy-ui
     build:

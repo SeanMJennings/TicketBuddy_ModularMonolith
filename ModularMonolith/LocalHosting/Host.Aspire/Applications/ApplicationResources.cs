@@ -40,7 +40,7 @@ public static class ApplicationResources
 
         public IResourceBuilder<ProjectResource> AddDataSeeder(IResourceBuilder<ProjectResource> api)
         {
-            return builder.AddProject<Projects.Host_Dataseeder>("Dataseeder")
+            return builder.AddProject<Projects.LocalHost_Dataseeder>("Dataseeder")
                 .WithReference(api)
                 .WaitFor(api)
                 .WithEnvironment(EnvironmentVariable, CommonEnvironment.LocalDevelopment.ToString);

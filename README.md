@@ -17,7 +17,7 @@ The common libraries are slightly against the modular nature but they help reduc
 A modular monolith is a good place for a team to start when building a new application.
 
 ## Running Locally
-- A: Ensure docker is running and then run the Host.Aspire project
+- A: Ensure docker is running and then run the LocalHost.Aspire project
 - B: Ensure docker is running and then run docker compose
 - C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations => API => dataseeder => UI with `npm run dev`
 

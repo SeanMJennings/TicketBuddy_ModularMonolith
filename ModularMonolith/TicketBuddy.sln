@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A9E5
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "LocalHost.DockerCompose", "LocalHosting\LocalHost.DockerCompose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host.Aspire", "LocalHosting\Host.Aspire\Host.Aspire.csproj", "{8C866276-D219-4913-9C42-FFF5B2271053}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalHost.Aspire", "LocalHosting\LocalHost.Aspire\LocalHost.Aspire.csproj", "{8C866276-D219-4913-9C42-FFF5B2271053}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "CommonLibraries\Domain\Domain.csproj", "{5ACC84DA-B2D5-487E-8A5A-9F6D23EA0FE2}"
 EndProject

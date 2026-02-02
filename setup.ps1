@@ -52,6 +52,9 @@ dotnet dev-certs https --trust
 Write-Host "Installing UI dependencies..."
 Push-Location "$PSScriptRoot\UI"
 npm install
+Pop-Location
+
+Push-Location "$PSScriptRoot\E2E"
 Write-Host "Installing Playwright browsers..."
 npx playwright install
 Pop-Location

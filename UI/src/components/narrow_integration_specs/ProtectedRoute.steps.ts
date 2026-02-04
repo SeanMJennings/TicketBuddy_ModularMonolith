@@ -4,7 +4,6 @@ import {
     redirectedToHomePage,
     renderProtectedRoute, unrenderProtectedRoute
 } from "./ProtectedRoute.page";
-import React from "react";
 import {AnOidcCustomerUser} from "../../testing/data.ts";
 import {type OidcUser, UserType} from "../../domain/user.ts";
 
@@ -15,14 +14,9 @@ let user: OidcUser | null = null;
 
 vi.mock('react-oidc-context', () => {
     return {
-        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
-            return React.createElement(React.Fragment, null, children);
-        },
         useAuth: () => ({
             isAuthenticated: authenticated,
             user: user,
-            signinRedirect: async () => {},
-            signoutRedirect: async () => {},
         }),
     };
 });

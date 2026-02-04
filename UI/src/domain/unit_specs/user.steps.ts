@@ -12,12 +12,10 @@ export function should_parse_valid_user() {
     const result = UserSchema.safeParse(validUser);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.Id).toBe(validUser.Id);
-        expect(result.data.FullName).toBe(validUser.FullName);
-        expect(result.data.Email).toBe(validUser.Email);
-        expect(result.data.UserType).toBe(validUser.UserType);
-    }
+    expect(result.data?.Id).toBe(validUser.Id);
+    expect(result.data?.FullName).toBe(validUser.FullName);
+    expect(result.data?.Email).toBe(validUser.Email);
+    expect(result.data?.UserType).toBe(validUser.UserType);
 }
 
 export function should_parse_customer_user_type() {
@@ -31,9 +29,7 @@ export function should_parse_customer_user_type() {
     const result = UserSchema.safeParse(customerUser);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.UserType).toBe("Customer");
-    }
+    expect(result.data?.UserType).toBe("Customer");
 }
 
 export function should_parse_administrator_user_type() {
@@ -47,9 +43,7 @@ export function should_parse_administrator_user_type() {
     const result = UserSchema.safeParse(adminUser);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.UserType).toBe("Administrator");
-    }
+    expect(result.data?.UserType).toBe("Administrator");
 }
 
 export function should_reject_user_with_missing_fields() {
@@ -95,18 +89,16 @@ export function should_parse_valid_oidc_user() {
     const result = OidcUserSchema.safeParse(validOidcUser);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.profile.sub).toBe(validOidcUser.profile.sub);
-        expect(result.data.profile.name).toBe(validOidcUser.profile.name);
-        expect(result.data.profile.email).toBe(validOidcUser.profile.email);
-        expect(result.data.profile.email_verified).toBe(true);
-        expect(result.data.id_token).toBe(validOidcUser.id_token);
-        expect(result.data.access_token).toBe(validOidcUser.access_token);
-        expect(result.data.token_type).toBe(validOidcUser.token_type);
-        expect(result.data.scope).toBe(validOidcUser.scope);
-        expect(result.data.expires_at).toBe(validOidcUser.expires_at);
-        expect(result.data.session_state).toBe(null);
-    }
+    expect(result.data?.profile.sub).toBe(validOidcUser.profile.sub);
+    expect(result.data?.profile.name).toBe(validOidcUser.profile.name);
+    expect(result.data?.profile.email).toBe(validOidcUser.profile.email);
+    expect(result.data?.profile.email_verified).toBe(true);
+    expect(result.data?.id_token).toBe(validOidcUser.id_token);
+    expect(result.data?.access_token).toBe(validOidcUser.access_token);
+    expect(result.data?.token_type).toBe(validOidcUser.token_type);
+    expect(result.data?.scope).toBe(validOidcUser.scope);
+    expect(result.data?.expires_at).toBe(validOidcUser.expires_at);
+    expect(result.data?.session_state).toBe(null);
 }
 
 export function should_reject_oidc_user_with_missing_profile() {

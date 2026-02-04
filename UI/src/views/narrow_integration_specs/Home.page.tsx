@@ -21,11 +21,10 @@ export function eventExists(eventName: string): boolean {
     return elements.theEvent(eventName) !== null;
 }
 
-export function soldOutMessageExists(eventName: string): boolean {
+export function soldOutMessageExists(eventName: string) {
     const eventElement = elements.theEvent(eventName);
-    if (!eventElement) return false;
-    const eventContainer = eventElement.closest('[data-testid="event-item"]') || eventElement.parentElement;
-    return eventContainer?.textContent?.includes('Sold Out') || false;
+    const eventContainer = eventElement.closest('[data-testid="event-item"]');
+    return eventContainer?.textContent?.includes('Sold Out');
 }
 
 export function clickFindTicketsButton(index: number) {

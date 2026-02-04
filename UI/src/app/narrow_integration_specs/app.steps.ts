@@ -21,7 +21,6 @@
 import {afterEach, beforeEach, expect, vi} from "vitest";
 import {MockServer} from "../../testing/mock-server";
 import {AnOidcAdminUser, AnOidcCustomerUser, OidcUsers} from "../../testing/data";
-import React from "react";
 
 const mockServer = MockServer.New();
 let isAuthenticated = true;
@@ -32,9 +31,6 @@ let signOutWasCalled = false;
 vi.resetModules();
 vi.mock('react-oidc-context', () => {
     return {
-        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
-            return React.createElement(React.Fragment, null, children);
-        },
         useAuth: () => ({
             isAuthenticated: isAuthenticated,
             user: user,

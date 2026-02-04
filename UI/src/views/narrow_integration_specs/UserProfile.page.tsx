@@ -28,19 +28,19 @@ export function unmountUserProfile() {
     renderedComponent?.unmount();
 }
 
-export function getUserNameDisplay(): string | null {
+export function getUserNameDisplay() {
     const element = elements.userNameDisplay();
-    return element?.textContent || null;
+    return element?.textContent;
 }
 
-export function getUserEmailDisplay(): string | null {
+export function getUserEmailDisplay() {
     const element = elements.userEmailDisplay();
-    return element?.textContent || null;
+    return element?.textContent;
 }
 
-export function getTicketsList(): string[] {
+export function getTicketsList() {
     const elements = renderedComponent.container.querySelectorAll('[data-testid="ticket-item"]');
-    return Array.from(elements).map(element => element.textContent || '');
+    return Array.from(elements).map(element => element.textContent);
 }
 
 export function clickBackToHomeButton() {
@@ -55,7 +55,7 @@ export function loadingIsDisplayed() {
     return elements.loadingIndicator() !== null;
 }
 
-export function getStatsCards(): string[] {
+export function getStatsCards() {
     return elements.getStatsCards();
 }
 
@@ -67,6 +67,6 @@ export const elements = {
     loadingIndicator: () => renderedComponent.container.querySelector('.loading-indicator'),
     getStatsCards: () => {
         const statCards = renderedComponent.container.querySelectorAll('[data-testid="stat-card"]');
-        return Array.from(statCards).map(card => card.textContent || '');
+        return Array.from(statCards).map(card => card.textContent);
     }
 };

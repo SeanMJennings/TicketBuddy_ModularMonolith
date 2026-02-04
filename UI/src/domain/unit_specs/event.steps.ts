@@ -12,18 +12,16 @@ export function should_parse_valid_event() {
         IsSoldOut: false
     };
 
-    const result = EventSchema.safeParse(validEvent);
+    const result = EventSchema.safeParse(validEvent)
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.Id).toBe(validEvent.Id);
-        expect(result.data.EventName).toBe(validEvent.EventName);
-        expect(result.data.StartDate).toBe(validEvent.StartDate);
-        expect(result.data.EndDate).toBe(validEvent.EndDate);
-        expect(result.data.VenueId).toBe(validEvent.VenueId);
-        expect(result.data.Price).toBe(validEvent.Price);
-        expect(result.data.IsSoldOut).toBe(validEvent.IsSoldOut);
-    }
+    expect(result.data?.Id).toBe(validEvent.Id);
+    expect(result.data?.EventName).toBe(validEvent.EventName);
+    expect(result.data?.StartDate).toBe(validEvent.StartDate);
+    expect(result.data?.EndDate).toBe(validEvent.EndDate);
+    expect(result.data?.VenueId).toBe(validEvent.VenueId);
+    expect(result.data?.Price).toBe(validEvent.Price);
+    expect(result.data?.IsSoldOut).toBe(validEvent.IsSoldOut);
 }
 
 export function should_parse_sold_out_event() {
@@ -40,9 +38,7 @@ export function should_parse_sold_out_event() {
     const result = EventSchema.safeParse(soldOutEvent);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.IsSoldOut).toBe(true);
-    }
+    expect(result.data?.IsSoldOut).toBe(true);
 }
 
 export function should_reject_event_with_missing_fields() {
@@ -100,13 +96,11 @@ export function should_parse_valid_event_payload() {
     const result = EventPayloadSchema.safeParse(validPayload);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.EventName).toBe(validPayload.EventName);
-        expect(result.data.StartDate).toBe(validPayload.StartDate);
-        expect(result.data.EndDate).toBe(validPayload.EndDate);
-        expect(result.data.VenueId).toBe(validPayload.VenueId);
-        expect(result.data.Price).toBe(validPayload.Price);
-    }
+    expect(result.data?.EventName).toBe(validPayload.EventName);
+    expect(result.data?.StartDate).toBe(validPayload.StartDate);
+    expect(result.data?.EndDate).toBe(validPayload.EndDate);
+    expect(result.data?.VenueId).toBe(validPayload.VenueId);
+    expect(result.data?.Price).toBe(validPayload.Price);
 }
 
 export function should_reject_event_payload_with_id() {
@@ -135,12 +129,10 @@ export function should_parse_valid_update_event_payload() {
     const result = UpdateEventPayloadSchema.safeParse(validPayload);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.EventName).toBe(validPayload.EventName);
-        expect(result.data.StartDate).toBe(validPayload.StartDate);
-        expect(result.data.EndDate).toBe(validPayload.EndDate);
-        expect(result.data.Price).toBe(validPayload.Price);
-    }
+    expect(result.data?.EventName).toBe(validPayload.EventName);
+    expect(result.data?.StartDate).toBe(validPayload.StartDate);
+    expect(result.data?.EndDate).toBe(validPayload.EndDate);
+    expect(result.data?.Price).toBe(validPayload.Price);
 }
 
 export function should_reject_update_payload_with_venue_id() {

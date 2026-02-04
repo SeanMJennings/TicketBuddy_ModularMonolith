@@ -25,15 +25,13 @@ export function notificationBadgeIsRendered(): boolean {
     return screen.queryByTestId("notification-badge") !== null;
 }
 
-export function getBadgeText(): string | null {
-    return screen.queryByTestId("notification-badge")?.textContent ?? null;
+export function getBadgeText(): string | null | undefined {
+    return screen.queryByTestId("notification-badge")?.textContent;
 }
 
 export async function clickNotificationBell(): Promise<void> {
-    const bell = screen.queryByTestId("notification-bell");
-    if (bell) {
-        await userEvent.click(bell);
-    }
+    const bell = screen.getByTestId("notification-bell");
+    await userEvent.click(bell);
 }
 
 export function notificationDropdownIsRendered(): boolean {

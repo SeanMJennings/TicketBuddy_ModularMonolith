@@ -19,13 +19,8 @@ export const useNotifications = (): UseNotificationsResult => {
     const isAuthenticated = auth.isAuthenticated && auth.user?.access_token;
 
     const fetchNotifications = useCallback(async () => {
-        if (!isAuthenticated || !auth.user?.access_token) {
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const result = await getNotifications(auth.user.access_token);
+            const result = await getNotifications(auth.user?.access_token ?? '');
             setNotifications(result);
             setError(null);
         } catch (err) {
@@ -33,14 +28,9 @@ export const useNotifications = (): UseNotificationsResult => {
         } finally {
             setIsLoading(false);
         }
-    }, [isAuthenticated, auth.user?.access_token]);
+    }, [auth.user?.access_token]);
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            setIsLoading(false);
-            return;
-        }
-
         fetchNotifications();
     }, [isAuthenticated, fetchNotifications]);
 

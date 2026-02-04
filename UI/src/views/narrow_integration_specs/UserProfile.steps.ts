@@ -1,5 +1,4 @@
 ﻿import { afterEach, beforeEach, expect, vi } from "vitest";
-import React from "react";
 import {MockServer} from "../../testing/mock-server.ts";
 import {
     renderUserProfile,
@@ -21,14 +20,9 @@ vi.resetModules();
 
 vi.mock('react-oidc-context', () => {
     return {
-        AuthProvider: ({ children }: { children?: React.ReactNode }) => {
-            return React.createElement(React.Fragment, null, children);
-        },
         useAuth: () => ({
             isAuthenticated: true,
             user: OidcUsers[0],
-            signinRedirect: async () => {},
-            signoutRedirect: async () => {},
         }),
     };
 });
@@ -165,11 +159,7 @@ export async function should_display_event_date_and_venue_in_tickets() {
     expect(ticketsList).toHaveLength(2);
 
     const getEventDate = (theEvent: Event): string => {
-
-        const startDate =   typeof theEvent.StartDate === 'string'
-            ? moment(theEvent.StartDate)
-            : theEvent.StartDate;
-
+        const startDate = moment(theEvent.StartDate)
         return startDate.format('DD MMM YYYY');
     };
 

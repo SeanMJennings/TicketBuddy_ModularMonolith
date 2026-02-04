@@ -13,13 +13,11 @@ export function should_parse_valid_ticket() {
     const result = TicketSchema.safeParse(validTicket);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.Id).toBe(validTicket.Id);
-        expect(result.data.EventId).toBe(validTicket.EventId);
-        expect(result.data.Price).toBe(validTicket.Price);
-        expect(result.data.SeatNumber).toBe(validTicket.SeatNumber);
-        expect(result.data.Purchased).toBe(validTicket.Purchased);
-    }
+    expect(result.data?.Id).toBe(validTicket.Id);
+    expect(result.data?.EventId).toBe(validTicket.EventId);
+    expect(result.data?.Price).toBe(validTicket.Price);
+    expect(result.data?.SeatNumber).toBe(validTicket.SeatNumber);
+    expect(result.data?.Purchased).toBe(validTicket.Purchased);
 }
 
 export function should_reject_ticket_with_missing_fields() {

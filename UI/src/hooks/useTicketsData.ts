@@ -20,10 +20,9 @@ export const useTicketsData = (eventId: string | undefined): UseTicketsDataResul
 
     useEffect(() => {
         const fetchEventAndTickets = async () => {
-            if (!eventId) return;
             await Promise.all([
-                getEventById(eventId),
-                getTicketsForEvent(eventId, auth.user?.access_token ?? '')
+                getEventById(eventId!),
+                getTicketsForEvent(eventId!, auth.user?.access_token ?? '')
             ]).then(data => {
                 setEvent(data[0]);
                 setTickets(data[1]);

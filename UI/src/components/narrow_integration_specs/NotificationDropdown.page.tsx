@@ -25,9 +25,9 @@ export function getNotificationItemCount(): number {
     return getNotificationItems().length;
 }
 
-export function getNotificationText(index: number): string | null {
+export function getNotificationText(index: number): string | null | undefined {
     const items = getNotificationItems();
-    return items[index]?.textContent ?? null;
+    return items[index]?.textContent;
 }
 
 export function emptyStateIsRendered(): boolean {
@@ -45,7 +45,5 @@ export function isNotificationUnread(index: number): boolean {
 
 export async function clickNotification(index: number): Promise<void> {
     const items = getNotificationItems();
-    if (items[index]) {
-        await userEvent.click(items[index]);
-    }
+    await userEvent.click(items[index]);
 }

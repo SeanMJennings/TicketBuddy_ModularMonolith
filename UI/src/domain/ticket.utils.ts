@@ -7,7 +7,6 @@ export const calculateTotalSpent = (tickets: Ticket[]): number => {
 };
 
 export const calculateTotalPrice = (tickets: Ticket[], selectedSeats: number[]): number => {
-    if (tickets.length === 0 || selectedSeats.length === 0) return 0;
     const ticketPrice = tickets[0].Price;
     return ticketPrice * selectedSeats.length;
 };

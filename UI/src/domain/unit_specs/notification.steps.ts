@@ -23,14 +23,12 @@ export function should_parse_valid_notification() {
     const result = NotificationSchema.safeParse(validNotification);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.Id).toBe(validNotification.Id);
-        expect(result.data.UserId).toBe(validNotification.UserId);
-        expect(result.data.Type).toBe(validNotification.Type);
-        expect(result.data.Payload).toBe(validNotification.Payload);
-        expect(result.data.IsRead).toBe(validNotification.IsRead);
-        expect(result.data.CreatedAt).toBe(validNotification.CreatedAt);
-    }
+    expect(result.data?.Id).toBe(validNotification.Id);
+    expect(result.data?.UserId).toBe(validNotification.UserId);
+    expect(result.data?.Type).toBe(validNotification.Type);
+    expect(result.data?.Payload).toBe(validNotification.Payload);
+    expect(result.data?.IsRead).toBe(validNotification.IsRead);
+    expect(result.data?.CreatedAt).toBe(validNotification.CreatedAt);
 }
 
 export function should_parse_read_notification() {
@@ -46,9 +44,7 @@ export function should_parse_read_notification() {
     const result = NotificationSchema.safeParse(readNotification);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.IsRead).toBe(true);
-    }
+    expect(result.data?.IsRead).toBe(true);
 }
 
 export function should_reject_notification_with_missing_fields() {
@@ -98,9 +94,7 @@ export function should_parse_zero_unread_count() {
     const result = UnreadCountSchema.safeParse(validResponse);
 
     expect(result.success).toBe(true);
-    if (result.success) {
-        expect(result.data.Count).toBe(0);
-    }
+    expect(result.data?.Count).toBe(0);
 }
 
 export function should_reject_non_integer_count() {
@@ -131,12 +125,13 @@ export function should_parse_ticket_purchased_payload() {
 
     const result = parseNotificationPayload(notification);
 
-    expect(result.type).toBe("TicketPurchased");
     if (result.type === "TicketPurchased") {
         expect(result.eventId).toBe("b95e92a4-9893-4791-909f-1decf99ea8b4");
         expect(result.ticketId).toBe("720effb3-1802-4bbe-b6c4-9415d43b936c");
         expect(result.eventName).toBe("Jazz Evening");
     }
+
+    expect(result.type).toBe("TicketPurchased");
 }
 
 export function should_return_unknown_for_unrecognized_type() {
@@ -147,10 +142,11 @@ export function should_return_unknown_for_unrecognized_type() {
 
     const result = parseNotificationPayload(notification);
 
-    expect(result.type).toBe("Unknown");
     if (result.type === "Unknown") {
         expect(result.originalType).toBe("SomeNewType");
     }
+
+    expect(result.type).toBe("Unknown");
 }
 
 export function should_return_unknown_for_invalid_json() {

@@ -1,17 +1,6 @@
 import { render, screen, type RenderResult } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { vi } from "vitest";
 import { Main } from "../../app/App.tsx";
-
-vi.mock("../Home", () => {
-    return {
-        Home: () => {
-            return (
-                <div data-testid="home-page">I am the mocked Home component</div>
-            );
-        }
-    }
-});
 
 let renderedComponent: RenderResult;
 
@@ -31,12 +20,12 @@ export function getBookingsSectionTitle(): HTMLElement | null {
     return screen.queryByText("My Bookings");
 }
 
-export function getTicketsList(): string[] {
+export function getTicketsList() {
     const elements = renderedComponent.container.querySelectorAll('[data-testid="ticket-item"]');
-    return Array.from(elements).map(element => element.textContent || '');
+    return Array.from(elements).map(element => element.textContent);
 }
 
-export function getStatsCards(): string[] {
+export function getStatsCards() {
     const statCards = renderedComponent.container.querySelectorAll('[data-testid="stat-card"]');
-    return Array.from(statCards).map(card => card.textContent || '');
+    return Array.from(statCards).map(card => card.textContent);
 }

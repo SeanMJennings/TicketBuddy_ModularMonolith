@@ -47,13 +47,12 @@ export async function clickUserIcon() {
     return userEvent.click(theUserIcon);
 }
 
-export function getTicketsList(): string[] {
+export function getTicketsList() {
     const elements = renderedComponent.container.querySelectorAll('[data-testid="ticket-item"]');
-    return Array.from(elements).map(element => element.textContent || '');
+    return Array.from(elements).map(element => element.textContent);
 }
 
 const elements = {
-    home: () => renderedComponent.queryByText("I am the mocked Home component"),
     firstEvent: async () => (await renderedComponent.findAllByText("Find Tickets"))[0],
     getSeatElement: (seatNumber: number)=> renderedComponent.container.querySelector(`[data-seat="${seatNumber}"]`),
     proceedToPurchaseButton: () => renderedComponent.getByText('Proceed to Purchase'),

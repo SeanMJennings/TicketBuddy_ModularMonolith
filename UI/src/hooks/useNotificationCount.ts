@@ -20,13 +20,8 @@ export const useNotificationCount = (): UseNotificationCountResult => {
     const isAuthenticated = auth.isAuthenticated && auth.user?.access_token;
 
     const fetchCount = useCallback(async () => {
-        if (!isAuthenticated || !auth.user?.access_token) {
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const result = await getUnreadCount(auth.user.access_token);
+            const result = await getUnreadCount(auth.user?.access_token ?? '');
             setCount(result.Count);
             setError(null);
         } catch (err) {
@@ -34,7 +29,7 @@ export const useNotificationCount = (): UseNotificationCountResult => {
         } finally {
             setIsLoading(false);
         }
-    }, [isAuthenticated, auth.user?.access_token]);
+    }, [auth.user?.access_token]);
 
     useEffect(() => {
         if (!isAuthenticated) {

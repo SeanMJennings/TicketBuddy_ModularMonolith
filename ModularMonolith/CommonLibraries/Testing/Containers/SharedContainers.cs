@@ -8,6 +8,10 @@ namespace Testing.Containers;
 
 public static class SharedContainers
 {
+    private static readonly bool IsRunningInCi =
+        Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true" ||
+        Environment.GetEnvironmentVariable("CI") == "true";
+
     private static PostgreSqlContainer? postgreSqlContainer;
     private static RedisContainer? redisContainer;
     private static RabbitMqContainer? rabbitMqContainer;
@@ -33,7 +37,7 @@ public static class SharedContainers
                 .WithDatabase("TicketBuddy")
                 .WithUsername("sa")
                 .WithPassword("yourStrong(!)Password")
-                .WithReuse(true)
+                .WithReuse(!IsRunningInCi)
                 .Build();
 
             await postgreSqlContainer.StartAsync();
@@ -61,7 +65,7 @@ public static class SharedContainers
             if (redisContainer is not null) return redisContainer;
 
             redisContainer = new RedisBuilder("redis:latest")
-                .WithReuse(true)
+                .WithReuse(!IsRunningInCi)
                 .Build();
 
             await redisContainer.StartAsync();
@@ -87,7 +91,7 @@ public static class SharedContainers
                 .WithPassword(RabbitMq.Password)
                 .WithPortBinding(5672, true)
                 .WithPortBinding(15672, true)
-                .WithReuse(true)
+                .WithReuse(!IsRunningInCi)
                 .Build();
 
             await rabbitMqContainer.StartAsync();
@@ -114,7 +118,7 @@ public static class SharedContainers
             var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
 
             keycloakContainer = new KeycloakBuilder("quay.io/keycloak/keycloak:26.3")
-                .WithReuse(true)
+                .WithReuse(!IsRunningInCi)
                 .WithRealm("ticketbuddy-realm.json")
                 .WithBindMount(keycloakJarHostPath, "/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar")
                 .WithUsername(Keycloak.AdminUserName)

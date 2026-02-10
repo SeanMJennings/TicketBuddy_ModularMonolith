@@ -8,12 +8,11 @@ namespace Testing.Containers;
 
 public static class SharedContainers
 {
-    private const int PostgreSqlPort = 15432;
-    private const int RedisPort = 16379;
-    private const int RabbitMqPort = 15672;
-    private const int RabbitMqAmqpPort = 15673;
-    private const int KeycloakPort = 18080;
     private const string LabelKey = "ticketbuddy-test";
+    private const string PostgreSqlName = "ticketbuddy-test-postgresql";
+    private const string RedisName = "ticketbuddy-test-redis";
+    private const string RabbitMqName = "ticketbuddy-test-rabbitmq";
+    private const string KeycloakName = "ticketbuddy-test-keycloak";
 
     private static PostgreSqlContainer? postgreSqlContainer;
     private static RedisContainer? redisContainer;
@@ -37,10 +36,10 @@ public static class SharedContainers
             if (postgreSqlContainer is not null) return postgreSqlContainer;
 
             postgreSqlContainer = new PostgreSqlBuilder("postgres:latest")
+                .WithName(PostgreSqlName)
                 .WithDatabase("TicketBuddy")
                 .WithUsername("sa")
                 .WithPassword("yourStrong(!)Password")
-                .WithPortBinding(PostgreSqlPort, 5432)
                 .WithReuse(true)
                 .WithLabel(LabelKey, "postgresql")
                 .Build();
@@ -48,7 +47,7 @@ public static class SharedContainers
             await postgreSqlContainer.StartAsync();
 
             if (migrationCompleted) return postgreSqlContainer;
-            
+
             Migration.Upgrade(postgreSqlContainer.GetConnectionString());
             migrationCompleted = true;
 
@@ -70,7 +69,7 @@ public static class SharedContainers
             if (redisContainer is not null) return redisContainer;
 
             redisContainer = new RedisBuilder("redis:latest")
-                .WithPortBinding(RedisPort, 6379)
+                .WithName(RedisName)
                 .WithReuse(true)
                 .WithLabel(LabelKey, "redis")
                 .Build();
@@ -94,10 +93,11 @@ public static class SharedContainers
             if (rabbitMqContainer is not null) return rabbitMqContainer;
 
             rabbitMqContainer = new RabbitMqBuilder("rabbitmq:management")
+                .WithName(RabbitMqName)
                 .WithUsername(RabbitMq.UserName)
                 .WithPassword(RabbitMq.Password)
-                .WithPortBinding(RabbitMqPort, 15672)
-                .WithPortBinding(RabbitMqAmqpPort, 5672)
+                .WithPortBinding(5672, true)
+                .WithPortBinding(15672, true)
                 .WithReuse(true)
                 .WithLabel(LabelKey, "rabbitmq")
                 .Build();
@@ -126,7 +126,7 @@ public static class SharedContainers
             var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
 
             keycloakContainer = new KeycloakBuilder("quay.io/keycloak/keycloak:26.3")
-                .WithPortBinding(KeycloakPort, 8080)
+                .WithName(KeycloakName)
                 .WithReuse(true)
                 .WithLabel(LabelKey, "keycloak")
                 .WithRealm("ticketbuddy-realm.json")

@@ -26,12 +26,10 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        database.Migrate();
+        database = await SharedContainers.GetPostgreSqlAsync();
     }
 
-    protected override async Task before_each()
+    protected override Task before_each()
     {
         userId = Guid.NewGuid();
         notificationId = Guid.NewGuid();
@@ -42,6 +40,7 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
         client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
         client.DefaultRequestHeaders.Add(UserHeaders.UserId, userId.ToString());
+        return Task.CompletedTask;
     }
 
     protected override async Task after_each()
@@ -51,11 +50,7 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
         await factory.DisposeAsync();
     }
 
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
-    }
+    protected override Task after_all() => Task.CompletedTask;
 
     private async Task a_notification_exists_for_the_user()
     {

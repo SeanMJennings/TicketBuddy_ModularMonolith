@@ -14,16 +14,13 @@ public class Setup
     public async Task BeforeAll()
     {
         CommonEnvironment.LocalTesting.SetEnvironment();
-        Database = PostgreSql.CreateContainer();
-        await Database.StartAsync();
-        Database.Migrate();
+        Database = await SharedContainers.GetPostgreSqlAsync();
     }
 
     [OneTimeTearDown]
-    public async Task AfterAll()
+    public Task AfterAll()
     {
-        await Database.StopAsync();
-        await Database.DisposeAsync();
         CommonEnvironment.LocalDevelopment.SetEnvironment();
+        return Task.CompletedTask;
     }
 }

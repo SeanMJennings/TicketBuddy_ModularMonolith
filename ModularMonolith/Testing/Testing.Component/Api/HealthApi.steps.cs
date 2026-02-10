@@ -36,13 +36,9 @@ public partial class HealthApiSpecs : TruncateDbSpecification
     protected override async Task before_all()
     {
         CommonEnvironment.LocalDevelopment.SetEnvironment();
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        rabbit = RabbitMq.CreateContainer();
-        await rabbit.StartAsync();
-        redis = Redis.CreateContainer();
-        await redis.StartAsync();
-        database.Migrate();
+        database = await SharedContainers.GetPostgreSqlAsync();
+        rabbit = await SharedContainers.GetRabbitMqAsync();
+        redis = await SharedContainers.GetRedisAsync();
     }
     
     protected override async Task before_each()
@@ -69,27 +65,22 @@ public partial class HealthApiSpecs : TruncateDbSpecification
         await factory.DisposeAsync();
     }
 
-    protected override async Task after_all()
+    protected override Task after_all()
     {
-        await database.StopAsync();
-        await database.DisposeAsync();
-        await rabbit.StopAsync();
-        await rabbit.DisposeAsync();
-        await redis.StopAsync();
-        await redis.DisposeAsync();
         CommonEnvironment.LocalTesting.SetEnvironment();
+        return Task.CompletedTask;
     }
 
-    private void a_postgresql_database_is_available(){}
-    private void a_redis_cache_is_available(){}
-    private void a_rabbitmq_broker_is_available(){}
+    private static void a_postgresql_database_is_available(){}
+    private static void a_redis_cache_is_available(){}
+    private static void a_rabbitmq_broker_is_available(){}
 
     private async Task the_api_is_running()
     {
-        await ensureMassTransitIsAwakeAndWillPassHealthCheck();
+        await EnsureMassTransitIsAwakeAndWillPassHealthCheck();
     }
 
-    private async Task ensureMassTransitIsAwakeAndWillPassHealthCheck()
+    private async Task EnsureMassTransitIsAwakeAndWillPassHealthCheck()
     {
         var theContent = new StringContent(
             JsonSerialization.Serialize(new EventPayload(name, event_start_date, event_end_date, venue1Id, price)),

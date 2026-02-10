@@ -48,22 +48,17 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = PostgreSql.CreateContainer(1435);
-        await database.StartAsync();
-        database.Migrate();
-        rabbit = RabbitMq.CreateContainer(5674);
-        await rabbit.StartAsync();
-        redis = Redis.CreateContainer(6381);
-        await redis.StartAsync();
-        keycloak = Testing.Containers.Keycloak.CreateContainer(new Uri($"https://{rabbit.Hostname}:{rabbit.GetMappedPublicPort(5672)}/"));
-        await keycloak.StartAsync();
+        database = await SharedContainers.GetPostgreSqlAsync();
+        rabbit = await SharedContainers.GetRabbitMqAsync();
+        redis = await SharedContainers.GetRedisAsync();
+        keycloak = await SharedContainers.GetKeycloakAsync();
         await create_a_customer_user();
         keycloakAdminJwt = await KeycloakClient.GetToken(
             new Uri(keycloak.GetBaseAddress()),
             Testing.Containers.Keycloak.TicketBuddyRealm,
             Testing.Containers.Keycloak.TicketBuddyApiClientId,
             Testing.Containers.Keycloak.AdminUserName,
-            Testing.Containers.Keycloak.AdminPassword);        
+            Testing.Containers.Keycloak.AdminPassword);
         keycloakCustomerJwt = await KeycloakClient.GetToken(
             new Uri(keycloak.GetBaseAddress()),
             Testing.Containers.Keycloak.TicketBuddyRealm,
@@ -85,21 +80,13 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     protected override async Task after_each()
     {
         await Truncate(database.GetConnectionString());
+        await redis.Clear();
+        await rabbit.Clear();
         client.Dispose();
         await factory.DisposeAsync();
     }
 
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
-        await rabbit.StopAsync();
-        await rabbit.DisposeAsync();
-        await redis.StopAsync();
-        await redis.DisposeAsync();
-        await keycloak.StopAsync();
-        await keycloak.DisposeAsync();
-    }
+    protected override Task after_all() => Task.CompletedTask;
     
     private async Task create_a_customer_user()
     {
@@ -109,7 +96,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             Testing.Containers.Keycloak.AdminCliClientId,
             Testing.Containers.Keycloak.AdminUserName,
             Testing.Containers.Keycloak.AdminPassword);
-        
+
         var payload = new UserRepresentation
         {
             id = user_id,
@@ -127,7 +114,8 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 
         var response = await keycloakApiHttpClient.PostAsJsonAsync("/admin/realms/ticketbuddy/users", payload);
         response_code = response.StatusCode;
-        response_code.ShouldBe(HttpStatusCode.Created);
+        // User may already exist from a previous test run with container reuse
+        (response_code == HttpStatusCode.Created || response_code == HttpStatusCode.Conflict).ShouldBeTrue();
     }
     
     private async Task a_venue_exists()

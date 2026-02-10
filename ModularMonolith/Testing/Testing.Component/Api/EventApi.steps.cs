@@ -48,16 +48,12 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private readonly Money price = 12.34m;
     private readonly Money new_price = 23.45m;
     private static PostgreSqlContainer database = null!;
-    private static RabbitMqContainer rabbit = null!;
     private ITestHarness testHarness = null!;
 
     protected override async Task before_all()
     {
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        database.Migrate();
-        rabbit = RabbitMq.CreateContainer();
-        await rabbit.StartAsync();
+        database = await SharedContainers.GetPostgreSqlAsync();
+        await SharedContainers.GetRabbitMqAsync();
     }
     
     protected override async Task before_each()
@@ -95,13 +91,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         await factory.DisposeAsync();
     }
 
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
-        await rabbit.StopAsync();
-        await rabbit.DisposeAsync();
-    }
+    protected override Task after_all() => Task.CompletedTask;
 
     private void a_request_to_create_an_event()
     {
@@ -424,8 +414,7 @@ public partial class EventApiSpecs : TruncateDbSpecification
         testHarness.Published.Select<VenueUpserted>()
             .Any(v =>
                 v.Context.Message.Id == returned_venue_id &&
-                v.Context.Message.Name == "Royal Albert Hall" &&
-                v.Context.Message.Capacity == 30
+                v.Context.Message is { Name: "Royal Albert Hall", Capacity: 30 }
                 ).ShouldBeTrue("VenueUpserted was not published to the bus");
     }
 

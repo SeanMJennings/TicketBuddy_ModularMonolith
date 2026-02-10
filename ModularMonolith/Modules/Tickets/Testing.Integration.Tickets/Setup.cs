@@ -16,20 +16,14 @@ public class Setup
     public async Task BeforeAll()
     {
         CommonEnvironment.LocalTesting.SetEnvironment();
-        Database = PostgreSql.CreateContainer();
-        await Database.StartAsync();
-        Database.Migrate();
-        Redis = Testing.Containers.Redis.CreateContainer();
-        await Redis.StartAsync();
+        Database = await SharedContainers.GetPostgreSqlAsync();
+        Redis = await SharedContainers.GetRedisAsync();
     }
 
     [OneTimeTearDown]
-    public async Task AfterAll()
+    public Task AfterAll()
     {
-        await Database.StopAsync();
-        await Database.DisposeAsync();
-        await Redis.StopAsync();
-        await Redis.DisposeAsync();
         CommonEnvironment.LocalDevelopment.SetEnvironment();
+        return Task.CompletedTask;
     }
 }

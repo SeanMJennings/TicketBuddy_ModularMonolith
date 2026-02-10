@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using Controllers.Events.Requests;
@@ -46,11 +46,8 @@ public partial class TicketApiSpecs : TruncateDbSpecification
 
     protected override async Task before_all()
     {
-        database = PostgreSql.CreateContainer();
-        await database.StartAsync();
-        database.Migrate();
-        redis = Redis.CreateContainer();
-        await redis.StartAsync();
+        database = await SharedContainers.GetPostgreSqlAsync();
+        redis = await SharedContainers.GetRedisAsync();
     }
     
     protected override async Task before_each()
@@ -95,13 +92,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
         await redis.Clear();
     }
 
-    protected override async Task after_all()
-    {
-        await database.StopAsync();
-        await database.DisposeAsync();
-        await redis.StopAsync();
-        await redis.DisposeAsync();
-    }
+    protected override Task after_all() => Task.CompletedTask;
 
     private async Task an_event_exists()
     {

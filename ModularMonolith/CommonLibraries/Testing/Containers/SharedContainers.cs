@@ -8,12 +8,6 @@ namespace Testing.Containers;
 
 public static class SharedContainers
 {
-    private const string LabelKey = "ticketbuddy-test";
-    private const string PostgreSqlName = "ticketbuddy-test-postgresql";
-    private const string RedisName = "ticketbuddy-test-redis";
-    private const string RabbitMqName = "ticketbuddy-test-rabbitmq";
-    private const string KeycloakName = "ticketbuddy-test-keycloak";
-
     private static PostgreSqlContainer? postgreSqlContainer;
     private static RedisContainer? redisContainer;
     private static RabbitMqContainer? rabbitMqContainer;
@@ -36,12 +30,10 @@ public static class SharedContainers
             if (postgreSqlContainer is not null) return postgreSqlContainer;
 
             postgreSqlContainer = new PostgreSqlBuilder("postgres:latest")
-                .WithName(PostgreSqlName)
                 .WithDatabase("TicketBuddy")
                 .WithUsername("sa")
                 .WithPassword("yourStrong(!)Password")
                 .WithReuse(true)
-                .WithLabel(LabelKey, "postgresql")
                 .Build();
 
             await postgreSqlContainer.StartAsync();
@@ -69,9 +61,7 @@ public static class SharedContainers
             if (redisContainer is not null) return redisContainer;
 
             redisContainer = new RedisBuilder("redis:latest")
-                .WithName(RedisName)
                 .WithReuse(true)
-                .WithLabel(LabelKey, "redis")
                 .Build();
 
             await redisContainer.StartAsync();
@@ -93,13 +83,11 @@ public static class SharedContainers
             if (rabbitMqContainer is not null) return rabbitMqContainer;
 
             rabbitMqContainer = new RabbitMqBuilder("rabbitmq:management")
-                .WithName(RabbitMqName)
                 .WithUsername(RabbitMq.UserName)
                 .WithPassword(RabbitMq.Password)
                 .WithPortBinding(5672, true)
                 .WithPortBinding(15672, true)
                 .WithReuse(true)
-                .WithLabel(LabelKey, "rabbitmq")
                 .Build();
 
             await rabbitMqContainer.StartAsync();
@@ -126,9 +114,7 @@ public static class SharedContainers
             var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
 
             keycloakContainer = new KeycloakBuilder("quay.io/keycloak/keycloak:26.3")
-                .WithName(KeycloakName)
                 .WithReuse(true)
-                .WithLabel(LabelKey, "keycloak")
                 .WithRealm("ticketbuddy-realm.json")
                 .WithBindMount(keycloakJarHostPath, "/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar")
                 .WithUsername(Keycloak.AdminUserName)

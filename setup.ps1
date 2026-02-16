@@ -13,6 +13,7 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 $hasDotnet10 = (Get-Command dotnet -ErrorAction SilentlyContinue) -and ((dotnet --list-sdks 2>$null) -match "^10\.")
 $hasDocker = Get-Command docker -ErrorAction SilentlyContinue
 $hasNode = Get-Command node -ErrorAction SilentlyContinue
+$hasGitHub = Get-Command gh -ErrorAction SilentlyContinue
 
 if (-not $hasDotnet10) {
     Write-Host "Installing .NET 10 SDK..."
@@ -27,6 +28,11 @@ if (-not $hasNode) {
     choco install nodejs-lts -y --no-progress
 }
 
+if (-not $hasGitHub) {
+    Write-Host "Installing GitHub..."
+    choco install gh -y --no-progress
+}
+
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 if (-not (Get-Command aspire -ErrorAction SilentlyContinue)) {
@@ -35,14 +41,13 @@ if (-not (Get-Command aspire -ErrorAction SilentlyContinue)) {
 }
 
 Write-Host "Configuring GitHub NuGet feed..."
-Write-Host "Create a GitHub PAT with 'read:packages' scope at: https://github.com/settings/tokens"
-$token = Read-Host "Enter GitHub Personal Access Token"
+$gitHubUsername = Read-Host "Enter GitHub username"
+gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key
+$token = gh auth token
 
 if ($token) {
     dotnet nuget remove source TicketBuddyGitHub 2>$null
-    dotnet nuget add source "https://nuget.pkg.github.com/SeanMJennings/index.json" --name "TicketBuddyGitHub" --username "SeanMJennings" --password $token --store-password-in-clear-text
-    [System.Environment]::SetEnvironmentVariable("GITHUB_TOKEN", $token, "User")
-    $env:GITHUB_TOKEN = $token
+    dotnet nuget add source "https://nuget.pkg.github.com/SeanMJennings/index.json" --name "TicketBuddyGitHub" --username $gitHubUsername --password $token --store-password-in-clear-text
 }
 
 Write-Host "Setting up HTTPS development certificates..."

@@ -62,25 +62,27 @@ if ! command -v aspire >/dev/null 2>&1; then
     dotnet workload install aspire
 fi
 
+if ! command -v gh >/dev/null 2>&1; then
+    echo "Installing Github ..."
+    apt-get install -y gh
+fi
+
 echo "Configuring GitHub NuGet feed..."
-echo "Create a GitHub PAT with 'read:packages' scope at: https://github.com/settings/tokens"
-read -p "Enter GitHub Personal Access Token: " token
+read -p "Enter GitHub username: " githubUsername
+
+gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --skip-ssh-key --web
+token=$(gh auth token)
 
 if [ -n "$token" ]; then
     dotnet nuget remove source TicketBuddyGitHub 2>/dev/null || true
     dotnet nuget add source "https://nuget.pkg.github.com/SeanMJennings/index.json" \
         --name "TicketBuddyGitHub" \
-        --username "SeanMJennings" \
+        --username "$githubUsername" \
         --password "$token" \
         --store-password-in-clear-text
-
-    echo "export GITHUB_TOKEN=$token" >> "$SUDO_USER_HOME/.bashrc"
-    export GITHUB_TOKEN="$token"
 fi
 
 echo "Setting up HTTPS development certificates..."
-dotnet dev-certs https --clean 2>/dev/null || true
-dotnet dev-certs https
 
 echo "Installing UI dependencies..."
 cd "$SCRIPT_DIR/UI"

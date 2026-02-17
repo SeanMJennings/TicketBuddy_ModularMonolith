@@ -54,6 +54,8 @@ Write-Host "Setting up HTTPS development certificates..."
 dotnet dev-certs https --clean
 dotnet dev-certs https --trust
 
+echo "You may still need to navigate to localhost:5001 in browser when running and allow"
+
 Write-Host "Installing UI dependencies..."
 Push-Location "$PSScriptRoot\UI"
 npm install

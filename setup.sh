@@ -83,6 +83,10 @@ if [ -n "$token" ]; then
 fi
 
 echo "Setting up HTTPS development certificates..."
+sudo dotnet dev-certs https --clean
+sudo dotnet dev-certs https --trust
+
+echo "You may still need to navigate to localhost:5001 in browser when running and allow"
 
 echo "Installing UI dependencies..."
 cd "$SCRIPT_DIR/UI"

@@ -38,9 +38,12 @@ The architecture style used is Clean Architecture by [Robert C. Martin (Uncle Bo
 ![Clean Architecture inside Modular Monolith](./Documents/CleanArchitecture.jpg)
 
 ## Testing
-The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc).
+The testing approach is inspired by the [Modern Test Pyramid](https://dev.to/optivem/modern-test-pyramid-4dfc)
+and the distribution suggested by the [Testing Trophy](https://kentcdodds.com/blog/write-tests) that favours not overly mocking and isolating units of code but rather testing real code in realistic manners.
 
 ![Modern Test Pyramid](./Documents/ModernTestPyramid.png)
+
+![Testing Trophy](./Documents/TestingTrophy.png)
 
 ## Key technologies/choices:
 - ASP.NET Core

@@ -16,13 +16,13 @@ public partial class GetUnreadCountSpecs : TruncateDbSpecification
 {
     private GetUnreadCountEndpoint getUnreadCountEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
-    private Guid userId = Guid.NewGuid();
+    private Guid userId = Guid.CreateVersion7();
     private int returnedUnreadCount;
 
     protected override async Task before_each()
     {
         await base.before_each();
-        userId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
         returnedUnreadCount = 0;
 
         serviceProvider = new ServiceCollection()
@@ -67,7 +67,7 @@ public partial class GetUnreadCountSpecs : TruncateDbSpecification
         bool isRead = false)
     {
         var notification = Notification.Create(
-            id ?? Guid.NewGuid(),
+            id ?? Guid.CreateVersion7(),
             forUserId ?? userId,
             NotificationType.TicketPurchased,
             $"{{\"eventName\":\"{eventName}\"}}",

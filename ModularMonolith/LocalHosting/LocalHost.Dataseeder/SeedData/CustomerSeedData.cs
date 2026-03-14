@@ -4,10 +4,10 @@ internal static class CustomerSeedData
 {
     internal static readonly IReadOnlyList<CustomerData> Customers =
     [
-        new(Guid.NewGuid(), "John", "Smith", "john.smith@example.com"),
-        new(Guid.NewGuid(), "Jane", "Doe", "jane.doe@example.com"),
-        new(Guid.NewGuid(), "Robert", "Johnson", "robert.johnson@example.com"),
-        new(Guid.NewGuid(), "Emily", "Davis", "emily.davis@example.com")
+        new(Guid.CreateVersion7(), "John", "Smith", "john.smith@example.com"),
+        new(Guid.CreateVersion7(), "Jane", "Doe", "jane.doe@example.com"),
+        new(Guid.CreateVersion7(), "Robert", "Johnson", "robert.johnson@example.com"),
+        new(Guid.CreateVersion7(), "Emily", "Davis", "emily.davis@example.com")
     ];
 }
 

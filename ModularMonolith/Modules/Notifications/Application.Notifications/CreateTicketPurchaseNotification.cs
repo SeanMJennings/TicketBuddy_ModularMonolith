@@ -9,7 +9,7 @@ public class CreateTicketPurchaseNotification(
     public async Task Execute(Guid userId, Guid ticketId, Guid eventId, string eventName)
     {
         var notification = Notification.Create(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             userId,
             NotificationType.TicketPurchased,
             $"{{\"ticketId\":\"{ticketId}\",\"eventId\":\"{eventId}\",\"eventName\":\"{eventName}\"}}",

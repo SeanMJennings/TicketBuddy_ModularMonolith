@@ -33,9 +33,9 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     private Exception theError = null!;
     private ITestHarness testHarness = null!;
 
-    private Guid event_id = Guid.NewGuid();
-    private Guid user_id = Guid.NewGuid();
-    private readonly Guid another_user_id = Guid.NewGuid();
+    private Guid event_id = Guid.CreateVersion7();
+    private Guid user_id = Guid.CreateVersion7();
+    private readonly Guid another_user_id = Guid.CreateVersion7();
     private const decimal price = 25.00m;
     private const string name = "wibble";
     private const string email = "john.smith@gmail.com";
@@ -46,8 +46,8 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     protected override Task before_each()
     {
         ticket_ids = [];
-        event_id = Guid.NewGuid();
-        user_id = Guid.NewGuid();
+        event_id = Guid.CreateVersion7();
+        user_id = Guid.CreateVersion7();
         theError = null!;
 
         serviceProvider = new ServiceCollection()

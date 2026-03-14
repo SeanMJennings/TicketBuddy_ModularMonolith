@@ -18,8 +18,8 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
     private HttpClient client = null!;
     private static PostgreSqlContainer database = null!;
 
-    private Guid userId = Guid.NewGuid();
-    private Guid notificationId = Guid.NewGuid();
+    private Guid userId = Guid.CreateVersion7();
+    private Guid notificationId = Guid.CreateVersion7();
     private HttpStatusCode responseCode;
     private List<NotificationResponse> returnedNotifications = [];
     private int returnedUnreadCount;
@@ -31,8 +31,8 @@ public partial class NotificationApiSpecs : TruncateDbSpecification
 
     protected override Task before_each()
     {
-        userId = Guid.NewGuid();
-        notificationId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
+        notificationId = Guid.CreateVersion7();
         returnedNotifications = [];
         returnedUnreadCount = 0;
 

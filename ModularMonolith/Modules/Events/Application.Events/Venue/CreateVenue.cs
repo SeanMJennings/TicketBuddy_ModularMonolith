@@ -7,7 +7,7 @@ public class CreateVenue(VenuesValidator venuesValidator, IPersistVenues venueRe
 {
     public async Task<Guid> Execute(VenueName name, Address address, uint capacity)
     {
-        var venueId = Guid.NewGuid();
+        var venueId = Guid.CreateVersion7();
         var venue = new Domain.Events.Venue.Venue(venueId, name, address, capacity);
 
         await venuesValidator.CheckAddressUniqueness(address);

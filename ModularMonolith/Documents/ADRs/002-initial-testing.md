@@ -131,7 +131,7 @@ public partial class EventSpecs : Specification
     protected override void before_each()
     {
         base.before_each();
-        id = Guid.NewGuid();
+        id = Guid.CreateVersion7();
         name = null!;
         user = null!;
         start_date = DateTimeOffset.UtcNow.AddDays(1);

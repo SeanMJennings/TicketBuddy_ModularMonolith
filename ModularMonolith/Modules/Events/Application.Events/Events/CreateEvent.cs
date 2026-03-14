@@ -7,7 +7,7 @@ public class CreateEvent(EventsValidator eventsValidator, IPersistEvents eventRe
 {
     public async Task<Guid> Execute(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Guid venueId, Money price)
     {
-        var eventId = Guid.NewGuid();
+        var eventId = Guid.CreateVersion7();
         EventsValidator.ValidateDate(startDate);
         var theEvent = new Event(eventId, eventName, startDate, endDate, venueId, price);
 

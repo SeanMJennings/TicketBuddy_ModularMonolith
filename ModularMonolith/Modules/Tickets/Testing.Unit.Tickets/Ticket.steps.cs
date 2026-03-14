@@ -17,18 +17,18 @@ public partial class TicketQuerySpecs : Specification
     protected override void before_each()
     {
         base.before_each();
-        ticketId = Guid.NewGuid();
-        eventId = Guid.NewGuid();
+        ticketId = Guid.CreateVersion7();
+        eventId = Guid.CreateVersion7();
         price = 25m;
         seatNumber = 1;
-        userId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
         _theTicketQuery = null!;
     }
 
     private void valid_ticket_inputs()
     {
-        ticketId = Guid.NewGuid();
-        eventId = Guid.NewGuid();
+        ticketId = Guid.CreateVersion7();
+        eventId = Guid.CreateVersion7();
         price = 25m;
         seatNumber = 1;
     }
@@ -42,7 +42,7 @@ public partial class TicketQuerySpecs : Specification
     private void a_purchased_ticket()
     {
         a_valid_ticket();
-        _theTicketQuery.Purchase(Guid.NewGuid());
+        _theTicketQuery.Purchase(Guid.CreateVersion7());
         _theTicketQuery.ClearDomainEvents();
     }
 

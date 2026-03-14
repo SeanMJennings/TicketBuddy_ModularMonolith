@@ -11,7 +11,7 @@ public static class TicketsReleaser
         for (uint i = 0; i < venueCapacity; i++)
         {
             var ticket = new Ticket(
-                Guid.NewGuid(),
+                Guid.CreateVersion7(),
                 eventId,
                 price,
                 i + 1);

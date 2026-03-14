@@ -25,8 +25,8 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     private HttpContent content = null!;
 
     private Guid venue1Id;
-    private Guid event_id = Guid.NewGuid();
-    private Guid user_id = Guid.NewGuid();
+    private Guid event_id = Guid.CreateVersion7();
+    private Guid user_id = Guid.CreateVersion7();
     private const decimal price = 25.00m;
     private const decimal new_price = 26.00m;
     private HttpStatusCode response_code;
@@ -54,8 +54,8 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     {
         content = null!;
         ticket_ids = [];
-        event_id = Guid.NewGuid();
-        user_id = Guid.NewGuid();
+        event_id = Guid.CreateVersion7();
+        user_id = Guid.CreateVersion7();
         factory = new IntegrationWebApplicationFactory<Program>(database.GetConnectionString(), redis.GetConnectionString());
         client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(UserHeaders.UserType, nameof(UserType.Customer));
@@ -141,7 +141,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     {
         client.DefaultRequestHeaders.Clear();
         content = new StringContent(
-            JsonSerialization.Serialize(new TicketPurchasePayload([Guid.NewGuid()])),
+            JsonSerialization.Serialize(new TicketPurchasePayload([Guid.CreateVersion7()])),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(EventTickets(event_id) + "/purchase", content);
@@ -152,7 +152,7 @@ public partial class TicketApiSpecs : TruncateDbSpecification
     {
         client.DefaultRequestHeaders.Clear();
         content = new StringContent(
-            JsonSerialization.Serialize(new TicketReservationPayload([Guid.NewGuid()])),
+            JsonSerialization.Serialize(new TicketReservationPayload([Guid.CreateVersion7()])),
             Encoding.UTF8,
             application_json);
         var response = await client.PostAsync(EventTickets(event_id) + "/reserve", content);

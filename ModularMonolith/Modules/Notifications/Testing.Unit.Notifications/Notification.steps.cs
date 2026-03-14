@@ -18,8 +18,8 @@ public partial class NotificationSpecs : Specification
     protected override void before_each()
     {
         base.before_each();
-        id = Guid.NewGuid();
-        userId = Guid.NewGuid();
+        id = Guid.CreateVersion7();
+        userId = Guid.CreateVersion7();
         type = default;
         payload = null!;
         createdAt = DateTimeOffset.UtcNow;

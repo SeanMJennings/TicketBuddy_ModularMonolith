@@ -33,7 +33,7 @@ public partial class VenueSpecs : AsyncSpecification
 
     protected override Task before_each()
     {
-        id = Guid.NewGuid();
+        id = Guid.CreateVersion7();
         venueName = null!;
         street = null!;
         city = null!;
@@ -96,7 +96,7 @@ public partial class VenueSpecs : AsyncSpecification
     private void an_existing_venue_at_the_same_address()
     {
         var existingVenue = new Venue(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             new VenueName("Different Venue Name"),
             new Address(valid_street, valid_city, valid_postcode),
             30
@@ -186,7 +186,7 @@ public partial class VenueSpecs : AsyncSpecification
 
     private void a_venue_that_does_not_exist()
     {
-        id = Guid.NewGuid();
+        id = Guid.CreateVersion7();
         venueRepository.Setup(x => x.GetById(id)).ReturnsAsync((Venue?)null);
     }
 
@@ -208,7 +208,7 @@ public partial class VenueSpecs : AsyncSpecification
     private void another_venue_at_different_address()
     {
         otherVenue = new Venue(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             new VenueName("Different Venue"),
             new Address("Different Street", "Different City", "M1 1AA"),
             30

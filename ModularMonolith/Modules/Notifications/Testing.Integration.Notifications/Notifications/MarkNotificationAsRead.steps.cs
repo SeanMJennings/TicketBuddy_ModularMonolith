@@ -17,14 +17,14 @@ public partial class MarkNotificationAsReadSpecs : TruncateDbSpecification
 {
     private MarkNotificationAsReadEndpoint markNotificationAsReadEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
-    private Guid userId = Guid.NewGuid();
-    private Guid notificationId = Guid.NewGuid();
+    private Guid userId = Guid.CreateVersion7();
+    private Guid notificationId = Guid.CreateVersion7();
 
     protected override async Task before_each()
     {
         await base.before_each();
-        userId = Guid.NewGuid();
-        notificationId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
+        notificationId = Guid.CreateVersion7();
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
@@ -68,7 +68,7 @@ public partial class MarkNotificationAsReadSpecs : TruncateDbSpecification
         bool isRead = false)
     {
         var notification = Notification.Create(
-            id ?? Guid.NewGuid(),
+            id ?? Guid.CreateVersion7(),
             forUserId ?? userId,
             NotificationType.TicketPurchased,
             $"{{\"eventName\":\"{eventName}\"}}",

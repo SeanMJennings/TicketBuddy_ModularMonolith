@@ -43,7 +43,7 @@ public partial class GetEventByIdSpecs : TruncateDbSpecification
 
     private async Task requesting_a_non_existent_event()
     {
-        getEventResult = await getEventByIdEndpoint.GetEvent(Guid.NewGuid());
+        getEventResult = await getEventByIdEndpoint.GetEvent(Guid.CreateVersion7());
     }
 
     private void a_not_found_response_is_returned()

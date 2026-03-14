@@ -14,21 +14,21 @@ namespace Integration.Consumer;
 
 public partial class TicketPurchasedConsumerSpecs : TruncateDbSpecification
 {
-    private Messaging.Notifications.Consumers.TicketPurchasedConsumer consumer = null!;
+    private TicketPurchasedConsumer consumer = null!;
     private ServiceProvider serviceProvider = null!;
 
-    private Guid userId = Guid.NewGuid();
-    private Guid ticketId = Guid.NewGuid();
-    private Guid eventId = Guid.NewGuid();
+    private Guid userId = Guid.CreateVersion7();
+    private Guid ticketId = Guid.CreateVersion7();
+    private Guid eventId = Guid.CreateVersion7();
     private string eventName = "Summer Concert 2026";
     private TicketPurchased message = null!;
 
     protected override async Task before_each()
     {
         await base.before_each();
-        userId = Guid.NewGuid();
-        ticketId = Guid.NewGuid();
-        eventId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
+        ticketId = Guid.CreateVersion7();
+        eventId = Guid.CreateVersion7();
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()

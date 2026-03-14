@@ -16,7 +16,7 @@ public partial class GetNotificationsSpecs : TruncateDbSpecification
 {
     private GetNotificationsEndpoint getNotificationsEndpoint = null!;
     private ServiceProvider serviceProvider = null!;
-    private Guid userId = Guid.NewGuid();
+    private Guid userId = Guid.CreateVersion7();
     private List<NotificationResponse> returnedNotifications = [];
     private readonly DateTimeOffset olderCreatedAt = DateTimeOffset.UtcNow.AddHours(-2);
     private readonly DateTimeOffset newerCreatedAt = DateTimeOffset.UtcNow.AddHours(-1);
@@ -24,7 +24,7 @@ public partial class GetNotificationsSpecs : TruncateDbSpecification
     protected override async Task before_each()
     {
         await base.before_each();
-        userId = Guid.NewGuid();
+        userId = Guid.CreateVersion7();
         returnedNotifications = [];
 
         serviceProvider = new ServiceCollection()
@@ -69,7 +69,7 @@ public partial class GetNotificationsSpecs : TruncateDbSpecification
         bool isRead = false)
     {
         var notification = Notification.Create(
-            id ?? Guid.NewGuid(),
+            id ?? Guid.CreateVersion7(),
             forUserId ?? userId,
             NotificationType.TicketPurchased,
             $"{{\"eventName\":\"{eventName}\"}}",

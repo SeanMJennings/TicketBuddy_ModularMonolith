@@ -195,7 +195,7 @@ public Guid? UserId { get; private set; }
 ```csharp
 // ✅ Use var when type is apparent
 var tickets = await repository.GetByEventId(eventId);
-var eventId = Guid.NewGuid();
+var eventId = Guid.CreateVersion7();
 
 // ✅ Explicit type when it adds clarity
 IReadOnlyList<Ticket> tickets = await repository.GetByIds(ids);

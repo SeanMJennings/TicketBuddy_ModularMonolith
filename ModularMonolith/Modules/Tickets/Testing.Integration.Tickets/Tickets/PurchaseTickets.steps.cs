@@ -31,12 +31,12 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     private VenueUpsertedConsumer venueUpsertedConsumer = null!;
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
-    private Guid nonExistentEventId = Guid.NewGuid();
+    private Guid nonExistentEventId = Guid.CreateVersion7();
     private ITestHarness testHarness = null!;
 
-    private Guid event_id = Guid.NewGuid();
-    private Guid user_id = Guid.NewGuid();
-    private readonly Guid another_user_id = Guid.NewGuid();
+    private Guid event_id = Guid.CreateVersion7();
+    private Guid user_id = Guid.CreateVersion7();
+    private readonly Guid another_user_id = Guid.CreateVersion7();
     private const decimal price = 25.00m;
     private const decimal new_price = 26.00m;
     private const string name = "wibble";
@@ -49,8 +49,8 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     protected override Task before_each()
     {
         ticket_ids = [];
-        event_id = Guid.NewGuid();
-        user_id = Guid.NewGuid();
+        event_id = Guid.CreateVersion7();
+        user_id = Guid.CreateVersion7();
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()
@@ -210,15 +210,15 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
     private async Task purchasing_two_non_existent_tickets()
     {
         AddUserClaimToControllerContext(user_id);
-        var payload = new TicketPurchasePayload([Guid.NewGuid(), Guid.NewGuid()]);
+        var payload = new TicketPurchasePayload([Guid.CreateVersion7(), Guid.CreateVersion7()]);
         await purchaseTicketsEndpoint.PurchaseTickets(event_id, payload);
     }
 
     private async Task purchasing_tickets_for_non_existent_event()
     {
         AddUserClaimToControllerContext(user_id);
-        nonExistentEventId = Guid.NewGuid();
-        var payload = new TicketPurchasePayload([Guid.NewGuid()]);
+        nonExistentEventId = Guid.CreateVersion7();
+        var payload = new TicketPurchasePayload([Guid.CreateVersion7()]);
         await purchaseTicketsEndpoint.PurchaseTickets(nonExistentEventId, payload);
     }
 

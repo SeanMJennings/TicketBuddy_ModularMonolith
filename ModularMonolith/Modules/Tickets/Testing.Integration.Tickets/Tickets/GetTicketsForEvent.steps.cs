@@ -26,8 +26,8 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
     private ServiceProvider serviceProvider = null!;
     private ITestHarness testHarness = null!;
 
-    private Guid event_id = Guid.NewGuid();
-    private Guid user_id = Guid.NewGuid();
+    private Guid event_id = Guid.CreateVersion7();
+    private Guid user_id = Guid.CreateVersion7();
     private const decimal price = 25.00m;
     private const string name = "wibble";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
@@ -37,8 +37,8 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
     protected override Task before_each()
     {
         ticket_ids = [];
-        event_id = Guid.NewGuid();
-        user_id = Guid.NewGuid();
+        event_id = Guid.CreateVersion7();
+        user_id = Guid.CreateVersion7();
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()

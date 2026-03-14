@@ -101,7 +101,7 @@ public partial class EventSoldOutConsumerSpecs : TruncateDbSpecification
     private async Task marking_non_existent_event_as_sold_out()
     {
         var mockContext = Substitute.For<ConsumeContext<EventSoldOut>>();
-        mockContext.Message.Returns(new EventSoldOut { EventId = Guid.NewGuid() });
+        mockContext.Message.Returns(new EventSoldOut { EventId = Guid.CreateVersion7() });
         await eventSoldOutConsumer.Consume(mockContext);
     }
 

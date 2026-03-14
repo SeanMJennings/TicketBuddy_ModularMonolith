@@ -30,7 +30,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
 
     private Guid venue1Id;
     private Guid event_id;
-    private readonly Guid user_id = Guid.NewGuid();
+    private readonly Guid user_id = Guid.CreateVersion7();
     private HttpStatusCode response_code;
     private const string application_json = "application/json";
     private const string first_name = "wibble";

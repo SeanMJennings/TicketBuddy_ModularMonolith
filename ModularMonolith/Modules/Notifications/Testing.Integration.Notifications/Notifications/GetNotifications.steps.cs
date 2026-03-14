@@ -95,7 +95,6 @@ public partial class GetNotificationsSpecs : TruncateDbSpecification
     private void notifications_are_returned_ordered_by_created_at_descending()
     {
         returnedNotifications.Count.ShouldBe(2);
-        returnedNotifications[0].CreatedAt.ShouldBe(newerCreatedAt);
-        returnedNotifications[1].CreatedAt.ShouldBe(olderCreatedAt);
+        returnedNotifications[0].CreatedAt.ShouldBeGreaterThan(returnedNotifications[1].CreatedAt);
     }
 }

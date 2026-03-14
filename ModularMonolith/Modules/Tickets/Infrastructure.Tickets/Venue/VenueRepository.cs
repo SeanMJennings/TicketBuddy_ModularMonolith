@@ -9,7 +9,6 @@ public class VenueRepository(TicketDbContext ticketDbContext) : IPersistVenues
     public async Task Upsert(Domain.Tickets.Venue.Venue venue)
     {
         var existingVenue = await ticketDbContext.Venues
-            .AsNoTracking()
             .FirstOrDefaultAsync(v => v.Id == venue.Id);
 
         if (existingVenue is not null)

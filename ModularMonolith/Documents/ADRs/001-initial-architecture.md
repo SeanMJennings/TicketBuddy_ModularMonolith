@@ -1268,7 +1268,7 @@ dotnet run
 **Key Files:**
 - Host entry point: `../Host/Program.cs:4`
 - Package versions: `../Directory.Packages.props`
-- Solution structure: `../TicketBuddy.sln`
+- Solution structure: `../TicketBuddy.slnx`
 
 ---
 

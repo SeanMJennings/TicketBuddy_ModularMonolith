@@ -67,6 +67,6 @@ npx playwright install
 Pop-Location
 
 Write-Host "Restoring .NET packages..."
-dotnet restore "$PSScriptRoot\ModularMonolith\TicketBuddy.sln"
+dotnet restore "$PSScriptRoot\ModularMonolith\TicketBuddy.slnx"
 
 Write-Host "`nSetup complete. Run with: cd ModularMonolith\LocalHosting\Host.Aspire && dotnet run"

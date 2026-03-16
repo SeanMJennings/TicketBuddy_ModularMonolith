@@ -96,7 +96,7 @@ sudo -u $SUDO_USER npx playwright install
 cd "$SCRIPT_DIR"
 
 echo "Restoring .NET packages..."
-dotnet restore "$SCRIPT_DIR/ModularMonolith/TicketBuddy.sln"
+dotnet restore "$SCRIPT_DIR/ModularMonolith/TicketBuddy.slnx"
 
 echo "Setting permissions on Kubernetes scripts..."
 chmod +x "$SCRIPT_DIR/k8s/provision.sh"

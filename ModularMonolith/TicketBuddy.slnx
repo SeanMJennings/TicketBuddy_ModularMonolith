@@ -1,0 +1,150 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/.claude/">
+    <File Path=".claude/CLAUDE.md" />
+  </Folder>
+  <Folder Name="/.claude/Agents/">
+    <File Path=".claude/agents/adr.md" />
+    <File Path=".claude/agents/learn.md" />
+    <File Path=".claude/agents/README.md" />
+    <File Path=".claude/agents/refactor-scan.md" />
+    <File Path=".claude/agents/tdd-guardian.md" />
+    <File Path=".claude/agents/use-case-data-patterns.md" />
+    <File Path=".claude/agents/wip-guardian.md" />
+  </Folder>
+  <Folder Name="/.claude/Docs/">
+    <File Path=".claude/docs/architecture.md" />
+    <File Path=".claude/docs/code-style.md" />
+    <File Path=".claude/docs/csharp-conventions.md" />
+    <File Path=".claude/docs/ddd-summary.md" />
+    <File Path=".claude/docs/testing.md" />
+    <File Path=".claude/docs/workflow.md" />
+  </Folder>
+  <Folder Name="/CI/">
+    <File Path="../.github/workflows/BuildModularMonolith.yaml" />
+  </Folder>
+  <Folder Name="/CommonLibraries/">
+    <Project Path="CommonLibraries/Application/Application.csproj" />
+    <Project Path="CommonLibraries/Architecture/Architecture.csproj" />
+    <Project Path="CommonLibraries/Domain/Domain.csproj" />
+    <Project Path="CommonLibraries/Infrastructure/Infrastructure.csproj" />
+    <Project Path="CommonLibraries/Testing/Testing.csproj" />
+  </Folder>
+  <Folder Name="/Database/">
+    <Project Path="Database/Host.Migrations/Host.Migrations.csproj" />
+    <Project Path="Database/Migrations/Migrations.csproj" />
+  </Folder>
+  <Folder Name="/Documents/">
+    <File Path="../Documents/CleanArchitecture.jpg" />
+    <File Path="../Documents/ModernTestPyramid.png" />
+    <File Path="../Documents/ModularMonolith.drawio" />
+    <File Path="../Documents/ModularMonolith.drawio.png" />
+    <File Path="../Documents/Observability.png" />
+  </Folder>
+  <Folder Name="/Documents/ADRs/">
+    <File Path="Documents/ADRs/001-initial-architecture.md" />
+    <File Path="Documents/ADRs/002-initial-testing.md" />
+    <File Path="Documents/ADRs/003-vertical-slicing-within-horizontal-layers.md" />
+    <File Path="Documents/ADRs/004-cross-module-data-minimization.md" />
+    <File Path="Documents/ADRs/005-compile-time-architecture-enforcement.md" />
+    <File Path="Documents/ADRs/006-notifications-as-separate-bounded-context.md" />
+  </Folder>
+  <Folder Name="/LocalHosting/">
+    <Project Path="LocalHosting/LocalHost.Aspire/LocalHost.Aspire.csproj" />
+    <Project Path="LocalHosting/LocalHost.Dataseeder/LocalHost.Dataseeder.csproj" />
+    <Project Path="LocalHosting/LocalHost.DockerCompose.dcproj">
+      <Build Solution="*|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Events/">
+    <Project Path="Modules/Events/Application.Events/Application.Events.csproj" />
+    <Project Path="Modules/Events/Controllers.Events/Controllers.Events.csproj" />
+    <Project Path="Modules/Events/Domain.Events/Domain.Events.csproj" />
+    <Project Path="Modules/Events/Infrastructure.Events/Infrastructure.Events.csproj" />
+    <Project Path="Modules/Events/Messages.Events/Messages.Events.csproj" />
+    <Project Path="Modules/Events/Messaging.Events/Messaging.Events.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Events/Architecture/">
+    <Project Path="Modules/Events/Architecture.Events/Architecture.Events.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Events/Testing/">
+    <Project Path="Modules/Events/Testing.Architecture.Events/Testing.Architecture.Events.csproj" />
+    <Project Path="Modules/Events/Testing.Integration.Events/Testing.Integration.Events.csproj" />
+    <Project Path="Modules/Events/Testing.Unit.Events/Testing.Unit.Events.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Keycloak.Users/">
+    <Project Path="Modules/Keycloak.Users/Infrastructure.Keycloak/Infrastructure.Keycloak.csproj" />
+    <Project Path="Modules/Keycloak.Users/Messages.Keycloak.Users/Messages.Keycloak.Users.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Notifications/">
+    <Project Path="Modules/Notifications/Application.Notifications/Application.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Controllers.Notifications/Controllers.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Domain.Notifications/Domain.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Infrastructure.Notifications/Infrastructure.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Messages.Notifications/Messages.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Messaging.Notifications/Messaging.Notifications.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Notifications/Architecture/">
+    <Project Path="Modules/Notifications/Architecture.Notifications/Architecture.Notifications.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Notifications/Testing/">
+    <Project Path="Modules/Notifications/Testing.Architecture.Notifications/Testing.Architecture.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Testing.Integration.Notifications/Testing.Integration.Notifications.csproj" />
+    <Project Path="Modules/Notifications/Testing.Unit.Notifications/Testing.Unit.Notifications.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Tickets/">
+    <Project Path="Modules/Tickets/Application.Tickets/Application.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Controllers.Tickets/Controllers.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Domain.Tickets/Domain.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Infrastructure.Tickets/Infrastructure.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Messages.Tickets/Messages.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Messaging.Tickets/Messaging.Tickets.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Tickets/Architecture/">
+    <Project Path="Modules/Tickets/Architecture.Tickets/Architecture.Tickets.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Tickets/Testing/">
+    <Project Path="Modules/Tickets/Testing.Architecture.Tickets/Testing.Architecture.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Testing.Integration.Tickets/Testing.Integration.Tickets.csproj" />
+    <Project Path="Modules/Tickets/Testing.Unit.Tickets/Testing.Unit.Tickets.csproj" />
+  </Folder>
+  <Folder Name="/Solution/">
+    <File Path="../.gitignore" />
+    <File Path="../README.md" />
+    <File Path="../setup.ps1" />
+    <File Path="../setup.sh" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="nuget.config" />
+  </Folder>
+  <Folder Name="/Solution/k8s/">
+    <File Path="../k8s/kind-config.yaml" />
+    <File Path="../k8s/provision.sh" />
+    <File Path="../k8s/teardown.sh" />
+  </Folder>
+  <Folder Name="/Solution/k8s/manifests/">
+    <File Path="../k8s/manifests/00-namespace.yaml" />
+    <File Path="../k8s/manifests/01-postgres.yaml" />
+    <File Path="../k8s/manifests/02-redis.yaml" />
+    <File Path="../k8s/manifests/03-rabbitmq.yaml" />
+    <File Path="../k8s/manifests/04-keycloak.yaml" />
+    <File Path="../k8s/manifests/05-aspire-dashboard.yaml" />
+    <File Path="../k8s/manifests/06-migrations-job.yaml" />
+    <File Path="../k8s/manifests/07-api.yaml" />
+    <File Path="../k8s/manifests/08-dataseeder-job.yaml" />
+    <File Path="../k8s/manifests/09-ui.yaml" />
+  </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="Testing/Testing.Acceptance/Testing.Acceptance.csproj" />
+    <Project Path="Testing/Testing.Component/Testing.Component.csproj" />
+    <Project Path="Testing/Testing.Unit/Testing.Unit.csproj" />
+  </Folder>
+  <Folder Name="/TicketBuddy/">
+    <Project Path="Host/Host.csproj" />
+  </Folder>
+</Solution>

@@ -84,6 +84,13 @@ install_kind_if_missing() {
   info "kind installed."
 }
 
+install_metrics_server() {
+  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  kubectl patch deployment metrics-server -n kube-system \
+    --type='json' \
+    -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"}]'
+}
+
 create_cluster() {
   if kind get clusters 2>/dev/null | grep -q "^${CLUSTER_NAME}$"; then
     warn "Cluster '${CLUSTER_NAME}' already exists — skipping creation."
@@ -229,6 +236,7 @@ main() {
   ensure_docker_running
   check_github_token
   create_cluster
+  install_metrics_server
   build_images
   load_images
   apply_manifests

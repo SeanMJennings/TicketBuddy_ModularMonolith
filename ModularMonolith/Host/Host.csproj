@@ -22,6 +22,7 @@
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
         <PackageReference Include="OpenTelemetry.Exporter.Console" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" />
         <PackageReference Include="StackExchange.Redis" />
         <PackageReference Include="WebApi.Host" />
         <PackageReference Include="Common.Environment" />

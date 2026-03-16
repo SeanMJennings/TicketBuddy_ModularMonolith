@@ -3,12 +3,15 @@ kind: Service
 metadata:
   name: api
   namespace: ticketbuddy
+  labels:
+    app: api
 spec:
   selector:
     app: api
   type: NodePort
   ports:
-  - port: 8080
+  - name: http
+    port: 8080
     targetPort: 8080
     nodePort: 30000
 ---

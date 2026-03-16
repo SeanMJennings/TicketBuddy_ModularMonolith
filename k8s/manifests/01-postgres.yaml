@@ -3,12 +3,18 @@ kind: Service
 metadata:
   name: postgresql
   namespace: ticketbuddy
+  labels:
+    app: postgresql
 spec:
   selector:
     app: postgresql
   ports:
-  - port: 5432
+  - name: postgres
+    port: 5432
     targetPort: 5432
+  - name: metrics
+    port: 9187
+    targetPort: 9187
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -47,6 +53,14 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql
+      - name: postgres-exporter
+        image: quay.io/prometheuscommunity/postgres-exporter:latest
+        env:
+        - name: DATA_SOURCE_NAME
+          value: postgresql://postgres:YourStrong@Passw0rd@localhost:5432/TicketBuddy?sslmode=disable
+        ports:
+        - name: metrics
+          containerPort: 9187
   volumeClaimTemplates:
   - metadata:
       name: data

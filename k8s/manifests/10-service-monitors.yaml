@@ -1,0 +1,52 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: postgresql
+  namespace: ticketbuddy
+spec:
+  selector:
+    matchLabels:
+      app: postgresql
+  endpoints:
+  - port: metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis
+  namespace: ticketbuddy
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  endpoints:
+  - port: metrics
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rabbitmq
+  namespace: ticketbuddy
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq
+  endpoints:
+  - port: prometheus
+    interval: 30s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: api
+  namespace: ticketbuddy
+spec:
+  selector:
+    matchLabels:
+      app: api
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 30s

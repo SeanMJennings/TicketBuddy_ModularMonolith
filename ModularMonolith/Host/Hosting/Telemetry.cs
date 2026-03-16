@@ -20,6 +20,7 @@ internal static class Telemetry
                 metrics.AddAspNetCoreInstrumentation()
                     .AddMeter("Microsoft.AspNetCore.Hosting")
                     .AddMeter("Microsoft.AspNetCore.Server.Kestrel")
+                    .AddPrometheusExporter()
                     .AddConsoleExporter();
             })
             .WithTracing(tracing =>

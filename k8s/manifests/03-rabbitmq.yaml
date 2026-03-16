@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: rabbitmq
   namespace: ticketbuddy
+  labels:
+    app: rabbitmq
 spec:
   selector:
     app: rabbitmq
@@ -15,6 +17,9 @@ spec:
     port: 15672
     targetPort: 15672
     nodePort: 30672
+  - name: prometheus
+    port: 15692
+    targetPort: 15692
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,9 +44,15 @@ spec:
           value: guest
         - name: RABBITMQ_DEFAULT_PASS
           value: guest
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "rabbitmq-plugins enable --offline rabbitmq_prometheus || true"]
         ports:
         - containerPort: 5672
         - containerPort: 15672
+        - name: prometheus
+          containerPort: 15692
         readinessProbe:
           exec:
             command: ["rabbitmq-diagnostics", "-q", "ping"]

@@ -3,12 +3,18 @@ kind: Service
 metadata:
   name: redis
   namespace: ticketbuddy
+  labels:
+    app: redis
 spec:
   selector:
     app: redis
   ports:
-  - port: 6379
+  - name: redis
+    port: 6379
     targetPort: 6379
+  - name: metrics
+    port: 9121
+    targetPort: 9121
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,3 +43,13 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
           failureThreshold: 10
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        env:
+        - name: REDIS_ADDR
+          value: redis://localhost:6379
+        - name: REDIS_PASSWORD
+          value: yourStrong@Passw0rd
+        ports:
+        - name: metrics
+          containerPort: 9121

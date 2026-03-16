@@ -38,6 +38,7 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
     {
         base.ConfigureApplication(theApp);
         theApp.UseHealthChecks("/health");
+        theApp.MapPrometheusScrapingEndpoint();
         theApp.UseCorsAllowAll();
     }
 }

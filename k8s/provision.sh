@@ -262,9 +262,6 @@ apply_manifests() {
 provision_grafana_dashboards() {
   info "Provisioning Grafana dashboards..."
 
-  # 10991 = RabbitMQ Overview (native prometheus plugin, not the old standalone exporter)
-  # 763   = Redis Exporter
-  # 19924 = ASP.NET Core
   local -A dashboards=(
     [rabbitmq]=10991
     [redis]=763
@@ -279,14 +276,10 @@ provision_grafana_dashboards() {
     local id="${dashboards[$name]}"
     info "  Fetching dashboard: ${name} (ID ${id})..."
 
-    # When provisioned via ConfigMap, Grafana does not resolve __inputs bindings.
-    # Replace all datasource UID placeholders with the actual provisioned UID.
     curl -sf "https://grafana.com/api/dashboards/${id}/revisions/latest/download" \
       | sed 's/\${DS_PROMETHEUS}/prometheus/g; s/\${DS_PROM}/prometheus/g' \
       > "$tmpfile"
 
-    # Use --server-side to avoid the 262KB last-applied-configuration annotation limit
-    # that large dashboards (e.g. 10991) hit with client-side apply.
     kubectl create configmap "grafana-dashboard-${name}" \
       --namespace monitoring \
       --from-file="${name}.json=${tmpfile}" \

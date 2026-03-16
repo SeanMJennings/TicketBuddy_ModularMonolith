@@ -44,7 +44,8 @@ spec:
         - containerPort: 15672
         readinessProbe:
           exec:
-            command: ["rabbitmqctl", "status"]
+            command: ["rabbitmq-diagnostics", "-q", "ping"]
           initialDelaySeconds: 15
           periodSeconds: 10
+          timeoutSeconds: 10
           failureThreshold: 5

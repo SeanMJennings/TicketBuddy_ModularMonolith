@@ -84,6 +84,45 @@ install_kind_if_missing() {
   info "kind installed."
 }
 
+install_helm_if_missing() {
+  if command -v helm &>/dev/null; then
+    return
+  fi
+
+  local helm_path
+  helm_path=$(sudo -u "$SUDO_USER" which helm 2>/dev/null || true)
+  if [[ -n "$helm_path" ]]; then
+    ln -sf "$helm_path" /usr/local/bin/helm
+    return
+  fi
+
+  info "Helm not found — installing..."
+  curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  info "Helm installed."
+}
+
+install_kube_prometheus_stack() {
+  info "Installing kube-prometheus-stack (Prometheus + Grafana)..."
+
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
+  helm repo update
+
+  kubectl create namespace monitoring --dry-run=client -o yaml | kubectl apply -f -
+
+  helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+    --namespace monitoring \
+    --set alertmanager.enabled=false \
+    --set grafana.adminPassword=admin \
+    --set grafana.service.type=NodePort \
+    --set grafana.service.nodePort=30030 \
+    --set prometheus.service.type=NodePort \
+    --set prometheus.service.nodePort=30090 \
+    --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+    --wait --timeout=5m
+
+  info "kube-prometheus-stack installed."
+}
+
 install_metrics_server() {
   kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   kubectl patch deployment metrics-server -n kube-system \
@@ -226,6 +265,8 @@ print_urls() {
   echo "  Keycloak         → http://localhost:8180  (admin / admin)"
   echo "  RabbitMQ Mgmt    → http://localhost:15672 (guest / guest)"
   echo "  Aspire Dashboard → http://localhost:18888"
+  echo "  Prometheus       → http://localhost:9090"
+  echo "  Grafana          → http://localhost:3000  (admin / admin)"
   echo ""
 }
 
@@ -233,10 +274,12 @@ main() {
   install_docker_if_missing
   install_kubectl_if_missing
   install_kind_if_missing
+  install_helm_if_missing
   ensure_docker_running
   check_github_token
   create_cluster
   install_metrics_server
+  install_kube_prometheus_stack
   build_images
   load_images
   apply_manifests

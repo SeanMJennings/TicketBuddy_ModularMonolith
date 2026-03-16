@@ -63,5 +63,6 @@ and the distribution suggested by the [Testing Trophy](https://kentcdodds.com/bl
 
 TicketBuddy uses OpenTelemetry to provide comprehensive observability across all services. 
 The modular telemetry data is visualized in the Aspire dashboard.
+Telemetry is also available in Grafana in running in KIND.
 
 ![Observability Architecture](./Documents/Observability.png)

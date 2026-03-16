@@ -266,6 +266,7 @@ provision_grafana_dashboards() {
     [rabbitmq]=10991
     [redis]=763
     [aspnetcore]=19924
+    [postgresql]=14114
   )
 
   local tmpfile

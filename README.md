@@ -20,6 +20,7 @@ A modular monolith is a good place for a team to start when building a new appli
 - A: Ensure docker is running and then run the LocalHost.Aspire project
 - B: Ensure docker is running and then run docker compose and pass in your GitHub package feed token.
 - C: Run your own dependencies and manually set appsettings.json files for each project. Then run migrations => API => dataseeder => UI with `npm run dev`
+- D: Run on a local Kubernetes cluster using [kind](https://kind.sigs.k8s.io/). Requires `kubectl` and a `TICKETBUDDY_GITHUB_TOKEN`. From the repo root: `export TICKETBUDDY_GITHUB_TOKEN=<token> && ./k8s/provision.sh`. Use `./k8s/teardown.sh` to destroy the cluster.
 
 ### Pre-seeded Users
 There are some initial hardcoded users

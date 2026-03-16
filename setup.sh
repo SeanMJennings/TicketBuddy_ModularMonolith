@@ -98,6 +98,10 @@ cd "$SCRIPT_DIR"
 echo "Restoring .NET packages..."
 dotnet restore "$SCRIPT_DIR/ModularMonolith/TicketBuddy.sln"
 
+echo "Setting permissions on Kubernetes scripts..."
+chmod +x "$SCRIPT_DIR/k8s/provision.sh"
+chmod +x "$SCRIPT_DIR/k8s/teardown.sh"
+
 echo ""
 echo "Setup complete!"
 echo "Note: You may need to log out and back in for Docker group membership to take effect."

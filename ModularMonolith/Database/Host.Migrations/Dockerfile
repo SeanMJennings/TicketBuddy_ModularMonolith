@@ -4,13 +4,13 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG GITHUB_TOKEN
+ARG TICKETBUDDY_GITHUB_TOKEN
 WORKDIR /src
 COPY . .
 RUN rm -f Host/appsettings.docker.json Host/appsettings.local.json
 RUN dotnet nuget update source TicketBuddyGitHub \
     --username SeanMJennings \
-    --password $GITHUB_TOKEN \
+    --password $TICKETBUDDY_GITHUB_TOKEN \
     --store-password-in-clear-text
 RUN dotnet restore "Database/Host.Migrations/Host.Migrations.csproj"
 WORKDIR "/src/Database/Host.Migrations"

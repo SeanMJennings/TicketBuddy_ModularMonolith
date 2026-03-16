@@ -105,7 +105,7 @@ services:
       context: ..
       dockerfile: Database/Host.Migrations/Dockerfile
       args:
-        - GITHUB_TOKEN=${GITHUB_TOKEN}
+        - TICKETBUDDY_GITHUB_TOKEN=${TICKETBUDDY_GITHUB_TOKEN}
     depends_on:
       postgresql:
         condition: service_healthy
@@ -120,7 +120,7 @@ services:
       context: ..
       dockerfile: Host/Dockerfile
       args:
-        - GITHUB_TOKEN=${GITHUB_TOKEN}
+        - TICKETBUDDY_GITHUB_TOKEN=${TICKETBUDDY_GITHUB_TOKEN}
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -144,7 +144,7 @@ services:
       context: ..
       dockerfile: LocalHosting/LocalHost.Dataseeder/Dockerfile
       args:
-        - GITHUB_TOKEN=${GITHUB_TOKEN}
+        - TICKETBUDDY_GITHUB_TOKEN=${TICKETBUDDY_GITHUB_TOKEN}
     depends_on:
       api:
         condition: service_started

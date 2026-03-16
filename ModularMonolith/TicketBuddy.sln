@@ -188,6 +188,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{A1B2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Architecture", "Architecture", "{B2C3D4E5-2345-6789-ABCD-EF0123456789}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{BFDCAC1B-3DD0-4F9F-A788-AA3A10C2BD04}"
+	ProjectSection(SolutionItems) = preProject
+		..\k8s\provision.sh = ..\k8s\provision.sh
+		..\k8s\kind-config.yaml = ..\k8s\kind-config.yaml
+		..\k8s\teardown.sh = ..\k8s\teardown.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "manifests", "manifests", "{5051F2C5-B393-4D04-9A11-7B51726E8E1A}"
+	ProjectSection(SolutionItems) = preProject
+		..\k8s\manifests\00-namespace.yaml = ..\k8s\manifests\00-namespace.yaml
+		..\k8s\manifests\01-postgres.yaml = ..\k8s\manifests\01-postgres.yaml
+		..\k8s\manifests\02-redis.yaml = ..\k8s\manifests\02-redis.yaml
+		..\k8s\manifests\03-rabbitmq.yaml = ..\k8s\manifests\03-rabbitmq.yaml
+		..\k8s\manifests\04-keycloak.yaml = ..\k8s\manifests\04-keycloak.yaml
+		..\k8s\manifests\05-aspire-dashboard.yaml = ..\k8s\manifests\05-aspire-dashboard.yaml
+		..\k8s\manifests\06-migrations-job.yaml = ..\k8s\manifests\06-migrations-job.yaml
+		..\k8s\manifests\07-api.yaml = ..\k8s\manifests\07-api.yaml
+		..\k8s\manifests\08-dataseeder-job.yaml = ..\k8s\manifests\08-dataseeder-job.yaml
+		..\k8s\manifests\09-ui.yaml = ..\k8s\manifests\09-ui.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -810,5 +831,7 @@ Global
 		{FEAF4DD0-7234-4850-B8B4-43656DCDF4D0} = {A1B2C3D4-1234-5678-9ABC-DEF012345678}
 		{19A776F8-D773-41E6-9324-7ADC350E7D05} = {A1B2C3D4-1234-5678-9ABC-DEF012345678}
 		{BA6C8C8F-5429-47CB-AB78-57B204749E4C} = {A1B2C3D4-1234-5678-9ABC-DEF012345678}
+		{BFDCAC1B-3DD0-4F9F-A788-AA3A10C2BD04} = {1E5BDF95-3100-4F40-BDEF-62FF05F5F6BD}
+		{5051F2C5-B393-4D04-9A11-7B51726E8E1A} = {BFDCAC1B-3DD0-4F9F-A788-AA3A10C2BD04}
 	EndGlobalSection
 EndGlobal

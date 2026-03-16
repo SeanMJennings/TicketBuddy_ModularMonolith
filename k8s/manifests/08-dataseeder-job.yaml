@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dataseeder
+  namespace: ticketbuddy
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: wait-for-api
+        image: busybox
+        command: ['sh', '-c', 'until wget -qO- http://api:8080/health; do echo waiting for api; sleep 5; done']
+      containers:
+      - name: dataseeder
+        image: ticketbuddy-dataseeder:local
+        imagePullPolicy: Never
+        env:
+        - name: ENVIRONMENT
+          value: Development

@@ -30,7 +30,11 @@
       "Bash(done)",
       "Bash(wc:*)",
       "Bash(dotnet run)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//tmp/webapi.host/**)",
+      "Bash(dotnet-decompiler /tmp/webapi.host/lib/net10.0/WebHost.dll)",
+      "Bash(ilspycmd /tmp/webapi.host/lib/net10.0/WebHost.dll)",
+      "Bash(dotnet tool:*)"
     ],
     "deny": [],
     "ask": [

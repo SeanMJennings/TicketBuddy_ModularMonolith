@@ -3,6 +3,7 @@ using Api.Middleware;
 using Domain;
 using Infrastructure.Tickets.Configuration;
 using OpenTelemetry;
+using OpenTelemetry.Metrics;
 using WebHost;
 
 namespace Api.Hosting;
@@ -38,7 +39,8 @@ internal sealed class Api(WebApplicationBuilder webApplicationBuilder, IConfigur
     {
         base.ConfigureApplication(theApp);
         theApp.UseHealthChecks("/health");
-        theApp.MapPrometheusScrapingEndpoint();
+        if (theApp.Services.GetService<MeterProvider>() is not null)
+            theApp.MapPrometheusScrapingEndpoint();
         theApp.UseCorsAllowAll();
     }
 }

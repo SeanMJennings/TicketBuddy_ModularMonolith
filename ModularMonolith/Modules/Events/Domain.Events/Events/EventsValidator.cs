@@ -1,20 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Domain.Exceptions;
 
 namespace Domain.Events;
 
-public class EventsValidator(IPersistEvents eventRepository)
+public static class EventsValidator
 {
-    public async Task<Event> CheckEventExists(Guid eventId)
-    {
-        var existingEvent = await eventRepository.Get(eventId);
-        return existingEvent ?? throw new EntityNotFoundException(nameof(Event), eventId);
-    }
+    public static Event CheckEventExists(Event? theEvent, Guid eventId) =>
+        theEvent ?? throw new EntityNotFoundException(nameof(Event), eventId);
 
-    public async Task CheckIfVenueAlreadyBooked(Event theEvent)
+    public static void CheckIfVenueAlreadyBooked(Event theEvent, IList<Event> allEvents)
     {
-        var events = await eventRepository.GetAll();
-        var conflictingEvent = events.FirstOrDefault(e =>
+        var conflictingEvent = allEvents.FirstOrDefault(e =>
             e.VenueId == theEvent.VenueId &&
             e.Id != theEvent.Id &&
             ((theEvent.StartDate >= e.StartDate && theEvent.StartDate < e.EndDate) ||
@@ -23,7 +19,7 @@ public class EventsValidator(IPersistEvents eventRepository)
 
         if (conflictingEvent is not null) throw new ValidationException("Venue is not available at the selected time");
     }
-    
+
     public static void ValidateDate(DateTimeOffset startDate)
     {
         if (startDate < DateTimeOffset.UtcNow) throw new ValidationException("Event date cannot be in the past");

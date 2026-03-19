@@ -51,12 +51,12 @@ public partial class VenueSpecs
     }
 
     [Test]
-    public async Task cannot_create_venue_with_duplicate_address()
+    public void cannot_create_venue_with_duplicate_address()
     {
-              Given(valid_inputs);
-              And(an_existing_venue_at_the_same_address);
-        await When(Validating(validating_address_uniqueness));
-              Then(Informs("A venue already exists at this address"));
+        Given(valid_inputs);
+        And(an_existing_venue_at_the_same_address);
+        When(Validating(validating_address_uniqueness));
+        Then(Informs("A venue already exists at this address"));
     }
 
     [Test]
@@ -105,48 +105,47 @@ public partial class VenueSpecs
     }
 
     [Test]
-    public async Task can_check_venue_exists()
+    public void can_check_venue_exists()
     {
-              Given(a_venue_exists);
-              And(the_venue_is_persisted);
-        await When(checking_venue_exists);
-              Then(the_venue_is_returned);
+        Given(a_venue_exists);
+        When(checking_venue_exists);
+        Then(the_venue_is_returned);
     }
 
     [Test]
-    public async Task check_venue_exists_throws_when_venue_not_found()
+    public void check_venue_exists_throws_when_venue_not_found()
     {
-              Given(a_venue_that_does_not_exist);
-        await When(Validating(checking_venue_exists));
-              Then(Informs($"Venue with id {id} was not found."));
-              And(an_entity_not_found_error_is_thrown);
+        Given(a_venue_that_does_not_exist);
+        When(Validating(checking_venue_exists));
+        Then(Informs($"Venue with id {id} was not found."));
+        And(an_entity_not_found_error_is_thrown);
     }
 
     [Test]
-    public async Task can_create_venue_with_unique_address()
+    public void can_create_venue_with_unique_address()
     {
-              Given(valid_inputs);
-              And(no_existing_venues);
-        await When(validating_address_uniqueness);
+        Given(valid_inputs);
+        And(no_existing_venues);
+        When(validating_address_uniqueness);
     }
 
     [Test]
-    public async Task can_update_venue_keeping_same_address()
+    public void can_update_venue_keeping_same_address()
     {
-              Given(a_venue_exists);
-              And(the_venue_is_in_the_repository);
-              And(excluding_the_current_venue_from_uniqueness_check);
-        await When(validating_address_uniqueness);
+        Given(a_venue_exists);
+        And(the_venue_is_in_the_repository);
+        And(excluding_the_current_venue_from_uniqueness_check);
+        When(validating_address_uniqueness);
     }
 
     [Test]
-    public async Task cannot_update_venue_to_another_venues_address()
+    public void cannot_update_venue_to_another_venues_address()
     {
-              Given(a_venue_exists);
-              And(another_venue_at_different_address);
-              And(excluding_the_current_venue_from_uniqueness_check);
-              And(updating_to_the_other_venues_address);
-        await When(Validating(validating_address_uniqueness));
-              Then(Informs("A venue already exists at this address"));
+        Given(a_venue_exists);
+        And(another_venue_at_different_address);
+        And(excluding_the_current_venue_from_uniqueness_check);
+        And(updating_to_the_other_venues_address);
+        When(Validating(validating_address_uniqueness));
+        Then(Informs("A venue already exists at this address"));
     }
 }

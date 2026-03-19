@@ -1,12 +1,11 @@
 using BDD;
 using Domain.Events.Venue;
 using Domain.Exceptions;
-using Moq;
 using Shouldly;
 
 namespace Unit;
 
-public partial class VenueSpecs : AsyncSpecification
+public partial class VenueSpecs : Specification
 {
     private Guid id;
     private string venueName = null!;
@@ -17,8 +16,7 @@ public partial class VenueSpecs : AsyncSpecification
     private Guid? excludeVenueId;
     private Venue? otherVenue;
     private Venue venue = null!;
-    private Mock<IPersistVenues> venueRepository = null!;
-    private VenuesValidator validator = null!;
+    private IEnumerable<Venue> venues = [];
 
     private const string valid_venue_name = "The O2 Arena";
     private const string valid_street = "Peninsula Square";
@@ -31,8 +29,9 @@ public partial class VenueSpecs : AsyncSpecification
     private const string updated_postcode = "M1 1AA";
     private const uint updated_capacity = 35;
 
-    protected override Task before_each()
+    protected override void before_each()
     {
+        base.before_each();
         id = Guid.CreateVersion7();
         venueName = null!;
         street = null!;
@@ -40,11 +39,9 @@ public partial class VenueSpecs : AsyncSpecification
         postcode = null!;
         capacity = 0;
         venue = null!;
-        venueRepository = new Mock<IPersistVenues>();
-        validator = new VenuesValidator(venueRepository.Object);
+        venues = [];
         excludeVenueId = null;
         otherVenue = null;
-        return Task.CompletedTask;
     }
 
     private void valid_inputs()
@@ -95,19 +92,21 @@ public partial class VenueSpecs : AsyncSpecification
 
     private void an_existing_venue_at_the_same_address()
     {
-        var existingVenue = new Venue(
-            Guid.CreateVersion7(),
-            new VenueName("Different Venue Name"),
-            new Address(valid_street, valid_city, valid_postcode),
-            30
-        );
-        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([existingVenue]);
+        venues =
+        [
+            new Venue(
+                Guid.CreateVersion7(),
+                new VenueName("Different Venue Name"),
+                new Address(valid_street, valid_city, valid_postcode),
+                30
+            )
+        ];
     }
 
-    private async Task validating_address_uniqueness()
+    private void validating_address_uniqueness()
     {
         var address = new Address(street, city, postcode);
-        await validator.CheckAddressUniqueness(address, excludeVenueId);
+        VenuesValidator.CheckAddressUniqueness(address, venues, excludeVenueId);
     }
 
     private void a_venue_exists()
@@ -168,14 +167,9 @@ public partial class VenueSpecs : AsyncSpecification
 
     private Venue? retrievedVenue;
 
-    private void the_venue_is_persisted()
+    private void checking_venue_exists()
     {
-        venueRepository.Setup(x => x.GetById(id)).ReturnsAsync(venue);
-    }
-
-    private async Task checking_venue_exists()
-    {
-        retrievedVenue = await validator.CheckVenueExists(id);
+        retrievedVenue = VenuesValidator.CheckVenueExists(venue, id);
     }
 
     private void the_venue_is_returned()
@@ -186,18 +180,18 @@ public partial class VenueSpecs : AsyncSpecification
 
     private void a_venue_that_does_not_exist()
     {
+        venue = null!;
         id = Guid.CreateVersion7();
-        venueRepository.Setup(x => x.GetById(id)).ReturnsAsync((Venue?)null);
     }
 
     private void no_existing_venues()
     {
-        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([]);
+        venues = [];
     }
 
     private void the_venue_is_in_the_repository()
     {
-        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([venue]);
+        venues = [venue];
     }
 
     private void excluding_the_current_venue_from_uniqueness_check()
@@ -213,7 +207,7 @@ public partial class VenueSpecs : AsyncSpecification
             new Address("Different Street", "Different City", "M1 1AA"),
             30
         );
-        venueRepository.Setup(x => x.GetAll()).ReturnsAsync([venue, otherVenue]);
+        venues = [venue, otherVenue];
     }
 
     private void updating_to_the_other_venues_address()

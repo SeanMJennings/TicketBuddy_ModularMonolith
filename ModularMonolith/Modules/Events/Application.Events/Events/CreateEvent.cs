@@ -3,7 +3,7 @@ using Domain.ValueObjects;
 
 namespace Application.Events;
 
-public class CreateEvent(EventsValidator eventsValidator, IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork)
+public class CreateEvent(IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork)
 {
     public async Task<Guid> Execute(EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Guid venueId, Money price)
     {
@@ -11,7 +11,8 @@ public class CreateEvent(EventsValidator eventsValidator, IPersistEvents eventRe
         EventsValidator.ValidateDate(startDate);
         var theEvent = new Event(eventId, eventName, startDate, endDate, venueId, price);
 
-        await eventsValidator.CheckIfVenueAlreadyBooked(theEvent);
+        var allEvents = await eventRepository.GetAll();
+        EventsValidator.CheckIfVenueAlreadyBooked(theEvent, allEvents);
         await eventRepository.Add(theEvent);
         await unitOfWork.Commit();
         return eventId;

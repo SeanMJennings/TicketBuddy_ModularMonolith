@@ -3,16 +3,17 @@ using Domain.Events.Venue;
 
 namespace Application.Events.Venue;
 
-public class UpdateVenue(VenuesValidator venuesValidator, IPersistVenues venueRepository, IEventsUnitOfWork unitOfWork)
+public class UpdateVenue(IPersistVenues venueRepository, IEventsUnitOfWork unitOfWork)
 {
     public async Task Execute(Guid venueId, VenueName venueName, Address address, uint capacity)
     {
-        var existingVenue = await venuesValidator.CheckVenueExists(venueId);
+        var existingVenue = VenuesValidator.CheckVenueExists(await venueRepository.GetById(venueId), venueId);
         existingVenue.UpdateName(venueName);
         existingVenue.UpdateAddress(address);
         existingVenue.UpdateCapacity(capacity);
 
-        await venuesValidator.CheckAddressUniqueness(address, venueId);
+        var allVenues = await venueRepository.GetAll();
+        VenuesValidator.CheckAddressUniqueness(address, allVenues, venueId);
         await venueRepository.Update(existingVenue);
         await unitOfWork.Commit();
     }

@@ -1,19 +1,20 @@
-﻿using Domain.Events;
+using Domain.Events;
 using Domain.ValueObjects;
 
 namespace Application.Events;
 
-public class UpdateEvent(EventsValidator eventsValidator, IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork)
+public class UpdateEvent(IPersistEvents eventRepository, IEventsUnitOfWork unitOfWork)
 {
     public async Task Execute(Guid eventId, EventName eventName, DateTimeOffset startDate, DateTimeOffset endDate, Money price)
     {
-        var existingEvent = await eventsValidator.CheckEventExists(eventId);
+        var existingEvent = EventsValidator.CheckEventExists(await eventRepository.Get(eventId), eventId);
         EventsValidator.ValidateDate(startDate);
         existingEvent.UpdateName(eventName);
         existingEvent.UpdateDates(startDate, endDate);
         existingEvent.UpdatePrice(price);
-        
-        await eventsValidator.CheckIfVenueAlreadyBooked(existingEvent);
+
+        var allEvents = await eventRepository.GetAll();
+        EventsValidator.CheckIfVenueAlreadyBooked(existingEvent, allEvents);
         await eventRepository.Update(existingEvent);
         await unitOfWork.Commit();
     }

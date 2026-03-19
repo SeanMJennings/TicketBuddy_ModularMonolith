@@ -7,7 +7,7 @@ Run the setup.ps1 or setup.sh script as Administrator to install all dependencie
 This installs: .NET 10 SDK, Docker, Node.js, .NET Aspire workload, and configures the GitHub NuGet feed.
 
 ## Modular Monolith
-Built in well-defined modules to be hosted as a single application. Modules communicate through asynchronous messages using MassTransit with RabbitMQ. 
+Built in well-defined modules to be hosted as a single application. Modules communicate through asynchronous messages using MassTransit with RabbitMQ and the transactional outbox pattern.
 
 You could also use synchronous network calls between modules if preferred though it will not scale as well.
 In-process calls between modules are monolithic and not recommended.

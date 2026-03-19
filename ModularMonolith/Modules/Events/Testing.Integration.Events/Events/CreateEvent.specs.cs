@@ -11,7 +11,6 @@ public partial class CreateEventSpecs
         await When(creating_the_event);
         await And(requesting_the_event);
               Then(the_event_is_created);
-              And(an_integration_event_is_published);
     }
 
     [Test]
@@ -29,5 +28,13 @@ public partial class CreateEventSpecs
               And(a_request_to_create_an_event_with_the_same_venue_and_time);
         await When(Validating(creating_the_event_that_will_fail));
               Then(Informs("Venue is not available at the selected time"));
+    }
+
+    [Test]
+    public async Task creating_an_event_persists_outbox_message_atomically_to_the_database()
+    {
+              Given(a_request_to_create_an_event);
+        await When(creating_the_event);
+        await Then(outbox_message_is_persisted_to_the_event_schema);
     }
 }

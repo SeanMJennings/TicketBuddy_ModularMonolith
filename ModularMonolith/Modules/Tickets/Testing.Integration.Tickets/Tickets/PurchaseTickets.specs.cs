@@ -102,4 +102,15 @@ public partial class PurchaseTicketsSpecs
         await When(purchasing_all_tickets);
         await Then(event_sold_out_integration_event_is_published);
     }
+
+    [Test]
+    public async Task purchasing_a_ticket_persists_outbox_messages_atomically_to_the_database()
+    {
+        await Given(an_event_exists);
+        await And(a_user_exists);
+        await And(requesting_the_tickets);
+        await And(reserving_tickets);
+        await When(purchasing_two_tickets);
+        await Then(outbox_messages_are_persisted_to_the_ticket_schema);
+    }
 }

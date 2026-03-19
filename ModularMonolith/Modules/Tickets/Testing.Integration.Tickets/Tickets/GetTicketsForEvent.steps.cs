@@ -47,6 +47,7 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
+                x.AddTicketsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()

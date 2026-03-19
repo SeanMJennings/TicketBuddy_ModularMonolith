@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
@@ -8,7 +7,6 @@ using Infrastructure.Tickets.Core.Configuration;
 using MassTransit;
 using MassTransit.Testing;
 using Messages.Events;
-using Messages.Tickets;
 using Messaging.Keycloak.Users;
 using Messaging.Tickets.Consumers;
 using Microsoft.AspNetCore.Http;
@@ -57,6 +55,7 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
+                x.AddTicketsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()
@@ -179,10 +178,5 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
         var keyValue = db.StringGet(reservationKey);
         keyValue.HasValue.ShouldBeTrue();
         keyValue.ToString().ShouldBe(user_id.ToString());
-    }
-
-    private void user_informed_they_cannot_reserve_an_already_reserved_ticket()
-    {
-        theError.Message.ShouldContain("Ticket already reserved");
     }
 }

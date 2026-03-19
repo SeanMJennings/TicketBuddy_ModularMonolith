@@ -30,6 +30,6 @@ public partial class UpdateVenueSpecs
         await Given(a_venue_exists);
               And(a_request_to_update_the_venue);
         await When(updating_the_venue);
-              Then(a_venue_upserted_message_is_published);
+        await Then(a_venue_upserted_message_is_published);
     }
 }

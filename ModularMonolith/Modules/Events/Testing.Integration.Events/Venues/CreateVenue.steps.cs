@@ -1,6 +1,5 @@
 using Controllers.Events.Requests;
 using Controllers.Events.Venue;
-using Domain.Events.Venue;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
 using MassTransit;
@@ -38,6 +37,7 @@ public partial class CreateVenueSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
+                x.AddEventsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateVenueEndpoint>()

@@ -1,6 +1,6 @@
 using MassTransit;
 using Messages.Tickets;
-using Messaging.Notifications;
+using Messaging.Notifications.Consumers;
 
 namespace Infrastructure.Notifications.Core.Configuration;
 
@@ -8,8 +8,15 @@ public static class Messaging
 {
     public static void AddNotificationsConsumers(this IBusRegistrationConfigurator x)
     {
-        var notificationsMessagingAssembly = NotificationsMessaging.Assembly;
-        x.AddConsumers(notificationsMessagingAssembly);
+        x.AddConsumer<TicketPurchasedConsumer, TicketPurchasedConsumerDefinition>();
+    }
+
+    public static void AddNotificationsInbox(this IBusRegistrationConfigurator x)
+    {
+        x.AddEntityFrameworkOutbox<NotificationDbContext>(o =>
+        {
+            o.UsePostgres();
+        });
     }
 
     public static void ConfigureNotificationsMessaging(this IRabbitMqBusFactoryConfigurator cfg)
@@ -18,5 +25,16 @@ public static class Messaging
         {
             e.Bind<TicketPurchased>();
         });
+    }
+}
+
+internal class TicketPurchasedConsumerDefinition : ConsumerDefinition<TicketPurchasedConsumer>
+{
+    protected override void ConfigureConsumer(
+        IReceiveEndpointConfigurator endpointConfigurator,
+        IConsumerConfigurator<TicketPurchasedConsumer> consumerConfigurator,
+        IRegistrationContext context)
+    {
+        endpointConfigurator.UseEntityFrameworkOutbox<NotificationDbContext>(context);
     }
 }

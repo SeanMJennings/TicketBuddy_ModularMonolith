@@ -1,6 +1,7 @@
 using Domain.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Events.Core;
@@ -35,5 +36,9 @@ public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEven
             addressBuilder.Property(a => a.Postcode).IsRequired();
         });
         modelBuilder.Entity<Domain.Events.Venue.Venue>().ToTable("Venues", "Event", e => e.ExcludeFromMigrations());
+
+        modelBuilder.AddInboxStateEntity(b => b.ToTable("InboxState", "Event", t => t.ExcludeFromMigrations()));
+        modelBuilder.AddOutboxStateEntity(b => b.ToTable("OutboxState", "Event", t => t.ExcludeFromMigrations()));
+        modelBuilder.AddOutboxMessageEntity(b => b.ToTable("OutboxMessage", "Event", t => t.ExcludeFromMigrations()));
     }
 }

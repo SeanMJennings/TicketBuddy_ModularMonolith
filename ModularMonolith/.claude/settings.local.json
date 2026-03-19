@@ -35,7 +35,9 @@
       "Bash(dotnet-decompiler /tmp/webapi.host/lib/net10.0/WebHost.dll)",
       "Bash(ilspycmd /tmp/webapi.host/lib/net10.0/WebHost.dll)",
       "Bash(dotnet tool:*)",
-      "Bash(xargs strings:*)"
+      "Bash(xargs strings:*)",
+      "Bash(dotnet nuget:*)",
+      "Bash(dotnet restore:*)"
     ],
     "deny": [],
     "ask": [

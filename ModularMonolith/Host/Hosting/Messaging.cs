@@ -15,6 +15,9 @@ internal static class Messaging
             x.AddEventsConsumers();
             x.AddTicketsConsumers();
             x.AddNotificationsConsumers();
+            x.AddTicketsOutbox();
+            x.AddEventsOutbox();
+            x.AddNotificationsInbox();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(rabbitMqConnectionString);

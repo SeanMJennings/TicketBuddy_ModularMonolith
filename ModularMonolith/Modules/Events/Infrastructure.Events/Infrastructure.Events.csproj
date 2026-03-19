@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit.EntityFrameworkCore"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Application.Events\Application.Events.csproj" />
         <ProjectReference Include="..\Domain.Events\Domain.Events.csproj" />
         <ProjectReference Include="..\..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />

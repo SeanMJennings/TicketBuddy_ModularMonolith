@@ -12,7 +12,7 @@ public partial class UpdateEventSpecs
         await When(updating_the_event);
         await And(requesting_the_updated_event);
               Then(the_event_is_updated);
-              And(an_another_integration_event_is_published);
+        await And(an_another_integration_event_is_published);
     }
 
     [Test]

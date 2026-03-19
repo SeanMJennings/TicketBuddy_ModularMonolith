@@ -28,6 +28,7 @@ public partial class GetEventByIdSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
+                x.AddEventsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<GetEventByIdEndpoint>()

@@ -10,7 +10,17 @@ public static class Messaging
         var eventsIntegrationMessagingAssembly = EventsMessaging.Assembly;
         x.AddConsumers(eventsIntegrationMessagingAssembly);
     }
-    
+
+    public static void AddEventsOutbox(this IBusRegistrationConfigurator x)
+    {
+        x.AddEntityFrameworkOutbox<EventDbContext>(o =>
+        {
+            o.UsePostgres();
+            o.UseBusOutbox();
+            o.QueryDelay = TimeSpan.FromMilliseconds(100);
+        });
+    }
+
     public static void ConfigureEventsMessaging(this IRabbitMqBusFactoryConfigurator cfg)
     {
         cfg.ReceiveEndpoint("events-queue", e =>

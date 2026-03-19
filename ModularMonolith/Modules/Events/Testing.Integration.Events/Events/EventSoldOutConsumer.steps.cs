@@ -48,6 +48,7 @@ public partial class EventSoldOutConsumerSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
+                x.AddEventsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateEventEndpoint>()

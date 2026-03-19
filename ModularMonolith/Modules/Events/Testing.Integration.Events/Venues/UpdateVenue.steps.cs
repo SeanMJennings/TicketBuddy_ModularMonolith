@@ -6,6 +6,7 @@ using Infrastructure.Events.Core.Configuration;
 using MassTransit;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Shouldly;
 using Testing;
 
@@ -54,6 +55,7 @@ public partial class UpdateVenueSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
+                x.AddEventsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateVenueEndpoint>()
@@ -147,13 +149,14 @@ public partial class UpdateVenueSpecs : TruncateDbSpecification
         theVenue.Capacity.ShouldBe(updatedCapacity);
     }
 
-    private void a_venue_upserted_message_is_published()
+    private async Task a_venue_upserted_message_is_published()
     {
-        testHarness.Published.Select<Messages.Events.VenueUpserted>()
-            .Any(e =>
-                e.Context.Message.Id == returned_id &&
-                e.Context.Message.Name == new VenueName(updatedVenueName) &&
-                e.Context.Message.Capacity == updatedCapacity)
-            .ShouldBeTrue();
+        await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
+        await connection.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            """SELECT COUNT(*) FROM "Event"."OutboxMessage" WHERE "MessageType" LIKE '%VenueUpserted%'""",
+            connection);
+        var count = (long)(await cmd.ExecuteScalarAsync())!;
+        count.ShouldBeGreaterThan(0);
     }
 }

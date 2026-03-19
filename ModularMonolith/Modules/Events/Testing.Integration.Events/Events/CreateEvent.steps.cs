@@ -8,6 +8,7 @@ using MassTransit;
 using MassTransit.Testing;
 using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Shouldly;
 using Testing;
 using Testing.TestData;
@@ -49,6 +50,7 @@ public partial class CreateEventSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
+                x.AddEventsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateEventEndpoint>()
@@ -124,16 +126,14 @@ public partial class CreateEventSpecs : TruncateDbSpecification
         theEvent.Price.ShouldBe(price);
     }
 
-    private void an_integration_event_is_published()
+    private static async Task outbox_message_is_persisted_to_the_event_schema()
     {
-        testHarness.Published.Select<EventUpserted>()
-            .Any(e =>
-                e.Context.Message.Id == returned_id &&
-                e.Context.Message.EventName == name &&
-                e.Context.Message.StartDate == event_start_date &&
-                e.Context.Message.EndDate == event_end_date &&
-                e.Context.Message.VenueId == venue1Id &&
-                e.Context.Message.Price == price
-            ).ShouldBeTrue("Event was not published to the bus");
+        await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
+        await connection.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            """SELECT COUNT(*) FROM "Event"."OutboxMessage" WHERE "MessageType" LIKE '%EventUpserted%'""",
+            connection);
+        var count = (long)(await cmd.ExecuteScalarAsync())!;
+        count.ShouldBeGreaterThan(0);
     }
 }

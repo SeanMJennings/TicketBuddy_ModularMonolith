@@ -12,8 +12,8 @@ public abstract class UnitOfWorkDbContext<T>(DbContextOptions<T> options, Domain
 
     public async Task Commit(CancellationToken cancellationToken = default)
     {
-        await SaveChangesAsync(cancellationToken);
         await domainEventsDispatcher.DispatchEvents(this);
+        await SaveChangesAsync(cancellationToken);
         ChangeTracker.Clear();
     }
 }

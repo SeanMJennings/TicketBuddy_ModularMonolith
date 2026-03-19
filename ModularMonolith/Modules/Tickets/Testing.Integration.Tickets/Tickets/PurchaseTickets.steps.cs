@@ -8,12 +8,12 @@ using Infrastructure.Tickets.Core.Configuration;
 using MassTransit;
 using MassTransit.Testing;
 using Messages.Events;
-using Messages.Tickets;
 using Messaging.Keycloak.Users;
 using Messaging.Tickets.Consumers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using NSubstitute;
 using Shouldly;
 using Testing;
@@ -59,6 +59,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
+                x.AddTicketsOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()
@@ -288,11 +289,28 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         tickets.Count.ShouldBe(17);
         tickets.All(t => t.Purchased).ShouldBeTrue();
 
-        (await testHarness.Published.Any<EventSoldOut>(x => x.Context.Message.EventId == event_id)).ShouldBeTrue();
+        await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
+        await connection.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%EventSoldOut%'""",
+            connection);
+        var count = (long)(await cmd.ExecuteScalarAsync())!;
+        count.ShouldBeGreaterThan(0);
     }
 
     private static void an_entity_not_found_exception_was_thrown()
     {
         error.ShouldBeOfType<EntityNotFoundException>();
+    }
+
+    private async Task outbox_messages_are_persisted_to_the_ticket_schema()
+    {
+        await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
+        await connection.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
+            connection);
+        var count = (long)(await cmd.ExecuteScalarAsync())!;
+        count.ShouldBeGreaterThan(0);
     }
 }

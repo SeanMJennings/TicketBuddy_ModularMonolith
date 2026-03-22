@@ -84,6 +84,9 @@ public partial class VenueSpecs : Specification
     {
         venue.Id.ShouldBe(id);
         venue.Name.ToString().ShouldBe(valid_venue_name);
+        (venue.Name == valid_venue_name).ShouldBeTrue();
+        (venue.Name != valid_venue_name).ShouldBeFalse();
+        venue.Name.GetHashCode().ShouldBe(new VenueName(venueName).GetHashCode());
         venue.Address.Street.ShouldBe(valid_street);
         venue.Address.City.ShouldBe(valid_city);
         venue.Address.Postcode.ShouldBe(valid_postcode.ToUpperInvariant());

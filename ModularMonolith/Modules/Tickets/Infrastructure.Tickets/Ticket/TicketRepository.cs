@@ -27,13 +27,6 @@ public class TicketRepository(TicketDbContext ticketDbContext) : IPersistTickets
             .CountAsync();
     }
 
-    public async Task<int> GetTotalCountByEventId(Guid eventId)
-    {
-        return await ticketDbContext.Tickets
-            .Where(t => t.EventId == eventId)
-            .CountAsync();
-    }
-
     public async Task AddRange(IEnumerable<Domain.Tickets.Ticket.Ticket> tickets)
     {
         await ticketDbContext.Tickets.AddRangeAsync(tickets);

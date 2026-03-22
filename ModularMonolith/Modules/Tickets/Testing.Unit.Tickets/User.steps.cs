@@ -67,8 +67,10 @@ public partial class UserSpecs : Specification
         theUser.Id.ShouldBe(id);
         (theUser.FullName == valid_full_name).ShouldBeTrue();
         (theUser.FullName != valid_full_name).ShouldBeFalse();
+        theUser.FullName.GetHashCode().ShouldBe(new Name(valid_full_name).GetHashCode());
         (theUser.Email == valid_email).ShouldBeTrue();
         (theUser.Email != valid_email).ShouldBeFalse();
+        theUser.Email.GetHashCode().ShouldBe(new Email(valid_email).GetHashCode());
     }
 
     private void user_name_is_updated()
@@ -76,6 +78,8 @@ public partial class UserSpecs : Specification
         string updatedName = theUser.FullName;
         updatedName.ShouldBe(updated_full_name);
         (theUser.FullName != valid_full_name).ShouldBeTrue();
+        theUser.FullName.GetHashCode().ShouldBe(new Name(updated_full_name).GetHashCode());
+        theUser.FullName.GetHashCode().ShouldNotBe(new Name(valid_full_name).GetHashCode());
     }
 
     private void user_email_is_updated()
@@ -83,5 +87,7 @@ public partial class UserSpecs : Specification
         string updatedEmailStr = theUser.Email;
         updatedEmailStr.ShouldBe(updated_email);
         (theUser.Email != valid_email).ShouldBeTrue();
+        theUser.Email.GetHashCode().ShouldBe(new Email(updated_email).GetHashCode());
+        theUser.Email.GetHashCode().ShouldNotBe(new Email(valid_email).GetHashCode());
     }
 }

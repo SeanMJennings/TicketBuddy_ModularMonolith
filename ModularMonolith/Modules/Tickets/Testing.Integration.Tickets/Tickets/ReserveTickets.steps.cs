@@ -28,7 +28,6 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
     private UserRegisteredConsumer userRegisteredConsumer = null!;
     private ServiceProvider serviceProvider = null!;
     private StackExchange.Redis.IConnectionMultiplexer cache = null!;
-    private Exception theError = null!;
     private ITestHarness testHarness = null!;
 
     private Guid event_id = Guid.CreateVersion7();
@@ -46,7 +45,6 @@ public partial class ReserveTicketsSpecs : TruncateDbSpecification
         ticket_ids = [];
         event_id = Guid.CreateVersion7();
         user_id = Guid.CreateVersion7();
-        theError = null!;
 
         serviceProvider = new ServiceCollection()
             .ConfigureInfrastructureServices()

@@ -1,5 +1,6 @@
 using MassTransit;
 using Messages.Tickets;
+using Messaging.Notifications;
 using Messaging.Notifications.Consumers;
 
 namespace Infrastructure.Notifications.Core.Configuration;
@@ -8,7 +9,8 @@ public static class Messaging
 {
     public static void AddNotificationsConsumers(this IBusRegistrationConfigurator x)
     {
-        x.AddConsumer<TicketPurchasedConsumer, TicketPurchasedConsumerDefinition>();
+        var notificationIntegrationMessagingAssembly = NotificationsMessaging.Assembly;
+        x.AddConsumers(notificationIntegrationMessagingAssembly);
     }
 
     public static void AddNotificationsInbox(this IBusRegistrationConfigurator x)
@@ -25,16 +27,5 @@ public static class Messaging
         {
             e.Bind<TicketPurchased>();
         });
-    }
-}
-
-internal class TicketPurchasedConsumerDefinition : ConsumerDefinition<TicketPurchasedConsumer>
-{
-    protected override void ConfigureConsumer(
-        IReceiveEndpointConfigurator endpointConfigurator,
-        IConsumerConfigurator<TicketPurchasedConsumer> consumerConfigurator,
-        IRegistrationContext context)
-    {
-        endpointConfigurator.UseEntityFrameworkOutbox<NotificationDbContext>(context);
     }
 }

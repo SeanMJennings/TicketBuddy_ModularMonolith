@@ -60,6 +60,7 @@ jobs:
         run: reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage/report" -reporttypes:"Cobertura;HtmlSummary" -minimumCoverageThresholds:lineCoverage=99;branchCoverage=80
 
       - name: Upload coverage report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -96,6 +97,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Upload frontend coverage report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-report

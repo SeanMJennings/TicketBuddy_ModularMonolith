@@ -4,10 +4,9 @@ namespace Testing.Containers;
 
 public static class Redis
 {
-   public static RedisContainer CreateContainer(bool reuse, int port = 6380)
+   public static RedisContainer CreateContainer(bool reuse)
    {
        return new RedisBuilder("redis:latest")
-           .WithPortBinding(port)
            .WithReuse(reuse)
            .Build();
    }

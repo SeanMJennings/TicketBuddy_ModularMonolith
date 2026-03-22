@@ -29,6 +29,7 @@ public partial class StringValueObjectSpecs
     private int hashCode1;
     private int hashCode2;
     private string? stringResult;
+    private object? objectResult;
     private Dictionary<TestValue, string>? dictionary;
     private HashSet<TestValue>? hashset;
     private string? testValueInput;
@@ -102,6 +103,11 @@ public partial class StringValueObjectSpecs
         stringResult = value1.ToString();
     }
     
+    private void converting_to_object()
+    {
+        objectResult = value1;
+    }
+    
     private void using_equality_operator()
     {
         equalityResult = value1 == value2;
@@ -155,6 +161,11 @@ public partial class StringValueObjectSpecs
     private void string_matches_original_value()
     {
         stringResult.ShouldBe(SampleValue);
+    }
+    
+    private void object_matches_original_value()
+    {
+        objectResult.ShouldBe(SampleValue);
     }
     
     private void dictionary_contains_one_item()

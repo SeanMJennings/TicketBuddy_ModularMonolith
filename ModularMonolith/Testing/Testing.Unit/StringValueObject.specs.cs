@@ -58,6 +58,14 @@ public partial class StringValueObjectSpecs : Specification
     {
         Given(a_value_object_with_value);
         When(converting_to_string);
+        Then(object_matches_original_value);
+    }    
+    
+    [Test]
+    public void string_value_object_can_equal_an_object()
+    {
+        Given(a_value_object_with_value);
+        When(converting_to_object);
         Then(string_matches_original_value);
     }
     

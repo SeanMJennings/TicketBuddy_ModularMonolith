@@ -9,5 +9,11 @@ export default mergeConfig(viteConfig, defineProject({
         environment: 'jsdom',
         env: loadEnv('testing', process.cwd(), ''),
         setupFiles: ['vitest-localstorage-mock','./src/setupTests.ts'],
+        coverage: {
+            thresholds: {
+                lines: 98,
+                branches: 80,
+            }
+        }
     }
 }));

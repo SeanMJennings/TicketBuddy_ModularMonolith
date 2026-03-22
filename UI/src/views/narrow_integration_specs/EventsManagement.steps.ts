@@ -156,8 +156,8 @@ export async function should_allow_user_to_edit_existing_event() {
     const data = mockServer.content;
     expect(data).toStrictEqual({
         EventName: updatedEventName,
-        StartDate: startEventDate.toISOString().split("T")[0] + "T14:00:00" + ".000Z",
-        EndDate: endEventDate.toISOString().split("T")[0] + "T17:00:00" + ".000Z",
+        StartDate: startEventDate.toISOString().split("T")[0] + "T13:00:00" + ".000Z",
+        EndDate: endEventDate.toISOString().split("T")[0] + "T16:00:00" + ".000Z",
         Price: "50"
     });
 
@@ -286,8 +286,8 @@ export async function should_not_allow_venue_change_when_editing_event() {
 
     expect(data).toStrictEqual({
         EventName: updatedEventName,
-        StartDate: startEventDate.toISOString().split("T")[0] + "T14:00:00" + ".000Z",
-        EndDate: endEventDate.toISOString().split("T")[0] + "T17:00:00" + ".000Z",
+        StartDate: startEventDate.toISOString().split("T")[0] + "T13:00:00" + ".000Z",
+        EndDate: endEventDate.toISOString().split("T")[0] + "T16:00:00" + ".000Z",
         Price: "50"
     });
 }

@@ -58,7 +58,7 @@ public partial class StringValueObjectSpecs : Specification
     {
         Given(a_value_object_with_value);
         When(converting_to_string);
-        Then(object_matches_original_value);
+        Then(string_matches_original_value);
     }    
     
     [Test]
@@ -66,7 +66,7 @@ public partial class StringValueObjectSpecs : Specification
     {
         Given(a_value_object_with_value);
         When(converting_to_object);
-        Then(string_matches_original_value);
+        Then(object_matches_original_value);
     }
     
     [Test]

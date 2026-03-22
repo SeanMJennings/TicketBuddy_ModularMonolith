@@ -116,7 +116,7 @@ public partial class EventSpecs : Specification
         theEvent.EndDate.ShouldBe(end_date);
         theEvent.VenueId.ShouldBe(venueId);
         theEvent.Price.ShouldBe(price);
-        theEvent.Price.ToString().ShouldBe(updatedPrice.ToString());
+        theEvent.Price.ToString().ShouldBe(price.ToString());
     }
     
     private void event_name_is_updated()

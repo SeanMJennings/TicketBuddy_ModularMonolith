@@ -165,7 +165,7 @@ public partial class StringValueObjectSpecs
     
     private void object_matches_original_value()
     {
-        objectResult.ShouldBe(SampleValue);
+        objectResult.ShouldBe(new TestValue(SampleValue));
     }
     
     private void dictionary_contains_one_item()

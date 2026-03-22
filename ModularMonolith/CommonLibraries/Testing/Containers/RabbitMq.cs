@@ -9,6 +9,17 @@ public static class RabbitMq
     public const string UserName = "guest";
     public const string Password = "guest";
 
+    public static RabbitMqContainer CreateContainer(bool reuse)
+    {
+        return new RabbitMqBuilder("rabbitmq:management")
+            .WithUsername(UserName)
+            .WithPassword(Password)
+            .WithPortBinding(5672, true)
+            .WithPortBinding(15672, true)
+            .WithReuse(reuse)
+            .Build();
+    }
+
     public static async Task Clear(this RabbitMqContainer container)
     {
         var managementPort = container.GetMappedPublicPort(15672);

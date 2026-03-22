@@ -1,4 +1,3 @@
-using Migrations;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
@@ -33,18 +32,12 @@ public static class SharedContainers
         {
             if (postgreSqlContainer is not null) return postgreSqlContainer;
 
-            postgreSqlContainer = new PostgreSqlBuilder("postgres:latest")
-                .WithDatabase("TicketBuddy")
-                .WithUsername("sa")
-                .WithPassword("yourStrong(!)Password")
-                .WithReuse(!IsRunningInCi)
-                .Build();
-
+            postgreSqlContainer = PostgreSql.CreateContainer(!IsRunningInCi);
             await postgreSqlContainer.StartAsync();
 
             if (migrationCompleted) return postgreSqlContainer;
 
-            Migration.Upgrade(postgreSqlContainer.GetConnectionString());
+            postgreSqlContainer.Migrate();
             migrationCompleted = true;
 
             return postgreSqlContainer;
@@ -64,10 +57,7 @@ public static class SharedContainers
         {
             if (redisContainer is not null) return redisContainer;
 
-            redisContainer = new RedisBuilder("redis:latest")
-                .WithReuse(!IsRunningInCi)
-                .Build();
-
+            redisContainer = Redis.CreateContainer(!IsRunningInCi);
             await redisContainer.StartAsync();
             return redisContainer;
         }
@@ -86,14 +76,7 @@ public static class SharedContainers
         {
             if (rabbitMqContainer is not null) return rabbitMqContainer;
 
-            rabbitMqContainer = new RabbitMqBuilder("rabbitmq:management")
-                .WithUsername(RabbitMq.UserName)
-                .WithPassword(RabbitMq.Password)
-                .WithPortBinding(5672, true)
-                .WithPortBinding(15672, true)
-                .WithReuse(!IsRunningInCi)
-                .Build();
-
+            rabbitMqContainer = RabbitMq.CreateContainer(!IsRunningInCi);
             await rabbitMqContainer.StartAsync();
             return rabbitMqContainer;
         }
@@ -115,20 +98,7 @@ public static class SharedContainers
         {
             if (keycloakContainer is not null) return keycloakContainer;
 
-            var keycloakJarHostPath = Path.Combine(AppContext.BaseDirectory, "keycloak-to-rabbit-3.0.5.jar");
-
-            keycloakContainer = new KeycloakBuilder("quay.io/keycloak/keycloak:26.3")
-                .WithReuse(!IsRunningInCi)
-                .WithRealm("ticketbuddy-realm.json")
-                .WithBindMount(keycloakJarHostPath, "/opt/keycloak/providers/keycloak-to-rabbit-3.0.5.jar")
-                .WithUsername(Keycloak.AdminUserName)
-                .WithPassword(Keycloak.AdminPassword)
-                .WithEnvironment("KK_TO_RMQ_URL", rabbitMqUrl.ToString())
-                .WithEnvironment("KK_TO_RMQ_VHOST", "/")
-                .WithEnvironment("KK_TO_RMQ_USERNAME", RabbitMq.UserName)
-                .WithEnvironment("KK_TO_RMQ_PASSWORD", RabbitMq.Password)
-                .Build();
-
+            keycloakContainer = Keycloak.CreateContainer(rabbitMqUrl, !IsRunningInCi);
             await keycloakContainer.StartAsync();
             return keycloakContainer;
         }

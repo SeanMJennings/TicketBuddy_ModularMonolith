@@ -35,6 +35,9 @@
       <Compile Update="Tickets\ReserveTickets.steps.cs">
         <DependentUpon>ReserveTickets.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Users\UpsertUser.steps.cs">
+        <DependentUpon>UpsertUser.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

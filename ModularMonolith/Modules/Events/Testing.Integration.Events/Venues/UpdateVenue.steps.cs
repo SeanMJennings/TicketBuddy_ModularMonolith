@@ -73,6 +73,7 @@ public partial class UpdateVenueSpecs : TruncateDbSpecification
     protected override async Task after_each()
     {
         await Truncate(Setup.Database.GetConnectionString());
+        await testHarness.Stop();
     }
 
     private void a_request_to_create_a_venue()

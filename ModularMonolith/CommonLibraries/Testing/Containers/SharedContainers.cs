@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Testcontainers.Keycloak;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
@@ -5,6 +6,7 @@ using Testcontainers.Redis;
 
 namespace Testing.Containers;
 
+[ExcludeFromCodeCoverage]
 public static class SharedContainers
 {
     private static readonly bool IsRunningInCi =

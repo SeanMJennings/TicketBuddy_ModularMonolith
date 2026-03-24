@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Json;
 using System.Text;
 using Testcontainers.RabbitMq;
 
 namespace Testing.Containers;
 
+[ExcludeFromCodeCoverage]
 public static class RabbitMq
 {
     public const string UserName = "guest";

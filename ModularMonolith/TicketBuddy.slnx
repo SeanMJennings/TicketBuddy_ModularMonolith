@@ -142,7 +142,9 @@
   <Folder Name="/Testing/">
     <Project Path="Testing/Testing.Acceptance/Testing.Acceptance.csproj" />
     <Project Path="Testing/Testing.Component/Testing.Component.csproj" />
-    <Project Path="Testing/Testing.Unit/Testing.Unit.csproj" />
+    <Project Path="Testing/Testing.Unit.Application/Testing.Unit.Application.csproj" />
+    <Project Path="Testing/Testing.Unit.Infrastructure/Testing.Unit.Infrastructure.csproj" />
+    <Project Path="Testing\Testing.Unit.Domain\Testing.Unit.Domain.csproj" />
   </Folder>
   <Folder Name="/TicketBuddy/">
     <Project Path="Host/Host.csproj" />

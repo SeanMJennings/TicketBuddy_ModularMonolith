@@ -38,7 +38,8 @@
       "Bash(xargs strings:*)",
       "Bash(dotnet nuget:*)",
       "Bash(dotnet restore:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(python3 -c \":*)"
     ],
     "deny": [],
     "ask": [

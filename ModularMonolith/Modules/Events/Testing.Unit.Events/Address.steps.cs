@@ -184,11 +184,23 @@ public partial class AddressSpecs : Specification
         stringResult!.ShouldContain(valid_postcode.ToUpperInvariant());
     }
 
+    private void a_null_postcode() => postcode = null!;
+    private void an_empty_postcode() => postcode = string.Empty;
+
+    private void comparing_address_to_non_address_object()
+    {
+        object nonAddress = "not an address";
+        equalityResult = address.Equals(nonAddress);
+    }
+
     private void valid_address_json() =>
         jsonInput = $@"{{""Street"":""{valid_street}"",""City"":""{valid_city}"",""Postcode"":""{valid_postcode}""}}";
 
     private void valid_address_json_with_camel_case() =>
         jsonInput = $@"{{""street"":""{valid_street}"",""city"":""{valid_city}"",""postcode"":""{valid_postcode}""}}";
+
+    private void address_json_with_null_street() =>
+        jsonInput = $@"{{""Street"":null,""City"":""{valid_city}"",""Postcode"":""{valid_postcode}""}}";
 
     private void serializing_address_to_json() =>
         serializedJson = JsonSerializer.Serialize(address);

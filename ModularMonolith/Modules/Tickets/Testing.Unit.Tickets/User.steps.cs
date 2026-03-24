@@ -90,4 +90,22 @@ public partial class UserSpecs : Specification
         theUser.Email.GetHashCode().ShouldBe(new Email(updated_email).GetHashCode());
         theUser.Email.GetHashCode().ShouldNotBe(new Email(valid_email).GetHashCode());
     }
+
+    private bool nameEqualityResult;
+    private bool emailEqualityResult;
+
+    private void comparing_name_to_non_name_object()
+    {
+        object nonName = "not a name";
+        nameEqualityResult = new Name(valid_full_name).Equals(nonName);
+    }
+
+    private void comparing_email_to_non_email_object()
+    {
+        object nonEmail = "not an email";
+        emailEqualityResult = new Email(valid_email).Equals(nonEmail);
+    }
+
+    private void name_is_not_equal() => nameEqualityResult.ShouldBeFalse();
+    private void email_is_not_equal() => emailEqualityResult.ShouldBeFalse();
 }

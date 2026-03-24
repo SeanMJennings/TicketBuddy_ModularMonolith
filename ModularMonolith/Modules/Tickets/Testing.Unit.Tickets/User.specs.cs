@@ -83,4 +83,20 @@ public partial class UserSpecs
         When(updating_user_email);
         Then(user_email_is_updated);
     }
+
+    [Test]
+    public void a_name_is_not_equal_to_a_non_name_object()
+    {
+        Given(valid_user_inputs);
+        When(comparing_name_to_non_name_object);
+        Then(name_is_not_equal);
+    }
+
+    [Test]
+    public void an_email_is_not_equal_to_a_non_email_object()
+    {
+        Given(valid_user_inputs);
+        When(comparing_email_to_non_email_object);
+        Then(email_is_not_equal);
+    }
 }

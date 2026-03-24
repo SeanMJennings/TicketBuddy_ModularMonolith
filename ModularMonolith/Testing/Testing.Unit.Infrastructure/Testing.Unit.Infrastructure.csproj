@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <RootNamespace>Infrastructure</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\CommonLibraries\Infrastructure\Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="Testing.Bdd" />
+        <PackageReference Include="NSubstitute" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="DomainEventsMapper.steps.cs">
+            <DependentUpon>DomainEventsMapper.specs.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Database.steps.cs">
+            <DependentUpon>Database.specs.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+</Project>

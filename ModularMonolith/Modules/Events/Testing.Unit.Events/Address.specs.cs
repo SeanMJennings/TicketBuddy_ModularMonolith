@@ -177,4 +177,41 @@ public partial class AddressSpecs
         When(deserializing_json_to_address);
         Then(deserialized_address_has_correct_values);
     }
+
+    [Test]
+    public void a_null_or_empty_postcode_is_invalid()
+    {
+        Scenario(() =>
+        {
+            Given(valid_address_inputs);
+            And(a_null_postcode);
+            When(Validating(creating_an_address));
+            Then(Informs("Invalid UK postcode format"));
+        });
+
+        Scenario(() =>
+        {
+            Given(valid_address_inputs);
+            And(an_empty_postcode);
+            When(Validating(creating_an_address));
+            Then(Informs("Invalid UK postcode format"));
+        });
+    }
+
+    [Test]
+    public void an_address_is_not_equal_to_a_non_address_object()
+    {
+        Given(valid_address_inputs);
+        And(creating_an_address);
+        When(comparing_address_to_non_address_object);
+        Then(addresses_are_not_equal);
+    }
+
+    [Test]
+    public void deserializing_json_with_a_null_property_value_throws()
+    {
+        Given(address_json_with_null_street);
+        When(Validating(deserializing_json_to_address));
+        Then(Informs("Missing required property: Street"));
+    }
 }

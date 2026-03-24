@@ -44,6 +44,15 @@
       <Compile Update="Events\UpdateEvent.steps.cs">
         <DependentUpon>UpdateEvent.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Venues\CreateVenue.steps.cs">
+        <DependentUpon>CreateVenue.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Venues\GetVenues.steps.cs">
+        <DependentUpon>GetVenues.specs.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Venues\UpdateVenue.steps.cs">
+        <DependentUpon>UpdateVenue.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

@@ -4,9 +4,10 @@ namespace Testing.Containers;
 
 public static class Redis
 {
-   public static RedisContainer CreateContainer(bool reuse)
+   public static RedisContainer CreateContainer(bool reuse, string label)
    {
        return new RedisBuilder("redis:latest")
+           .WithLabel("ticketbuddy.suite", label)
            .WithReuse(reuse)
            .Build();
    }

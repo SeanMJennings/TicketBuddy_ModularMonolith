@@ -5,13 +5,14 @@ namespace Testing.Containers;
 
 public static class PostgreSql
 {
-    public static PostgreSqlContainer CreateContainer(bool reuse, int port = 1434)
+    public static PostgreSqlContainer CreateContainer(bool reuse, string label, int port = 1434)
     {
         return new PostgreSqlBuilder("postgres:latest")
             .WithDatabase("TicketBuddy")
             .WithUsername("sa")
             .WithPassword("yourStrong(!)Password")
             .WithPortBinding(port, true)
+            .WithLabel("ticketbuddy.suite", label)
             .WithReuse(reuse)
             .Build();
     }

@@ -13,6 +13,14 @@ public static class SharedContainers
         Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true" ||
         Environment.GetEnvironmentVariable("CI") == "true";
 
+    private static string ContainerLabelPerAssembly => containerLabel ??=
+        AppDomain.CurrentDomain.GetAssemblies()
+            .Select(a => a.GetName().Name ?? "")
+            .FirstOrDefault(name => name.StartsWith("Testing."))
+        ?? "default";
+
+    private static string? containerLabel;
+
     private static PostgreSqlContainer? postgreSqlContainer;
     private static RedisContainer? redisContainer;
     private static RabbitMqContainer? rabbitMqContainer;
@@ -34,7 +42,7 @@ public static class SharedContainers
         {
             if (postgreSqlContainer is not null) return postgreSqlContainer;
 
-            postgreSqlContainer = PostgreSql.CreateContainer(!IsRunningInCi);
+            postgreSqlContainer = PostgreSql.CreateContainer(!IsRunningInCi, ContainerLabelPerAssembly);
             await postgreSqlContainer.StartAsync();
 
             if (migrationCompleted) return postgreSqlContainer;
@@ -59,7 +67,7 @@ public static class SharedContainers
         {
             if (redisContainer is not null) return redisContainer;
 
-            redisContainer = Redis.CreateContainer(!IsRunningInCi);
+            redisContainer = Redis.CreateContainer(!IsRunningInCi, ContainerLabelPerAssembly);
             await redisContainer.StartAsync();
             return redisContainer;
         }
@@ -78,7 +86,7 @@ public static class SharedContainers
         {
             if (rabbitMqContainer is not null) return rabbitMqContainer;
 
-            rabbitMqContainer = RabbitMq.CreateContainer(!IsRunningInCi);
+            rabbitMqContainer = RabbitMq.CreateContainer(!IsRunningInCi, ContainerLabelPerAssembly);
             await rabbitMqContainer.StartAsync();
             return rabbitMqContainer;
         }

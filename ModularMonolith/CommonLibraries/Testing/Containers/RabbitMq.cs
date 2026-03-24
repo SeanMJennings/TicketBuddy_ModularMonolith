@@ -11,13 +11,14 @@ public static class RabbitMq
     public const string UserName = "guest";
     public const string Password = "guest";
 
-    public static RabbitMqContainer CreateContainer(bool reuse)
+    public static RabbitMqContainer CreateContainer(bool reuse, string label)
     {
         return new RabbitMqBuilder("rabbitmq:management")
             .WithUsername(UserName)
             .WithPassword(Password)
             .WithPortBinding(5672, true)
             .WithPortBinding(15672, true)
+            .WithLabel("ticketbuddy.suite", label)
             .WithReuse(reuse)
             .Build();
     }

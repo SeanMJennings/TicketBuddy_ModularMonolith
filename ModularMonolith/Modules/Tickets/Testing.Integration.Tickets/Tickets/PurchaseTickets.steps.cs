@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using Application.Tickets.Ticket.PurchaseTickets;
 using Controllers.Tickets.Requests;
 using Controllers.Tickets.Ticket;
 using Domain.Exceptions;
+using Domain.Tickets.Ticket;
 using Infrastructure.Configuration;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
@@ -303,7 +305,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         error.ShouldBeOfType<EntityNotFoundException>();
     }
 
-    private async Task outbox_messages_are_persisted_to_the_ticket_schema()
+    private static async Task outbox_messages_are_persisted_to_the_ticket_schema()
     {
         await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
         await connection.OpenAsync();
@@ -312,5 +314,22 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
             connection);
         var count = (long)(await cmd.ExecuteScalarAsync())!;
         count.ShouldBeGreaterThan(0);
+    }
+
+    private async Task handling_ticket_was_purchased_for_non_existent_event()
+    {
+        var handler = serviceProvider.GetRequiredService<TicketWasPurchasedHandler>();
+        await handler.Handle(new TicketWasPurchased(Guid.CreateVersion7(), Guid.CreateVersion7(), Guid.CreateVersion7()));
+    }
+
+    private static async Task ticket_purchased_integration_event_is_not_published()
+    {
+        await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
+        await connection.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
+            connection);
+        var count = (long)(await cmd.ExecuteScalarAsync())!;
+        count.ShouldBe(0);
     }
 }

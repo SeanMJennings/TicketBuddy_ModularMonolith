@@ -113,4 +113,11 @@ public partial class PurchaseTicketsSpecs
         await When(purchasing_two_tickets);
         await Then(outbox_messages_are_persisted_to_the_ticket_schema);
     }
+
+    [Test]
+    public async Task ticket_purchased_integration_event_is_not_published_when_event_is_not_found()
+    {
+        await When(handling_ticket_was_purchased_for_non_existent_event);
+        await Then(ticket_purchased_integration_event_is_not_published);
+    }
 }

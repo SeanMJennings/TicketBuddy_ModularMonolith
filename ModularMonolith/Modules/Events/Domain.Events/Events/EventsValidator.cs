@@ -13,12 +13,17 @@ public static class EventsValidator
         var conflictingEvent = allEvents.FirstOrDefault(e =>
             e.VenueId == theEvent.VenueId &&
             e.Id != theEvent.Id &&
-            ((theEvent.StartDate >= e.StartDate && theEvent.StartDate < e.EndDate) ||
-             (theEvent.EndDate > e.StartDate && theEvent.EndDate <= e.EndDate) ||
-             (theEvent.StartDate <= e.StartDate && theEvent.EndDate >= e.EndDate)));
+            DateRangesOverlap(theEvent.StartDate, theEvent.EndDate, e.StartDate, e.EndDate));
 
         if (conflictingEvent is not null) throw new ValidationException("Venue is not available at the selected time");
     }
+
+    private static bool DateRangesOverlap(
+        DateTimeOffset aStart, DateTimeOffset aEnd,
+        DateTimeOffset bStart, DateTimeOffset bEnd) =>
+        (aStart >= bStart && aStart < bEnd) ||
+        (aEnd > bStart && aEnd <= bEnd) ||
+        (aStart <= bStart && aEnd >= bEnd);
 
     public static void ValidateDate(DateTimeOffset startDate)
     {

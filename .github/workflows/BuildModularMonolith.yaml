@@ -57,7 +57,7 @@ jobs:
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Merge coverage reports
-        run: reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage/report" -reporttypes:"Cobertura;HtmlSummary" -minimumCoverageThresholds:lineCoverage=99;branchCoverage=80
+        run: reportgenerator -reports:"./coverage/**/coverage.cobertura.xml" -targetdir:"./coverage/report" -reporttypes:"Cobertura;HtmlSummary" -minimumCoverageThresholds:lineCoverage=99;branchCoverage=90
 
       - name: Upload coverage report artifact
         if: always()

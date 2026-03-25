@@ -124,4 +124,28 @@ public partial class StringValueObjectSpecs : Specification
         When(adding_items_with_case_insensitive_values);
         Then(hashset_contains_one_item);
     }
+
+    [Test]
+    public void equals_object_returns_true_when_object_is_same_value_object()
+    {
+        Given(a_value_object_with_value);
+        When(comparing_to_boxed_same_value_object);
+        Then(they_are_equal);
+    }
+
+    [Test]
+    public void equals_object_returns_false_when_object_is_different_type()
+    {
+        Given(a_value_object_with_value);
+        When(comparing_to_a_non_value_object);
+        Then(they_are_not_equal);
+    }
+
+    [Test]
+    public void get_hash_code_returns_zero_for_default_value_object()
+    {
+        Given(a_default_value_object);
+        When(computing_hash_code_of_value_object);
+        Then(hash_code_is_zero);
+    }
 }

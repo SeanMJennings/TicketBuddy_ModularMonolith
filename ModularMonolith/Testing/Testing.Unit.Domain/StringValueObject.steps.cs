@@ -33,6 +33,7 @@ public partial class StringValueObjectSpecs
     private Dictionary<TestValue, string>? dictionary;
     private HashSet<TestValue>? hashset;
     private string? testValueInput;
+    private StringValueObject<TestValue> stringValueObject;
     
     private const string SampleValue = "Test Value";
     private const string SampleValueUpperCase = "TEST VALUE";
@@ -177,5 +178,33 @@ public partial class StringValueObjectSpecs
     private void hashset_contains_one_item()
     {
         hashset!.Count.ShouldBe(1);
+    }
+
+    private void a_default_value_object()
+    {
+        stringValueObject = default;
+    }
+
+    private void comparing_to_boxed_same_value_object()
+    {
+        var svo = new StringValueObject<TestValue>(SampleValue);
+        object boxed = new StringValueObject<TestValue>(SampleValue);
+        equalityResult = svo.Equals(boxed);
+    }
+
+    private void comparing_to_a_non_value_object()
+    {
+        var svo = new StringValueObject<TestValue>(SampleValue);
+        equalityResult = svo.Equals("not a value object");
+    }
+
+    private void computing_hash_code_of_value_object()
+    {
+        hashCode1 = stringValueObject.GetHashCode();
+    }
+
+    private void hash_code_is_zero()
+    {
+        hashCode1.ShouldBe(0);
     }
 }

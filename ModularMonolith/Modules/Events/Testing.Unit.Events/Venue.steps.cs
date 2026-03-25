@@ -234,4 +234,11 @@ public partial class VenueSpecs : Specification
     }
 
     private void venue_name_is_equal() => venueNameEqualityResult.ShouldBeTrue();
+
+    private void comparing_venue_name_to_an_object_of_different_type()
+    {
+        venueNameEqualityResult = new VenueName(valid_venue_name).Equals("not a venue name");
+    }
+
+    private void venue_name_is_not_equal() => venueNameEqualityResult.ShouldBeFalse();
 }

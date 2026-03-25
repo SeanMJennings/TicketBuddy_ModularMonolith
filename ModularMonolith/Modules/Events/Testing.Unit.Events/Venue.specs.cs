@@ -156,4 +156,12 @@ public partial class VenueSpecs
         When(comparing_venue_name_to_boxed_same_venue_name);
         Then(venue_name_is_equal);
     }
+
+    [Test]
+    public void venue_name_equals_object_returns_false_when_object_is_different_type()
+    {
+        Given(valid_inputs);
+        When(comparing_venue_name_to_an_object_of_different_type);
+        Then(venue_name_is_not_equal);
+    }
 }

@@ -12,14 +12,13 @@ public class TicketWasPurchasedHandler(
     protected override async Task Handle(TicketWasPurchased message)
     {
         var theEvent = await eventRepository.GetById(message.EventId);
-        var eventName = theEvent is null ? "Unknown Event" : theEvent.EventName.ToString();
 
         var integrationEvent = new TicketPurchased
         {
             TicketId = message.TicketId,
             UserId = message.UserId,
             EventId = message.EventId,
-            EventName = eventName
+            EventName = theEvent!.EventName.ToString()
         };
 
         await publish.Publish(integrationEvent);

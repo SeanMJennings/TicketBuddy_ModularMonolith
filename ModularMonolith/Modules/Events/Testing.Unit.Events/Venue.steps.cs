@@ -224,4 +224,14 @@ public partial class VenueSpecs : Specification
     {
         error.ShouldBeOfType<EntityNotFoundException>();
     }
+
+    private bool venueNameEqualityResult;
+
+    private void comparing_venue_name_to_boxed_same_venue_name()
+    {
+        object boxed = new VenueName(valid_venue_name);
+        venueNameEqualityResult = new VenueName(valid_venue_name).Equals(boxed);
+    }
+
+    private void venue_name_is_equal() => venueNameEqualityResult.ShouldBeTrue();
 }

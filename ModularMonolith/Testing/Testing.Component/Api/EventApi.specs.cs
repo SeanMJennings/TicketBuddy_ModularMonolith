@@ -123,4 +123,11 @@ public partial class EventApiSpecs
         await When(updating_the_venue_that_should_fail);
               Then(the_venue_update_is_forbidden);
     }
+
+    [Test]
+    public async Task unhandled_exception_returns_internal_server_error()
+    {
+        await When(triggering_an_unhandled_exception);
+              Then(the_response_is_internal_server_error);
+    }
 }

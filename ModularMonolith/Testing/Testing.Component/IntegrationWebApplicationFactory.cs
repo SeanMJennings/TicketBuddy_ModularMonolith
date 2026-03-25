@@ -2,6 +2,7 @@
 using Infrastructure.Tickets.Configuration;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -19,6 +20,7 @@ public class IntegrationWebApplicationFactory<TProgram>(string connectionString,
         builder.ConfigureTestServices(services =>
         {
             services.AddTestAuthentication();
+            services.AddTransient<IStartupFilter, ThrowingEndpointStartupFilter>();
             if (rabbitMqConnectionString is null)
             {
                 services.AddMassTransitTestHarness(x =>
@@ -38,6 +40,16 @@ public class IntegrationWebApplicationFactory<TProgram>(string connectionString,
         if (rabbitMqConnectionString is not null)
             Environment.SetEnvironmentVariable("ConnectionStrings__Messaging", rabbitMqConnectionString);
     }
+}
+
+internal sealed class ThrowingEndpointStartupFilter : IStartupFilter
+{
+    public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next) => app =>
+    {
+        next(app);
+        app.Map("/test/throw", throwApp =>
+            throwApp.Run(_ => throw new InvalidOperationException("deliberate test exception")));
+    };
 }
 
 public static class TestAuthExtensions

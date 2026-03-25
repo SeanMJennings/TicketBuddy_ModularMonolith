@@ -11,7 +11,6 @@ using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Testcontainers.PostgreSql;
-using Testcontainers.RabbitMq;
 using Testing;
 using Testing.Containers;
 using Testing.TestData;
@@ -476,5 +475,16 @@ public partial class EventApiSpecs : TruncateDbSpecification
     private void the_venue_update_is_forbidden()
     {
         response_code.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
+    private async Task triggering_an_unhandled_exception()
+    {
+        var response = await client.GetAsync("/test/throw");
+        response_code = response.StatusCode;
+    }
+
+    private void the_response_is_internal_server_error()
+    {
+        response_code.ShouldBe(HttpStatusCode.InternalServerError);
     }
 }

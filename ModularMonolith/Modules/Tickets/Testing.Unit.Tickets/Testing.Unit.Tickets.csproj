@@ -26,6 +26,9 @@
     <Compile Update="Ticket.steps.cs">
       <DependentUpon>Ticket.specs.cs</DependentUpon>
     </Compile>
+    <Compile Update="User.steps.cs">
+      <DependentUpon>User.specs.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

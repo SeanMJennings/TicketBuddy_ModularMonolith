@@ -221,4 +221,25 @@ public partial class AddressSpecs : Specification
         deserializedAddress.City.ShouldBe(valid_city);
         deserializedAddress.Postcode.ShouldBe(valid_postcode.ToUpperInvariant());
     }
+
+    private void comparing_address_to_boxed_same_address()
+    {
+        object boxed = new Address(valid_street, valid_city, valid_postcode);
+        equalityResult = address.Equals(boxed);
+    }
+
+    private void a_default_address()
+    {
+        address = default;
+    }
+
+    private void computing_hash_code_of_address()
+    {
+        hashCode1 = address.GetHashCode();
+    }
+
+    private void hash_code_is_deterministic()
+    {
+        hashCode1.ShouldBe(address.GetHashCode());
+    }
 }

@@ -214,4 +214,21 @@ public partial class AddressSpecs
         When(Validating(deserializing_json_to_address));
         Then(Informs("Missing required property: Street"));
     }
+
+    [Test]
+    public void equals_object_returns_true_when_object_is_same_address()
+    {
+        Given(valid_address_inputs);
+        And(creating_an_address);
+        When(comparing_address_to_boxed_same_address);
+        Then(addresses_are_equal);
+    }
+
+    [Test]
+    public void get_hash_code_returns_consistent_value_for_default_address()
+    {
+        Given(a_default_address);
+        When(computing_hash_code_of_address);
+        Then(hash_code_is_deterministic);
+    }
 }

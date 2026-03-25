@@ -66,6 +66,12 @@ public partial class EventNameSpecs
         equalityResult = eventName1.Equals(nonEventName);
     }
 
+    private void comparing_event_name_to_boxed_same_event_name()
+    {
+        object boxed = new EventName(SampleEventName);
+        equalityResult = eventName1.Equals(boxed);
+    }
+
     private void event_names_are_equal() => equalityResult.ShouldBeTrue();
 
     private void event_names_are_not_equal() => equalityResult.ShouldBeFalse();

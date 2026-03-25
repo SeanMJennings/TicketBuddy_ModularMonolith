@@ -77,4 +77,13 @@ public partial class EventNameSpecs : Specification
         When(comparing_event_name_to_non_event_name_object);
         Then(event_names_are_not_equal);
     }
+
+    [Test]
+    public void equals_object_returns_true_when_object_is_same_event_name()
+    {
+        Given(a_valid_event_name);
+        And(creating_an_event_name);
+        When(comparing_event_name_to_boxed_same_event_name);
+        Then(event_names_are_equal);
+    }
 }

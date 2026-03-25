@@ -99,4 +99,20 @@ public partial class UserSpecs
         When(comparing_email_to_non_email_object);
         Then(email_is_not_equal);
     }
+
+    [Test]
+    public void equals_object_returns_true_when_object_is_same_name()
+    {
+        Given(valid_user_inputs);
+        When(comparing_name_to_boxed_same_name);
+        Then(name_is_equal);
+    }
+
+    [Test]
+    public void equals_object_returns_true_when_object_is_same_email()
+    {
+        Given(valid_user_inputs);
+        When(comparing_email_to_boxed_same_email);
+        Then(email_is_equal);
+    }
 }

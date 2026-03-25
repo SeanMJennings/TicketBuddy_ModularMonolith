@@ -108,4 +108,18 @@ public partial class UserSpecs : Specification
 
     private void name_is_not_equal() => nameEqualityResult.ShouldBeFalse();
     private void email_is_not_equal() => emailEqualityResult.ShouldBeFalse();
+    private void name_is_equal() => nameEqualityResult.ShouldBeTrue();
+    private void email_is_equal() => emailEqualityResult.ShouldBeTrue();
+
+    private void comparing_name_to_boxed_same_name()
+    {
+        object boxed = new Name(valid_full_name);
+        nameEqualityResult = new Name(valid_full_name).Equals(boxed);
+    }
+
+    private void comparing_email_to_boxed_same_email()
+    {
+        object boxed = new Email(valid_email);
+        emailEqualityResult = new Email(valid_email).Equals(boxed);
+    }
 }

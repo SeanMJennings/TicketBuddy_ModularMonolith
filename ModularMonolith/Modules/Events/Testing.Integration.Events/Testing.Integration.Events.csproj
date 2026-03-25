@@ -53,6 +53,9 @@
       <Compile Update="Venues\UpdateVenue.steps.cs">
         <DependentUpon>UpdateVenue.specs.cs</DependentUpon>
       </Compile>
+      <Compile Update="Venues\GetVenuesById.steps.cs">
+        <DependentUpon>GetVenuesById.specs.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

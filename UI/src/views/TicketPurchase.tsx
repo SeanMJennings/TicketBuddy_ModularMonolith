@@ -64,16 +64,10 @@ export const TicketPurchase = () => {
   };
 
   const calculateTotal = () => {
-    if (selectedTickets.length === 0) return 0;
     return selectedTickets.reduce((total, ticket) => total + ticket.Price, 0);
   };
 
   const handlePurchase = async () => {
-    if (!user || !eventId || selectedTickets.length === 0) {
-      toast.error('Unable to process purchase. Please try again.');
-      return;
-    }
-
     setPurchasing(true);
       const ticketIds = selectedTickets.map(ticket => ticket.Id);
 

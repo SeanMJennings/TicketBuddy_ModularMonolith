@@ -64,11 +64,16 @@ export function ticketsPageIsRendered() {
   return elements.mockedTicketsPage() !== null;
 }
 
+export function noTicketsSelectedMessageIsDisplayed() {
+  return elements.noTicketsSelectedMessage() !== null;
+}
+
 export const elements = {
   title: () => renderedComponent.getByRole('heading', { name: /Ticket Purchase/i }),
   backButton: () => renderedComponent.queryByText('Back to Seat Selection'),
-  purchaseButton: () => renderedComponent.getByText('Complete Purchase'),
+  purchaseButton: () => renderedComponent.queryByText('Complete Purchase'),
   mockedTicketsPage: () => renderedComponent.getByText('I am the mocked tickets page'),
   seatItems: () => renderedComponent.container.querySelectorAll('[data-testid="seat-item"]'),
   totalSection: () => renderedComponent.container.querySelector('[data-testid="total-section"]'),
+  noTicketsSelectedMessage: () => renderedComponent.queryByText('No tickets selected'),
 };

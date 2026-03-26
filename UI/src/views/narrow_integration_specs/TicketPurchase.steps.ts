@@ -9,7 +9,8 @@ import {
     clickPurchaseButton,
     seatsAreDisplayed,
     totalIsDisplayed,
-    ticketsPageIsRendered
+    ticketsPageIsRendered,
+    noTicketsSelectedMessageIsDisplayed
 } from "./TicketPurchase.page.tsx";
 import { MockServer } from "../../testing/mock-server.ts";
 import { waitUntil } from "../../testing/utilities.ts";
@@ -77,4 +78,10 @@ export async function should_navigate_back_to_seat_selection() {
   renderTicketPurchase(event.Id, mockTickets, event);
   await clickBackButton();
   expect(ticketsPageIsRendered()).toBeTruthy();
+}
+
+export function should_show_no_tickets_selected_when_navigating_directly() {
+  renderTicketPurchase(event.Id);
+  expect(noTicketsSelectedMessageIsDisplayed()).toBeTruthy();
+  expect(purchaseButtonIsRendered()).toBeFalsy();
 }

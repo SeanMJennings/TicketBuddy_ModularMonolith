@@ -16,7 +16,9 @@ import {
     clickSubmitEventButtonToUpdateEvent,
     errorToastIsDisplayed,
     updateEventFormIsRendered,
-    venueFieldIsDisabled
+    venueFieldIsDisabled,
+    loadingIsDisplayed,
+    noEventsAreDisplayed
 } from "./EventsManagement.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
 import {Events, Venues} from "../../testing/data.ts";
@@ -41,6 +43,19 @@ beforeEach(() => {
 afterEach(() => {
     unmountEventsManagement();
 });
+
+export async function should_render_empty_list_when_api_fails() {
+    mockServer.reset();
+    wait_for_get_events = mockServer.get("/events", { error: "Server Error" }, undefined, 500);
+    wait_for_get_venues = mockServer.get("/venues", Venues);
+    mockServer.start();
+
+    renderEventsManagement();
+    expect(loadingIsDisplayed()).toBeTruthy();
+    await waitUntil(wait_for_get_events);
+    await waitUntil(() => !loadingIsDisplayed());
+    expect(noEventsAreDisplayed()).toBeTruthy();
+}
 
 export async function should_display_list_of_events() {
     renderEventsManagement();
@@ -206,6 +221,35 @@ export async function should_show_error_toast_when_event_update_fails() {
     await waitUntil(wait_for_put);
 
     expect(errorToastIsDisplayed("End date cannot be before start date")).toBeTruthy();
+}
+
+export async function should_show_generic_error_toast_when_server_error_has_no_errors_array() {
+    renderEventsManagement();
+    await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
+
+    await clickAddEventIcon();
+
+    mockServer.reset();
+    wait_for_get_venues = mockServer.get("/venues", Venues);
+    wait_for_post = mockServer.post("/events", { Message: "Internal failure" }, 422);
+    mockServer.start();
+
+    const startDateString = new Date(Date.now() + 86400000).toISOString().split("T")[0] + "T10:00";
+    const endDateString = new Date(Date.now() + 172800000).toISOString().split("T")[0] + "T12:00";
+
+    await fillEventForm({
+        eventName: "Some Event",
+        startDate: startDateString,
+        endDate: endDateString,
+        venueId: Venues[0].Id,
+        Price: 20
+    });
+
+    await clickSubmitEventButtonToAddEvent();
+    await waitUntil(wait_for_post);
+
+    expect(errorToastIsDisplayed("Failed to create event")).toBeTruthy();
 }
 
 export async function should_show_error_toast_when_event_creation_fails() {

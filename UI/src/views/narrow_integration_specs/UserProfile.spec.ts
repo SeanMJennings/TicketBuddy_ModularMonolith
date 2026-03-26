@@ -8,7 +8,8 @@ import {
     should_not_display_stats_when_no_tickets,
     should_display_event_names_in_tickets,
     should_display_event_date_and_venue_in_tickets,
-    should_order_tickets_by_event_date_then_seat_number
+    should_order_tickets_by_event_date_then_seat_number,
+    should_show_profile_with_no_tickets_when_api_fails
 } from "./UserProfile.steps.ts";
 
 describe("UserProfile", () => {
@@ -21,4 +22,5 @@ describe("UserProfile", () => {
     it("should display event names in tickets", should_display_event_names_in_tickets);
     it("should display event date and venue in tickets", should_display_event_date_and_venue_in_tickets);
     it("should order tickets by event date then seat number", should_order_tickets_by_event_date_then_seat_number);
+    it("should show profile with no tickets when API fails", should_show_profile_with_no_tickets_when_api_fails);
 });

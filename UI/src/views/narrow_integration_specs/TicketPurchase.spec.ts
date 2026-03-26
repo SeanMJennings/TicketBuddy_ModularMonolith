@@ -3,7 +3,8 @@ import {
   should_display_purchase_summary,
   should_purchase_tickets_successfully,
   should_navigate_back_to_seat_selection,
-  should_show_no_tickets_selected_when_navigating_directly
+  should_show_no_tickets_selected_when_navigating_directly,
+  should_show_no_tickets_selected_when_no_location_state
 } from "./TicketPurchase.steps";
 
 describe("TicketPurchase", () => {
@@ -11,4 +12,5 @@ describe("TicketPurchase", () => {
   it("should purchase tickets successfully", should_purchase_tickets_successfully);
   it("should navigate back to seat selection when Back button is clicked", should_navigate_back_to_seat_selection);
   it("should show no tickets selected message when navigating directly", should_show_no_tickets_selected_when_navigating_directly);
+  it("should show no tickets selected when there is no location state", should_show_no_tickets_selected_when_no_location_state);
 });

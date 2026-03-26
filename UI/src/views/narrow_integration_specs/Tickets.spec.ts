@@ -6,7 +6,8 @@ import {
     should_not_allow_selecting_a_purchased_ticket,
     should_show_error_if_fail_to_reserve_ticket,
     should_organize_selected_seats_in_ascending_order,
-    should_deselect_a_seat_when_clicked_again
+    should_deselect_a_seat_when_clicked_again,
+    should_render_empty_seat_map_when_api_fails
 } from "./Tickets.steps.ts";
 
 describe("Tickets", () => {
@@ -17,4 +18,5 @@ describe("Tickets", () => {
     it("should not allow selecting a purchased ticket", should_not_allow_selecting_a_purchased_ticket);
     it("should organize selected seats in ascending order", should_organize_selected_seats_in_ascending_order);
     it("should deselect a seat when clicked again", should_deselect_a_seat_when_clicked_again);
+    it("should render empty seat map when API fails", should_render_empty_seat_map_when_api_fails);
 });

@@ -74,6 +74,10 @@ export function purchasePageIsRendered() {
     return elements.purchasePageIsRendered() !== null;
 }
 
+export function loadingIsDisplayed(): boolean {
+    return renderedComponent.container.querySelector('[data-testid="loading-indicator"]') !== null;
+}
+
 export function errorToastIsDisplayed(errorMessage: string): boolean {
     const toastElement = elements.toastElement(errorMessage);
     return !!toastElement;

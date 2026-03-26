@@ -11,7 +11,9 @@ import {
     clickSeat,
     getSelectedSeats,
     clickProceedToPurchaseButton,
-    purchasePageIsRendered, errorToastIsDisplayed
+    purchasePageIsRendered,
+    errorToastIsDisplayed,
+    loadingIsDisplayed
 } from "./Tickets.page.tsx";
 import {waitUntil} from "../../testing/utilities.ts";
 import {Events, OidcUsers, TicketsForFirstEvent} from "../../testing/data.ts";
@@ -120,6 +122,17 @@ export async function should_not_allow_selecting_a_purchased_ticket() {
     expect(getSelectedSeats().length).toBe(0);
     await clickSeat(1);
     expect(getSelectedSeats().length).toBe(1);
+}
+
+export async function should_render_empty_seat_map_when_api_fails() {
+    mockServer.reset();
+    wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, { error: "Not Found" }, undefined, 404);
+    mockServer.start();
+
+    renderTickets(Events[0].Id);
+    await waitUntil(wait_for_get_event);
+    await waitUntil(() => !loadingIsDisplayed());
+    expect(getSeatElement(1)).toBeNull();
 }
 
 export async function should_deselect_a_seat_when_clicked_again() {

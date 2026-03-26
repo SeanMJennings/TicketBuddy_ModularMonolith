@@ -28,6 +28,16 @@ export function renderTicketPurchase(eventId: string, selectedTickets: Ticket[] 
   return renderedComponent;
 }
 
+export function renderTicketPurchaseWithNoState(eventId: string) {
+  const initialEntries = [{ pathname: `/tickets/${eventId}/purchase` }];
+  renderedComponent = render(
+    <MemoryRouter initialEntries={initialEntries}>
+      <Main />
+    </MemoryRouter>
+  );
+  return renderedComponent;
+}
+
 export function unmountTicketPurchase() {
   renderedComponent?.unmount();
 }

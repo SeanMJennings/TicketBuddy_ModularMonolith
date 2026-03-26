@@ -31,8 +31,7 @@ export const useUserProfileData = (): UseUserProfileDataResult => {
     useEffect(() => {
         if (!auth.user?.access_token) return;
 
-        const currentUser = convertToTicketBuddyUser(auth.user);
-        if (!currentUser) return;
+        const currentUser = convertToTicketBuddyUser(auth.user)!;
 
         if (currentUser.UserType === UserType.Administrator) {
             getVenues()

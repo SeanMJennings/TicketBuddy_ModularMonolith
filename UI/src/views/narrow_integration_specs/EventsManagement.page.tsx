@@ -98,6 +98,14 @@ export function editButtonExistsForEvent(eventName: string): boolean {
     return !!editButton;
 }
 
+export function loadingIsDisplayed(): boolean {
+    return renderedComponent.container.querySelector('[data-testid="loading-indicator"]') !== null;
+}
+
+export function noEventsAreDisplayed(): boolean {
+    return renderedComponent.container.querySelectorAll('.event-item').length === 0;
+}
+
 export function errorToastIsDisplayed(errorMessage: string): boolean {
     const toastElement = screen.getByText(errorMessage);
     return !!toastElement;

@@ -1,6 +1,7 @@
 ﻿import { afterEach, beforeEach, expect } from "vitest";
 import {
     renderTicketPurchase,
+    renderTicketPurchaseWithNoState,
     unmountTicketPurchase,
     titleIsRendered,
     backButtonIsRendered,
@@ -82,6 +83,12 @@ export async function should_navigate_back_to_seat_selection() {
 
 export function should_show_no_tickets_selected_when_navigating_directly() {
   renderTicketPurchase(event.Id);
+  expect(noTicketsSelectedMessageIsDisplayed()).toBeTruthy();
+  expect(purchaseButtonIsRendered()).toBeFalsy();
+}
+
+export function should_show_no_tickets_selected_when_no_location_state() {
+  renderTicketPurchaseWithNoState(event.Id);
   expect(noTicketsSelectedMessageIsDisplayed()).toBeTruthy();
   expect(purchaseButtonIsRendered()).toBeFalsy();
 }

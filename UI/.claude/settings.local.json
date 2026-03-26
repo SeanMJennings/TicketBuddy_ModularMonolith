@@ -10,7 +10,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(npm run build:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(npx vitest:*)",
+      "Bash(python3:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -1,6 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { Button } from '../components/Button.styles';
 import { BackIcon } from './EventsManagement.styles';
 import { type Ticket } from '../domain/ticket';
@@ -25,7 +24,6 @@ import {purchaseTickets} from "../api/tickets.api.ts";
 import {handleError} from "../common/tickets/ticket-errors.ts";
 import {Container, PageTitle} from "./Common.styles.tsx";
 import {ContentLoading} from "../components/LoadingContainers.styles.tsx";
-import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions.ts";
 import { useAuth } from 'react-oidc-context';
 import { VenueDisplay } from '../components/VenueDisplay';
 
@@ -43,7 +41,6 @@ export const TicketPurchase = () => {
   const [venues, setVenues] = useState<Venue[]>([]);
 
   const auth = useAuth();
-  const user = convertToTicketBuddyUser(auth.user);
 
   const state = location.state as LocationState;
   const { selectedTickets, event } = state || { selectedTickets: [], event: null };

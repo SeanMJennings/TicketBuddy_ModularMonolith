@@ -251,3 +251,15 @@ export async function should_order_tickets_by_event_date_then_seat_number() {
     expect(ticketsList[3]).toContain("Future Concert");
     expect(ticketsList[3]).toContain("Seat 15");
 }
+
+export async function should_show_profile_with_no_tickets_when_api_fails() {
+    mockServer.reset();
+    wait_for_get_user_tickets = mockServer.get(`tickets/users/me`, { error: "Server Error" }, undefined, 500);
+    mockServer.start();
+
+    renderUserProfile();
+    await waitUntil(wait_for_get_user_tickets);
+    await waitUntil(() => !loadingIsDisplayed());
+    expect(getUserNameDisplay()).toBe(Users[0].FullName);
+    expect(getTicketsList()).toHaveLength(0);
+}

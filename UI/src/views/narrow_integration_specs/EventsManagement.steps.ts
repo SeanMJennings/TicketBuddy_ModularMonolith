@@ -91,8 +91,8 @@ export async function should_allow_user_to_create_new_event() {
     const data = mockServer.content
     expect(data).toEqual({
         EventName: eventName,
-        StartDate: startEventDate.toISOString().split("T")[0] + "T12:12:00" + ".000Z",
-        EndDate: endEventDate.toISOString().split("T")[0] + "T13:13:00" + ".000Z",
+        StartDate: new Date(startEventDateStringWithTime).toISOString(),
+        EndDate: new Date(endEventDateStringWithTime).toISOString(),
         VenueId: eventVenueId,
         Price: "45"
     });

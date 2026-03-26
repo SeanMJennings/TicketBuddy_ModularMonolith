@@ -4,7 +4,7 @@ public static class RedisResourceExtensions
 {
     private const string ResourceName = "Cache";
     private const string VolumeName = "Ticketbuddy.Aspire.Redis";
-    private const string Image = "redis:7.0-alpine";
+    private const string Image = "redis:latest";
     private const string DefaultPassword = "YourStrong@Passw0rd";
     private const int Port = 6379;
 

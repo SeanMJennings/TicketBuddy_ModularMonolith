@@ -122,6 +122,19 @@ export async function should_not_allow_selecting_a_purchased_ticket() {
     expect(getSelectedSeats().length).toBe(1);
 }
 
+export async function should_deselect_a_seat_when_clicked_again() {
+    renderTickets(Events[0].Id);
+    await waitUntil(wait_for_get_event);
+    await waitUntil(wait_for_get_tickets);
+
+    await clickSeat(1);
+    await clickSeat(3);
+    expect(getSelectedSeats().length).toBe(2);
+
+    await clickSeat(1);
+    expect(getSelectedSeats()).toEqual([3]);
+}
+
 export async function should_organize_selected_seats_in_ascending_order() {
     renderTickets(Events[0].Id);
     await waitUntil(wait_for_get_event);

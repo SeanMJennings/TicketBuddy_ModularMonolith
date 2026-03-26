@@ -248,6 +248,20 @@ export async function should_show_error_toast_when_event_creation_fails() {
     expect(errorToastIsDisplayed("End date cannot be before start date")).toBeTruthy();
 }
 
+export async function should_navigate_back_when_event_fetch_fails_in_edit_mode() {
+    renderEventsManagement();
+    await waitUntil(wait_for_get_events);
+    await waitUntil(wait_for_get_venues);
+
+    mockServer.reset();
+    wait_for_get_event = mockServer.get(`/events/${Events[0].Id}`, { error: 'Not Found' }, undefined, 404);
+    mockServer.start();
+
+    await clickEditButtonForEvent(Events[0].EventName);
+    await waitUntil(wait_for_get_event);
+    expect(errorToastIsDisplayed("Failed to fetch event details")).toBeTruthy();
+}
+
 export async function should_not_allow_venue_change_when_editing_event() {
     renderEventsManagement();
     await waitUntil(wait_for_get_events);

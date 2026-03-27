@@ -111,7 +111,7 @@ public partial class PurchaseTicketsSpecs
         await And(requesting_the_tickets);
         await And(reserving_tickets);
         await When(purchasing_two_tickets);
-        await Then(outbox_messages_are_persisted_to_the_ticket_schema);
+        await Then(outbox_messages_are_persisted_to_the_messaging_schema);
     }
 
     [Test]

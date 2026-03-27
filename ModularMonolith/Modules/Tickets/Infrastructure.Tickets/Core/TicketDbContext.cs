@@ -2,7 +2,6 @@
 using Domain.ValueObjects;
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tickets.Core;
@@ -50,9 +49,5 @@ public class TicketDbContext(
         modelBuilder.Entity<Domain.Tickets.User.User>().Property(u => u.FullName).HasConversion(name => name.ToString(), name => new Name(name));
         modelBuilder.Entity<Domain.Tickets.User.User>().Property(u => u.Email).HasConversion(email => email.ToString(), email => new Email(email));
         modelBuilder.Entity<Domain.Tickets.User.User>().ToTable("Users",DefaultSchema, u => u.ExcludeFromMigrations());
-
-        modelBuilder.AddInboxStateEntity(b => b.ToTable("InboxState", DefaultSchema, t => t.ExcludeFromMigrations()));
-        modelBuilder.AddOutboxStateEntity(b => b.ToTable("OutboxState", DefaultSchema, t => t.ExcludeFromMigrations()));
-        modelBuilder.AddOutboxMessageEntity(b => b.ToTable("OutboxMessage", DefaultSchema, t => t.ExcludeFromMigrations()));
     }
 }

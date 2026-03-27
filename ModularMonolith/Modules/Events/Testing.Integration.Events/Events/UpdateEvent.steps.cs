@@ -5,9 +5,9 @@ using Domain.Exceptions;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Messaging;
 using MassTransit;
 using MassTransit.Testing;
-using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Shouldly;
@@ -53,10 +53,11 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureEventsServices()
             .ConfigureEventsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
-                x.AddEventsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateEventEndpoint>()
@@ -160,7 +161,7 @@ public partial class UpdateEventSpecs : TruncateDbSpecification
         await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
         await connection.OpenAsync();
         await using var cmd = new NpgsqlCommand(
-            """SELECT COUNT(*) FROM "Event"."OutboxMessage" WHERE "MessageType" LIKE '%EventUpserted%'""",
+            """SELECT COUNT(*) FROM "Messaging"."OutboxMessage" WHERE "MessageType" LIKE '%EventUpserted%'""",
             connection);
         var count = (long)(await cmd.ExecuteScalarAsync())!;
         count.ShouldBeGreaterThan(0);

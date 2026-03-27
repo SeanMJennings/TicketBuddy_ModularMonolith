@@ -1,6 +1,7 @@
 using Controllers.Events;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Messaging;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,10 +26,11 @@ public partial class GetEventByIdSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureEventsServices()
             .ConfigureEventsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
-                x.AddEventsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<GetEventByIdEndpoint>()

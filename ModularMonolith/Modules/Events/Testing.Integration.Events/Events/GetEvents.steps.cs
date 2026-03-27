@@ -5,6 +5,7 @@ using Controllers.Events.Venue;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Messaging;
 using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
@@ -49,10 +50,11 @@ public partial class GetEventsSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureEventsServices()
             .ConfigureEventsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
-                x.AddEventsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateEventEndpoint>()

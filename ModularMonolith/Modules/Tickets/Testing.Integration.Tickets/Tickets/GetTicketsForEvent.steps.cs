@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Controllers.Tickets.Ticket;
 using Domain.Exceptions;
 using Infrastructure.Configuration;
+using Infrastructure.Messaging;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 using MassTransit;
@@ -32,11 +33,9 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
     private const string name = "wibble";
     private readonly DateTime event_start_date = DateTime.Now.AddDays(1);
     private readonly DateTime event_end_date = DateTime.Now.AddDays(1).AddHours(2);
-    private Guid[] ticket_ids = null!;
 
     protected override Task before_each()
     {
-        ticket_ids = [];
         event_id = Guid.CreateVersion7();
         user_id = Guid.CreateVersion7();
 
@@ -44,10 +43,11 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureCache(Setup.Redis.GetConnectionString())
             .ConfigureTicketsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
-                x.AddTicketsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()
@@ -107,8 +107,7 @@ public partial class GetTicketsForEventSpecs : TruncateDbSpecification
 
     private async Task requesting_the_tickets()
     {
-        var tickets = await getTicketsForEventEndpoint.GetTickets(event_id);
-        ticket_ids = tickets.Select(t => t.Id).ToArray();
+        await getTicketsForEventEndpoint.GetTickets(event_id);
     }
 
     private async Task the_tickets_are_released()

@@ -5,6 +5,7 @@ using Controllers.Tickets.Ticket;
 using Domain.Exceptions;
 using Domain.Tickets.Ticket;
 using Infrastructure.Configuration;
+using Infrastructure.Messaging;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 using MassTransit;
@@ -58,10 +59,11 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureCache(Setup.Redis.GetConnectionString())
             .ConfigureTicketsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
-                x.AddTicketsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()
@@ -294,7 +296,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
         await connection.OpenAsync();
         await using var cmd = new NpgsqlCommand(
-            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%EventSoldOut%'""",
+            """SELECT COUNT(*) FROM "Messaging"."OutboxMessage" WHERE "MessageType" LIKE '%EventSoldOut%'""",
             connection);
         var count = (long)(await cmd.ExecuteScalarAsync())!;
         count.ShouldBeGreaterThan(0);
@@ -305,12 +307,12 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         error.ShouldBeOfType<EntityNotFoundException>();
     }
 
-    private static async Task outbox_messages_are_persisted_to_the_ticket_schema()
+    private static async Task outbox_messages_are_persisted_to_the_messaging_schema()
     {
         await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
         await connection.OpenAsync();
         await using var cmd = new NpgsqlCommand(
-            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
+            """SELECT COUNT(*) FROM "Messaging"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
             connection);
         var count = (long)(await cmd.ExecuteScalarAsync())!;
         count.ShouldBeGreaterThan(0);
@@ -327,7 +329,7 @@ public partial class PurchaseTicketsSpecs : TruncateDbSpecification
         await using var connection = new NpgsqlConnection(Setup.Database.GetConnectionString());
         await connection.OpenAsync();
         await using var cmd = new NpgsqlCommand(
-            """SELECT COUNT(*) FROM "Ticket"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
+            """SELECT COUNT(*) FROM "Messaging"."OutboxMessage" WHERE "MessageType" LIKE '%TicketPurchased%'""",
             connection);
         var count = (long)(await cmd.ExecuteScalarAsync())!;
         count.ShouldBe(0);

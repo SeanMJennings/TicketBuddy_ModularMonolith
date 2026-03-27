@@ -1,6 +1,5 @@
 using Infrastructure.Commands;
 using Infrastructure.DomainEventsDispatching;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Notifications.Core;
@@ -34,7 +33,5 @@ public class NotificationDbContext(
         modelBuilder.Entity<Domain.Notifications.Notification>().HasIndex(n => n.UserId);
         modelBuilder.Entity<Domain.Notifications.Notification>().HasIndex(n => new { n.UserId, n.IsRead });
         modelBuilder.Entity<Domain.Notifications.Notification>().ToTable("Notifications", DefaultSchema, n => n.ExcludeFromMigrations());
-
-        modelBuilder.AddInboxStateEntity(b => b.ToTable("InboxState", DefaultSchema, t => t.ExcludeFromMigrations()));
     }
 }

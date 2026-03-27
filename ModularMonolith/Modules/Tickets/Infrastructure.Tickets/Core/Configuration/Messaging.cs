@@ -15,16 +15,6 @@ public static class Messaging
         x.AddConsumer<UserRegisteredConsumer, UserRegisteredConsumerDefinition>();
     }
 
-    public static void AddTicketsOutbox(this IBusRegistrationConfigurator x)
-    {
-        x.AddEntityFrameworkOutbox<TicketDbContext>(o =>
-        {
-            o.UsePostgres();
-            o.UseBusOutbox();
-            o.QueryDelay = TimeSpan.FromMilliseconds(100);
-        });
-    }
-
     public static void ConfigureTicketsMessaging(this IRabbitMqBusFactoryConfigurator cfg)
     {
         cfg.ReceiveEndpoint("tickets-queue", e =>

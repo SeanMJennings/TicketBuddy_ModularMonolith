@@ -4,6 +4,7 @@ using Controllers.Events.Venue;
 using Domain.ValueObjects;
 using Infrastructure.Configuration;
 using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Messaging;
 using MassTransit;
 using Messages.Tickets;
 using Messaging.Events;
@@ -45,10 +46,11 @@ public partial class EventSoldOutConsumerSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureEventsServices()
             .ConfigureEventsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddEventsConsumers();
-                x.AddEventsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .AddScoped<CreateEventEndpoint>()

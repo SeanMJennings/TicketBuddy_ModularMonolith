@@ -1,4 +1,5 @@
 using Infrastructure.Configuration;
+using Infrastructure.Messaging;
 using Infrastructure.Tickets.Configuration;
 using Infrastructure.Tickets.Core;
 using Infrastructure.Tickets.Core.Configuration;
@@ -32,10 +33,11 @@ public partial class UpsertUserSpecs : TruncateDbSpecification
             .ConfigureInfrastructureServices()
             .ConfigureCache(Setup.Redis.GetConnectionString())
             .ConfigureTicketsDatabase(Setup.Database.GetConnectionString())
+            .ConfigureSharedOutboxDatabase(Setup.Database.GetConnectionString())
             .AddMassTransitTestHarness(x =>
             {
                 x.AddTicketsConsumers();
-                x.AddTicketsOutbox();
+                x.AddSharedOutbox();
             })
             .AddSingleton(new Dictionary<Type, Type>())
             .ConfigureTicketsServices()

@@ -215,4 +215,13 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
             ticket.Purchased.ShouldBeTrue();
         }
     }
+    
+    private async Task two_notifications_are_created()
+    {
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakCustomerJwt);
+
+        var response = await client.GetAsync(Controllers.Notifications.Routes.UnreadCount);
+        content = response.Content;
+        JsonSerialization.Deserialize<int>(await  response.Content.ReadAsStringAsync()).ShouldBe(2);
+    }
 }

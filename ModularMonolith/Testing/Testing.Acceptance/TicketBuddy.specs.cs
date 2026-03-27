@@ -14,5 +14,6 @@ public partial class TicketBuddySpecs
         await And(the_user_reserves_the_tickets);
         await When(the_user_purchases_tickets_for_the_event);
         await Then(the_purchase_is_successful);
+        await And(two_notifications_are_created);
     }
 }

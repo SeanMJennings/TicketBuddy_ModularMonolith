@@ -40,7 +40,10 @@
       "Bash(dotnet restore:*)",
       "Bash(python3:*)",
       "Bash(python3 -c \":*)",
-      "Bash(ilspycmd /home/seanjennings/.nuget/packages/webapi.host/1.0.23/lib/net10.0/WebHost.dll)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:github.com)",
+      "Read(//tmp/**)",
+      "WebFetch(domain:masstransit.io)"
     ],
     "deny": [],
     "ask": [

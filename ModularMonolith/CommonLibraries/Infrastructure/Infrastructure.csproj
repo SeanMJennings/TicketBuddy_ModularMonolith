@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper"/>
+        <PackageReference Include="MassTransit.EntityFrameworkCore"/>
         <PackageReference Include="MassTransit.RabbitMQ"/>
         <PackageReference Include="Npgsql"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>

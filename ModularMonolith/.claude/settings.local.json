@@ -43,7 +43,10 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:github.com)",
       "Read(//tmp/**)",
-      "WebFetch(domain:masstransit.io)"
+      "WebFetch(domain:masstransit.io)",
+      "Bash(ilspycmd --help)",
+      "Bash(jar tf:*)",
+      "Bash(git clone:*)"
     ],
     "deny": [],
     "ask": [

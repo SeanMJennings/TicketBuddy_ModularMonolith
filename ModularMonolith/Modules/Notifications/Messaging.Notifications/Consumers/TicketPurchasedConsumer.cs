@@ -17,3 +17,11 @@ public class TicketPurchasedConsumer(
             message.EventName);
     }
 }
+
+public class TicketPurchasedConsumerDefinition : ConsumerDefinition<TicketPurchasedConsumer>
+{
+    public TicketPurchasedConsumerDefinition()
+    {
+        EndpointName = "notifications-queue";
+    }
+}

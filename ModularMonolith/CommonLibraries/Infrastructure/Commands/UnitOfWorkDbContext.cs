@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Commands;
 
-public abstract class UnitOfWorkDbContext<T>(DbContextOptions<T> options, DomainEventsDispatcher domainEventsDispatcher)
+public abstract class UnitOfWorkDbContext<T>(
+    DbContextOptions<T> options,
+    DomainEventsDispatcher domainEventsDispatcher,
+    IOutboxFlusher outboxFlusher)
     : DbContext(options)
     where T : DbContext
 {
@@ -14,6 +17,7 @@ public abstract class UnitOfWorkDbContext<T>(DbContextOptions<T> options, Domain
     {
         await domainEventsDispatcher.DispatchEvents(this);
         await SaveChangesAsync(cancellationToken);
+        await outboxFlusher.FlushAsync(cancellationToken);
         ChangeTracker.Clear();
     }
 }

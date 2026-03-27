@@ -7,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Tickets.Core;
 
-public class TicketDbContext(DbContextOptions<TicketDbContext> options, DomainEventsDispatcher domainEventsDispatcher)
-    : UnitOfWorkDbContext<TicketDbContext>(options, domainEventsDispatcher)
+public class TicketDbContext(
+    DbContextOptions<TicketDbContext> options,
+    DomainEventsDispatcher domainEventsDispatcher,
+    IOutboxFlusher outboxFlusher)
+    : UnitOfWorkDbContext<TicketDbContext>(options, domainEventsDispatcher, outboxFlusher)
 {
     private const string DefaultSchema = "Ticket";
     public DbSet<Domain.Tickets.Event.Event> Events => Set<Domain.Tickets.Event.Event>();

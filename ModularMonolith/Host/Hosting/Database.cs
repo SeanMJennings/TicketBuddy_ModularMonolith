@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Events.Core.Configuration;
+using Infrastructure.Messaging;
 using Infrastructure.Notifications.Core.Configuration;
 using Infrastructure.Tickets.Core.Configuration;
 
@@ -11,5 +12,6 @@ internal static class Database
         services.ConfigureEventsDatabase(connectionString);
         services.ConfigureTicketsDatabase(connectionString);
         services.ConfigureNotificationsDatabase(connectionString);
+        services.ConfigureSharedOutboxDatabase(connectionString);
     }
 }

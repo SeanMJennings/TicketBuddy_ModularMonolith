@@ -218,6 +218,7 @@ public partial class TicketBuddySpecs : TruncateDbSpecification
     
     private async Task two_notifications_are_created()
     {
+        Thread.Sleep(5000);
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", keycloakCustomerJwt);
 
         var response = await client.GetAsync(Controllers.Notifications.Routes.UnreadCount);

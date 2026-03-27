@@ -5,8 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Notifications.Core;
 
-public class NotificationDbContext(DbContextOptions<NotificationDbContext> options, DomainEventsDispatcher domainEventsDispatcher)
-    : UnitOfWorkDbContext<NotificationDbContext>(options, domainEventsDispatcher)
+public class NotificationDbContext(
+    DbContextOptions<NotificationDbContext> options,
+    DomainEventsDispatcher domainEventsDispatcher,
+    IOutboxFlusher outboxFlusher)
+    : UnitOfWorkDbContext<NotificationDbContext>(options, domainEventsDispatcher, outboxFlusher)
 {
     private const string DefaultSchema = "Notification";
 

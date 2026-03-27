@@ -6,8 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Events.Core;
 
-public class EventDbContext(DbContextOptions<EventDbContext> options, DomainEventsDispatcher domainEventsDispatcher)
-    : UnitOfWorkDbContext<EventDbContext>(options, domainEventsDispatcher)
+public class EventDbContext(
+    DbContextOptions<EventDbContext> options,
+    DomainEventsDispatcher domainEventsDispatcher,
+    IOutboxFlusher outboxFlusher)
+    : UnitOfWorkDbContext<EventDbContext>(options, domainEventsDispatcher, outboxFlusher)
 {
     public DbSet<Domain.Events.Event> Events => Set<Domain.Events.Event>();
     public DbSet<Domain.Events.Venue.Venue> Venues => Set<Domain.Events.Venue.Venue>();

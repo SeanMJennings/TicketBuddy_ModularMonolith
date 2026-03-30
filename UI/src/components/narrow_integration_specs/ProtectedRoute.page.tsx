@@ -33,3 +33,6 @@ export function redirectedToHomePage(): boolean {
     return screen.queryByTestId("home-page") !== null;
 }
 
+export function showsLoadingPage(): boolean {
+    return screen.queryByTestId("loading-indicator") !== null;
+}

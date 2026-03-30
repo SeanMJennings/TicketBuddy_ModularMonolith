@@ -3,6 +3,7 @@ import {Navigate} from "react-router-dom";
 import {useAuth} from "react-oidc-context";
 import {convertToTicketBuddyUser} from "../oidc/key-cloak-user.extensions";
 import type {UserType} from "../domain/user.ts";
+import {ContentLoading} from "./LoadingContainers.styles.tsx";
 
 type ProtectedRouteProps = {
     requiredUserType?: UserType;
@@ -13,6 +14,7 @@ export function ProtectedRoute({requiredUserType, children}: ProtectedRouteProps
     const auth = useAuth();
     const user = convertToTicketBuddyUser(auth.user);
 
+    if (auth.isLoading) return <ContentLoading/>;
     if (!user || user.UserType !== requiredUserType && !!requiredUserType) return <Navigate to="/" replace />;
     return <>{children}</>;
 }

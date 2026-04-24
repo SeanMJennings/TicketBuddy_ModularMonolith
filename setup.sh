@@ -74,9 +74,9 @@ gh auth login --scopes read:packages --git-protocol ssh --hostname github.com --
 token=$(gh auth token)
 
 if [ -n "$token" ]; then
-    dotnet nuget remove source TicketBuddyGitHub 2>/dev/null || true
+    dotnet nuget remove source github 2>/dev/null || true
     dotnet nuget add source "https://nuget.pkg.github.com/SeanMJennings/index.json" \
-        --name "TicketBuddyGitHub" \
+        --name "github" \
         --username "$githubUsername" \
         --password "$token" \
         --store-password-in-clear-text

@@ -83,7 +83,12 @@ if [ -n "$token" ]; then
 fi
 
 echo "Setting up HTTPS development certificates..."
+echo 'export SSL_CERT_DIR="$HOME/.aspnet/dev-certs/trust:/etc/ssl/certs"' >> ~/.bashrc
+source ~/.bashrc
 sudo dotnet dev-certs https --clean
+dotnet dev-certs https --export-path ~/aspnetcore-dev-cert.crt --format PEM --no-password
+sudo cp ~/aspnetcore-dev-cert.crt /usr/local/share/ca-certificates/aspnetcore-dev-cert.crt
+sudo update-ca-certificates
 sudo dotnet dev-certs https --trust
 
 echo "You may still need to navigate to localhost:5001 in browser when running and allow"

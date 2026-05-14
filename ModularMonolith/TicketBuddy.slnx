@@ -49,6 +49,7 @@
     <File Path="../Documents/ModularMonolith.drawio" />
     <File Path="../Documents/ModularMonolith.drawio.png" />
     <File Path="../Documents/Observability.png" />
+    <File Path="..\Documents\TestingTrophy.png" />
   </Folder>
   <Folder Name="/Documents/ADRs/">
     <File Path="Documents/ADRs/001-initial-architecture.md" />
